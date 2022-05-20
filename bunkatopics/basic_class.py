@@ -3,6 +3,9 @@ from .multiprocess_embeddings import get_embeddings
 from .extract_terms import extract_terms_df
 from .sent_multiprocessing import sent_multiprocessing, sent_extract
 from .indexer import indexer
+import logging
+
+logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
 
 
 class BasicSemantics:
@@ -71,7 +74,7 @@ class BasicSemantics:
             extract_terms = False
 
         if extract_terms:
-            print("Extracting Terms...")
+            logging.info("Extracting Terms...")
             self.terms = self.extract_terms(
                 sample_size=sample_size_terms,
                 limit=terms_limit,
@@ -85,12 +88,12 @@ class BasicSemantics:
             )
 
         if docs_embeddings:
-            print("Extracting Docs Embeddings...")
+            logging.info("Extracting Docs Embeddings...")
             self.docs_embeddings = self.extract_docs_embeddings(
                 multiprocessing=multiprocessing, reduction=reduction
             )
         if terms_embeddings:
-            print("Extracting Terms Embeddings...")
+            logging.info("Extracting Terms Embeddings...")
             self.terms_embeddings = self.extract_terms_embeddings(
                 multiprocessing=multiprocessing, reduction=reduction
             )

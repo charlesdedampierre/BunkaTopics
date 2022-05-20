@@ -1,6 +1,5 @@
 import pandas as pd
-from bunka_topics.basic_class import BasicSemantics
-
+from bunkatopics.basic_class import BasicSemantics
 
 if __name__ == "__main__":
 

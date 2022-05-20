@@ -5,8 +5,7 @@ from multiprocessing import Pool
 from tqdm import tqdm
 import umap
 
-path = "/Users/charlesdedampierre/Desktop/transformer_models/"
-model = SentenceTransformer(path + "distiluse-base-multilingual-cased-v1")
+model = SentenceTransformer("distiluse-base-multilingual-cased-v1")
 
 
 def multi_embed(text):

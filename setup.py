@@ -16,8 +16,13 @@ setup(
         "Search",
     ],
     install_requires=[
-        "validators",
-        "beautifulsoup4",
+        "pandas==1.4.1",
+        "scikit_learn==1.1.1",
+        "sentence_transformers==2.2.0",
+        "spacy==3.2.3",
+        "textacy==0.12.0",
+        "tqdm==4.63.0",
+        "umap==0.1.1",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",

@@ -3,7 +3,7 @@ from multiprocessing import Pool
 from tqdm import tqdm
 import pandas as pd
 
-nlp = spacy.load("fr_core_news_lg")
+nlp = spacy.load("en_core_web_sm")
 
 
 def get_sent(text):
@@ -23,12 +23,3 @@ def sent_extract(docs):
     res = list(tqdm(map(get_sent, docs), total=len(docs)))
 
     return res
-
-
-if __name__ == "__main__":
-
-    # Main Algorithm
-    res = sent_multiprocessing(docs)
-
-    indexes = data["id"].to_list()
-    final_dict = {"sentences": res, "doc_index": indexes}

@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name="bunkatopics",
     packages=["bunkatopics"],
-    version="0.5",
+    version="0.6",
     license="MIT",
     description="Advanced Topic Modeling using transformers",
     author="Charles de Dampierre",
@@ -23,7 +23,10 @@ setup(
         "tqdm==4.63.0",
         "umap-learn",
         "spacy",
-        "en_core_web_sm"
+        "en_core_web_sm",
+        "zh_core_web_sm",
+        "fr_core_news_lg",
+        "plotly"
         # "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0.tar.gz",
     ],
     # dependency_links=[

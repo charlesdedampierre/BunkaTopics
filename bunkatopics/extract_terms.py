@@ -10,8 +10,9 @@ import textacy.tm
 from functools import partial
 import warnings
 import en_core_web_sm
+import zh_core_web_sm
+import fr_core_news_lg
 
-nlp = en_core_web_sm.load()
 tqdm.pandas()
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
@@ -60,13 +61,14 @@ def extract_terms(
         prepro_text = textacy.preprocessing.remove.punctuation(prepro_text)
 
     if language == "zh":
-        pass
-        # lang = textacy.load_spacy_lang("zh_core_web_sm", disable=())
+        nlp = zh_core_web_sm.load()
+        lang = textacy.load_spacy_lang("zh_core_web_sm", disable=())
     if language == "en":
+        nlp = en_core_web_sm.load()
         lang = textacy.load_spacy_lang("en_core_web_sm", disable=())
     elif language == "fr":
-        pass
-        # lang = textacy.load_spacy_lang("fr_core_news_lg", disable=())
+        nlp = fr_core_news_lg.load()
+        lang = textacy.load_spacy_lang("fr_core_news_lg", disable=())
 
     doc = textacy.make_spacy_doc(prepro_text, lang=lang)
 

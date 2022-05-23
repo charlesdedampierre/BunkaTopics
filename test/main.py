@@ -19,3 +19,5 @@ if __name__ == "__main__":
         terms_ents=True,
         language="en",
     )
+
+    print(model.terms)

@@ -9,7 +9,9 @@ import textacy.representations
 import textacy.tm
 from functools import partial
 import warnings
+import en_core_web_sm
 
+nlp = en_core_web_sm.load()
 tqdm.pandas()
 
 warnings.simplefilter(action="ignore", category=FutureWarning)

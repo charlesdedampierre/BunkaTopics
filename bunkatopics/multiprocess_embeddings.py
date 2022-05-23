@@ -30,7 +30,7 @@ def get_embeddings(data, index_var, text_var, multiprocessing=True, reduction=5)
         df_embeddings.index = indexes
 
     if reduction is not None:
-        red = umap.UMAP(n_components=reduction, verbose=True)
+        red = umap.UMAP(n_components=reduction, verbose=True, random_state=42)
         red.fit(embeddings)
         embeddings = red.transform(embeddings)
         df_embeddings = pd.DataFrame(embeddings)

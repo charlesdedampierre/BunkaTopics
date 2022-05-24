@@ -196,14 +196,3 @@ class BasicSemantics:
         self.df_terms_indexed = self.df_terms_indexed.set_index(self.index_var)
 
         return res
-
-
-if __name__ == "__main__":
-    path = "/Users/charlesdedampierre/Desktop/ENS Projects/humility"
-    df_index = pd.read_csv(path + "/extended_dataset/extended_training_dataset.csv")
-    df_index = df_index[["body", "label"]].drop_duplicates()
-    df_index = df_index.sample(100)
-    df_index["index"] = df_index.index
-
-    model = BasicSemantics(df_index, index_var="index", text_var="body")
-    model.fit()

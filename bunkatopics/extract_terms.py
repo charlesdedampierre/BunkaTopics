@@ -10,7 +10,6 @@ import textacy.tm
 from functools import partial
 import warnings
 import en_core_web_sm
-import zh_core_web_sm
 import fr_core_news_lg
 
 tqdm.pandas()

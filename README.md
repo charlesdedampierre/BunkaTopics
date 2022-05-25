@@ -27,7 +27,7 @@ model = BunkaTopics(data, # dataFrame
                     extract_terms=True, # extract Terms ?
                     terms_embeddings=True, # extract terms Embeddings?
                     docs_embeddings=True, # extract Docs Embeddings?
-                    embeddings_model="distiluse-base-multilingual-cased-v1" # Chose an embeddings Model
+                    embeddings_model="distiluse-base-multilingual-cased-v1", # Chose an embeddings Model
                     multiprocessing=True, # Multiprocessing of Embeddings
                     language="en", # Chose between English "en" and French "fr"
                     sample_size_terms = len(data),
@@ -38,17 +38,16 @@ model = BunkaTopics(data, # dataFrame
                     terms_include_pos=["NOUN", "PROPN", "ADJ"], # Include Part-of-Speech
                     terms_include_types=["PERSON", "ORG"]) # Include Entity Types
 
-
 # Extract the topics
 
 topics = model.get_clusters(topic_number= 15, # Number of Topics
                     top_terms_included = 1000, # Compute the specific terms from the top n terms
                     top_terms = 5, # Most specific Terms to describe the topics
-                    term_type = "lemma", # Use "lemma" of "text" 
+                    term_type = "lemma", # Use "lemma" of "text"
                     ngrams = [1, 2]) # N-grams for Topic Representation
 
-
-# Visualize the clusters. It is adviced to choose less that 5 terms - top_terms = 5 - to avoid overchanging the Figure 
+# Visualize the clusters. It is adviced to choose less that 5 terms - top_terms = 5 - to avoid overchanging the Figure
 
 fig = model.visualize_clusters(search = None, width=1000, height=1000)
 fig.show()
+```

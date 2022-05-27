@@ -89,7 +89,7 @@ class BunkaTopics(BasicSemantics):
         """
 
         self.data["cluster"] = (
-            KMeans(n_clusters=topic_number)
+            KMeans(n_clusters=topic_number, random_state=42)
             .fit(self.docs_embeddings)
             .labels_.astype(str)
         )

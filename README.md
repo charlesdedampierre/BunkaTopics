@@ -4,7 +4,23 @@ BunkaTopics is a Topic Modeling package that leverages Embeddings and focuses on
 
 ## Installation
 
-Intall the package using pip
+Before installing bunkatopics, please install the following packages:
+
+```bash
+pip install spacy==3.2.3
+```
+
+Load the spacy language models
+
+```bash
+python -m spacy download fr_core_news_lg
+```
+
+```bash
+python -m spacy download en_core_web_sm
+```
+
+Eventually, install bunkatopic using pip
 
 ```bash
 pip install bunkatopics

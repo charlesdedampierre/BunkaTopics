@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="bunkatopics",
     packages=["bunkatopics"],
-    version="0.11",
+    version="0.12",
     license="MIT",
     description="Advanced Topic Modeling Using Transformers",
     author="Charles de Dampierre",

@@ -9,8 +9,9 @@ import textacy.representations
 import textacy.tm
 from functools import partial
 import warnings
-import en_core_web_sm
-import fr_core_news_lg
+
+# import en_core_web_sm
+# import fr_core_news_lg
 
 tqdm.pandas()
 # lang = en_core_web_sm.load()
@@ -55,13 +56,13 @@ def extract_terms_df(
 ):
 
     if language == "zh":
-        nlp = zh_core_web_sm.load()
+        # nlp = zh_core_web_sm.load()
         lang = textacy.load_spacy_lang("zh_core_web_sm", disable=())
     elif language == "en":
-        nlp = en_core_web_sm.load()
+        # nlp = en_core_web_sm.load()
         lang = textacy.load_spacy_lang("en_core_web_sm", disable=())
     elif language == "fr":
-        nlp = fr_core_news_lg.load()
+        # nlp = fr_core_news_lg.load()
         lang = textacy.load_spacy_lang("fr_core_news_lg", disable=())
     else:
         pass

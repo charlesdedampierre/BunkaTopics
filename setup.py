@@ -1,10 +1,9 @@
 from distutils.core import setup
 
-
 setup(
     name="bunkatopics",
     packages=["bunkatopics"],
-    version="0.12",
+    version="0.13",
     license="MIT",
     description="Advanced Topic Modeling Using Transformers",
     author="Charles de Dampierre",
@@ -23,9 +22,9 @@ setup(
         "textacy==0.12.0",
         "tqdm==4.63.0",
         "umap-learn",
-        "spacy== 3.2.3",
-        "en_core_web_sm",
-        "fr_core_news_lg",
+        # "spacy== 3.2.3",
+        # "en_core_web_sm",
+        # "fr_core_news_lg",
         "plotly"
         # "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0.tar.gz",
     ],

@@ -12,7 +12,7 @@ if __name__ == "__main__":
         text_var="description",  # Text Columns
         index_var="imdb",  # Index Column (Mandatory)
         extract_terms=True,  # extract Terms ?
-        terms_embeddings=True,  # extract terms Embeddings?
+        terms_embeddings=False,  # extract terms Embeddings?
         docs_embeddings=True,  # extract Docs Embeddings?
         embeddings_model="distiluse-base-multilingual-cased-v1",  # Chose an embeddings Model
         multiprocessing=True,  # Multiprocessing of Embeddings

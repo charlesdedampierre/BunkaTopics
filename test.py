@@ -5,7 +5,6 @@ data = pd.read_csv("data/imdb.csv", index_col=[0])
 data = data.sample(500, random_state=42)
 
 # Instantiate the model, extract ther terms and Embed the documents
-
 if __name__ == "__main__":
 
     model = BunkaTopics(

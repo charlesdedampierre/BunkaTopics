@@ -22,6 +22,7 @@ setup(
         "textacy==0.12.0",
         "tqdm==4.63.0",
         "umap-learn",
+        "hdbscan",
         # "spacy== 3.2.3",
         # "en_core_web_sm",
         # "fr_core_news_lg",

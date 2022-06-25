@@ -56,10 +56,16 @@ topics = model.get_clusters(topic_number= 15, # Number of Topics
                     top_terms_included = 1000, # Compute the specific terms from the top n terms
                     top_terms = 5, # Most specific Terms to describe the topics
                     term_type = "lemma", # Use "lemma" of "text"
-                    ngrams = [1, 2]) # N-grams for Topic Representation
+                    ngrams = [1, 2], # N-grams for Topic Representation
+                    clusterer = 'hdbscan') # Chose between Kmeans and HDBSCAN
 
 # Visualize the clusters. It is adviced to choose less that 5 terms - top_terms = 5 - to avoid overchanging the Figure
 
-fig = model.visualize_clusters(search = None, width=1000, height=1000)
+fig = model.visualize_clusters(search = None, 
+width=1000, 
+height=1000, 
+fit_clusters=True,  # Fit Umap to well visually separate clusters
+density_plot=False) # Plot a density map to get a territory overview
+
 fig.show()
 ```

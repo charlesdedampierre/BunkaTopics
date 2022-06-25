@@ -5,6 +5,7 @@ import umap
 from sklearn.cluster import KMeans
 from .utils import wrap_by_word
 import plotly.express as px
+from .density_plot import get_density_plot
 
 
 class BunkaTopics(BasicSemantics):
@@ -154,7 +155,12 @@ class BunkaTopics(BasicSemantics):
         return self.topics
 
     def visualize_clusters(
-        self, search: str = None, width=1000, height=1000, fit_clusters=True
+        self,
+        search: str = None,
+        width=1000,
+        height=1000,
+        fit_clusters=True,
+        density_plot=True,
     ):
         """Visualize the embeddings and the clustering. Search with exact search documents that
         contains your query and visualize it
@@ -233,15 +239,21 @@ class BunkaTopics(BasicSemantics):
             "centroids"
         )
 
-        fig = px.scatter(
-            df_fig_centroids,
-            x="dim_1",
-            y="dim_2",
-            color=color,
-            text="centroid_name",
-            hover_data=[self.text_var],
-            width=width,
-            height=height,
-        )
+        if density_plot:
+            fig = get_density_plot(
+                self.df_fig["dim_1"], self.df_fig["dim_2"], width, height
+            )
+
+        else:
+            fig = px.scatter(
+                df_fig_centroids,
+                x="dim_1",
+                y="dim_2",
+                color=color,
+                text="centroid_name",
+                hover_data=[self.text_var],
+                width=width,
+                height=height,
+            )
 
         return fig

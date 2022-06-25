@@ -35,9 +35,12 @@ if __name__ == "__main__":
         top_terms=5,  # Most specific Terms to describe the topics
         term_type="lemma",  # Use "lemma" of "text"
         ngrams=[1, 2],
+        clusterer="hdbscan",
     )  # N-grams for Topic Representation
 
     # Visualize the clusters. It is adviced to choose less that 5 terms - top_terms = 5 - to avoid overchanging the Figure
 
-    fig = model.visualize_clusters(search=None, width=1000, height=1000)
+    fig = model.visualize_clusters(
+        search=None, width=1000, height=1000, fit_clusters=True, density_plot=False
+    )
     fig.show()

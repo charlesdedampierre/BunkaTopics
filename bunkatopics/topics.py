@@ -153,7 +153,9 @@ class BunkaTopics(BasicSemantics):
 
         return self.topics
 
-    def visualize_clusters(self, search: str = None, width=1000, height=1000):
+    def visualize_clusters(
+        self, search: str = None, width=1000, height=1000, fit_clusters=True
+    ):
         """Visualize the embeddings and the clustering. Search with exact search documents that
         contains your query and visualize it
 
@@ -192,9 +194,15 @@ class BunkaTopics(BasicSemantics):
             color = "cluster_size"
 
         # if not hasattr(model, "embeddings_2d"):
-        self.embeddings_2d = umap.UMAP(
-            n_components=2, random_state=42, verbose=True
-        ).fit_transform(res[[0, 1, 2, 3, 4]])
+        if fit_clusters:
+            folding = umap.UMAP(n_components=2, random_state=42, verbose=True)
+            folding.fit(res[[0, 1, 2, 3, 4]], res["cluster"].astype(int).to_list())
+
+            self.embeddings_2d = folding.transform(res[[0, 1, 2, 3, 4]])
+        else:
+            self.embeddings_2d = umap.UMAP(
+                n_components=2, random_state=42, verbose=True
+            ).fit_transform(res[[0, 1, 2, 3, 4]])
 
         res["dim_1"] = self.embeddings_2d[:, 0]
         res["dim_2"] = self.embeddings_2d[:, 1]

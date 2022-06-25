@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 from .basic_class import BasicSemantics
 from .specificity import specificity
@@ -6,6 +7,7 @@ from sklearn.cluster import KMeans
 from .utils import wrap_by_word
 import plotly.express as px
 from .density_plot import get_density_plot
+import hdbscan
 
 
 class BunkaTopics(BasicSemantics):
@@ -66,6 +68,7 @@ class BunkaTopics(BasicSemantics):
         top_terms: int = 10,
         term_type: str = "lemma",
         top_terms_included: int = 100,
+        clusterer: str = "hdbscan",
         ngrams: list = [1, 2],
     ) -> pd.DataFrame:
         """Get the main topics and the topic representation.
@@ -89,11 +92,26 @@ class BunkaTopics(BasicSemantics):
             _description_
         """
 
-        self.data["cluster"] = (
-            KMeans(n_clusters=topic_number, random_state=42)
-            .fit(self.docs_embeddings)
-            .labels_.astype(str)
-        )
+        self.data_clusters = self.data.copy()
+
+        if clusterer == "hdbscan":
+            self.data_clusters["cluster"] = (
+                hdbscan.HDBSCAN().fit(self.docs_embeddings).labels_.astype(str)
+            )
+
+            self.data_clusters = self.data_clusters[
+                self.data_clusters["cluster"] != "-1"
+            ]
+
+        elif clusterer == "kmeans":
+            self.data_clusters["cluster"] = (
+                KMeans(n_clusters=topic_number, random_state=42)
+                .fit(self.docs_embeddings)
+                .labels_.astype(str)
+            )
+
+        else:
+            raise ValueError("Chose between 'kmeans' or 'hdbscan'")
 
         df_index_extented = self.df_terms_indexed.reset_index().copy()
         df_index_extented = df_index_extented.explode("text").reset_index(drop=True)
@@ -109,7 +127,7 @@ class BunkaTopics(BasicSemantics):
 
         # Get the Topics Names
         df_clusters = pd.merge(
-            self.data[["cluster"]],
+            self.data_clusters[["cluster"]],
             df_index_extented,
             left_index=True,
             right_index=True,
@@ -128,7 +146,7 @@ class BunkaTopics(BasicSemantics):
 
         # Get the Topics Size
         topic_size = (
-            self.data[["cluster"]]
+            self.data_clusters[["cluster"]]
             .reset_index()
             .groupby("cluster")[self.index_var]
             .count()
@@ -141,7 +159,7 @@ class BunkaTopics(BasicSemantics):
         self.topics = topics.reset_index(drop=True)
 
         self.df_topics_names = pd.merge(
-            self.data[["cluster"]].reset_index(), topics, on="cluster"
+            self.data_clusters[["cluster"]].reset_index(), topics, on="cluster"
         )
 
         self.df_topics_names["cluster_name_number"] = (
@@ -179,13 +197,13 @@ class BunkaTopics(BasicSemantics):
 
         res = pd.merge(
             res.drop("cluster", axis=1),
-            self.data,
+            self.data_clusters,
             left_index=True,
             right_index=True,
         )
 
         if search is not None:
-            df_search = self.data[self.text_var].reset_index()
+            df_search = self.data_clusters[self.text_var].reset_index()
             df_search = df_search[
                 df_search[self.text_var].str.contains(search, case=False)
             ]

@@ -8,6 +8,7 @@ from .utils import wrap_by_word
 import plotly.express as px
 from .density_plot import get_density_plot
 import hdbscan
+from .centroids import find_centroids
 
 
 class BunkaTopics(BasicSemantics):
@@ -275,3 +276,40 @@ class BunkaTopics(BasicSemantics):
             )
 
         return fig
+
+    def get_centroid_documents(self, top_elements: int = 2) -> pd.DataFrame:
+        """Get the centroid documents of the clusters
+
+        Returns
+        -------
+        pd.DataFrame
+            the centroid_docs are separeated by ' || '
+
+        """
+
+        df_centroid = pd.merge(
+            self.docs_embeddings,
+            self.df_topics_names,
+            left_index=True,
+            right_index=True,
+        )
+        df_centroid = pd.merge(
+            df_centroid.drop("cluster", axis=1),
+            self.data,
+            left_index=True,
+            right_index=True,
+        )
+
+        df_centroid = df_centroid.rename(
+            columns={0: "0", 1: "1", 2: "2", 3: "3", 4: "4"}
+        )
+
+        res = find_centroids(
+            df_centroid.reset_index(),
+            text_var=self.text_var,
+            cluster_var="cluster_name_number",
+            top_elements=top_elements,
+            dim_lenght=5,
+        )
+
+        return res

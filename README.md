@@ -68,4 +68,7 @@ fit_clusters=True,  # Fit Umap to well visually separate clusters
 density_plot=False) # Plot a density map to get a territory overview
 
 fig.show()
+
+
+centroid_documents = model.get_centroid_documents(top_elements=2)
 ```

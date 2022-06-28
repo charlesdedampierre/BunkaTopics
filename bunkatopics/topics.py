@@ -253,7 +253,7 @@ class BunkaTopics(BasicSemantics):
 
         if scatter_size is not None:
             centroids_emb[scatter_size] = 0
-            self.df_fig[size] = self.df_fig[size].fillna(0)
+            self.df_fig[scatter_size] = self.df_fig[scatter_size].fillna(0)
 
         df_fig_centroids = pd.concat([self.df_fig, centroids_emb])
         df_fig_centroids["centroid_name"] = df_fig_centroids["centroid_name"].fillna(

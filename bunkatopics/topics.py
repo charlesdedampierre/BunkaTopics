@@ -176,6 +176,7 @@ class BunkaTopics(BasicSemantics):
     def visualize_clusters(
         self,
         search: str = None,
+        scatter_size=None,
         width=1000,
         height=1000,
         fit_clusters=True,
@@ -250,6 +251,10 @@ class BunkaTopics(BasicSemantics):
         )
         centroids_emb.columns = ["centroid_name", "dim_1", "dim_2"]
 
+        if scatter_size is not None:
+            centroids_emb[scatter_size] = 0
+            self.df_fig[size] = self.df_fig[size].fillna(0)
+
         df_fig_centroids = pd.concat([self.df_fig, centroids_emb])
         df_fig_centroids["centroid_name"] = df_fig_centroids["centroid_name"].fillna(
             " "
@@ -264,11 +269,17 @@ class BunkaTopics(BasicSemantics):
             )
 
         else:
+            if scatter_size is not None:
+                size = df_fig_centroids[scatter_size]
+            else:
+                size = None
+
             fig = px.scatter(
                 df_fig_centroids,
                 x="dim_1",
                 y="dim_2",
                 color=color,
+                size=size,
                 text="centroid_name",
                 hover_data=[self.text_var],
                 width=width,

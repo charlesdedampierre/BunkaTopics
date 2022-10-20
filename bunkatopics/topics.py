@@ -258,7 +258,9 @@ class BunkaTopics(BasicSemantics):
 
         if scatter_size is not None:
             centroids_emb[scatter_size] = 0
-            self.df_fig[scatter_size] = self.df_fig[scatter_size].fillna(0)
+            self.df_fig[scatter_size] = np.log(1 + self.df_fig[scatter_size].fillna(0))
+        else:
+            self.df_fig[scatter_size] = 5
 
         df_fig_centroids = pd.concat([self.df_fig, centroids_emb])
         df_fig_centroids["centroid_name"] = df_fig_centroids["centroid_name"].fillna(
@@ -274,14 +276,16 @@ class BunkaTopics(BasicSemantics):
             )"""
 
             fig = get_density_plot(
-                self.df_fig["dim_1"],
-                self.df_fig["dim_2"],
-                centroids_emb["dim_1"],
-                centroids_emb["dim_2"],
-                centroids_emb["centroid_name"],
-                width,
-                height,
-                marker_size=5,
+                x=self.df_fig["dim_1"],
+                y=self.df_fig["dim_2"],
+                texts=self.df_fig[self.text_var],
+                clusters=self.df_fig["cluster_label"],
+                sizes=self.df_fig[scatter_size],
+                x_centroids=centroids_emb["dim_1"],
+                y_centroids=centroids_emb["dim_2"],
+                label_centroids=centroids_emb["centroid_name"],
+                width=width,
+                height=height,
             )
 
         else:

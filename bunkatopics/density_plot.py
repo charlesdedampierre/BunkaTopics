@@ -1,8 +1,18 @@
 import plotly.graph_objs as go
+import numpy as np
 
 
 def get_density_plot(
-    x, y, x_centroids, y_centroids, label_centroids, width, height, marker_size=5
+    x,
+    y,
+    texts,
+    clusters,
+    x_centroids,
+    y_centroids,
+    label_centroids,
+    width,
+    height,
+    sizes=None,
 ):
 
     fig_density = go.Figure(go.Histogram2dContour(x=x, y=y, colorscale="delta"))
@@ -17,13 +27,23 @@ def get_density_plot(
         title=dict(font=dict(size=width / 40)),
     )
 
+    nk = np.empty(shape=(len(texts), 3, 1), dtype="object")
+    nk[:, 0] = np.array(clusters).reshape(-1, 1)
+    nk[:, 1] = np.array(texts).reshape(-1, 1)
+    nk[:, 2] = np.array(sizes).reshape(-1, 1)
+
     # Add points with information
     fig_density.add_trace(
         go.Scatter(
             x=x,
             y=y,
             mode="markers",
-            marker=dict(color="rgba(0,0,0,0.3)", size=marker_size),
+            marker_size=sizes,
+            marker=dict(color="#000000"),
+            customdata=nk,
+            hovertemplate="<br><b>TOPIC</b>: %{customdata[0]}<br>"
+            + "<br><b>TEXT</b>: %{customdata[1]}<br>"
+            + "<br><b>SCORE</b>: %{customdata[2]}<br>",
         )
     )
 

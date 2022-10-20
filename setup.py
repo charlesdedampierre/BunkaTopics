@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name="bunkatopics",
     packages=["bunkatopics"],
-    version="0.17",
+    version="0.20",
     license="MIT",
     description="Advanced Topic Modeling Using Transformers",
     author="Charles de Dampierre",

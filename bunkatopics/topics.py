@@ -264,8 +264,19 @@ class BunkaTopics(BasicSemantics):
         )
 
         if density_plot:
-            fig = get_density_plot(
+            """fig = get_density_plot(
                 self.df_fig["dim_1"], self.df_fig["dim_2"], width, height
+            )"""
+
+            fig = get_density_plot(
+                self.df_fig["dim_1"],
+                self.df_fig["dim_2"],
+                centroids_emb["dim_1"],
+                centroids_emb["dim_2"],
+                centroids_emb["centroid_name"],
+                width,
+                height,
+                marker_size=5,
             )
 
         else:

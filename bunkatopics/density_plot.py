@@ -45,5 +45,8 @@ def get_density_plot(
         )
 
     fig_density.update_layout(showlegend=False)
+    fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
+    fig_density.update_yaxes(showgrid=False, showticklabels=False, zeroline=False)
+    fig_density.update_yaxes(showticklabels=False)
 
     return fig_density

@@ -9,6 +9,7 @@ import plotly.express as px
 from .density_plot import get_density_plot
 import hdbscan
 from .centroids import find_centroids
+import numpy as np
 
 
 class BunkaTopics(BasicSemantics):
@@ -33,6 +34,7 @@ class BunkaTopics(BasicSemantics):
         terms_path=None,
         terms_embeddings_path=None,
         docs_embeddings_path=None,
+        reduction=5,
     ) -> None:
 
         BasicSemantics.__init__(
@@ -59,7 +61,7 @@ class BunkaTopics(BasicSemantics):
             terms_include_types=terms_include_types,
             embeddings_model=embeddings_model,
             language=language,
-            reduction=5,
+            reduction=reduction,
             multiprocessing=multiprocessing,
         )
 
@@ -220,15 +222,18 @@ class BunkaTopics(BasicSemantics):
             color = "cluster_size"
 
         # if not hasattr(model, "embeddings_2d"):
+
+        len_dim = np.arange(self.reduction)
+
         if fit_clusters:
             folding = umap.UMAP(n_components=2, random_state=42, verbose=True)
-            folding.fit(res[[0, 1, 2, 3, 4]], res["cluster"].astype(int).to_list())
+            folding.fit(res[len_dim], res["cluster"].astype(int).to_list())
 
-            self.embeddings_2d = folding.transform(res[[0, 1, 2, 3, 4]])
+            self.embeddings_2d = folding.transform(res[len_dim])
         else:
             self.embeddings_2d = umap.UMAP(
                 n_components=2, random_state=42, verbose=True
-            ).fit_transform(res[[0, 1, 2, 3, 4]])
+            ).fit_transform(res[len_dim])
 
         res["dim_1"] = self.embeddings_2d[:, 0]
         res["dim_2"] = self.embeddings_2d[:, 1]
@@ -322,8 +327,12 @@ class BunkaTopics(BasicSemantics):
             right_index=True,
         )
 
-        df_centroid = df_centroid.rename(
+        """df_centroid = df_centroid.rename(
             columns={0: "0", 1: "1", 2: "2", 3: "3", 4: "4"}
+        )"""
+
+        df_centroid = df_centroid.rename(
+            columns={x: f"{x}" for x in range(self.reduction)}
         )
 
         res = find_centroids(
@@ -331,7 +340,7 @@ class BunkaTopics(BasicSemantics):
             text_var=self.text_var,
             cluster_var="cluster_name_number",
             top_elements=top_elements,
-            dim_lenght=5,
+            dim_lenght=self.reduction,
         )
 
         return res

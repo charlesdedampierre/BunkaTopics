@@ -101,6 +101,7 @@ class BasicSemantics:
         self.docs_embedding_model = embeddings_model
 
         self.data = self.data.set_index(self.index_var)
+        self.reduction = reduction
 
     def extract_terms(
         self,

@@ -256,11 +256,16 @@ class BunkaTopics(BasicSemantics):
         )
         centroids_emb.columns = ["centroid_name", "dim_1", "dim_2"]
 
+        # Erase number at the begining of the cluster name
+        centroids_emb["centroid_name"] = centroids_emb["centroid_name"].apply(
+            lambda x: x.split(" - ")[1]
+        )
+
         if scatter_size is not None:
             centroids_emb[scatter_size] = 0
             self.df_fig[scatter_size] = np.log(1 + self.df_fig[scatter_size].fillna(0))
         else:
-            self.df_fig[scatter_size] = 5
+            self.df_fig[scatter_size] = width / 400
 
         df_fig_centroids = pd.concat([self.df_fig, centroids_emb])
         df_fig_centroids["centroid_name"] = df_fig_centroids["centroid_name"].fillna(

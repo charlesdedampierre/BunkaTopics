@@ -15,7 +15,11 @@ def get_density_plot(
     sizes=None,
 ):
 
-    fig_density = go.Figure(go.Histogram2dContour(x=x, y=y, colorscale="delta"))
+    fig_density = go.Figure(
+        go.Histogram2dContour(x=x, y=y, colorscale="delta", showscale=False)
+    )
+
+    # colorbar=None,
 
     fig_density.update_traces(contours_coloring="fill", contours_showlabels=False)
 
@@ -23,7 +27,12 @@ def get_density_plot(
         font_size=25,
         width=width,
         height=height,
-        margin=dict(t=200),
+        margin=dict(
+            t=width / 50,
+            b=width / 50,
+            r=width / 50,
+            l=width / 50,
+        ),
         title=dict(font=dict(size=width / 40)),
     )
 
@@ -55,10 +64,12 @@ def get_density_plot(
             text=label,
             showarrow=True,
             arrowhead=1,
-            font=dict(family="Courier New, monospace", size=20, color="#ffffff"),
+            font=dict(
+                family="Courier New, monospace", size=width / 100, color="#ffffff"
+            ),
             bordercolor="#c7c7c7",
-            borderwidth=2,
-            borderpad=4,
+            borderwidth=width / 1000,
+            borderpad=width / 500,
             bgcolor="#ff7f0e",
             opacity=1,
             arrowcolor="#ff7f0e",
@@ -68,5 +79,6 @@ def get_density_plot(
     fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
     fig_density.update_yaxes(showgrid=False, showticklabels=False, zeroline=False)
     fig_density.update_yaxes(showticklabels=False)
+    fig_density.update_layout(coloraxis_showscale=False)
 
     return fig_density

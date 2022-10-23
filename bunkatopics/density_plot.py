@@ -13,6 +13,7 @@ def get_density_plot(
     width,
     height,
     sizes=None,
+    colors=None,
 ):
 
     fig_density = go.Figure(
@@ -47,8 +48,8 @@ def get_density_plot(
             x=x,
             y=y,
             mode="markers",
-            marker_size=sizes,
-            marker=dict(color="#000000"),
+            marker=dict(size=sizes, color=colors),
+            # marker=dict(color="#000000"),
             customdata=nk,
             hovertemplate="<br><b>TOPIC</b>: %{customdata[0]}<br>"
             + "<br><b>TEXT</b>: %{customdata[1]}<br>"

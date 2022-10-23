@@ -10,6 +10,12 @@ from .density_plot import get_density_plot
 import hdbscan
 from .centroids import find_centroids
 import numpy as np
+from .folding_utils import index_data
+from tqdm.notebook import tqdm
+from sklearn.model_selection import train_test_split
+from sklearn.multiclass import OneVsRestClassifier
+from xgboost import XGBClassifier
+from sklearn import metrics
 
 
 class BunkaTopics(BasicSemantics):
@@ -179,6 +185,7 @@ class BunkaTopics(BasicSemantics):
         self,
         search: str = None,
         scatter_size=None,
+        scatter_color=None,
         width=1000,
         height=1000,
         fit_clusters=True,
@@ -247,7 +254,8 @@ class BunkaTopics(BasicSemantics):
             res["cluster"].astype(str) + " | " + res["topic_size"].astype(str)
         )
 
-        self.df_fig = res.reset_index(drop=True)
+        # self.df_fig = res.reset_index(drop=True)
+        self.df_fig = res.copy()
 
         # Compute centroids to add the cluster label on it
         centroids_emb = self.df_fig[["dim_1", "dim_2", "cluster_name_number"]]
@@ -263,9 +271,10 @@ class BunkaTopics(BasicSemantics):
 
         if scatter_size is not None:
             centroids_emb[scatter_size] = 0
-            self.df_fig[scatter_size] = np.log(1 + self.df_fig[scatter_size].fillna(0))
+            # self.df_fig[scatter_size] = np.log(1 + self.df_fig[scatter_size].fillna(0))
         else:
-            self.df_fig[scatter_size] = width / 400
+            pass
+            # self.df_fig[scatter_size] = width / 400
 
         df_fig_centroids = pd.concat([self.df_fig, centroids_emb])
         df_fig_centroids["centroid_name"] = df_fig_centroids["centroid_name"].fillna(
@@ -275,17 +284,24 @@ class BunkaTopics(BasicSemantics):
             "centroids"
         )
 
-        if density_plot:
-            """fig = get_density_plot(
-                self.df_fig["dim_1"], self.df_fig["dim_2"], width, height
-            )"""
+        if scatter_color is None:
+            colors = None
+        else:
+            colors = self.df_fig[scatter_color]
 
+        if scatter_size is None:
+            sizes = None
+        else:
+            sizes = self.df_fig[scatter_size]
+
+        if density_plot:
             fig = get_density_plot(
                 x=self.df_fig["dim_1"],
                 y=self.df_fig["dim_2"],
                 texts=self.df_fig[self.text_var],
                 clusters=self.df_fig["cluster_label"],
-                sizes=self.df_fig[scatter_size],
+                sizes=sizes,
+                colors=colors,
                 x_centroids=centroids_emb["dim_1"],
                 y_centroids=centroids_emb["dim_2"],
                 label_centroids=centroids_emb["centroid_name"],
@@ -312,6 +328,78 @@ class BunkaTopics(BasicSemantics):
             )
 
         return fig
+
+    def get_folding(self, dictionnary):
+        """category	term
+        0	negative	hate
+        1	negative	violence
+        2	negative	pain
+        3	negative	negative
+        4	positive	good
+        """
+
+        df_indexed = pd.DataFrame()
+
+        for cat in set(dictionnary.category):
+
+            dictionnary_filtered = dictionnary[dictionnary["category"] == cat][
+                "term"
+            ].to_list()
+
+            df_indexed_filtered = index_data(
+                dictionnary_filtered, self.data[self.text_var].to_list()
+            )
+            df_indexed_filtered.columns = [self.text_var, "term", "sent_location"]
+            df_indexed_filtered = pd.merge(
+                df_indexed_filtered,
+                self.data[[self.text_var]].reset_index(),
+                on=self.text_var,
+            )
+
+            df_indexed_filtered["label"] = cat
+            df_indexed = df_indexed.append(df_indexed_filtered)
+
+        # Merge with embeddings
+
+        df_embeddings = self.docs_embeddings.reset_index()
+        df_embeddings = df_embeddings.rename(columns={"index": self.index_var})
+        df_final = pd.merge(df_embeddings, df_indexed, on=self.index_var)
+
+        emb_columns = list(np.arange(self.reduction))
+
+        # Train self
+        data_self = df_final[emb_columns + ["label"]]
+        data_self.index = df_final[self.index_var]
+
+        df_train, df_test = train_test_split(data_self, test_size=0.3, random_state=42)
+
+        X_train = df_train.drop("label", 1)
+        X_test = df_test.drop("label", 1)
+
+        y_train = df_train["label"].to_list()
+        y_test = df_test["label"].to_list()
+
+        classifier = OneVsRestClassifier(XGBClassifier())
+        classifier.fit(X_train, y_train)
+        y_pred = classifier.predict(X_test)
+
+        met = metrics.classification_report(y_test, y_pred, digits=3)
+
+        # Predict for the whiole dataset
+        df_folding = pd.DataFrame(
+            classifier.predict_proba(self.docs_embeddings), columns=classifier.classes_
+        )
+        df_folding["label"] = classifier.predict(self.docs_embeddings)
+        df_folding.index = self.docs_embeddings.index
+
+        df_folding = pd.merge(
+            df_folding, self.data[[self.text_var]], left_index=True, right_index=True
+        )
+        df_folding = pd.merge(
+            df_folding, self.docs_embeddings, left_index=True, right_index=True
+        )
+
+        return df_folding, met
 
     def get_centroid_documents(self, top_elements: int = 2) -> pd.DataFrame:
         """Get the centroid documents of the clusters

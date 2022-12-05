@@ -28,12 +28,7 @@ def get_density_plot(
         font_size=25,
         width=width,
         height=height,
-        margin=dict(
-            t=width / 50,
-            b=width / 50,
-            r=width / 50,
-            l=width / 50,
-        ),
+        margin=dict(t=width / 50, b=width / 50, r=width / 50, l=width / 50,),
         title=dict(font=dict(size=width / 40)),
     )
 

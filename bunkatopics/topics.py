@@ -401,6 +401,44 @@ class BunkaTopics(BasicSemantics):
 
         return df_folding, met
 
+    def get_specific_documents_per_cluster(self, 
+                                       top_n = 10, 
+                                       top_type = 'terms_based', 
+                                       pop_var = 'Times Cited, WoS Core'
+            ):
+        """ Extract the top documents per clusters based on two rules: (top_type: terms_based)
+        - either the documents with the msot specific terms in it: (top_type: pop_based)
+        - the most popular documents 
+        """
+        
+        if top_type == 'terms_based':
+
+            new_topics = self.topics.copy()
+            new_topics['percent'] = round(new_topics['topic_size']/new_topics['topic_size'].sum()*100, 0)
+            new_topics['text'] = new_topics['cluster_name'].apply(lambda x:x.split(' | '))
+            new_topics = new_topics.explode('text')
+
+            df_indexed = self.df_terms_indexed.copy().reset_index()
+            df_indexed = df_indexed.explode('text')
+            df_indexed = pd.merge(df_indexed, self.data_clusters[['cluster']].reset_index())
+            
+            top_doc = pd.merge(df_indexed, new_topics, on = ['text', 'cluster'])
+            top_doc = top_doc.groupby([self.index_var, 'cluster'])['text'].count().reset_index()
+
+            top_doc = top_doc.sort_values(['cluster', 'text'], ascending= (False, False))
+            top_doc = top_doc.groupby('cluster').head(top_n).reset_index(drop=True)
+            top_doc = pd.merge(self.topics, top_doc, on = 'cluster')
+            
+        elif top_type == 'pop_based':
+            
+            df_popularity = self.data_clusters[[pop_var] + ['cluster']]
+            df_popularity = df_popularity.sort_values(['cluster']+[pop_var], ascending = (False, False))
+            df_popularity = df_popularity.groupby('cluster').head(top_n).reset_index()
+            df_popularity = pd.merge(df_popularity, self.topics, on = 'cluster')
+            top_doc = df_popularity.copy()
+
+        return top_doc
+
     def get_centroid_documents(self, top_elements: int = 2) -> pd.DataFrame:
         """Get the centroid documents of the clusters
 

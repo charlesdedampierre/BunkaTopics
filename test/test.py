@@ -1,7 +1,7 @@
 from bunkatopics import BunkaTopics
 import pandas as pd
 
-data = pd.read_csv("../data/imdb.csv", index_col=[0])
+data = pd.read_csv("data/imdb.csv", index_col=[0])
 data = data.sample(500, random_state=42)
 
 # Instantiate the model, extract ther terms and Embed the documents
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         top_terms=5,  # Most specific Terms to describe the topics
         term_type="lemma",  # Use "lemma" of "text"
         ngrams=[1, 2],
-        clusterer="hdbscan",
+        clusterer="kmeans",
     )  # N-grams for Topic Representation
 
     # Visualize the clusters. It is adviced to choose less that 5 terms - top_terms = 5 - to avoid overchanging the Figure

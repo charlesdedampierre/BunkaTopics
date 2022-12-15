@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "bunkatopics"
-version = "0.1.0"
+version = "0.27"
+# 0.27 Big Change
 description = ""
 authors = ["Charles De Dampierre <charles.de-dampierre@hec.edu>"]
 readme = "README.md"

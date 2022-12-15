@@ -1,5 +1,6 @@
 import plotly.graph_objs as go
 import numpy as np
+from .utils import wrap_by_word
 
 
 def get_density_plot(
@@ -10,8 +11,8 @@ def get_density_plot(
     x_centroids,
     y_centroids,
     label_centroids,
-    width,
-    height,
+    width: int,
+    height: int,
     sizes=None,
     colors=None,
 ):
@@ -28,9 +29,16 @@ def get_density_plot(
         font_size=25,
         width=width,
         height=height,
-        margin=dict(t=width / 50, b=width / 50, r=width / 50, l=width / 50,),
+        margin=dict(
+            t=width / 50,
+            b=width / 50,
+            r=width / 50,
+            l=width / 50,
+        ),
         title=dict(font=dict(size=width / 40)),
     )
+
+    texts = [wrap_by_word(x, 10) for x in texts]
 
     nk = np.empty(shape=(len(texts), 3, 1), dtype="object")
     nk[:, 0] = np.array(clusters).reshape(-1, 1)

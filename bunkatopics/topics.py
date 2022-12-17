@@ -75,7 +75,7 @@ class BunkaTopics(BasicSemantics):
         top_terms=4,
         term_type="lemma",
         top_terms_included=1000,
-        out_terms=["juif"],
+        out_terms=None,
         ngrams=(1, 2),
     ):
 

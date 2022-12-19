@@ -34,7 +34,7 @@ if __name__ == "__main__":
     )  # Include Entity Types
 
     topics = model.get_clusters(
-        topic_number=20,
+        topic_number=3,
         top_terms=4,
         term_type="lemma",
         top_terms_included=1000,

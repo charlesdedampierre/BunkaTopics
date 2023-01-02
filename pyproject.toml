@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bunkatopics"
-version = "0.32"
+version = "0.33"
 # 0.28 Big Change compared to 0.26
 description = ""
 authors = ["Charles De Dampierre <charles.de-dampierre@hec.edu>"]

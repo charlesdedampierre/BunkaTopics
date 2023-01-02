@@ -167,9 +167,16 @@ class BunkaTopics(BasicSemantics):
         data_clusters = pd.merge(
             data_clusters, self.docs_embeddings, left_index=True, right_index=True
         )
+
         self.data_clusters = pd.merge(
-            data_clusters, topics[["cluster", "cluster_name"]], on="cluster"
+            data_clusters.reset_index(),
+            topics[["cluster", "cluster_name"]],
+            on="cluster",
         )
+        self.data_clusters = self.data_clusters.rename(
+            columns={"index": self.index_var}
+        )
+        self.data_clusters = self.data_clusters.set_index(self.index_var)
 
         return self.topics
 

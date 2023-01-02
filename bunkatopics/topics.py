@@ -80,8 +80,6 @@ class BunkaTopics(BasicSemantics):
         ngrams=(1, 2),
     ):
 
-
-
         data_clusters = self.data.copy()
         df_index_extented = self.df_terms_indexed.reset_index().copy()
         terms = self.terms[self.terms["ngrams"].isin(ngrams)]
@@ -89,25 +87,22 @@ class BunkaTopics(BasicSemantics):
         if out_terms is not None:
             terms = terms[~terms[term_type].isin(out_terms)]
 
-
         if topic_number is None:
 
             # Create the SpectralClustering model with automatic number of clusters
             cluster_model = SpectralClustering(n_components=None, random_state=42)
 
-
             # Fit the model to the data and predict the clusters
             labels = cluster_model.fit_predict(self.docs_embeddings.values)
-            data_clusters['cluster'] = labels
+            data_clusters["cluster"] = labels
 
             projected_data = self.docs_embeddings.copy()
-            projected_data['cluster'] = labels
+            projected_data["cluster"] = labels
 
-  
             # Calculate the centroids of the clusters
             centroids = []
             for i in range(cluster_model.n_clusters):
-                cluster_data = projected_data[projected_data['cluster'] == i]
+                cluster_data = projected_data[projected_data["cluster"] == i]
                 centroids.append(cluster_data.mean(axis=0))
 
             # Print the centroids
@@ -119,7 +114,6 @@ class BunkaTopics(BasicSemantics):
 
             centroids = pd.DataFrame(kmeans.cluster_centers_, columns=[0, 1])
             centroids["cluster"] = centroids.index
-
 
         df_index_extented = df_index_extented.explode("text").reset_index(drop=True)
 
@@ -167,7 +161,6 @@ class BunkaTopics(BasicSemantics):
             topics["topic_size"] / topics["topic_size"].sum() * 100, 1
         )
 
-     
         self.topics = pd.merge(topics, centroids, on="cluster")
 
         data_clusters = data_clusters[["cluster"]]
@@ -177,8 +170,6 @@ class BunkaTopics(BasicSemantics):
         self.data_clusters = pd.merge(
             data_clusters, topics[["cluster", "cluster_name"]], on="cluster"
         )
-
-        self.data_clusters.index = self.data.index
 
         return self.topics
 

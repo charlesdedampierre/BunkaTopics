@@ -15,6 +15,7 @@ def get_density_plot(
     height: int,
     sizes=None,
     colors=None,
+    label_size_ratio=100,
 ):
 
     fig_density = go.Figure(
@@ -69,7 +70,9 @@ def get_density_plot(
             showarrow=True,
             arrowhead=1,
             font=dict(
-                family="Courier New, monospace", size=width / 100, color="#ffffff"
+                family="Courier New, monospace",
+                size=width / label_size_ratio,
+                color="#ffffff",
             ),
             bordercolor="#c7c7c7",
             borderwidth=width / 1000,

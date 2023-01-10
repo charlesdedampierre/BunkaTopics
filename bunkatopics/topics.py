@@ -181,7 +181,12 @@ class BunkaTopics(BasicSemantics):
         return self.topics
 
     def visualize_clusters(
-        self, width: int = 1000, height: int = 1000, sizes=None, colors=None
+        self,
+        width: int = 1000,
+        height: int = 1000,
+        sizes=None,
+        colors=None,
+        label_size_ratio=100,
     ):
 
         fig = get_density_plot(
@@ -196,6 +201,7 @@ class BunkaTopics(BasicSemantics):
             height=height,
             sizes=sizes,
             colors=colors,
+            label_size_ratio=label_size_ratio,
         )
 
         return fig

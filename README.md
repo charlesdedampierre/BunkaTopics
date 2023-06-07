@@ -108,7 +108,7 @@ topic_fig
 
 The map display the different texts on a 2-Dimensional unsupervised scale. Every region of the map is a topic described by its most specific terms.
 
-<img src="images/newsmap.png" width="35%" height="35%" align="center" />
+<img src="images/newsmap.png" width="70%" height="70%" align="center" />
 
 ```python
 
@@ -122,7 +122,7 @@ bourdieu_fig = bunka.visualize_bourdieu(x_left_words=["past"],
 
 The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
 
-<img src="images/bourdieu.png" width="35%" height="35%" align="center" />
+<img src="images/bourdieu.png" width="70%" height="70%" align="center" />
 
 ## Multilanguage
 

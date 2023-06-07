@@ -91,7 +91,7 @@ If you want a bigger LLM Like [Instructor](https://github.com/HKUNLP/instructor-
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 
 embedding_model = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large",
-                                                query_instruction="Embed the documents for visualisation of Topic Modeling on a map : ")
+                                                embed_instruction="Embed the documents for visualisation of Topic Modeling on a map : ")
 
 bunka = Bunka(model_hf=embedding_model)
 

@@ -33,6 +33,7 @@ class Bunka:
         if model_hf is None:
             model_hf = HuggingFaceInstructEmbeddings(
                 model_name="hkunlp/instructor-large",
+                query_instruction="Embed the documents for visualisation of Topic Modeling on a map : ",
                 model_kwargs={"device": "cpu"},
                 encode_kwargs={"normalize_embeddings": True},
             )

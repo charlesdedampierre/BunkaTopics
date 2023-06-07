@@ -1,29 +1,34 @@
 [tool.poetry]
 name = "bunkatopics"
-version = "0.33"
-# 0.28 Big Change compared to 0.26
-description = ""
-authors = ["Charles De Dampierre <charles.de-dampierre@hec.edu>"]
+version = "0.36"
+description = "Topic Modeling using Transformers and advanced visualization"
+authors = ["Charles De Dampierre <charlesdedampierre@gmail.com>"]
 readme = "README.md"
+packages = [{include = "bunkatopics"}]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
-requests = "^2.28.1"
-numpy = "1.21.5"
-pandas = "1.4.1"
-plotly = "5.6.0"
-scikit-learn = "1.1.3"
-sentence-transformers = "2.2.0"
-spacy = "^3"
-textacy = "0.12.0"
-tqdm = "4.63.0"
-umap-learn = "0.5.3"
-xgboost = "1.6.2"
-jupyterlab = "^3.5.1"
+python =">=3.9,<4.0"
+jupyterlab = "^4.0.1"
+pandas = "^2.0.2"
+langchain = "^0.0.188"
+sentence-transformers = "^2.2.2"
+ipywidgets = "^8.0.6"
+instructorembedding = "^1.0.1"
+umap-learn = "^0.5.3"
+plotly = "^5.14.1"
+textacy = "^0.13.0"
+loguru = "^0.7.0"
+matplotlib = "^3.7.1"
+kneed = "^0.8.3"
+hdbscan = "^0.8.29"
+statsmodels = "^0.14.0"
+gensim = "^4.3.1"
+black = "^23.3.0"
+numba = "^0.57.0"
 
+[tool.poetry.scripts]
+download-model = "python -m spacy download en_core_web_sm"
 
-[tool.poetry.group.dev.dependencies]
-black = "^22.10.0"
 
 [build-system]
 requires = ["poetry-core"]

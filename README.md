@@ -34,6 +34,22 @@ Install the spacy tokenizer model for english:
 python -m spacy download en_core_web_sm
 ```
 
+## Contributing
+
+Any contribution is more than welcome
+
+```bash
+pip install poetry
+git clone https://github.com/charlesdedampierre/BunkaTopics.git
+cd BunkaTopics
+
+# Create the environment from the .lock file
+poetry install
+
+# Start the environment
+poetry shell
+```
+
 ## Getting Started
 
 | Name  | Link  |

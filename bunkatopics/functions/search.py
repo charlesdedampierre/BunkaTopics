@@ -4,7 +4,9 @@ import typing as t
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def vector_search(docs: t.List[Document], model_hf, user_input="I love you"):
+def vector_search(
+    docs: t.List[Document], model_hf, user_input: str = "I love you"
+) -> pd.DataFrame:
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_emb = df_docs[["doc_id", "embedding"]]
     df_emb = df_emb.set_index("doc_id")

@@ -9,7 +9,7 @@ import umap
 from sklearn.cluster import KMeans
 import warnings
 import plotly.graph_objects as go
-from .datamodel import Document, Term, Topic
+from .datamodel import Document, Term, Topic, DOC_ID, TOPIC_ID, TERM_ID
 from .functions.topic_document import get_top_documents
 from .functions.topic_utils import get_topic_repartition
 from .visualisation.bourdieu import visualize_bourdieu
@@ -41,7 +41,7 @@ class Bunka:
 
     def fit(
         self,
-        docs: t.List[str],
+        docs: t.List[DOC_ID],
         multiprocess: bool = True,
     ) -> None:
         df = pd.DataFrame(docs, columns=["content"])

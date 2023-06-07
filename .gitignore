@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#hidden notebooks
+notebooks_test/
+
 # Distribution / packaging
 .Python
 build/

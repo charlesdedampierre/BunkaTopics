@@ -43,8 +43,8 @@ pip install poetry
 git clone https://github.com/charlesdedampierre/BunkaTopics.git
 cd BunkaTopics
 
-# Create the environment from the .lock file
-poetry install
+# Create the environment from the .lock file. 
+poetry install # This will install all packages in the .lock file inside a virtual environmnet
 
 # Start the environment
 poetry shell

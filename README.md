@@ -85,12 +85,13 @@ bunka.fit(full_docs)
 df_topics = bunka.get_topics(n_clusters = 20)
 ```
 
-If you want a bigger LLM:
+If you want a bigger LLM Like [Instructor](https://github.com/HKUNLP/instructor-embedding)
 
 ```python
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 
-embedding_model = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large")
+embedding_model = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large",
+                                                query_instruction="Embed the documents for visualisation of Topic Modeling on a map : ")
 
 bunka = Bunka(model_hf=embedding_model)
 

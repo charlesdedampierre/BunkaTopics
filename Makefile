@@ -1,3 +1,2 @@
 jupyter:
 	python -m jupyterlab
-

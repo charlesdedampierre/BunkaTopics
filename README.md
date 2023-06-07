@@ -124,6 +124,27 @@ The power of this visualisation is to constrain the axis by creating continuums 
 
 <img src="images/bourdieu.png" width="35%" height="35%" align="center" />
 
+## Multilanguage
+
+The package use Spacy to extract meaningfull terms for the topic represenation.
+
+If you wish to change language to french, first, download the corresponding spacy model:
+
+```bash
+python -m spacy download fr_core_news_lg
+```
+
+```python
+from langchain.embeddings import HuggingFaceEmbeddings
+
+embedding_model = HuggingFaceEmbeddings(model_name="distiluse-base-multilingual-cased-v2")
+
+bunka = Bunka(model_hf=embedding_model, language = 'fr_core_news_lg')
+
+bunka.fit(full_docs)
+df_topics = bunka.get_topics(n_clusters = 20)
+```  
+
 ## Functionality
 
 Here are all the things you can do with Bunkatopics

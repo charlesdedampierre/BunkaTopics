@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append("../")
-
 import unittest
 from bunkatopics import Bunka
 import pandas as pd
@@ -19,7 +15,7 @@ class BunkaTestCase(unittest.TestCase):
         self.bunka = Bunka()
         self.bunka.fit(docs)
 
-    def pipeline(self):
+    def test_pipeline(self):
         # Run the full pipelune
         n_clusters = 2
         df_topics = self.bunka.get_topics(n_clusters=n_clusters)

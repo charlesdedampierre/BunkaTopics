@@ -9,9 +9,10 @@ def get_coherence(
     topics: t.List[t.List[TERM_ID]],
     texts: t.List[t.List[TERM_ID]],
     coherence_type="c_v",
+    topic_terms_n: int = 10,
 ):
     word2id = Dictionary(texts)
-    topics_terms = [topic.term_id[:10] for topic in topics]
+    topics_terms = [topic.term_id[:topic_terms_n] for topic in topics]
     cm = CoherenceModel(
         topics=topics_terms, texts=texts, coherence=coherence_type, dictionary=word2id
     )

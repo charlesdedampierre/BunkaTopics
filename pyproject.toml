@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bunkatopics"
-version = "0.36"
+version = "0.38"
 description = "Topic Modeling using Transformers and advanced visualization"
 authors = ["Charles De Dampierre <charlesdedampierre@gmail.com>"]
 readme = "README.md"
@@ -24,7 +24,6 @@ hdbscan = "^0.8.29"
 statsmodels = "^0.14.0"
 gensim = "^4.3.1"
 black = "^23.3.0"
-numba = "^0.57.0"
 pytest = "^7.3.2"
 
 [build-system]

@@ -116,24 +116,6 @@ def visualize_topics(
     except:
         pass
 
-    logo_image = "Bunka Communication - obordaibng (2).png"
-    logo_width = 50
-    logo_height = 50
-
-    # Add the logo image
-    fig_density.add_layout_image(
-        source=logo_image,
-        xref="paper",
-        yref="paper",
-        x=1,
-        y=1,
-        sizex=logo_width,
-        sizey=logo_height,
-        xanchor="right",
-        yanchor="top",
-        opacity=1,
-    )
-
     fig_density.update_layout(showlegend=False)
     fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
     fig_density.update_yaxes(showgrid=False, showticklabels=False, zeroline=False)

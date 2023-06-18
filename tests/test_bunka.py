@@ -36,6 +36,9 @@ class BunkaTestCase(unittest.TestCase):
 
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
+        fig = self.bunka.visualize_topics()
+        self.assertIsInstance(fig, go.Figure)
+
         user_input = "this is a computer"
         results = self.bunka.search(user_input)
 

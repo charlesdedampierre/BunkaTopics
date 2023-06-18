@@ -42,10 +42,15 @@ class Bunka:
 
     def fit(
         self,
-        docs: t.List[DOC_ID],
+        docs: t.List[str],
+        ids: t.List[DOC_ID] = None,
         multiprocess: bool = True,
     ) -> None:
         df = pd.DataFrame(docs, columns=["content"])
+
+        if ids is not None:
+            df["doc_id"] = ids
+
         df["doc_id"] = [str(uuid.uuid4())[:8] for _ in range(len(df))]
         df = df[~df["content"].isna()]
         df = df.reset_index(drop=True)

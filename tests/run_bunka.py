@@ -9,12 +9,11 @@ if __name__ == "__main__":
     full_docs = fetch_20newsgroups(
         subset="all", remove=("headers", "footers", "quotes")
     )["data"]
-    full_docs = random.sample(full_docs, 100)
+    full_docs = random.sample(full_docs, 1000)
     full_docs = [x for x in full_docs if len(x) >= 50]  # Minimum lenght of texts
 
-    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-
-    bunka = Bunka(model_hf=embedding_model)
+    # bunka = Bunka(model_hf=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"))
+    bunka = Bunka()
 
     bunka.fit(full_docs)
     df_topics = bunka.get_topics(n_clusters=8)
@@ -23,13 +22,14 @@ if __name__ == "__main__":
     topic_fig.show()
 
     bourdieu_fig = bunka.visualize_bourdieu(
-        x_left_words=["past"],
-        x_right_words=["future", "futuristic"],
-        y_top_words=["politics", "Government"],
-        y_bottom_words=["cultural phenomenons"],
+        x_left_words=["joy"],
+        x_right_words=["fear"],
+        y_top_words=["local politics"],
+        y_bottom_words=["international politics"],
         height=1500,
         width=1500,
-        clustering=True,
+        clustering=False,
+        display_percent=True,
     )
 
     bourdieu_fig.show()

@@ -26,7 +26,7 @@ class BunkaTestCase(unittest.TestCase):
 
         bourdieu_fig = self.bunka.visualize_bourdieu(
             x_left_words=["past"],
-            x_right_words=["future", "futuristis"],
+            x_right_words=["future", "futuristic"],
             y_top_words=["politics", "Government"],
             y_bottom_words=["cultural phenomenons"],
             height=2000,

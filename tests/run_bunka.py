@@ -3,11 +3,13 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from sklearn.datasets import fetch_20newsgroups
 import random
 
+random.seed(42)
+
 if __name__ == "__main__":
     full_docs = fetch_20newsgroups(
         subset="all", remove=("headers", "footers", "quotes")
     )["data"]
-    full_docs = random.sample(full_docs, 500)
+    full_docs = random.sample(full_docs, 100)
     full_docs = [x for x in full_docs if len(x) >= 50]  # Minimum lenght of texts
 
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -27,7 +29,7 @@ if __name__ == "__main__":
         y_bottom_words=["cultural phenomenons"],
         height=1500,
         width=1500,
-        clustering=False,
+        clustering=True,
     )
 
     bourdieu_fig.show()

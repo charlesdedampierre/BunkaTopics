@@ -230,8 +230,9 @@ class Bunka:
         width=1500,
         clustering=False,
         n_clusters=10,
+        display_percent=True,
     ) -> go.Figure:
-        fig = visualize_bourdieu(
+        fig, self.df_bourdieu = visualize_bourdieu(
             self.model_hf,
             self.docs,
             x_left_words=x_left_words,
@@ -242,6 +243,7 @@ class Bunka:
             width=width,
             clustering=clustering,
             n_clusters=n_clusters,
+            display_percent=display_percent,
         )
 
         return fig

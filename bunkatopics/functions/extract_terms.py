@@ -50,7 +50,7 @@ def extract_terms_df(
     include_types=["PERSON", "ORG"],
     language="en_core_web_sm",
 ):
-    lang = textacy.load_spacy_lang(language, disable=())
+    load_lang = textacy.load_spacy_lang(language, disable=())
 
     def extract_terms(
         tuple,  # (index, text)
@@ -73,7 +73,7 @@ def extract_terms_df(
         if remove_punctuation == True:
             prepro_text = textacy.preprocessing.remove.punctuation(prepro_text)
 
-        doc = textacy.make_spacy_doc(prepro_text, lang=lang)
+        doc = textacy.make_spacy_doc(prepro_text, lang=load_lang)
 
         terms = []
 
@@ -139,6 +139,7 @@ def extract_terms_df(
     sentences = data[text_var].to_list()
     indexes = data[index_var].to_list()
     inputs = [(x, y) for x, y in zip(indexes, sentences)]
+
     # else:
     res = list(
         tqdm(

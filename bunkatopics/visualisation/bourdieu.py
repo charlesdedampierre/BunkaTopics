@@ -8,6 +8,7 @@ import plotly.express as px
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 from bunkatopics.functions.topics import topic_modeling
 from bunkatopics.functions.topic_representation import remove_overlapping_terms
+import plotly.graph_objects as go
 
 
 def get_continuum(
@@ -16,7 +17,7 @@ def get_continuum(
     cont_name="emotion",
     left_words=["hate", "pain"],
     right_words=["love", "good"],
-) -> pd.DataFrame:
+):
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_emb = df_docs[["doc_id", "embedding"]]
     df_emb = df_emb.set_index("doc_id")
@@ -79,6 +80,7 @@ def visualize_bourdieu(
     width=1500,
     clustering=True,
     n_clusters=5,
+    display_percent=True,
 ):
     # Reset
     for doc in docs:
@@ -270,4 +272,69 @@ def visualize_bourdieu(
                 opacity=1,
             )
 
-    return fig
+    if display_percent:
+        # Calculate the percentage for every box
+        label_size_ratio = 20
+        opacity = 0.4
+        case1_count = len(df_fig[(df_fig["cont1"] < 0) & (df_fig["cont2"] < 0)])
+        total_count = len(df_fig)
+        case1_percentage = str(round((case1_count / total_count) * 100, 1)) + "%"
+
+        fig.add_annotation(
+            x=-0.5,
+            y=-0.5,
+            text=case1_percentage,
+            font=dict(
+                family="Courier New, monospace",
+                size=width / label_size_ratio,
+                color="grey",
+            ),
+            opacity=opacity,
+        )
+
+        case2_count = len(df_fig[(df_fig["cont1"] < 0) & (df_fig["cont2"] > 0)])
+        case2_percentage = str(round((case2_count / total_count) * 100, 1)) + "%"
+
+        fig.add_annotation(
+            x=-0.5,
+            y=0.5,
+            text=case2_percentage,
+            font=dict(
+                family="Courier New, monospace",
+                size=width / label_size_ratio,
+                color="grey",
+            ),
+            opacity=opacity,
+        )
+
+        case3_count = len(df_fig[(df_fig["cont1"] > 0) & (df_fig["cont2"] < 0)])
+        case3_percentage = str(round((case3_count / total_count) * 100, 1)) + "%"
+
+        fig.add_annotation(
+            x=0.5,
+            y=-0.5,
+            text=case3_percentage,
+            font=dict(
+                family="Courier New, monospace",
+                size=width / label_size_ratio,
+                color="grey",
+            ),
+            opacity=opacity,
+        )
+
+        case4_count = len(df_fig[(df_fig["cont1"] > 0) & (df_fig["cont2"] > 0)])
+        case4_percentage = str(round((case4_count / total_count) * 100, 1)) + "%"
+
+        fig.add_annotation(
+            x=0.5,
+            y=0.5,
+            text=case4_percentage,
+            font=dict(
+                family="Courier New, monospace",
+                size=width / label_size_ratio,
+                color="grey",
+            ),
+            opacity=opacity,
+        )
+
+    return fig, df_bourdieu

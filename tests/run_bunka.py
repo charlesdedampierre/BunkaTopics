@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("../")
+
 from bunkatopics import Bunka
 from langchain.embeddings import HuggingFaceEmbeddings
 from sklearn.datasets import fetch_20newsgroups

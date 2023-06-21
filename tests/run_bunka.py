@@ -16,8 +16,9 @@ if __name__ == "__main__":
     full_docs = random.sample(full_docs, 1000)
     full_docs = [x for x in full_docs if len(x) >= 50]  # Minimum lenght of texts
 
-    # bunka = Bunka(model_hf=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"))
-    bunka = Bunka()
+    # bunka = Bunka()
+
+    bunka = Bunka(model_hf=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"))
 
     bunka.fit(full_docs)
     df_topics = bunka.get_topics(n_clusters=8)
@@ -36,4 +37,19 @@ if __name__ == "__main__":
         display_percent=True,
     )
 
+    dimensions = [
+        "Happiness",
+        "Sadness",
+        "Anger",
+        "Love",
+        "Surprise",
+        "Fear",
+        "Excitement",
+        "Disgust",
+        "Confusion",
+        "Gratitude",
+    ]
+    dimension_fig = bunka.get_dimensions(dimensions=dimensions, height=1500, width=1500)
+
     bourdieu_fig.show()
+    dimension_fig.show()

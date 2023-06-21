@@ -18,6 +18,7 @@ gensim = "^4.3.1"
 instructorembedding = "^1.0.1"
 torch = "^2.0.1"
 sentence-transformers = "^2.2.2"
+jupyterlab = "^4.0.2"
 
 
 [build-system]

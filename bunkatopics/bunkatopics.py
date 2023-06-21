@@ -22,6 +22,9 @@ from .functions.coherence import get_coherence
 from .functions.search import vector_search
 import uuid
 import typing as t
+from tqdm import tqdm
+from sklearn.preprocessing import MinMaxScaler
+import plotly.express as px
 
 import os
 
@@ -249,4 +252,43 @@ class Bunka:
 
     def visualize_topics(self, width=1000, height=1000) -> go.Figure:
         fig = visualize_topics(self.docs, self.topics, width=width, height=height)
+        return fig
+
+    def get_dimensions(
+        self, dimensions: t.List[str], width=500, height=500, template="plotly_dark"
+    ) -> go.Figure:
+        final_df = []
+        logger.info("Computing Similarities")
+        scaler = MinMaxScaler()
+        for dim in tqdm(dimensions):
+            df_search = self.search(dim)
+            df_search["score"] = scaler.fit_transform(
+                df_search[["cosine_similarity_score"]]
+            )
+            df_search["source"] = dim
+            final_df.append(df_search)
+        final_df = pd.concat([x for x in final_df])
+
+        final_df_mean = (
+            final_df.groupby("source")["score"]
+            .mean()
+            .rename("mean_score")
+            .reset_index()
+        )
+        final_df_mean = final_df_mean.sort_values(
+            "mean_score", ascending=True
+        ).reset_index(drop=True)
+        final_df_mean["rank"] = final_df_mean.index + 1
+
+        self.df_dimensions = final_df_mean
+
+        fig = px.line_polar(
+            final_df_mean,
+            r="mean_score",
+            theta="source",
+            line_close=True,
+            template=template,
+            width=width,
+            height=height,
+        )
         return fig

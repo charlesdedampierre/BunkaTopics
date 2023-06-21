@@ -123,7 +123,7 @@ class Bunka:
         self.docs = docs
         self.terms = terms
 
-    def get_topics(self, n_clusters=40, ngrams=[1, 2]):
+    def get_topics(self, n_clusters=40, ngrams=[1, 2], name_lenght=15):
         clustering_model = KMeans(n_clusters=n_clusters)
         df_embeddings_2D = pd.DataFrame(
             {
@@ -146,7 +146,6 @@ class Bunka:
         for doc in self.docs:
             doc.topic_id = topic_doc_dict.get(doc.doc_id, [])
 
-        name_lenght = 15
         df_terms = pd.DataFrame.from_records([term.dict() for term in self.terms])
         df_terms = df_terms.sort_values("count_terms", ascending=False)
         df_terms = df_terms.head(1000)
@@ -165,12 +164,12 @@ class Bunka:
         df_topics_rep = (
             df_topics_rep.groupby("topic_id")["term_id"].apply(list).reset_index()
         )
-        df_topics_rep["name"] = df_topics_rep["term_id"].apply(
-            lambda x: x[:name_lenght]
-        )
+        df_topics_rep["name"] = df_topics_rep["term_id"].apply(lambda x: x[:100])
         df_topics_rep["name"] = df_topics_rep["name"].apply(
             lambda x: remove_overlapping_terms(x)
         )
+
+        df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: x[:name_lenght])
         df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: " | ".join(x))
 
         topics = [Topic(**x) for x in df_topics_rep.to_dict(orient="records")]
@@ -205,9 +204,9 @@ class Bunka:
         res = vector_search(self.docs, self.model_hf, user_input=user_input)
         return res
 
-    def get_topic_coherence(self):
+    def get_topic_coherence(self, topic_terms_n=10):
         texts = [doc.term_id for doc in self.docs]
-        res = get_coherence(self.topics, texts)
+        res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
         return res
 
     def get_top_documents(self, top_docs=5) -> pd.DataFrame:

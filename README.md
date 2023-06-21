@@ -127,6 +127,25 @@ The power of this visualisation is to constrain the axis by creating continuums 
 
 <img src="images/bourdieu.png" width="70%" height="70%" align="center" />
 
+```python
+
+dimension_fig = bunka.get_dimensions(dimensions=[
+                            "Happiness",
+                            "Sadness",
+                            "Anger",
+                            "Love",
+                            "Surprise",
+                            "Fear",
+                            "Excitement",
+                            "Disgust",
+                            "Confusion",
+                            "Gratitude",
+                        ])
+
+```
+
+<img src="images/dimensions.png" width="50%" height="50%" align="center" />
+
 ## Multilanguage
 
 The package use Spacy to extract meaningfull terms for the topic represenation.

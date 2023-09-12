@@ -43,6 +43,8 @@ class Topic(BaseModel):
     x_centroid: t.Optional[float] = None
     y_centroid: t.Optional[float] = None
     size: t.Optional[int] = None
+    top_doc_id: t.Optional[t.List[DOC_ID]] = None
+    top_term_id: t.Optional[t.List[TERM_ID]] = None
 
 
 class Term(BaseModel):

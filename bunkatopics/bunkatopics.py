@@ -17,6 +17,7 @@ from .visualisation.topic_visualization import visualize_topics
 from .functions.extract_terms import extract_terms_df
 from .functions.topic_representation import remove_overlapping_terms
 from .functions.utils import specificity
+from .functions.topic_gen_representation import get_df_prompt, get_clean_topics
 
 from .functions.coherence import get_coherence
 from .functions.search import vector_search
@@ -74,7 +75,7 @@ class Bunka:
             drop_emoji=True,
             ngrams=(1, 2, 3),
             remove_punctuation=True,
-            include_pos=["NOUN", "PROPN", "ADJ"],
+            include_pos=["NOUN"],
             include_types=["PERSON", "ORG"],
             language=self.language,
         )
@@ -198,6 +199,24 @@ class Bunka:
 
         return df_topics
 
+    def get_clean_topic_name(self, openai_key: str):
+        """
+
+        Get the topic name using Generative AI
+
+        """
+        df_prompt = get_df_prompt(self)
+        df_clean = get_clean_topics(df_prompt, openai_key=openai_key)
+
+        topics = list(df_clean["topic_id"])
+        names = list(df_clean["topic_gen_name"])
+        dict_topic_gen_name = {x: y for x, y in zip(topics, names)}
+
+        for topic in self.topics:
+            topic.name = dict_topic_gen_name.get(topic.topic_id, [])
+
+        return df_clean
+
     def fit_transform(self, docs, n_clusters=40):
         self.fit(docs)
         df_topics = self.get_topics(n_clusters=n_clusters)
@@ -212,10 +231,16 @@ class Bunka:
         res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
         return res
 
-    def get_top_documents(self, top_docs=5) -> pd.DataFrame:
+    def get_top_documents(self, top_docs=5, ranking_terms=20) -> pd.DataFrame:
         res = get_top_documents(
-            self.docs, self.topics, ranking_terms=20, top_docs=top_docs
+            self.docs, self.topics, ranking_terms=ranking_terms, top_docs=top_docs
         )
+        df_top_doc = res.groupby("topic_id")["doc_id"].apply(lambda x: list(x))
+        top_doc_topic_dict = df_top_doc.to_dict()
+
+        for topic in self.topics:
+            topic.top_doc_id = top_doc_topic_dict.get(topic.topic_id, [])
+
         return res
 
     def get_topic_repartition(self, width=1200, height=800) -> go.Figure:
@@ -250,8 +275,10 @@ class Bunka:
 
         return fig
 
-    def visualize_topics(self, width=1000, height=1000) -> go.Figure:
-        fig = visualize_topics(self.docs, self.topics, width=width, height=height)
+    def visualize_topics(self, add_scatter=False, width=1000, height=1000) -> go.Figure:
+        fig = visualize_topics(
+            self.docs, self.topics, width=width, height=height, add_scatter=add_scatter
+        )
         return fig
 
     def get_dimensions(
@@ -259,7 +286,7 @@ class Bunka:
     ) -> go.Figure:
         final_df = []
         logger.info("Computing Similarities")
-        scaler = MinMaxScaler()
+        scaler = MinMaxScaler(feature_range=(0, 1))
         for dim in tqdm(dimensions):
             df_search = self.search(dim)
             df_search["score"] = scaler.fit_transform(

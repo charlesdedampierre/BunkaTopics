@@ -35,5 +35,6 @@ def get_top_documents(
     df_topics = df_topics[["topic_id", "name"]]
 
     df_rank = pd.merge(df_rank, df_topics, on="topic_id")
+    df_rank = df_rank.groupby(["topic_id"]).head(top_docs)
 
     return df_rank

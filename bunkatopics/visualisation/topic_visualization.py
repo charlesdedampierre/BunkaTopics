@@ -8,7 +8,11 @@ import typing as t
 
 
 def visualize_topics(
-    docs: t.List[Document], topics: t.List[Topic], width=1000, height=1000
+    docs: t.List[Document],
+    topics: t.List[Topic],
+    add_scatter=False,
+    width=1000,
+    height=1000,
 ):
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     try:
@@ -63,20 +67,21 @@ def visualize_topics(
     nk[:, 1] = np.array(docs_content_plotly).reshape(-1, 1)
     # nk[:, 2] = np.array(sizes).reshape(-1, 1)
 
-    # Add points with information
-    fig_density.add_trace(
-        go.Scatter(
-            x=docs_x,
-            y=docs_y,
-            mode="markers",
-            # marker=dict(size=sizes, color=colors),
-            # marker=dict(color="#000000"),
-            customdata=nk,
-            hovertemplate="<br><b>TOPIC</b>: %{customdata[0]}<br>"
-            + "<br><b>TEXT</b>: %{customdata[1]}<br>"
-            + "<br><b>SCORE</b>: %{customdata[2]}<br>",
+    if add_scatter is True:
+        # Add points with information
+        fig_density.add_trace(
+            go.Scatter(
+                x=docs_x,
+                y=docs_y,
+                mode="markers",
+                # marker=dict(size=sizes, color=colors),
+                # marker=dict(color="#000000"),
+                customdata=nk,
+                hovertemplate="<br><b>TOPIC</b>: %{customdata[0]}<br>"
+                + "<br><b>TEXT</b>: %{customdata[1]}<br>"
+                + "<br><b>SCORE</b>: %{customdata[2]}<br>",
+            )
         )
-    )
 
     # Add centroids labels
     for x, y, label in zip(topics_x, topics_y, topics_name_plotly):

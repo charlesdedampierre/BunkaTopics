@@ -9,6 +9,9 @@ from langchain.embeddings import HuggingFaceInstructEmbeddings
 from bunkatopics.functions.topics import topic_modeling
 from bunkatopics.functions.topic_representation import remove_overlapping_terms
 import plotly.graph_objects as go
+from sklearn.preprocessing import MinMaxScaler
+
+pd.options.mode.chained_assignment = None
 
 
 def get_continuum(
@@ -128,11 +131,13 @@ def visualize_bourdieu(
         for x in new_docs
     ]
 
-    df_content = [{"doc_id": x.doc_id, "content": x.content} for x in new_docs]
-    df_content = pd.DataFrame(df_content)
-
     df_bourdieu = pd.DataFrame(df_bourdieu)
     df_bourdieu = df_bourdieu.explode(["coordinates", "names"])
+
+    # Filter with only the top and bottom data to avoid getting results too far form the continnuums
+
+    df_content = [{"doc_id": x.doc_id, "content": x.content} for x in new_docs]
+    df_content = pd.DataFrame(df_content)
 
     df_fig = df_bourdieu[["doc_id", "coordinates", "names"]]
     df_fig = df_fig.pivot(index="doc_id", columns="names", values="coordinates")
@@ -233,6 +238,7 @@ def visualize_bourdieu(
             doc_id: {"x": x_val, "y": y_val}
             for doc_id, x_val, y_val in zip(doc_ids, x, y)
         }
+
         dict_doc_terms = {
             doc_id: {"term_id": term} for doc_id, term in zip(doc_ids, docs_terms)
         }

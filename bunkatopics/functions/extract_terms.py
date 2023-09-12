@@ -46,7 +46,7 @@ def extract_terms_df(
     drop_emoji=True,
     ngrams=(2, 2),
     remove_punctuation=True,
-    include_pos=["NOUN", "PROPN", "ADJ"],
+    include_pos=["NOUN"],
     include_types=["PERSON", "ORG"],
     language="en_core_web_sm",
 ):

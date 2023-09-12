@@ -60,15 +60,15 @@ poetry shell
 
 ## Quick Start
 
-We start by extracting topics from the well-known 20 newsgroups dataset containing English documents:
+We start by extracting topics from the Twitter Trump Dataset:
 
 ```python
 from bunkatopics import Bunka
-from sklearn.datasets import fetch_20newsgroups
 import random
- 
-full_docs = fetch_20newsgroups(subset='all',  remove=('headers', 'footers', 'quotes'))['data']
-full_docs_random = random.sample(full_docs, 1000)
+from datasets import load_dataset
+
+dataset = load_dataset("rguo123/trump_tweets")['train']['content']
+full_docs = random.sample(dataset, 10000)
 
 ```
 
@@ -98,9 +98,18 @@ embedding_model = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-la
 bunka = Bunka(model_hf=embedding_model)
 
 bunka.fit(full_docs)
-df_topics = bunka.get_topics(n_clusters = 20)
+df_topics = bunka.get_topics(n_clusters = 8)
 
 ```
+
+Then, we can visualize
+
+```python
+topic_fig = bunka.visualize_topics( width=800, height=800)
+topic_fig
+```
+
+<img src="images/newsmap.png" width="70%" height="70%" align="center" />
 
 You can get the topics summarized by OpenAI
 
@@ -120,26 +129,19 @@ df_clean_names = bunka.get_clean_topic_name(openai_key = os.getenv("OPEN_AI_KEY"
 
 ```
 
-Then, we can visualize
-
-```python
-topic_fig = bunka.visualize_topics( width=800, height=800)
-topic_fig
-...
-```
+<img src="images/newsmap_clean.png" width="70%" height="70%" align="center" />
 
 The map display the different texts on a 2-Dimensional unsupervised scale. Every region of the map is a topic described by its most specific terms.
 
-<img src="images/newsmap.png" width="70%" height="70%" align="center" />
-
 ```python
 
-bourdieu_fig = bunka.visualize_bourdieu(x_left_words=["past"],
-                                        x_right_words=["future", "futuristic"],
-                                        y_top_words=["politics", "Government"],
-                                        y_bottom_words=["cultural phenomenons"],
-                                        height=2000,
-                                        width=2000)
+bourdieu_fig = bunka.visualize_bourdieu(x_left_words=["politics"],
+                                        x_right_words=["business"],
+                                        y_top_words=['promises'],
+                                        y_bottom_words=['threats'],
+                                        height=1000,
+                                        width=1000, 
+                                        clustering =False)
 ```  
 
 The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
@@ -200,6 +202,7 @@ Below, you will find an overview of common functions in BERTopic.
 | Fit the model and get the topics  |  `.fit_transform(docs)` |
 | Acces the topics   | `.get_topics(n_clusters=10)`  |
 | Access the top documents per topic    |  `.get_top_documents()` |
+| Access the top documents per topic    |  `.get_clean_topic_name()` |
 | Access the distribution of topics   |  `.get_topic_repartition()` |
 | Visualize the topics on a Map |  `.visualize_topics()` |
 | Visualize the topics on Natural Language Supervised axis | `.visualize_bourdieu()` |

@@ -99,6 +99,25 @@ bunka = Bunka(model_hf=embedding_model)
 
 bunka.fit(full_docs)
 df_topics = bunka.get_topics(n_clusters = 20)
+
+```
+
+You can get the topics summarized by OpenAI
+
+```python
+
+import openai
+import os
+from dotenv import load_dotenv
+load_dotenv()
+openai.api_key = os.getenv("OPEN_AI_KEY")
+
+# first compute top documents
+top_doc = bunka.get_top_documents(top_docs=5)
+
+# then compute the new topics
+df_clean_names = bunka.get_clean_topic_name(openai_key = os.getenv("OPEN_AI_KEY"))
+
 ```
 
 Then, we can visualize

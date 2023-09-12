@@ -13,6 +13,7 @@ def visualize_topics(
     add_scatter=False,
     width=1000,
     height=1000,
+    label_size_ratio=100,
 ):
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     try:
@@ -41,7 +42,6 @@ def visualize_topics(
     topics_y = [topic.y_centroid for topic in topics]
     topics_name = [topic.name for topic in topics]
     topics_name_plotly = [wrap_by_word(x, 6) for x in topics_name]
-    label_size_ratio = 100
 
     fig_density = go.Figure(
         go.Histogram2dContour(x=docs_x, y=docs_y, colorscale="delta", showscale=False)

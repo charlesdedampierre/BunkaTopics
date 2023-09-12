@@ -4,20 +4,14 @@ sys.path.append("../")
 
 from bunkatopics import Bunka
 from langchain.embeddings import HuggingFaceEmbeddings
-from sklearn.datasets import fetch_20newsgroups
 import random
+from datasets import load_dataset
 
 random.seed(42)
 
 if __name__ == "__main__":
-    full_docs = fetch_20newsgroups(
-        subset="all", remove=("headers", "footers", "quotes")
-    )["data"]
-    full_docs = random.sample(full_docs, 1000)
-    full_docs = [x for x in full_docs if len(x) >= 50]  # Minimum lenght of texts
-
-    # bunka = Bunka()
-
+    dataset = load_dataset("CShorten/ML-ArXiv-Papers")["train"]["title"]
+    full_docs = random.sample(dataset, 500)
     bunka = Bunka(model_hf=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"))
 
     bunka.fit(full_docs)
@@ -29,13 +23,16 @@ if __name__ == "__main__":
     bourdieu_fig = bunka.visualize_bourdieu(
         x_left_words=["joy"],
         x_right_words=["fear"],
-        y_top_words=["local politics"],
-        y_bottom_words=["international politics"],
+        y_top_words=["politics"],
+        y_bottom_words=["business"],
         height=1500,
         width=1500,
+        label_size_ratio_label=50,
         clustering=False,
         display_percent=True,
     )
+
+    bourdieu_fig.show()
 
     dimensions = [
         "Happiness",
@@ -51,5 +48,4 @@ if __name__ == "__main__":
     ]
     dimension_fig = bunka.get_dimensions(dimensions=dimensions, height=1500, width=1500)
 
-    bourdieu_fig.show()
     dimension_fig.show()

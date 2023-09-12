@@ -258,6 +258,7 @@ class Bunka:
         clustering=False,
         n_clusters=10,
         display_percent=True,
+        label_size_ratio_label=50,
     ) -> go.Figure:
         fig, self.df_bourdieu = visualize_bourdieu(
             self.model_hf,
@@ -271,13 +272,21 @@ class Bunka:
             clustering=clustering,
             n_clusters=n_clusters,
             display_percent=display_percent,
+            label_size_ratio_label=label_size_ratio_label,
         )
 
         return fig
 
-    def visualize_topics(self, add_scatter=False, width=1000, height=1000) -> go.Figure:
+    def visualize_topics(
+        self, add_scatter=False, label_size_ratio=100, width=1000, height=1000
+    ) -> go.Figure:
         fig = visualize_topics(
-            self.docs, self.topics, width=width, height=height, add_scatter=add_scatter
+            self.docs,
+            self.topics,
+            width=width,
+            height=height,
+            add_scatter=add_scatter,
+            label_size_ratio=label_size_ratio,
         )
         return fig
 

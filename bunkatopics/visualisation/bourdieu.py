@@ -84,6 +84,7 @@ def visualize_bourdieu(
     clustering=True,
     n_clusters=5,
     display_percent=True,
+    label_size_ratio_label=50,
 ):
     # Reset
     for doc in docs:
@@ -193,6 +194,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="right",
                 yanchor="top",
+                font=dict(size=width / label_size_ratio_label),
             ),
             dict(
                 x=0,
@@ -203,6 +205,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="left",
                 yanchor="bottom",
+                font=dict(size=width / label_size_ratio_label),
             ),
             dict(
                 x=1,
@@ -213,6 +216,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="right",
                 yanchor="top",
+                font=dict(size=width / label_size_ratio_label),
             ),
             dict(
                 x=-1,
@@ -223,6 +227,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="left",
                 yanchor="bottom",
+                font=dict(size=width / label_size_ratio_label),
             ),
         ]
     )
@@ -259,7 +264,7 @@ def visualize_bourdieu(
         topics_x = list(df_topics["x_centroid"])
         topics_y = list(df_topics["y_centroid"])
         topics_name_plotly = list(df_topics["name_plotly"])
-        label_size_ratio = 100
+        label_size_ratio_clusters = 100
 
         for x, y, label in zip(topics_x, topics_y, topics_name_plotly):
             fig.add_annotation(
@@ -268,7 +273,7 @@ def visualize_bourdieu(
                 text=label,
                 font=dict(
                     family="Courier New, monospace",
-                    size=width / label_size_ratio,
+                    size=width / label_size_ratio_clusters,
                     color="red",
                 ),
                 bordercolor="#c7c7c7",
@@ -280,7 +285,7 @@ def visualize_bourdieu(
 
     if display_percent:
         # Calculate the percentage for every box
-        label_size_ratio = 20
+        label_size_ratio_percent = 20
         opacity = 0.4
         case1_count = len(df_fig[(df_fig["cont1"] < 0) & (df_fig["cont2"] < 0)])
         total_count = len(df_fig)
@@ -292,7 +297,7 @@ def visualize_bourdieu(
             text=case1_percentage,
             font=dict(
                 family="Courier New, monospace",
-                size=width / label_size_ratio,
+                size=width / label_size_ratio_percent,
                 color="grey",
             ),
             opacity=opacity,
@@ -307,7 +312,7 @@ def visualize_bourdieu(
             text=case2_percentage,
             font=dict(
                 family="Courier New, monospace",
-                size=width / label_size_ratio,
+                size=width / label_size_ratio_percent,
                 color="grey",
             ),
             opacity=opacity,
@@ -322,7 +327,7 @@ def visualize_bourdieu(
             text=case3_percentage,
             font=dict(
                 family="Courier New, monospace",
-                size=width / label_size_ratio,
+                size=width / label_size_ratio_percent,
                 color="grey",
             ),
             opacity=opacity,
@@ -337,7 +342,7 @@ def visualize_bourdieu(
             text=case4_percentage,
             font=dict(
                 family="Courier New, monospace",
-                size=width / label_size_ratio,
+                size=width / label_size_ratio_percent,
                 color="grey",
             ),
             opacity=opacity,

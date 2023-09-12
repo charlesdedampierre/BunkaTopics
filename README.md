@@ -63,7 +63,7 @@ poetry shell
 We start by extracting topics from the well-known 20 newsgroups dataset containing English documents:
 
 ```python
-from bunkatopics import bunkatopics
+from bunkatopics import Bunka
 from sklearn.datasets import fetch_20newsgroups
 import random
  

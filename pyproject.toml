@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bunkatopics"
-version = "0.38"
+version = "0.39"
 description = "Advanced Topic Visualization"
 authors = ["Charles De Dampierre <charles.de-dampierre@hec.edu>"]
 readme = "README.md"
@@ -19,6 +19,11 @@ instructorembedding = "^1.0.1"
 torch = "^2.0.1"
 sentence-transformers = "^2.2.2"
 jupyterlab = "^4.0.2"
+openai = "^0.28.0"
+dotenv = "^0.0.5"
+python-dotenv = "^1.0.0"
+matplotlib = "^3.7.2"
+datasets = "^2.14.5"
 
 
 [build-system]

@@ -13,7 +13,8 @@ def get_coherence(
 ):
     word2id = Dictionary(texts)
     # topics_terms = [topic.term_id[:topic_terms_n] for topic in topics]
-    topics_terms = [topic.name.split(" | ")[:topic_terms_n] for topic in topics]
+    # topics_terms = [topic.name.split(" | ")[:topic_terms_n] for topic in topics]
+    topics_terms = [x.term_id[:topic_terms_n] for x in topics]
 
     cm = CoherenceModel(
         topics=topics_terms, texts=texts, coherence=coherence_type, dictionary=word2id

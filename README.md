@@ -115,16 +115,16 @@ You can get the topics summarized by OpenAI
 
 ```python
 
-import openai
-import os
-from dotenv import load_dotenv
-load_dotenv()
-openai.api_key = os.getenv("OPEN_AI_KEY")
 
 # first compute top documents
 top_doc = bunka.get_top_documents(top_docs=5)
 
-# then compute the new topics
+
+# then compute the new topics and insert the key
+import os
+from dotenv import load_dotenv
+load_dotenv() # you can add the key to your environment and load it that way
+
 df_clean_names = bunka.get_clean_topic_name(openai_key = os.getenv("OPEN_AI_KEY"))
 
 ```

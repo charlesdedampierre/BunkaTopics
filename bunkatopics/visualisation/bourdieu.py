@@ -20,6 +20,7 @@ def get_continuum(
     cont_name="emotion",
     left_words=["hate", "pain"],
     right_words=["love", "good"],
+    scale=False,
 ):
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_emb = df_docs[["doc_id", "embedding"]]
@@ -55,8 +56,9 @@ def get_continuum(
     df_bert = df_bert.rename(columns={"index": "doc_id"})
     final_df = pd.merge(df_bert, df_docs[["doc_id", "content"]], on="doc_id")
 
-    scaler = MinMaxScaler(feature_range=(-1, 1))
-    final_df[["distance"]] = scaler.fit_transform(final_df[["distance"]])
+    if scale:
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+        final_df[["distance"]] = scaler.fit_transform(final_df[["distance"]])
 
     final_df = final_df.set_index("doc_id")
     final_df = final_df[["distance"]]
@@ -85,6 +87,7 @@ def visualize_bourdieu(
     n_clusters=5,
     display_percent=True,
     label_size_ratio_label=50,
+    topic_terms=2,
 ):
     # Reset
     for doc in docs:
@@ -187,7 +190,7 @@ def visualize_bourdieu(
         annotations=[
             dict(
                 x=0,
-                y=1,
+                y=max(df_fig[y_axis_name]),
                 xref="x",
                 yref="y",
                 text=y_top_words,
@@ -198,7 +201,7 @@ def visualize_bourdieu(
             ),
             dict(
                 x=0,
-                y=-1,
+                y=min(df_fig[y_axis_name]),
                 xref="x",
                 yref="y",
                 text=y_bottom_words,
@@ -208,7 +211,7 @@ def visualize_bourdieu(
                 font=dict(size=width / label_size_ratio_label),
             ),
             dict(
-                x=1,
+                x=max(df_fig[x_axis_name]),
                 y=0,
                 xref="x",
                 yref="y",
@@ -219,7 +222,7 @@ def visualize_bourdieu(
                 font=dict(size=width / label_size_ratio_label),
             ),
             dict(
-                x=-1,
+                x=min(df_fig[x_axis_name]),
                 y=0,
                 xref="x",
                 yref="y",
@@ -253,8 +256,12 @@ def visualize_bourdieu(
             n_clusters=n_clusters,
         )
 
+        #### Add Convex Hull
+        ### Get top_documments
+        ### Rename Topics GPT
+
         df_topics = pd.DataFrame(dict_topics).T
-        df_topics["name"] = df_topics["term_id"].apply(lambda x: x[:5])
+        df_topics["name"] = df_topics["term_id"].apply(lambda x: x[:topic_terms])
         df_topics["name"] = df_topics["name"].apply(
             lambda x: remove_overlapping_terms(x)
         )
@@ -285,6 +292,7 @@ def visualize_bourdieu(
 
     if display_percent:
         # Calculate the percentage for every box
+
         label_size_ratio_percent = 20
         opacity = 0.4
         case1_count = len(df_fig[(df_fig["cont1"] < 0) & (df_fig["cont2"] < 0)])
@@ -292,8 +300,8 @@ def visualize_bourdieu(
         case1_percentage = str(round((case1_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=-0.5,
-            y=-0.5,
+            x=min(df_fig[x_axis_name]),
+            y=min(df_fig[y_axis_name]),
             text=case1_percentage,
             font=dict(
                 family="Courier New, monospace",
@@ -307,8 +315,8 @@ def visualize_bourdieu(
         case2_percentage = str(round((case2_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=-0.5,
-            y=0.5,
+            x=min(df_fig[x_axis_name]),
+            y=max(df_fig[y_axis_name]),
             text=case2_percentage,
             font=dict(
                 family="Courier New, monospace",
@@ -322,8 +330,8 @@ def visualize_bourdieu(
         case3_percentage = str(round((case3_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=0.5,
-            y=-0.5,
+            x=max(df_fig[x_axis_name]),
+            y=min(df_fig[y_axis_name]),
             text=case3_percentage,
             font=dict(
                 family="Courier New, monospace",
@@ -337,8 +345,8 @@ def visualize_bourdieu(
         case4_percentage = str(round((case4_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=0.5,
-            y=0.5,
+            x=max(df_fig[x_axis_name]),
+            y=max(df_fig[y_axis_name]),
             text=case4_percentage,
             font=dict(
                 family="Courier New, monospace",

@@ -3,6 +3,7 @@ import typing as t
 from sklearn.cluster import KMeans
 import pandas as pd
 from bunkatopics.functions.utils import specificity
+from bunkatopics.datamodel import Topic, Document
 
 
 def topic_modeling(

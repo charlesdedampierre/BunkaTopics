@@ -1,6 +1,8 @@
 import pandas as pd
 import openai
 from tqdm import tqdm
+from bunkatopics.datamodel import Topic, Document
+import typing as t
 
 
 # System prompt describes information given to all conversations
@@ -33,7 +35,9 @@ Make sure you to only return the label and nothing more.
 """
 
 
-def get_clean_topics(df_for_prompt, openai_key):
+def get_clean_topics(
+    df_for_prompt: pd.DataFrame, topics: t.List[Topic], openai_key: str
+) -> t.List[Topic]:
     openai.api_key = openai_key
     keywords_list = list(df_for_prompt["keywords"])
 
@@ -57,7 +61,15 @@ def get_clean_topics(df_for_prompt, openai_key):
             final.append({"topic_id": topic_id, "topic_gen_name": "ERROR"})
 
     df_final = pd.DataFrame(final)
-    return df_final
+
+    topic_ids = list(df_final["topic_id"])
+    names = list(df_final["topic_gen_name"])
+    dict_topic_gen_name = {x: y for x, y in zip(topic_ids, names)}
+
+    for topic in topics:
+        topic.name = dict_topic_gen_name.get(topic.topic_id, [])
+
+    return topics
 
 
 def get_results_from_gpt(prompt):
@@ -76,15 +88,15 @@ def get_results_from_gpt(prompt):
     return res
 
 
-def get_df_prompt(bunka) -> pd.DataFrame:
+def get_df_prompt(topics: t.List[Topic], docs: t.List[Document]) -> pd.DataFrame:
     """
     get a dataframe to input the prompt
 
 
     """
     df_for_prompt = {
-        "topic_id": [x.topic_id for x in bunka.topics],
-        "doc_id": [x.top_doc_id for x in bunka.topics],
+        "topic_id": [x.topic_id for x in topics],
+        "doc_id": [x.top_doc_id for x in topics],
     }
 
     df_for_prompt = pd.DataFrame(df_for_prompt)
@@ -92,8 +104,8 @@ def get_df_prompt(bunka) -> pd.DataFrame:
 
     df_doc = pd.DataFrame(
         {
-            "doc_id": [x.doc_id for x in bunka.docs],
-            "content": [x.content for x in bunka.docs],
+            "doc_id": [x.doc_id for x in docs],
+            "content": [x.content for x in docs],
         }
     )
 
@@ -104,8 +116,8 @@ def get_df_prompt(bunka) -> pd.DataFrame:
 
     df_keywords = pd.DataFrame(
         {
-            "topic_id": [x.topic_id for x in bunka.topics],
-            "keywords": [x.name.split(" | ") for x in bunka.topics],
+            "topic_id": [x.topic_id for x in topics],
+            "keywords": [x.name.split(" | ") for x in topics],
         }
     )
 

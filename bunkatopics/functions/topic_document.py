@@ -5,7 +5,7 @@ import pandas as pd
 
 def get_top_documents(
     docs: t.List[Document], topics: t.List[Topic], ranking_terms=20, top_docs=5
-) -> pd.DataFrame:
+) -> t.List[Topic]:
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_docs = df_docs[["doc_id", "topic_id", "term_id"]]
     df_docs = df_docs.explode("term_id").reset_index(drop=True)
@@ -37,4 +37,10 @@ def get_top_documents(
     df_rank = pd.merge(df_rank, df_topics, on="topic_id")
     df_rank = df_rank.groupby(["topic_id"]).head(top_docs)
 
-    return df_rank
+    df_top_doc = df_rank.groupby("topic_id")["doc_id"].apply(lambda x: list(x))
+    top_doc_topic_dict = df_top_doc.to_dict()
+
+    for topic in topics:
+        topic.top_doc_id = top_doc_topic_dict.get(topic.topic_id, [])
+
+    return topics

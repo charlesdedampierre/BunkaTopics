@@ -115,11 +115,6 @@ You can get the topics summarized by OpenAI
 
 ```python
 
-
-# first compute top documents
-top_doc = bunka.get_top_documents(top_docs=5)
-
-
 # then compute the new topics and insert the key
 import os
 from dotenv import load_dotenv

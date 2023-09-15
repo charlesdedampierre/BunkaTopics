@@ -18,6 +18,7 @@ from .functions.extract_terms import extract_terms_df
 from .functions.topic_representation import remove_overlapping_terms
 from .functions.utils import specificity
 from .functions.topic_gen_representation import get_df_prompt, get_clean_topics
+from .functions.topics_modeling import get_topics
 
 from .functions.coherence import get_coherence
 from .functions.search import vector_search
@@ -127,76 +128,26 @@ class Bunka:
         self.docs = docs
         self.terms = terms
 
-    def get_topics(self, n_clusters=40, ngrams=[1, 2], name_lenght=15):
-        clustering_model = KMeans(n_clusters=n_clusters)
-        df_embeddings_2D = pd.DataFrame(
-            {
-                "doc_id": [doc.doc_id for doc in self.docs],
-                "x": [doc.x for doc in self.docs],
-                "y": [doc.y for doc in self.docs],
-            }
+    def fit_transform(self, docs, n_clusters=40):
+        self.fit(docs)
+        df_topics = self.get_topics(n_clusters=n_clusters)
+        return df_topics
+
+    def get_topics(self, n_clusters=5, ngrams=[1, 2], name_lenght=15):
+        self.topics = get_topics(
+            docs=self.docs,
+            terms=self.terms,
+            n_clusters=n_clusters,
+            ngrams=ngrams,
+            name_lenght=name_lenght,
+            x_column="x",
+            y_column="y",
         )
 
-        df_embeddings_2D = df_embeddings_2D.set_index("doc_id")
-
-        df_embeddings_2D["topic_number"] = clustering_model.fit(
-            df_embeddings_2D
-        ).labels_.astype(str)
-
-        df_embeddings_2D["topic_id"] = "bt" + "-" + df_embeddings_2D["topic_number"]
-
-        # insert into the documents
-        topic_doc_dict = df_embeddings_2D["topic_id"].to_dict()
-        for doc in self.docs:
-            doc.topic_id = topic_doc_dict.get(doc.doc_id, [])
-
-        df_terms = pd.DataFrame.from_records([term.dict() for term in self.terms])
-        df_terms = df_terms.sort_values("count_terms", ascending=False)
-        df_terms = df_terms.head(1000)
-        df_terms = df_terms[df_terms["ngrams"].isin(ngrams)]
-
-        df_terms_indexed = pd.DataFrame.from_records([doc.dict() for doc in self.docs])
-        df_terms_indexed = df_terms_indexed[["doc_id", "term_id", "topic_id"]]
-        df_terms_indexed = df_terms_indexed.explode("term_id").reset_index(drop=True)
-
-        df_terms_topics = pd.merge(df_terms, df_terms_indexed, on="term_id")
-
-        terms_type = "term_id"
-        df_topics_rep = specificity(
-            df_terms_topics, X="topic_id", Y=terms_type, Z=None, top_n=500
+        self.topics = get_top_documents(
+            self.docs, self.topics, ranking_terms=20, top_docs=5
         )
-        df_topics_rep = (
-            df_topics_rep.groupby("topic_id")["term_id"].apply(list).reset_index()
-        )
-        df_topics_rep["name"] = df_topics_rep["term_id"].apply(lambda x: x[:100])
-        df_topics_rep["name"] = df_topics_rep["name"].apply(
-            lambda x: remove_overlapping_terms(x)
-        )
-
-        df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: x[:name_lenght])
-        df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: " | ".join(x))
-
-        topics = [Topic(**x) for x in df_topics_rep.to_dict(orient="records")]
-
-        df_topics_docs = pd.DataFrame.from_records([doc.dict() for doc in self.docs])
-        df_topics_docs = df_topics_docs[["doc_id", "x", "y", "topic_id"]]
-        df_topics_docs = df_topics_docs.groupby("topic_id").agg(
-            size=("doc_id", "count"), x_centroid=("x", "mean"), y_centroid=("y", "mean")
-        )
-
-        topic_dict = df_topics_docs[["size", "x_centroid", "y_centroid"]].to_dict(
-            "index"
-        )
-
-        # Update the documents with the x and y values from the DataFrame
-        for topic in topics:
-            topic.size = topic_dict[topic.topic_id]["size"]
-            topic.x_centroid = topic_dict[topic.topic_id]["x_centroid"]
-            topic.y_centroid = topic_dict[topic.topic_id]["y_centroid"]
-
-        self.topics = topics
-        df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
-
+        df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
         return df_topics
 
     def get_clean_topic_name(self, openai_key: str):
@@ -205,21 +156,13 @@ class Bunka:
         Get the topic name using Generative AI
 
         """
-        df_prompt = get_df_prompt(self)
-        df_clean = get_clean_topics(df_prompt, openai_key=openai_key)
 
-        topics = list(df_clean["topic_id"])
-        names = list(df_clean["topic_gen_name"])
-        dict_topic_gen_name = {x: y for x, y in zip(topics, names)}
+        df_prompt = get_df_prompt(topics=self.topics, docs=self.docs)
+        self.topics = get_clean_topics(
+            df_prompt, topics=self.topics, openai_key=openai_key
+        )
+        df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
 
-        for topic in self.topics:
-            topic.name = dict_topic_gen_name.get(topic.topic_id, [])
-
-        return df_clean
-
-    def fit_transform(self, docs, n_clusters=40):
-        self.fit(docs)
-        df_topics = self.get_topics(n_clusters=n_clusters)
         return df_topics
 
     def search(self, user_input: str):
@@ -229,18 +172,6 @@ class Bunka:
     def get_topic_coherence(self, topic_terms_n=10):
         texts = [doc.term_id for doc in self.docs]
         res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
-        return res
-
-    def get_top_documents(self, top_docs=5, ranking_terms=20) -> pd.DataFrame:
-        res = get_top_documents(
-            self.docs, self.topics, ranking_terms=ranking_terms, top_docs=top_docs
-        )
-        df_top_doc = res.groupby("topic_id")["doc_id"].apply(lambda x: list(x))
-        top_doc_topic_dict = df_top_doc.to_dict()
-
-        for topic in self.topics:
-            topic.top_doc_id = top_doc_topic_dict.get(topic.topic_id, [])
-
         return res
 
     def get_topic_repartition(self, width=1200, height=800) -> go.Figure:

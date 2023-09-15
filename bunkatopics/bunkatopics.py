@@ -257,6 +257,7 @@ class Bunka:
         width=1500,
         clustering=False,
         n_clusters=10,
+        topic_terms=2,
         display_percent=True,
         label_size_ratio_label=50,
     ) -> go.Figure:
@@ -273,6 +274,7 @@ class Bunka:
             n_clusters=n_clusters,
             display_percent=display_percent,
             label_size_ratio_label=label_size_ratio_label,
+            topic_terms=topic_terms,
         )
 
         return fig

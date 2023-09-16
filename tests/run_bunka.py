@@ -6,12 +6,21 @@ from bunkatopics import Bunka
 from langchain.embeddings import HuggingFaceEmbeddings
 import random
 from datasets import load_dataset
+from bunkatopics.functions.clean_text import clean_tweet
+import openai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 random.seed(42)
 
 if __name__ == "__main__":
-    dataset = load_dataset("CShorten/ML-ArXiv-Papers")["train"]["title"]
+    dataset = load_dataset("rguo123/trump_tweets")["train"]["content"]
     full_docs = random.sample(dataset, 500)
+    full_docs = [clean_tweet(x) for x in full_docs]
+    # dataset = load_dataset("CShorten/ML-ArXiv-Papers")["train"]["title"]
+    # full_docs = random.sample(dataset, 500)
     bunka = Bunka(model_hf=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"))
 
     bunka.fit(full_docs)
@@ -21,15 +30,20 @@ if __name__ == "__main__":
     topic_fig.show()
 
     bourdieu_fig = bunka.visualize_bourdieu(
-        x_left_words=["joy"],
-        x_right_words=["fear"],
-        y_top_words=["politics"],
-        y_bottom_words=["business"],
+        x_left_words=["war"],
+        x_right_words=["peace"],
+        y_top_words=["men"],
+        y_bottom_words=["women"],
+        openai_key=os.getenv("OPEN_AI_KEY"),
         height=1500,
         width=1500,
         label_size_ratio_label=50,
-        clustering=False,
         display_percent=True,
+        clustering=True,
+        topic_n_clusters=10,
+        topic_terms=5,
+        topic_top_terms_overall=500,
+        topic_gen_name=True,
     )
 
     bourdieu_fig.show()

@@ -52,8 +52,8 @@ class Bunka:
 
         if ids is not None:
             df["doc_id"] = ids
-
-        df["doc_id"] = [str(uuid.uuid4())[:8] for _ in range(len(df))]
+        else:
+            df["doc_id"] = [str(uuid.uuid4())[:8] for _ in range(len(df))]
         df = df[~df["content"].isna()]
         df = df.reset_index(drop=True)
 
@@ -122,16 +122,16 @@ class Bunka:
             doc.x = xy_dict[doc.doc_id]["x"]
             doc.y = xy_dict[doc.doc_id]["y"]
 
-        self.docs = docs
-        self.terms = terms
+        self.docs: t.List[Document] = docs
+        self.terms: t.List[Term] = terms
 
-    def fit_transform(self, docs, n_clusters=40):
+    def fit_transform(self, docs: t.List[Document], n_clusters=40) -> pd.DataFrame:
         self.fit(docs)
         df_topics = self.get_topics(n_clusters=n_clusters)
         return df_topics
 
-    def get_topics(self, n_clusters=5, ngrams=[1, 2], name_lenght=15):
-        self.topics = get_topics(
+    def get_topics(self, n_clusters=5, ngrams=[1, 2], name_lenght=15) -> pd.DataFrame:
+        self.topics: t.List[Topic] = get_topics(
             docs=self.docs,
             terms=self.terms,
             n_clusters=n_clusters,
@@ -141,13 +141,13 @@ class Bunka:
             y_column="y",
         )
 
-        self.topics = get_top_documents(
+        self.topics: t.List[Topic] = get_top_documents(
             self.docs, self.topics, ranking_terms=20, top_docs=5
         )
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
         return df_topics
 
-    def get_clean_topic_name(self, openai_key: str):
+    def get_clean_topic_name(self, openai_key: str) -> pd.DataFrame:
         """
 
         Get the topic name using Generative AI
@@ -155,14 +155,14 @@ class Bunka:
         """
 
         df_prompt = get_df_prompt(topics=self.topics, docs=self.docs)
-        self.topics = get_clean_topics(
+        self.topics: t.List[Topic] = get_clean_topics(
             df_prompt, topics=self.topics, openai_key=openai_key
         )
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
 
         return df_topics
 
-    def search(self, user_input: str):
+    def search(self, user_input: str) -> pd.Data:
         res = vector_search(self.docs, self.model_hf, user_input=user_input)
         return res
 

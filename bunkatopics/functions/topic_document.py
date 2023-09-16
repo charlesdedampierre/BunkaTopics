@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def get_top_documents(
-    docs: t.List[Document], topics: t.List[Topic], ranking_terms=20, top_docs=5
+    docs: t.List[Document], topics: t.List[Topic], ranking_terms=20, top_docs=100
 ) -> t.List[Topic]:
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_docs = df_docs[["doc_id", "topic_id", "term_id"]]

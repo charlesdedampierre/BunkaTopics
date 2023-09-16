@@ -17,6 +17,7 @@ def get_topics(
     n_clusters: int = 10,
     ngrams: list = [1, 2],
     name_lenght: int = 15,
+    top_terms_overall: int = 1000,
     x_column="x",
     y_column="y",
 ) -> t.List[Topic]:
@@ -48,7 +49,7 @@ def get_topics(
 
     df_terms = pd.DataFrame.from_records([term.dict() for term in terms])
     df_terms = df_terms.sort_values("count_terms", ascending=False)
-    df_terms = df_terms.head(1000)
+    df_terms = df_terms.head(top_terms_overall)
     df_terms = df_terms[df_terms["ngrams"].isin(ngrams)]
 
     df_terms_indexed = pd.DataFrame.from_records([doc.dict() for doc in docs])

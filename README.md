@@ -130,13 +130,23 @@ The map display the different texts on a 2-Dimensional unsupervised scale. Every
 
 ```python
 
-bourdieu_fig = bunka.visualize_bourdieu(x_left_words=["politics"],
-                                        x_right_words=["business"],
-                                        y_top_words=['promises'],
-                                        y_bottom_words=['threats'],
-                                        height=1000,
-                                        width=1000, 
-                                        clustering =False)
+bourdieu_fig = bunka.visualize_bourdieu(
+        x_left_words=["war"],
+        x_right_words=["peace"],
+        y_top_words=["men"],
+        y_bottom_words=["women"],
+        openai_key=os.getenv("OPEN_AI_KEY"),#set to None otherwise
+        height=1500,
+        width=1500,
+        label_size_ratio_label=50,
+        display_percent=True,
+        clustering=True,
+        topic_n_clusters=10,
+        topic_terms=5,
+        topic_top_terms_overall=500,
+        topic_gen_name=True,
+    )
+
 ```  
 
 The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
@@ -196,7 +206,6 @@ Below, you will find an overview of common functions in BERTopic.
 | Fit the model    |  `.fit(docs)` |
 | Fit the model and get the topics  |  `.fit_transform(docs)` |
 | Acces the topics   | `.get_topics(n_clusters=10)`  |
-| Access the top documents per topic    |  `.get_top_documents()` |
 | Access the top documents per topic    |  `.get_clean_topic_name()` |
 | Access the distribution of topics   |  `.get_topic_repartition()` |
 | Visualize the topics on a Map |  `.visualize_topics()` |

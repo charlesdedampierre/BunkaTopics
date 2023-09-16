@@ -6,7 +6,6 @@ import pandas as pd
 from .bunka_logger import logger
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 import umap
-from sklearn.cluster import KMeans
 import warnings
 import plotly.graph_objects as go
 from .datamodel import Document, Term, Topic, DOC_ID, TOPIC_ID, TERM_ID
@@ -15,8 +14,6 @@ from .functions.topic_utils import get_topic_repartition
 from .visualisation.bourdieu import visualize_bourdieu
 from .visualisation.topic_visualization import visualize_topics
 from .functions.extract_terms import extract_terms_df
-from .functions.topic_representation import remove_overlapping_terms
-from .functions.utils import specificity
 from .functions.topic_gen_representation import get_df_prompt, get_clean_topics
 from .functions.topics_modeling import get_topics
 
@@ -184,28 +181,35 @@ class Bunka:
         x_right_words=["peace"],
         y_top_words=["men"],
         y_bottom_words=["women"],
+        openai_key=None,
         height=1500,
         width=1500,
-        clustering=False,
-        n_clusters=10,
-        topic_terms=2,
-        display_percent=True,
         label_size_ratio_label=50,
+        display_percent=True,
+        clustering=False,
+        topic_n_clusters=10,
+        topic_terms=2,
+        topic_top_terms_overall=500,
+        topic_gen_name=False,
     ) -> go.Figure:
         fig, self.df_bourdieu = visualize_bourdieu(
             self.model_hf,
-            self.docs,
+            docs=self.docs,
+            terms=self.terms,
+            openai_key=openai_key,
             x_left_words=x_left_words,
             x_right_words=x_right_words,
             y_top_words=y_top_words,
             y_bottom_words=y_bottom_words,
             height=height,
             width=width,
-            clustering=clustering,
-            n_clusters=n_clusters,
             display_percent=display_percent,
             label_size_ratio_label=label_size_ratio_label,
+            clustering=clustering,
+            topic_gen_name=topic_gen_name,
+            topic_n_clusters=topic_n_clusters,
             topic_terms=topic_terms,
+            topic_top_terms_overall=topic_top_terms_overall,
         )
 
         return fig

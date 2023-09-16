@@ -88,7 +88,9 @@ def get_results_from_gpt(prompt):
     return res
 
 
-def get_df_prompt(topics: t.List[Topic], docs: t.List[Document]) -> pd.DataFrame:
+def get_df_prompt(
+    topics: t.List[Topic], docs: t.List[Document], top_doc: int = 3
+) -> pd.DataFrame:
     """
     get a dataframe to input the prompt
 
@@ -111,7 +113,7 @@ def get_df_prompt(topics: t.List[Topic], docs: t.List[Document]) -> pd.DataFrame
 
     df_for_prompt = pd.merge(df_for_prompt, df_doc, on="doc_id")
     df_for_prompt = df_for_prompt.groupby("topic_id")["content"].apply(
-        lambda x: list(x)
+        lambda x: list(x)[:top_doc]
     )
 
     df_keywords = pd.DataFrame(

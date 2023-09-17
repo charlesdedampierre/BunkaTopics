@@ -1,6 +1,3 @@
-import plotly.graph_objs as go
-
-
 def wrap_by_word(string, n_words):
     """returns a string where \\n is inserted between every n words"""
     try:

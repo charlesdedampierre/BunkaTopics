@@ -15,6 +15,8 @@ from sklearn.preprocessing import MinMaxScaler
 import random
 import plotly.express as px
 from bunkatopics.visualisation.visu_utils import wrap_by_word
+import plotly.graph_objects as go
+from bunkatopics.visualisation.explainer import plot_specific_terms
 
 pd.options.mode.chained_assignment = None
 
@@ -22,11 +24,11 @@ pd.options.mode.chained_assignment = None
 def get_continuum(
     model_hf: HuggingFaceInstructEmbeddings,
     docs: t.List[Document],
-    cont_name="emotion",
-    left_words=["hate", "pain"],
-    right_words=["love", "good"],
-    scale=False,
-):
+    cont_name: str = "emotion",
+    left_words: list = ["hate", "pain"],
+    right_words: list = ["love", "good"],
+    scale: bool = False,
+) -> t.List[Document]:
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_emb = df_docs[["doc_id", "embedding"]]
     df_emb = df_emb.set_index("doc_id")
@@ -84,11 +86,13 @@ def get_continuum(
 def plot_unique_dimension(
     docs: t.List[Document],
     id: str = id,
-    left=["aggressivity"],
-    right=["peacefullness"],
+    left: list = ["aggressivity"],
+    right: list = ["peacefullness"],
     height=700,
     width=600,
-):
+    explainer: bool = True,
+    explainer_ngrams: list = [1, 2],
+) -> go.Figure:
     left = " ".join(left)
     right = " ".join(right)
 
@@ -120,7 +124,6 @@ def plot_unique_dimension(
         template="plotly_white",
     )
 
-    # Add a horizontal line at y = 0
     fig.add_shape(
         dict(
             type="line",
@@ -128,10 +131,19 @@ def plot_unique_dimension(
             x1=df_fig[name].max(),  # Set the maximum x-coordinate of the line
             y0=0,
             y1=0,
-            line=dict(color="red", width=4),  # Customize the line appearance
+            line=dict(color="red", width=4),
         )
     )
-
+    if explainer:
+        plot_specific_terms(
+            docs=docs,
+            left_words=left,
+            right_words=right,
+            id=id,
+            ngrams=explainer_ngrams,
+            quantile=0.80,
+            top_n=20,
+        )
     return fig
 
 
@@ -142,7 +154,9 @@ def visualize_bourdieu_one_dimension(
     right: str = ["peacefullness"],
     height=700,
     width=600,
-):
+    explainer: bool = True,
+    explainer_ngrams: list = [1, 2],
+) -> go.Figure:
     id = str(random.randint(0, 10000))
 
     new_docs = get_continuum(
@@ -155,7 +169,14 @@ def visualize_bourdieu_one_dimension(
     )
 
     fig = plot_unique_dimension(
-        new_docs, id=id, left=left, right=right, height=height, width=width
+        new_docs,
+        id=id,
+        left=left,
+        right=right,
+        height=height,
+        width=width,
+        explainer=explainer,
+        explainer_ngrams=explainer_ngrams,
     )
     return fig
 

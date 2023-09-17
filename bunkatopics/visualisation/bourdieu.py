@@ -12,6 +12,9 @@ from bunkatopics.functions.topic_gen_representation import (
 from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topics_modeling import get_topics
 from sklearn.preprocessing import MinMaxScaler
+import random
+import plotly.express as px
+from bunkatopics.visualisation.visu_utils import wrap_by_word
 
 pd.options.mode.chained_assignment = None
 
@@ -67,13 +70,94 @@ def get_continuum(
 
     distance_dict = final_df.to_dict("index")
 
-    for doc in docs:
+    new_docs = docs.copy()
+
+    for doc in new_docs:
         res = BourdieuDimension(
             continuum=continuum, distance=distance_dict.get(doc.doc_id)["distance"]
         )
         doc.bourdieu_dimensions.append(res)
 
-    return docs
+    return new_docs
+
+
+def plot_unique_dimension(
+    docs: t.List[Document],
+    id: str = id,
+    left=["aggressivity"],
+    right=["peacefullness"],
+    height=700,
+    width=600,
+):
+    left = " ".join(left)
+    right = " ".join(right)
+
+    distances = [
+        x.distance
+        for doc in docs
+        for x in doc.bourdieu_dimensions
+        if x.continuum.id == id
+    ]
+    doc_id = [x.doc_id for x in docs]
+    content = [x.content for x in docs]
+
+    df_distances = pd.DataFrame(
+        {"doc_id": doc_id, "distances": distances, "content": content}
+    )
+
+    name = "<" + right + "-" + left + ">"
+
+    df_fig = df_distances.rename(columns={"distances": name})
+    df_fig["content"] = df_fig["content"].apply(lambda x: wrap_by_word(x, 10))
+
+    fig = px.box(
+        df_fig,
+        y=name,
+        points="all",
+        hover_data=["content"],
+        height=height,
+        width=width,
+        template="plotly_white",
+    )
+
+    # Add a horizontal line at y = 0
+    fig.add_shape(
+        dict(
+            type="line",
+            x0=df_fig[name].min(),  # Set the minimum x-coordinate of the line
+            x1=df_fig[name].max(),  # Set the maximum x-coordinate of the line
+            y0=0,
+            y1=0,
+            line=dict(color="red", width=4),  # Customize the line appearance
+        )
+    )
+
+    return fig
+
+
+def visualize_bourdieu_one_dimension(
+    docs: t.List[Document],
+    embedding_model,
+    left: str = ["aggressivity"],
+    right: str = ["peacefullness"],
+    height=700,
+    width=600,
+):
+    id = str(random.randint(0, 10000))
+
+    new_docs = get_continuum(
+        model_hf=embedding_model,
+        docs=docs,
+        cont_name=id,
+        left_words=left,
+        right_words=right,
+        scale=False,
+    )
+
+    fig = plot_unique_dimension(
+        new_docs, id=id, left=left, right=right, height=height, width=width
+    )
+    return fig
 
 
 def visualize_bourdieu(

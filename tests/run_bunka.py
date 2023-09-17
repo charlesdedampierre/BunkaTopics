@@ -30,6 +30,15 @@ if __name__ == "__main__":
     topic_fig = bunka.visualize_topics(width=800, height=800)
     topic_fig.show()
 
+    fig_solo = bunka.visualize_bourdieu_one_dimension(
+        left=["negative", "bad"],
+        right=["positive"],
+        width=1200,
+        height=1200,
+    )
+
+    fig_solo.show()
+
     bourdieu_fig = bunka.visualize_bourdieu(
         x_left_words=["war"],
         x_right_words=["peace"],
@@ -44,7 +53,7 @@ if __name__ == "__main__":
         topic_n_clusters=10,
         topic_terms=5,
         topic_top_terms_overall=500,
-        topic_gen_name=True,
+        topic_gen_name=False,
     )
 
     bourdieu_fig.show()
@@ -64,16 +73,3 @@ if __name__ == "__main__":
     dimension_fig = bunka.get_dimensions(dimensions=dimensions, height=1500, width=1500)
 
     dimension_fig.show()
-
-    from bunkatopics.visualisation.bourdieu import visualize_bourdieu_one_dimension
-
-    fig = visualize_bourdieu_one_dimension(
-        docs=bunka.docs,
-        embedding_model=embedding_model,
-        left=["negative", "bad"],
-        right=["positive"],
-        width=1200,
-        height=1200,
-    )
-
-    fig.show()

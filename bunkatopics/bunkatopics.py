@@ -162,7 +162,7 @@ class Bunka:
 
         return df_topics
 
-    def search(self, user_input: str) -> pd.Data:
+    def search(self, user_input: str) -> pd.DataFrame:
         res = vector_search(self.docs, self.model_hf, user_input=user_input)
         return res
 

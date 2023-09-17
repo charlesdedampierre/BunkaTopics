@@ -21,7 +21,8 @@ if __name__ == "__main__":
     full_docs = [clean_tweet(x) for x in full_docs]
     # dataset = load_dataset("CShorten/ML-ArXiv-Papers")["train"]["title"]
     # full_docs = random.sample(dataset, 500)
-    bunka = Bunka(model_hf=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"))
+    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    bunka = Bunka(model_hf=embedding_model)
 
     bunka.fit(full_docs)
     df_topics = bunka.get_topics(n_clusters=8)
@@ -63,3 +64,16 @@ if __name__ == "__main__":
     dimension_fig = bunka.get_dimensions(dimensions=dimensions, height=1500, width=1500)
 
     dimension_fig.show()
+
+    from bunkatopics.visualisation.bourdieu import visualize_bourdieu_one_dimension
+
+    fig = visualize_bourdieu_one_dimension(
+        docs=bunka.docs,
+        embedding_model=embedding_model,
+        left=["negative", "bad"],
+        right=["positive"],
+        width=1200,
+        height=1200,
+    )
+
+    fig.show()

@@ -16,6 +16,7 @@ from .visualisation.topic_visualization import visualize_topics
 from .functions.extract_terms import extract_terms_df
 from .functions.topic_gen_representation import get_df_prompt, get_clean_topics
 from .functions.topics_modeling import get_topics
+from .visualisation.bourdieu import visualize_bourdieu_one_dimension
 
 from .functions.coherence import get_coherence
 from .functions.search import vector_search
@@ -225,6 +226,26 @@ class Bunka:
             add_scatter=add_scatter,
             label_size_ratio=label_size_ratio,
         )
+        return fig
+
+    def visualize_bourdieu_one_dimension(
+        self,
+        left=["negative", "bad"],
+        right=["positive"],
+        width=1200,
+        height=1200,
+        explainer=True,
+    ):
+        fig = visualize_bourdieu_one_dimension(
+            docs=self.docs,
+            embedding_model=self.model_hf,
+            left=left,
+            right=right,
+            width=width,
+            height=height,
+            explainer=explainer,
+        )
+
         return fig
 
     def get_dimensions(

@@ -35,6 +35,7 @@ if __name__ == "__main__":
         right=["positive"],
         width=1200,
         height=1200,
+        explainer=False,
     )
 
     fig_solo.show()

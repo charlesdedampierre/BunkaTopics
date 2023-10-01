@@ -5,7 +5,11 @@ warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 import pandas as pd
 from .bunka_logger import logger
 from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.llms import LlamaCpp
+from langchain.prompts import PromptTemplate
 import umap
+from langchain.vectorstores import FAISS
+from langchain.chains import RetrievalQA
 import warnings
 import plotly.graph_objects as go
 from .datamodel import Document, Term, Topic, DOC_ID, TOPIC_ID, TERM_ID
@@ -32,15 +36,15 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 
 class Bunka:
-    def __init__(self, model_hf=None, language: str = "en_core_web_sm"):
-        if model_hf is None:
-            model_hf = HuggingFaceInstructEmbeddings(
+    def __init__(self, embedding_model=None, language: str = "en_core_web_sm"):
+        if embedding_model is None:
+            embedding_model = HuggingFaceInstructEmbeddings(
                 model_name="hkunlp/instructor-large",
                 embed_instruction="Embed the documents for visualisation of Topic Modeling on a map : ",
                 model_kwargs={"device": "cpu"},
                 encode_kwargs={"normalize_embeddings": True},
             )
-        self.model_hf = model_hf
+        self.embedding_model = embedding_model
         self.language = language
 
     def fit(
@@ -58,8 +62,8 @@ class Bunka:
         df = df[~df["content"].isna()]
         df = df.reset_index(drop=True)
 
-        docs = [Document(**row) for row in df.to_dict(orient="records")]
-        df = pd.DataFrame.from_records([doc.dict() for doc in docs])
+        self.docs = [Document(**row) for row in df.to_dict(orient="records")]
+        df = pd.DataFrame.from_records([doc.dict() for doc in self.docs])
 
         logger.info("Extracting Terms")
         df_terms, df_terms_indexed = extract_terms_df(
@@ -91,21 +95,48 @@ class Bunka:
         ].to_dict()
 
         # add to the docs object
-        for doc in docs:
+        for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
-        sentences = [doc.content for doc in docs]
-        ids = [doc.doc_id for doc in docs]
+        # Embed sentences
 
         logger.info("Embedding Documents, this may take few minutes")
-        embeddings = self.model_hf.embed_documents(sentences)
+
+        sentences = [doc.content for doc in self.docs]
+        ids = [doc.doc_id for doc in self.docs]
+
+        # Using FAISS to index and embed the documents
+
+        df_temporary = pd.DataFrame(sentences)
+        loader = DataFrameLoader(df_temporary, page_content_column=0)
+        documents_langchain = loader.load()
+
+        # load it into Chroma
+        vectorstore = Chroma.from_documents(documents_langchain, self.embedding_model)
+        self.vectorstore = vectorstore
+
+        # Get all embeddings
+        embeddings = vectorstore._collection.get(include=["embeddings"])["embeddings"]
+        final_ids = vectorstore._collection.get(include=["embeddings"])["ids"]
+
+        """
+        vectorstore = FAISS.from_texts(
+            texts=sentences, ids=ids, embedding=self.embedding_model
+        )
+
+        self.vectorstore = vectorstore
+        embeddings = vectorstore.index.reconstruct_n(0, len(sentences))
+
+        """
+
+        # embeddings = self.embedding_model.embed_documents(sentences)
 
         df_embeddings = pd.DataFrame(embeddings)
-        df_embeddings.index = ids
+        df_embeddings.index = final_ids
 
         emb_doc_dict = {x: y for x, y in zip(ids, embeddings)}
 
-        for doc in docs:
+        for doc in self.docs:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
         logger.info("Reducing Dimensions")
@@ -119,11 +150,10 @@ class Bunka:
         xy_dict = df_embeddings_2D.set_index("doc_id")[["x", "y"]].to_dict("index")
 
         # Update the documents with the x and y values from the DataFrame
-        for doc in docs:
+        for doc in self.docs:
             doc.x = xy_dict[doc.doc_id]["x"]
             doc.y = xy_dict[doc.doc_id]["y"]
 
-        self.docs: t.List[Document] = docs
         self.terms: t.List[Term] = terms
 
     def fit_transform(self, docs: t.List[Document], n_clusters=40) -> pd.DataFrame:
@@ -148,23 +178,40 @@ class Bunka:
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
         return df_topics
 
-    def get_clean_topic_name(self, openai_key: str) -> pd.DataFrame:
+    def rag_query(self, query: str, generative_model, top_doc: int = 2):
+        logger.info("Answering your query, please wait a few seconds")
+
+        # this is the entire retrieval system
+        qa_with_sources_chain = RetrievalQA.from_chain_type(
+            llm=generative_model,
+            retriever=self.vectorstore.as_retriever(search_kwargs={"k": top_doc}),
+            # chain_type_kwargs=chain_type_kwargs,
+            return_source_documents=True,
+        )
+
+        response = qa_with_sources_chain({"query": query})
+
+        return response
+
+    def get_clean_topic_name(self, generative_model) -> pd.DataFrame:
         """
 
         Get the topic name using Generative AI
 
         """
 
-        df_prompt = get_df_prompt(topics=self.topics, docs=self.docs)
-        self.topics: t.List[Topic] = get_clean_topics(
-            df_prompt, topics=self.topics, openai_key=openai_key
+        from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
+
+        self.topics: t.List[Topic] = get_clean_topic_all(
+            generative_model, self.topics, self.docs
         )
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
 
         return df_topics
 
-    def search(self, user_input: str) -> pd.DataFrame:
-        res = vector_search(self.docs, self.model_hf, user_input=user_input)
+    def search(self, user_input: str, top_doc: int = 3) -> pd.DataFrame:
+        res = self.vectorstore.similarity_search_with_score(user_input, k=top_doc)
+        # res = vector_search(self.docs, self.embedding_model, user_input=user_input)
         return res
 
     def get_topic_coherence(self, topic_terms_n=10):
@@ -194,7 +241,7 @@ class Bunka:
         topic_gen_name=False,
     ) -> go.Figure:
         fig, self.df_bourdieu = visualize_bourdieu(
-            self.model_hf,
+            self.embedding_model,
             docs=self.docs,
             terms=self.terms,
             openai_key=openai_key,
@@ -238,7 +285,7 @@ class Bunka:
     ):
         fig = visualize_bourdieu_one_dimension(
             docs=self.docs,
-            embedding_model=self.model_hf,
+            embedding_model=self.embedding_model,
             left=left,
             right=right,
             width=width,

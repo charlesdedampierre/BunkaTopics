@@ -3,6 +3,8 @@ import openai
 from tqdm import tqdm
 from bunkatopics.datamodel import Topic, Document
 import typing as t
+from langchain.prompts import ChatPromptTemplate
+from langchain.chains import LLMChain
 
 
 # System prompt describes information given to all conversations
@@ -24,7 +26,11 @@ Here are some examples of documents separated by || in the topic:
 
 /n
 
-Based on the information about the topic above, please create a short label of this topic. The keywords are the most important elements. The documents are here to
+Based on the information about the topic above, please create a short label of this topic. Make a bit of a wide topic, keep in mind that 
+
+all the words do not really go together, don't try to make a unique sentence, just give the overall topics.
+
+The keywords are the most important elements. The documents are here to
 help desimbiguate topics and give the context in which the keywords are expressed.
 
 The documents are just examples, do not be too specific in chosing the topic.
@@ -33,6 +39,63 @@ Make sure you to only return the label and nothing more.
 [/INST]
 
 """
+
+# Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
+promp_template_topics_terms = """I have a topic that is described the following keywords: 
+{terms}
+
+Here are some examples of documents separated by || in the topic:
+{documents}:
+
+Based on the information about the topic above, please create a short label of this topic. Create a wide topic.
+
+Only give the name of the topic and nothing else:
+
+Topic Name:"""
+
+
+TERM_ID = str
+
+
+def get_clean_topic(
+    generative_model, specific_terms: t.List[str], specific_documents: t.List[str]
+):
+    PROMPT_TOPICS = ChatPromptTemplate.from_template(promp_template_topics_terms)
+
+    topic_chain = LLMChain(llm=generative_model, prompt=PROMPT_TOPICS)
+    clean_topic_name = topic_chain(
+        {
+            "terms": ", ".join(specific_terms),
+            "documents": " \n".join(specific_documents),
+        }
+    )
+
+    clean_topic_name = clean_topic_name["text"]
+
+    return clean_topic_name
+
+
+def get_clean_topic_all(
+    generative_model, topics: t.List[Topic], docs: t.List[Document], top_doc: int = 3
+):
+    df = get_df_prompt(topics, docs, top_doc)
+    topic_ids = list(df["topic_id"])
+    specific_terms = list(df["keywords"])
+    top_doc_contents = list(df["content"])
+
+    final_dict = {}
+    pbar = tqdm(total=len(topic_ids), desc="Creating new labels for clusters")
+    for topic_ic, x, y in zip(topic_ids, specific_terms, top_doc_contents):
+        clean_topic_name = get_clean_topic(
+            generative_model, specific_terms=x, specific_documents=y
+        )
+        final_dict[topic_ic] = clean_topic_name
+        pbar.update(1)
+
+    for topic in topics:
+        topic.name = final_dict.get(topic.topic_id)
+
+    return topics
 
 
 def get_clean_topics(

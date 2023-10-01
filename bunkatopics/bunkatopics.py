@@ -7,6 +7,8 @@ from .bunka_logger import logger
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.llms import LlamaCpp
 from langchain.prompts import PromptTemplate
+from langchain.document_loaders import DataFrameLoader
+from langchain.vectorstores import Chroma
 import umap
 from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA

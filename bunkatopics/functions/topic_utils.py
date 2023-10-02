@@ -1,7 +1,10 @@
-import plotly.express as px
-import pandas as pd
 import typing as t
+
+import pandas as pd
+import plotly.express as px
+
 from bunkatopics.visualisation.visu_utils import wrap_by_word
+
 from ..datamodel import Topic
 
 

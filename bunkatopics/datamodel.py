@@ -1,4 +1,5 @@
 import typing as t
+
 from pydantic import BaseModel, Field
 
 TOPIC_ID = str

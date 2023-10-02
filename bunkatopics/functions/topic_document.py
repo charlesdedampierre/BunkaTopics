@@ -1,6 +1,8 @@
 import typing as t
-from ..datamodel import Document, Topic
+
 import pandas as pd
+
+from ..datamodel import Document, Topic
 
 
 def get_top_documents(

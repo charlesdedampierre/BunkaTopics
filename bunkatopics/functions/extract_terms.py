@@ -1,14 +1,13 @@
-import pandas as pd
-from tqdm import tqdm
-import pickle
+import warnings
+from functools import partial
 from multiprocessing import Pool
-import multiprocessing
+
+import pandas as pd
 import textacy
 import textacy.preprocessing
 import textacy.representations
 import textacy.tm
-from functools import partial
-import warnings
+from tqdm import tqdm
 
 tqdm.pandas()
 
@@ -41,7 +40,6 @@ def extract_terms_df(
     ngs=True,
     ents=True,
     ncs=False,
-    multiprocess=True,
     sample_size=100000,
     drop_emoji=True,
     ngrams=(2, 2),

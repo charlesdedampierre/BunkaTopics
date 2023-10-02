@@ -1,14 +1,15 @@
 import sys
 
 sys.path.append("../")
-from bunkatopics.datamodel import DOC_ID, TERM_ID, TOPIC_ID
 import typing as t
-from sklearn.cluster import KMeans
+
 import pandas as pd
-from bunkatopics.functions.utils import specificity
-from bunkatopics.datamodel import Topic, Document, Term
-import typing as t
+from sklearn.cluster import KMeans
+
+from bunkatopics.datamodel import (DOC_ID, TERM_ID, TOPIC_ID, Document, Term,
+                                   Topic)
 from bunkatopics.functions.topic_representation import remove_overlapping_terms
+from bunkatopics.functions.utils import specificity
 
 
 def get_topics(

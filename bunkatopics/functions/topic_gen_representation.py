@@ -1,44 +1,12 @@
-import pandas as pd
-import openai
-from tqdm import tqdm
-from bunkatopics.datamodel import Topic, Document
 import typing as t
-from langchain.prompts import ChatPromptTemplate
+
+import openai
+import pandas as pd
 from langchain.chains import LLMChain
+from langchain.prompts import ChatPromptTemplate
+from tqdm import tqdm
 
-
-# System prompt describes information given to all conversations
-system_prompt = """
-<s>[INST] <<SYS>>
-You are a helpful, respectful and honest assistant for labeling topics.
-<</SYS>>
-"""
-
-# Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
-main_prompt = """
-[INST]
-I have a topic that is described the following keywords separated by ||: 
-'[KEYWORDS]'
-/n
-
-Here are some examples of documents separated by || in the topic:
-[DOCUMENTS]
-
-/n
-
-Based on the information about the topic above, please create a short label of this topic. Make a bit of a wide topic, keep in mind that 
-
-all the words do not really go together, don't try to make a unique sentence, just give the overall topics.
-
-The keywords are the most important elements. The documents are here to
-help desimbiguate topics and give the context in which the keywords are expressed.
-
-The documents are just examples, do not be too specific in chosing the topic.
-Make sure you to only return the label and nothing more.
-
-[/INST]
-
-"""
+from bunkatopics.datamodel import Document, Topic
 
 # Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
 promp_template_topics_terms = """I have a topic that is described the following keywords: 
@@ -47,7 +15,7 @@ promp_template_topics_terms = """I have a topic that is described the following 
 Here are some examples of documents separated by || in the topic:
 {documents}:
 
-Based on the information about the topic above, please create a short label of this topic. Create a wide topic.
+Based on the information about the topic above, please create a short label that encompassess the meaning of the topic.
 
 Only give the name of the topic and nothing else:
 
@@ -58,10 +26,14 @@ TERM_ID = str
 
 
 def get_clean_topic(
-    generative_model, specific_terms: t.List[str], specific_documents: t.List[str]
+    generative_model,
+    specific_terms: t.List[str],
+    specific_documents: t.List[str],
+    top_doc: int = 2,
 ):
     PROMPT_TOPICS = ChatPromptTemplate.from_template(promp_template_topics_terms)
 
+    specific_documents = specific_documents[:top_doc]
     topic_chain = LLMChain(llm=generative_model, prompt=PROMPT_TOPICS)
     clean_topic_name = topic_chain(
         {
@@ -77,7 +49,7 @@ def get_clean_topic(
 
 def get_clean_topic_all(
     generative_model, topics: t.List[Topic], docs: t.List[Document], top_doc: int = 3
-):
+) -> t.List[Topic]:
     df = get_df_prompt(topics, docs, top_doc)
     topic_ids = list(df["topic_id"])
     specific_terms = list(df["keywords"])
@@ -96,59 +68,6 @@ def get_clean_topic_all(
         topic.name = final_dict.get(topic.topic_id)
 
     return topics
-
-
-def get_clean_topics(
-    df_for_prompt: pd.DataFrame, topics: t.List[Topic], openai_key: str
-) -> t.List[Topic]:
-    openai.api_key = openai_key
-    keywords_list = list(df_for_prompt["keywords"])
-
-    topic_id_list = list(df_for_prompt["topic_id"])
-    content_list = list(df_for_prompt["content"])
-
-    final = []
-
-    pbar = tqdm(total=len(topic_id_list), desc="Giving Names to topics using OpenAI...")
-    for topic_id, keywords, contents in zip(topic_id_list, keywords_list, content_list):
-        try:
-            contents = " || ".join(contents)
-            keywords = " || ".join(keywords)
-            new_prompt = main_prompt.replace("[DOCUMENTS]", contents).replace(
-                "[KEYWORDS]", keywords
-            )
-            res = get_results_from_gpt(new_prompt)
-            final.append({"topic_id": topic_id, "topic_gen_name": res})
-            pbar.update(1)
-        except:
-            final.append({"topic_id": topic_id, "topic_gen_name": "ERROR"})
-
-    df_final = pd.DataFrame(final)
-
-    topic_ids = list(df_final["topic_id"])
-    names = list(df_final["topic_gen_name"])
-    dict_topic_gen_name = {x: y for x, y in zip(topic_ids, names)}
-
-    for topic in topics:
-        topic.name = dict_topic_gen_name.get(topic.topic_id, [])
-
-    return topics
-
-
-def get_results_from_gpt(prompt):
-    model_type = "gpt-3.5-turbo"
-    model_type = "gpt-4"
-    completion = openai.ChatCompletion.create(
-        model=model_type,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt},
-        ],
-    )
-
-    res = completion.choices[0].message["content"]
-
-    return res
 
 
 def get_df_prompt(

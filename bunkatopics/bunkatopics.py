@@ -1,38 +1,35 @@
 import warnings
+
 from numba.core.errors import NumbaDeprecationWarning
 
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
-import pandas as pd
-from .bunka_logger import logger
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-from langchain.llms import LlamaCpp
-from langchain.prompts import PromptTemplate
-from langchain.document_loaders import DataFrameLoader
-from langchain.vectorstores import Chroma
-import umap
-from langchain.vectorstores import FAISS
-from langchain.chains import RetrievalQA
+import os
+import typing as t
+import uuid
 import warnings
+
+import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
-from .datamodel import Document, Term, Topic, DOC_ID, TOPIC_ID, TERM_ID
+import umap
+from langchain.chains import RetrievalQA
+from langchain.document_loaders import DataFrameLoader
+from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.vectorstores import Chroma
+from sklearn.preprocessing import MinMaxScaler
+from tqdm import tqdm
+
+from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
+
+from .bunka_logger import logger
+from .datamodel import DOC_ID, TERM_ID, TOPIC_ID, Document, Term, Topic
+from .functions.coherence import get_coherence
+from .functions.extract_terms import extract_terms_df
 from .functions.topic_document import get_top_documents
 from .functions.topic_utils import get_topic_repartition
-from .visualisation.bourdieu import visualize_bourdieu
-from .visualisation.topic_visualization import visualize_topics
-from .functions.extract_terms import extract_terms_df
-from .functions.topic_gen_representation import get_df_prompt, get_clean_topics
 from .functions.topics_modeling import get_topics
-from .visualisation.bourdieu import visualize_bourdieu_one_dimension
-
-from .functions.coherence import get_coherence
-from .functions.search import vector_search
-import uuid
-import typing as t
-from tqdm import tqdm
-from sklearn.preprocessing import MinMaxScaler
-import plotly.express as px
-
-import os
+from .visualisation.bourdieu import visualize_bourdieu, visualize_bourdieu_one_dimension
+from .visualisation.topic_visualization import visualize_topics
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -75,7 +72,6 @@ class Bunka:
             ngs=True,
             ents=True,
             ncs=True,
-            multiprocess=multiprocess,
             sample_size=100000,
             drop_emoji=True,
             ngrams=(1, 2, 3),
@@ -202,8 +198,6 @@ class Bunka:
 
         """
 
-        from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
-
         self.topics: t.List[Topic] = get_clean_topic_all(
             generative_model, self.topics, self.docs
         )
@@ -227,11 +221,11 @@ class Bunka:
 
     def visualize_bourdieu(
         self,
+        generative_model,
         x_left_words=["war"],
         x_right_words=["peace"],
         y_top_words=["men"],
         y_bottom_words=["women"],
-        openai_key=None,
         height=1500,
         width=1500,
         label_size_ratio_label=50,
@@ -244,9 +238,9 @@ class Bunka:
     ) -> go.Figure:
         fig, self.df_bourdieu = visualize_bourdieu(
             self.embedding_model,
+            generative_model=generative_model,
             docs=self.docs,
             terms=self.terms,
-            openai_key=openai_key,
             x_left_words=x_left_words,
             x_right_words=x_right_words,
             y_top_words=y_top_words,

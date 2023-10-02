@@ -18,7 +18,19 @@ st.title("Topic Modeling with Bunka")
 # Upload CSV file
 csv_file = st.file_uploader("Upload a CSV file", type=["csv"])
 
-gen_ai = False
+gen_ai = True
+
+from langchain.llms import LlamaCpp
+
+generative_model = LlamaCpp(
+    model_path=os.getenv("MODEL_PATH"),
+    n_ctx=2048,
+    temperature=0.75,
+    max_tokens=2000,
+    top_p=1,
+    verbose=False,
+)
+generative_model.client.verbose = False
 
 
 # Initialize Bunka and fit it with the text data (cache the fit operation)
@@ -40,7 +52,7 @@ if csv_file is not None:
     full_docs = random.sample(text_data, sample_size)
 
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    bunka = Bunka(model_hf=embedding_model)
+    bunka = Bunka(embedding_model=embedding_model)
 
     bunka = fit_bunka(full_docs)
 
@@ -48,7 +60,7 @@ if csv_file is not None:
     num_clusters = 5
     df_topics = bunka.get_topics(n_clusters=num_clusters)
     if gen_ai:
-        df_clean_names = bunka.get_clean_topic_name(openai_key=os.getenv("OPEN_AI_KEY"))
+        df_clean_names = bunka.get_clean_topic_name(generative_model=generative_model)
 
     # Visualize topics
     topic_fig = bunka.visualize_topics(width=800, height=800)
@@ -66,6 +78,7 @@ if csv_file is not None:
     if st.sidebar.button("Visualize Bourdieu"):
         bunka = fit_bunka(full_docs)
         bourdieu_fig = bunka.visualize_bourdieu(
+            generative_model,
             x_left_words=x_left_words.split(","),
             x_right_words=x_right_words.split(","),
             y_top_words=y_top_words.split(","),

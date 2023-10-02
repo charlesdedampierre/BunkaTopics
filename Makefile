@@ -10,7 +10,6 @@ test_fig:
 run_streamlit:
 	python -m streamlit run streamlit/app.py 
 
-
 format:
 	black bunkatopics
 	isort bunkatopics

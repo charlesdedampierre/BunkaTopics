@@ -7,8 +7,9 @@
 
 <img src="images/logo.png" width="35%" height="35%" align="right" />
 
-Bunkatopics is a Topic Modeling Visualisation Method that leverages Transformers from HuggingFace through langchain. It is built with the same philosophy as [BERTopic](https://github.com/MaartenGr/BERTopic) but goes deeper in the visualization to help users grasp quickly and intuitively the content of thousands of text.
-It also allows for a supervised visual representation by letting the user create continnums with natural language.
+Bunkatopics is a Topic Modeling Visualisation, Frame Analysis & Retrieval Augmented Generation (RAG) package that leverages LLMs. It is built with the same philosophy as [BERTopic](https://github.com/MaartenGr/BERTopic) but goes deeper in the visualization to help users grasp quickly and intuitively the content of thousands of text, as well as giving the opportunity to the user to create its own frames.
+
+Bunkatopics is built on top of [langchain](<https://python.langchain.com/docs/get_started/introduction>).
 
 ## Pipeline
 

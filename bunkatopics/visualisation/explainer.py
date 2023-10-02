@@ -1,8 +1,10 @@
 import typing as t
-from bunkatopics.datamodel import Document
+
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
+
+from bunkatopics.datamodel import Document
 from bunkatopics.functions.utils import specificity
 
 

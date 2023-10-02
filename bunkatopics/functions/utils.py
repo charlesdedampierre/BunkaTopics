@@ -1,5 +1,5 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 def specificity(df: pd.DataFrame, X: str, Y: str, Z: str, top_n: int = 50):

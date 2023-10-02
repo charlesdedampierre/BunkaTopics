@@ -1,28 +1,26 @@
-from bunkatopics.datamodel import Document, Term, ContinuumDimension, BourdieuDimension
-from bunkatopics.visualisation.visu_utils import wrap_by_word
+import random
 import typing as t
+
 import pandas as pd
 import plotly.express as px
-from sklearn.metrics.pairwise import cosine_similarity
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-from bunkatopics.functions.topic_gen_representation import (
-    get_df_prompt,
-    get_clean_topics,
-)
-from bunkatopics.functions.topic_document import get_top_documents
-from bunkatopics.functions.topics_modeling import get_topics
-from sklearn.preprocessing import MinMaxScaler
-import random
-import plotly.express as px
-from bunkatopics.visualisation.visu_utils import wrap_by_word
 import plotly.graph_objects as go
+from langchain.embeddings import HuggingFaceInstructEmbeddings
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import MinMaxScaler
+
+from bunkatopics.datamodel import (BourdieuDimension, ContinuumDimension,
+                                   Document, Term)
+from bunkatopics.functions.topic_document import get_top_documents
+from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
+from bunkatopics.functions.topics_modeling import get_topics
 from bunkatopics.visualisation.explainer import plot_specific_terms
+from bunkatopics.visualisation.visu_utils import wrap_by_word
 
 pd.options.mode.chained_assignment = None
 
 
 def get_continuum(
-    model_hf: HuggingFaceInstructEmbeddings,
+    embedding_model: HuggingFaceInstructEmbeddings,
     docs: t.List[Document],
     cont_name: str = "emotion",
     left_words: list = ["hate", "pain"],
@@ -40,8 +38,8 @@ def get_continuum(
     )
 
     # Compute the extremity embeddings
-    left_embedding = model_hf.embed_documents(continuum.left_words)
-    right_embedding = model_hf.embed_documents(continuum.right_words)
+    left_embedding = embedding_model.embed_documents(continuum.left_words)
+    right_embedding = embedding_model.embed_documents(continuum.right_words)
 
     left_embedding = pd.DataFrame(left_embedding).mean().values.reshape(1, -1)
     right_embedding = pd.DataFrame(right_embedding).mean().values.reshape(1, -1)
@@ -57,7 +55,9 @@ def get_continuum(
 
     df_bert.index = full_emb.index
     df_bert.columns = full_emb.index
-    df_bert = df_bert.iloc[-1:,].T
+    df_bert = df_bert.iloc[
+        -1:,
+    ].T
     df_bert = df_bert.sort_values("distance", ascending=False).reset_index()
     df_bert = df_bert[1:]
     df_bert = df_bert.rename(columns={"index": "doc_id"})
@@ -160,7 +160,7 @@ def visualize_bourdieu_one_dimension(
     id = str(random.randint(0, 10000))
 
     new_docs = get_continuum(
-        model_hf=embedding_model,
+        embedding_model=embedding_model,
         docs=docs,
         cont_name=id,
         left_words=left,
@@ -182,10 +182,10 @@ def visualize_bourdieu_one_dimension(
 
 
 def visualize_bourdieu(
-    model_hf,
+    embedding_model,
+    generative_model,
     docs: t.List[Document],
     terms: t.List[Term],
-    openai_key: str = None,
     x_left_words: t.List[str] = ["war"],
     x_right_words: t.List[str] = ["peace"],
     y_top_words: t.List[str] = ["men"],
@@ -207,14 +207,14 @@ def visualize_bourdieu(
 
     # Compute Continuums
     new_docs = get_continuum(
-        model_hf,
+        embedding_model,
         docs,
         cont_name="cont1",
         left_words=x_left_words,
         right_words=x_right_words,
     )
     new_docs = get_continuum(
-        model_hf,
+        embedding_model,
         docs,
         cont_name="cont2",
         left_words=y_top_words,
@@ -374,9 +374,9 @@ def visualize_bourdieu(
             bourdieu_topics = get_top_documents(
                 new_docs, bourdieu_topics, ranking_terms=20, top_docs=5
             )
-            df_prompt = get_df_prompt(topics=bourdieu_topics, docs=new_docs)
-            bourdieu_topics = get_clean_topics(
-                df_prompt, topics=bourdieu_topics, openai_key=openai_key
+
+            bourdieu_topics = get_clean_topic_all(
+                generative_model, topics=bourdieu_topics, docs=new_docs
             )
 
         label_size_ratio_clusters = 100

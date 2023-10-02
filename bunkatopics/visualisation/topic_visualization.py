@@ -1,10 +1,12 @@
-import pandas as pd
-from .visu_utils import wrap_by_word
-from ..datamodel import Topic, ConvexHullModel, Document
-from .convex_hull import get_convex_hull_coord
-import numpy as np
-import plotly.graph_objects as go
 import typing as t
+
+import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+
+from ..datamodel import ConvexHullModel, Document, Topic
+from .convex_hull import get_convex_hull_coord
+from .visu_utils import wrap_by_word
 
 
 def visualize_topics(

@@ -1,7 +1,9 @@
-import numpy as np
-from gensim.models import CoherenceModel
-from gensim.corpora.dictionary import Dictionary
 import typing as t
+
+import numpy as np
+from gensim.corpora.dictionary import Dictionary
+from gensim.models import CoherenceModel
+
 from ..datamodel import TERM_ID
 
 

@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
 from kneed import KneeLocator
+from sklearn.cluster import KMeans
 
 
 def compute_knee(data, max_k):

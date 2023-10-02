@@ -275,7 +275,7 @@ class Bunka:
         right=["positive"],
         width=1200,
         height=1200,
-        explainer=True,
+        explainer=False,
     ):
         fig = visualize_bourdieu_one_dimension(
             docs=self.docs,

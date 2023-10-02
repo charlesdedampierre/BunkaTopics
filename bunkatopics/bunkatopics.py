@@ -50,10 +50,8 @@ class Bunka:
         self,
         docs: t.List[str],
         ids: t.List[DOC_ID] = None,
-        multiprocess: bool = True,
     ) -> None:
         df = pd.DataFrame(docs, columns=["content"])
-
         if ids is not None:
             df["doc_id"] = ids
         else:

@@ -10,6 +10,10 @@
 Bunkatopics is a Topic Modeling Visualisation Method that leverages Transformers from HuggingFace through langchain. It is built with the same philosophy as [BERTopic](https://github.com/MaartenGr/BERTopic) but goes deeper in the visualization to help users grasp quickly and intuitively the content of thousands of text.
 It also allows for a supervised visual representation by letting the user create continnums with natural language.
 
+## Pipeline
+
+<img src="images/pipeline.png" width="70%" height="70%" align="center" />
+
 ## Installation
 
 ```bash
@@ -190,6 +194,14 @@ dimension_fig = bunka.get_dimensions(dimensions=[
 ```
 
 <img src="images/dimensions.png" width="50%" height="50%" align="center" />
+
+## Streamlit
+
+Run Streamlit to use BunkaTopics with a nice front-end.
+
+```bash
+python -m streamlit run streamlit/app.py 
+```
 
 ## Multilanguage
 

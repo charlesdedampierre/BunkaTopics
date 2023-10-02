@@ -175,26 +175,6 @@ fig_solo.show()
 
 <img src="images/bourdieu_one_dimension.png" width="70%" height="70%" align="center" />
 
-## Multi-dimentional Map
-
-```python
-
-dimension_fig = bunka.get_dimensions(dimensions=[
-                            "Happiness",
-                            "Sadness",
-                            "Anger",
-                            "Love",
-                            "Surprise",
-                            "Fear",
-                            "Excitement",
-                            "Disgust",
-                            "Confusion",
-                            "Gratitude",
-                        ])
-```
-
-<img src="images/dimensions.png" width="50%" height="50%" align="center" />
-
 ## Streamlit
 
 Run Streamlit to use BunkaTopics with a nice front-end.

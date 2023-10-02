@@ -60,6 +60,10 @@ class Bunka:
         df = df.reset_index(drop=True)
 
         self.docs = [Document(**row) for row in df.to_dict(orient="records")]
+
+        sentences = [doc.content for doc in self.docs]
+        ids = [doc.doc_id for doc in self.docs]
+
         df = pd.DataFrame.from_records([doc.dict() for doc in self.docs])
 
         logger.info("Extracting Terms")
@@ -83,6 +87,7 @@ class Bunka:
         df_terms = df_terms.rename(columns={"terms_indexed": "term_id"})
 
         terms = [Term(**row) for row in df_terms.to_dict(orient="records")]
+        self.terms: t.List[Term] = terms
 
         df_terms_indexed = df_terms_indexed.reset_index()
         df_terms_indexed.columns = ["doc_id", "indexed_terms"]
@@ -98,37 +103,34 @@ class Bunka:
 
         logger.info("Embedding Documents, this may take few minutes")
 
-        sentences = [doc.content for doc in self.docs]
-        ids = [doc.doc_id for doc in self.docs]
-
         # Using FAISS to index and embed the documents
 
         df_temporary = pd.DataFrame(sentences)
         loader = DataFrameLoader(df_temporary, page_content_column=0)
         documents_langchain = loader.load()
 
-        # load it into Chroma
-        vectorstore = Chroma.from_documents(documents_langchain, self.embedding_model)
-        self.vectorstore = vectorstore
-
-        # Get all embeddings
-        embeddings = vectorstore._collection.get(include=["embeddings"])["embeddings"]
-        final_ids = vectorstore._collection.get(include=["embeddings"])["ids"]
+        self.vectorstore = Chroma(embedding_function=self.embedding_model)
+        self.vectorstore.add_documents(documents_langchain)
 
         """
-        vectorstore = FAISS.from_texts(
-            texts=sentences, ids=ids, embedding=self.embedding_model
+        self.vectorstore.delete_collection()  #
+
+        # load it into Chroma
+        self.vectorstore = Chroma.from_documents(
+            documents_langchain, self.embedding_model
         )
 
-        self.vectorstore = vectorstore
-        embeddings = vectorstore.index.reconstruct_n(0, len(sentences))
-
         """
 
-        # embeddings = self.embedding_model.embed_documents(sentences)
+        # Get all embeddings
+
+        embeddings = self.vectorstore._collection.get(include=["embeddings"])[
+            "embeddings"
+        ]
+        # final_ids = vectorstore._collection.get(include=["embeddings"])["ids"]
 
         df_embeddings = pd.DataFrame(embeddings)
-        df_embeddings.index = final_ids
+        df_embeddings.index = ids
 
         emb_doc_dict = {x: y for x, y in zip(ids, embeddings)}
 
@@ -149,8 +151,6 @@ class Bunka:
         for doc in self.docs:
             doc.x = xy_dict[doc.doc_id]["x"]
             doc.y = xy_dict[doc.doc_id]["y"]
-
-        self.terms: t.List[Term] = terms
 
     def fit_transform(self, docs: t.List[Document], n_clusters=40) -> pd.DataFrame:
         self.fit(docs)

@@ -104,7 +104,7 @@ df_clean_names = bunka.get_clean_topic_name(generative_model = generative_model)
 It is possible to to Retrieval Augmented Generation (RAG) thanks to langchain integration with different Generative Models.
 
 ```python
-query = 'What are the main fight of Donald Trump ?'
+query = 'What is the  main fight of Donald Trump ?'
 res = bunka.rag_query(query = query, generative_model = generative_model, top_doc = 5)
 print(res['result'])
 ```

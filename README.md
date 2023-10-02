@@ -64,13 +64,13 @@ bunka = Bunka(embedding_model=embedding_model)
 bunka.fit(full_docs)
 
 # Get the list of topics
-df_topics = bunka.get_topics(n_clusters = 20)
+bunka.get_topics(n_clusters = 20)
 ```
 
 Then, we can visualize the topics computed
 
 ```python
-topic_fig = bunka.visualize_topics( width=800, height=800)
+bunka.visualize_topics( width=800, height=800)
 ```
 
 <img src="images/newsmap.png" width="70%" height="70%" align="center" />
@@ -94,7 +94,9 @@ generative_model = LlamaCpp(
 ) 
 generative_model.client.verbose = False
 
-df_clean_names = bunka.get_clean_topic_name(generative_model = generative_model)
+bunka.get_clean_topic_name(generative_model = generative_model)
+bunka.visualize_topics( width=800, height=800)
+
 ```
 
 <img src="images/newsmap_clean.png" width="70%" height="70%" align="center" />
@@ -135,7 +137,7 @@ CLusters are created and the names are also summarized using Generative AI.
 The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
 
 ```python
-bourdieu_fig = bunka.visualize_bourdieu(
+bunka.visualize_bourdieu(
     generative_model=generative_model,
     x_left_words=["war"],
     x_right_words=["peace"],
@@ -162,7 +164,7 @@ bourdieu_fig.show()
 It is possible to display only the distribution of the data in one continnum
 
 ```python
-fig_solo = bunka.visualize_bourdieu_one_dimension(
+bunka.visualize_bourdieu_one_dimension(
     left=["negative", "bad"],
     right=["positive"],
     width=600,
@@ -199,7 +201,7 @@ embedding_model = HuggingFaceEmbeddings(model_name="distiluse-base-multilingual-
 bunka = Bunka(embedding_model=embedding_model, language = 'fr_core_news_lg')
 
 bunka.fit(full_docs)
-df_topics = bunka.get_topics(n_clusters = 20)
+bunka.get_topics(n_clusters = 20)
 ```  
 
 ## Functionality

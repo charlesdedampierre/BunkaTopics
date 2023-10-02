@@ -8,8 +8,7 @@ from langchain.embeddings import HuggingFaceInstructEmbeddings
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (BourdieuDimension, ContinuumDimension,
-                                   Document, Term)
+from bunkatopics.datamodel import BourdieuDimension, ContinuumDimension, Document, Term
 from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topics_modeling import get_topics
@@ -55,9 +54,7 @@ def get_continuum(
 
     df_bert.index = full_emb.index
     df_bert.columns = full_emb.index
-    df_bert = df_bert.iloc[
-        -1:,
-    ].T
+    df_bert = df_bert.iloc[-1:,].T
     df_bert = df_bert.sort_values("distance", ascending=False).reset_index()
     df_bert = df_bert[1:]
     df_bert = df_bert.rename(columns={"index": "doc_id"})

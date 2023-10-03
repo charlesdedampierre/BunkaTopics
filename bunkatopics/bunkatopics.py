@@ -119,16 +119,6 @@ class Bunka:
         )
         self.vectorstore.add_documents(documents_langchain)
 
-        """
-        self.vectorstore.delete_collection()  #
-
-        # load it into Chroma
-        self.vectorstore = Chroma.from_documents(
-            documents_langchain, self.embedding_model
-        )
-
-        """
-
         # Get all embeddings
 
         embeddings = self.vectorstore._collection.get(include=["embeddings"])[

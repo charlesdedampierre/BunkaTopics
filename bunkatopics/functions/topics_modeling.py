@@ -6,10 +6,11 @@ import typing as t
 import pandas as pd
 from sklearn.cluster import KMeans
 
-from bunkatopics.datamodel import (DOC_ID, TERM_ID, TOPIC_ID, Document, Term,
-                                   Topic)
+from bunkatopics.datamodel import DOC_ID, TERM_ID, TOPIC_ID, Document, Term, Topic
 from bunkatopics.functions.topic_representation import remove_overlapping_terms
 from bunkatopics.functions.utils import specificity
+from bunkatopics.visualisation.convex_hull import get_convex_hull_coord
+from bunkatopics.datamodel import ConvexHullModel
 
 
 def get_topics(
@@ -90,5 +91,20 @@ def get_topics(
         topic.x_centroid = topic_dict[topic.topic_id]["x_centroid"]
         topic.y_centroid = topic_dict[topic.topic_id]["y_centroid"]
 
+    # Compute Convex Hull
+
+    for x in topics:
+        topic_id = x.topic_id
+        x_points = [doc.x for doc in docs if doc.topic_id == topic_id]
+        y_points = [doc.y for doc in docs if doc.topic_id == topic_id]
+
+        points = pd.DataFrame({"x": x_points, "y": y_points}).values
+
+        x_ch, y_ch = get_convex_hull_coord(points, interpolate_curve=True)
+        x_ch = list(x_ch)
+        y_ch = list(y_ch)
+
+        res = ConvexHullModel(x_coordinates=x_ch, y_coordinates=y_ch)
+        x.convex_hull = res
     # df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
     return topics

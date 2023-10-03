@@ -18,21 +18,6 @@ def visualize_topics(
     label_size_ratio=100,
 ):
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
-    try:
-        convex_hull_list = []
-        for i in set(df_docs["topic_id"]):
-            points = df_docs[df_docs["topic_id"] == i][["x", "y"]].values
-
-            # points =  points.reshape(-1, 1)
-
-            x_ch, y_ch = get_convex_hull_coord(points, interpolate_curve=True)
-            x_ch = list(x_ch)
-            y_ch = list(y_ch)
-            convex_hull_list.append(
-                ConvexHullModel(topic_id=i, x_coordinates=x_ch, y_coordinates=y_ch)
-            )
-    except:
-        pass
 
     docs_x = [doc.x for doc in docs]
     docs_y = [doc.y for doc in docs]
@@ -109,11 +94,11 @@ def visualize_topics(
         )
 
     try:
-        for convex_hull in convex_hull_list:
+        for topic in topics:
             # Create a Scatter plot with the convex hull coordinates
             trace = go.Scatter(
-                x=convex_hull.x_coordinates,
-                y=convex_hull.y_coordinates,  # Assuming y=0 for simplicity
+                x=topic.convex_hull.x_coordinates,
+                y=topic.convex_hull.y_coordinates,  # Assuming y=0 for simplicity
                 mode="lines",
                 name="Convex Hull",
                 line=dict(color="grey"),

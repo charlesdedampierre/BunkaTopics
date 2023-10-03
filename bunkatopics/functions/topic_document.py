@@ -2,12 +2,16 @@ import typing as t
 
 import pandas as pd
 
-from ..datamodel import Document, Topic
+from ..datamodel import Document, Topic, TopicRanking
 
 
 def get_top_documents(
-    docs: t.List[Document], topics: t.List[Topic], ranking_terms=20, top_docs=100
-) -> t.List[Topic]:
+    docs: t.List[Document],
+    topics: t.List[Topic],
+    ranking_terms=20,
+) -> t.List[Document]:
+    ranking_terms = 20
+
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_docs = df_docs[["doc_id", "topic_id", "term_id"]]
     df_docs = df_docs.explode("term_id").reset_index(drop=True)
@@ -24,25 +28,25 @@ def get_top_documents(
         .rename("count_topic_terms")
         .reset_index()
     )
+
     df_rank = df_rank.sort_values(
         ["topic_id", "count_topic_terms"], ascending=(True, False)
     ).reset_index(drop=True)
-    df_rank = df_rank.groupby("topic_id").head(5).reset_index(drop=True)
 
-    df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
-    df_docs = df_docs[["doc_id", "content"]]
+    df_rank["rank"] = df_rank.groupby("topic_id")["count_topic_terms"].rank(
+        method="first", ascending=False
+    )
 
-    df_rank = pd.merge(df_rank, df_docs, on="doc_id")
-    df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
-    df_topics = df_topics[["topic_id", "name"]]
+    doc_ids = list(df_rank["doc_id"])
+    topic_ids = list(df_rank["topic_id"])
+    ranks = list(df_rank["rank"])
 
-    df_rank = pd.merge(df_rank, df_topics, on="topic_id")
-    df_rank = df_rank.groupby(["topic_id"]).head(top_docs)
+    final_dict = {}
+    for doc_id, topic_id, rank in zip(doc_ids, topic_ids, ranks):
+        res = TopicRanking(topic_id=topic_id, rank=rank)
+        final_dict[doc_id] = res
 
-    df_top_doc = df_rank.groupby("topic_id")["doc_id"].apply(lambda x: list(x))
-    top_doc_topic_dict = df_top_doc.to_dict()
+    for doc in docs:
+        doc.topic_ranking = final_dict.get(doc.doc_id)
 
-    for topic in topics:
-        topic.top_doc_id = top_doc_topic_dict.get(topic.topic_id, [])
-
-    return topics
+    return docs

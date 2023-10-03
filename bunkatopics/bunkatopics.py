@@ -165,8 +165,8 @@ class Bunka:
             y_column="y",
         )
 
-        self.topics: t.List[Topic] = get_top_documents(
-            self.docs, self.topics, ranking_terms=20, top_docs=5
+        self.docs: t.List[Document] = get_top_documents(
+            self.docs, self.topics, ranking_terms=20
         )
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
         return df_topics

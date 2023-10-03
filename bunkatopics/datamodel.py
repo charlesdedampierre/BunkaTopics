@@ -18,6 +18,11 @@ class BourdieuDimension(BaseModel):
     distance: float
 
 
+class TopicRanking(BaseModel):
+    topic_id: TOPIC_ID
+    rank: int = None
+
+
 class Document(BaseModel):
     doc_id: DOC_ID
     content: str
@@ -25,6 +30,7 @@ class Document(BaseModel):
     x: t.Optional[float] = None
     y: t.Optional[float] = None
     topic_id: t.Optional[TOPIC_ID] = None
+    topic_ranking: TopicRanking = None
     term_id: t.Optional[t.List[TERM_ID]] = None
     embedding: t.Optional[t.List[float]] = Field(None, repr=False)
     bourdieu_dimensions: t.List[BourdieuDimension] = []

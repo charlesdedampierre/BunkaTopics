@@ -127,13 +127,21 @@ def get_df_prompt(topics: t.List[Topic], docs: t.List[Document]) -> pd.DataFrame
 
 
     """
-    df_for_prompt = {
-        "topic_id": [x.topic_id for x in topics],
-        "doc_id": [x.top_doc_id for x in topics],
-    }
 
-    df_for_prompt = pd.DataFrame(df_for_prompt)
-    df_for_prompt = df_for_prompt.explode("doc_id")
+    docs_with_ranks = [x for x in docs if x.topic_ranking is not None]
+
+    df_for_prompt = pd.DataFrame(
+        {
+            "topic_id": [x.topic_ranking.topic_id for x in docs_with_ranks],
+            "rank": [x.topic_ranking.rank for x in docs_with_ranks],
+            "doc_id": [x.doc_id for x in docs_with_ranks],
+        }
+    )
+
+    df_for_prompt = df_for_prompt.sort_values(
+        ["topic_id", "rank"], ascending=(False, True)
+    )
+    df_for_prompt = df_for_prompt[["topic_id", "doc_id"]]
 
     df_doc = pd.DataFrame(
         {

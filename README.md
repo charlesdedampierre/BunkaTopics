@@ -211,7 +211,7 @@ Here are all the things you can do with Bunkatopics
 
 ### Common
 
-Below, you will find an overview of common functions in BERTopic.
+Below, you will find an overview of common functions in Bunkatopics.
 
 | Method | Code  |
 |-----------------------|---|

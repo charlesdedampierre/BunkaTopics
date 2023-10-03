@@ -35,7 +35,7 @@ class BunkaTestCase(unittest.TestCase):
         self.bunka.fit(docs)
 
     def test_pipeline(self):
-        # Test Topic Modeling
+        # test Topic Modeling
         n_clusters = 2
         df_topics = self.bunka.get_topics(n_clusters=n_clusters)
         self.assertEqual(len(df_topics), n_clusters)
@@ -44,7 +44,7 @@ class BunkaTestCase(unittest.TestCase):
         topic_fig = self.bunka.visualize_topics(width=800, height=800)
         self.assertIsInstance(topic_fig, go.Figure)
 
-        # Test Bourdieu
+        # test Bourdieu Map
         bourdieu_fig = self.bunka.visualize_bourdieu(
             generative_model=generative_model,
             x_left_words=["past"],

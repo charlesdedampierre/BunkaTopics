@@ -31,7 +31,7 @@ class Document(BaseModel):
 
 
 class ConvexHullModel(BaseModel):
-    topic_id: TOPIC_ID
+    # topic_id: TOPIC_ID
     x_coordinates: t.Optional[t.List[float]] = None
     y_coordinates: t.Optional[t.List[float]] = None
 
@@ -46,6 +46,7 @@ class Topic(BaseModel):
     size: t.Optional[int] = None
     top_doc_id: t.Optional[t.List[DOC_ID]] = None
     top_term_id: t.Optional[t.List[TERM_ID]] = None
+    convex_hull: t.Optional[ConvexHullModel] = Field(None, repr=False)
 
 
 class Term(BaseModel):

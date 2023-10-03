@@ -41,12 +41,15 @@ if __name__ == "__main__":
     bunka.fit(full_docs)
 
     # Topic Modeling
-    df_topics = bunka.get_topics(n_clusters=4)
+    df_topics = bunka.get_topics(n_clusters=2)
     topic_fig = bunka.visualize_topics(width=800, height=800)
     topic_fig.show()
 
     # Topic Modeling Clean
-    df_topics = bunka.get_clean_topic_name(generative_model=generative_model)
+    df_topics = bunka.get_clean_topic_name(
+        generative_model=generative_model,
+        use_doc=False,
+    )
     topic_fig_clean = bunka.visualize_topics(width=800, height=800)
     topic_fig_clean.show()
 

@@ -7,6 +7,8 @@ import os
 import typing as t
 import uuid
 import warnings
+import string
+import random
 
 import pandas as pd
 import plotly.express as px
@@ -109,7 +111,12 @@ class Bunka:
         loader = DataFrameLoader(df_temporary, page_content_column=0)
         documents_langchain = loader.load()
 
-        self.vectorstore = Chroma(embedding_function=self.embedding_model)
+        characters = string.ascii_letters + string.digits
+        random_string = "".join(random.choice(characters) for _ in range(20))
+
+        self.vectorstore = Chroma(
+            embedding_function=self.embedding_model, collection_name=random_string
+        )
         self.vectorstore.add_documents(documents_langchain)
 
         """
@@ -189,7 +196,9 @@ class Bunka:
 
         return response
 
-    def get_clean_topic_name(self, generative_model) -> pd.DataFrame:
+    def get_clean_topic_name(
+        self, generative_model, use_doc=False, context="everything"
+    ) -> pd.DataFrame:
         """
 
         Get the topic name using Generative AI
@@ -197,7 +206,7 @@ class Bunka:
         """
 
         self.topics: t.List[Topic] = get_clean_topic_all(
-            generative_model, self.topics, self.docs
+            generative_model, self.topics, self.docs, use_doc=use_doc, context=context
         )
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
 
@@ -233,6 +242,8 @@ class Bunka:
         topic_terms=2,
         topic_top_terms_overall=500,
         topic_gen_name=False,
+        manual_axis_name=None,
+        use_doc_gen_topic=False,
     ) -> go.Figure:
         fig, self.df_bourdieu = visualize_bourdieu(
             self.embedding_model,
@@ -252,6 +263,8 @@ class Bunka:
             topic_n_clusters=topic_n_clusters,
             topic_terms=topic_terms,
             topic_top_terms_overall=topic_top_terms_overall,
+            manual_axis_name=manual_axis_name,
+            use_doc_gen_topic=use_doc_gen_topic,
         )
 
         return fig

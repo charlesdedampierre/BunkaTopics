@@ -195,8 +195,10 @@ def visualize_bourdieu(
     topic_terms: int = 2,
     topic_ngrams: list = [1, 2],
     display_percent: bool = True,
+    use_doc_gen_topic: bool = False,
     label_size_ratio_label: int = 50,
     topic_top_terms_overall: int = 500,
+    manual_axis_name: dict = None,
 ):
     # Reset
     for doc in docs:
@@ -274,9 +276,9 @@ def visualize_bourdieu(
         template="simple_white",
         height=height,
         width=width,
-        marginal_x="histogram",
-        marginal_y="histogram",
-        color_discrete_sequence=["grey"],
+        # marginal_x="histogram",
+        # marginal_y="histogram",
+        # color_discrete_sequence=["grey"],
     )
 
     fig2 = px.scatter(
@@ -295,6 +297,18 @@ def visualize_bourdieu(
     fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=True)
     fig.update_yaxes(showgrid=False, showticklabels=False, zeroline=True)
 
+    if manual_axis_name is None:
+        y_top_name = y_top_words
+        y_bottom_name = y_bottom_words
+        x_left_name = x_left_words
+        x_right_name = x_right_words
+
+    else:
+        y_top_name = manual_axis_name["y_top_name"]
+        y_bottom_name = manual_axis_name["y_bottom_name"]
+        x_left_name = manual_axis_name["x_left_name"]
+        x_right_name = manual_axis_name["x_right_name"]
+
     fig.update_layout(
         annotations=[
             dict(
@@ -302,7 +316,7 @@ def visualize_bourdieu(
                 y=max(df_fig[y_axis_name]),
                 xref="x",
                 yref="y",
-                text=y_top_words,
+                text=y_top_name,
                 showarrow=False,
                 xanchor="right",
                 yanchor="top",
@@ -313,7 +327,7 @@ def visualize_bourdieu(
                 y=min(df_fig[y_axis_name]),
                 xref="x",
                 yref="y",
-                text=y_bottom_words,
+                text=y_bottom_name,
                 showarrow=False,
                 xanchor="left",
                 yanchor="bottom",
@@ -324,7 +338,7 @@ def visualize_bourdieu(
                 y=0,
                 xref="x",
                 yref="y",
-                text=x_left_words,
+                text=x_left_name,
                 showarrow=False,
                 xanchor="right",
                 yanchor="top",
@@ -335,7 +349,7 @@ def visualize_bourdieu(
                 y=0,
                 xref="x",
                 yref="y",
-                text=x_right_words,
+                text=x_right_name,
                 showarrow=False,
                 xanchor="left",
                 yanchor="bottom",
@@ -373,7 +387,10 @@ def visualize_bourdieu(
             )
 
             bourdieu_topics = get_clean_topic_all(
-                generative_model, topics=bourdieu_topics, docs=new_docs
+                generative_model,
+                topics=bourdieu_topics,
+                docs=new_docs,
+                use_doc=use_doc_gen_topic,
             )
 
         label_size_ratio_clusters = 100
@@ -465,5 +482,9 @@ def visualize_bourdieu(
             ),
             opacity=opacity,
         )
+
+    # Update the x-axis and y-axis labels
+    fig.update_xaxes(title_text="")
+    fig.update_yaxes(title_text="")
 
     return fig, df_bourdieu

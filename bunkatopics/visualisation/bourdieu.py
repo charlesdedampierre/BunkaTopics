@@ -258,7 +258,7 @@ def visualize_bourdieu(
     df_fig = df_fig.pivot(index="doc_id", columns="names", values="coordinates")
     df_fig = df_fig.reset_index()
     df_fig = pd.merge(df_content, df_fig, on="doc_id")
-    df_fig["content_plotly"] = df_fig["content"].apply(lambda x: wrap_by_word(x, 10))
+    df_fig["Text"] = df_fig["content"].apply(lambda x: wrap_by_word(x, 10))
 
     x_axis_name = list(dict_bourdieu.keys())[0]
     y_axis_name = list(dict_bourdieu.keys())[1]
@@ -268,6 +268,7 @@ def visualize_bourdieu(
     y_top_words = dict_bourdieu[y_axis_name]["left_words"]
     y_bottom_words = dict_bourdieu[y_axis_name]["right_words"]
 
+    """
     fig = px.density_contour(
         df_fig,
         x=x_axis_name,
@@ -280,12 +281,12 @@ def visualize_bourdieu(
         # marginal_y="histogram",
         # color_discrete_sequence=["grey"],
     )
-
-    fig2 = px.scatter(
+    """
+    fig = px.scatter(
         df_fig,
         x=x_axis_name,
         y=y_axis_name,
-        hover_data=["content_plotly"],
+        hover_data=["Text"],
         template="simple_white",
         height=height,
         width=width,
@@ -293,9 +294,11 @@ def visualize_bourdieu(
         title="Bourdieu Plot",
         color_discrete_sequence=["blue"],
     )
-    fig.add_traces(fig2.data)
+    # fig.add_traces(fig2.data)
     fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=True)
     fig.update_yaxes(showgrid=False, showticklabels=False, zeroline=True)
+    # fig.update_yaxes(visible=False, showticklabels=False)
+    # fig.update_xaxes(visible=False, showticklabels=False)
 
     if manual_axis_name is None:
         y_top_name = y_top_words
@@ -382,9 +385,8 @@ def visualize_bourdieu(
         )
 
         if topic_gen_name:
-            bourdieu_topics = get_top_documents(
-                new_docs, bourdieu_topics, ranking_terms=20, top_docs=5
-            )
+            # Get top documents for the generative AI query
+            new_docs = get_top_documents(new_docs, bourdieu_topics, ranking_terms=20)
 
             bourdieu_topics = get_clean_topic_all(
                 generative_model,

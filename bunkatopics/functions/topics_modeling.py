@@ -92,19 +92,21 @@ def get_topics(
         topic.y_centroid = topic_dict[topic.topic_id]["y_centroid"]
 
     # Compute Convex Hull
+    try:
+        for x in topics:
+            topic_id = x.topic_id
+            x_points = [doc.x for doc in docs if doc.topic_id == topic_id]
+            y_points = [doc.y for doc in docs if doc.topic_id == topic_id]
 
-    for x in topics:
-        topic_id = x.topic_id
-        x_points = [doc.x for doc in docs if doc.topic_id == topic_id]
-        y_points = [doc.y for doc in docs if doc.topic_id == topic_id]
+            points = pd.DataFrame({"x": x_points, "y": y_points}).values
 
-        points = pd.DataFrame({"x": x_points, "y": y_points}).values
+            x_ch, y_ch = get_convex_hull_coord(points, interpolate_curve=True)
+            x_ch = list(x_ch)
+            y_ch = list(y_ch)
 
-        x_ch, y_ch = get_convex_hull_coord(points, interpolate_curve=True)
-        x_ch = list(x_ch)
-        y_ch = list(y_ch)
-
-        res = ConvexHullModel(x_coordinates=x_ch, y_coordinates=y_ch)
-        x.convex_hull = res
+            res = ConvexHullModel(x_coordinates=x_ch, y_coordinates=y_ch)
+            x.convex_hull = res
+    except:
+        pass
     # df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
     return topics

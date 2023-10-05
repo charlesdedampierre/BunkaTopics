@@ -11,7 +11,9 @@ from bunkatopics.datamodel import Document, Topic
 # Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
 
 
-promp_template_topics_terms = """ 
+promp_template_topics_terms = """<s>[INST] <<SYS>>
+You are a helpful, respectful and honest assistant in Topic Modeling. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
+<</SYS>>
 
 I have data about {context}
 
@@ -21,13 +23,16 @@ Within the data I have a topic that is described the following keywords:
 Here are some examples of documents separated in the topic:
 {documents}:
 
-Based on the keywords and on the topic information about the topic, create a short label that summarizes best the topic.
+Based on the keywords and on the topic information about the topic, create a label in 4 or 5 words that summarizes best the topic.
 
-Only give the name of the topic and nothing else:
+Only give the name of the topic and nothing else:[/INST]
 
 Topic Name:"""
 
-promp_template_topics_terms_no_docs = """
+promp_template_topics_terms_no_docs = """<s>[INST] <<SYS>>
+You are a helpful, respectful and honest assistant in Topic Modeling. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
+<</SYS>>
+
 
 I have data about {context}
 
@@ -36,7 +41,7 @@ I have a topic that is described the following keywords:
 
 Based on the keywrods about the topic, create a short label that summarizes best the topic.
 
-Only give the name of the topic and nothing else:
+Only give the name of the topic and nothing else:[/INST]
 
 Topic Name:"""
 

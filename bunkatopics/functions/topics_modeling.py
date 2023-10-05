@@ -6,11 +6,11 @@ import typing as t
 import pandas as pd
 from sklearn.cluster import KMeans
 
-from bunkatopics.datamodel import DOC_ID, TERM_ID, TOPIC_ID, Document, Term, Topic
+from bunkatopics.datamodel import (DOC_ID, TERM_ID, TOPIC_ID, ConvexHullModel,
+                                   Document, Term, Topic)
 from bunkatopics.functions.topic_representation import remove_overlapping_terms
 from bunkatopics.functions.utils import specificity
 from bunkatopics.visualisation.convex_hull import get_convex_hull_coord
-from bunkatopics.datamodel import ConvexHullModel
 
 
 def get_topics(

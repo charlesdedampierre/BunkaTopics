@@ -4,11 +4,11 @@ from numba.core.errors import NumbaDeprecationWarning
 
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 import os
+import random
+import string
 import typing as t
 import uuid
 import warnings
-import string
-import random
 
 import pandas as pd
 import plotly.express as px
@@ -22,6 +22,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
+from bunkatopics.visualisation.query_visualisation import plot_query
 
 from .bunka_logger import logger
 from .datamodel import DOC_ID, TERM_ID, TOPIC_ID, Document, Term, Topic
@@ -271,6 +272,19 @@ class Bunka:
             label_size_ratio=label_size_ratio,
         )
         return fig
+
+    def visu_query(
+        self, query="What is firearm?", min_score=0.8, width=600, height=300
+    ):
+        fig, percent = plot_query(
+            embedding_model=self.embedding_model,
+            docs=self.docs,
+            query=query,
+            min_score=min_score,
+            width=width,
+            height=height,
+        )
+        return fig, percent
 
     def visualize_bourdieu_one_dimension(
         self,

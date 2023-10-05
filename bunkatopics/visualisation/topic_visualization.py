@@ -17,8 +17,6 @@ def visualize_topics(
     height=1000,
     label_size_ratio=100,
 ):
-    df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
-
     docs_x = [doc.x for doc in docs]
     docs_y = [doc.y for doc in docs]
     docs_topic_id = [doc.topic_id for doc in docs]
@@ -61,6 +59,7 @@ def visualize_topics(
                 x=docs_x,
                 y=docs_y,
                 mode="markers",
+                marker=dict(opacity=0.5),  # Set the alpha value here
                 # marker=dict(size=sizes, color=colors),
                 # marker=dict(color="#000000"),
                 customdata=nk,

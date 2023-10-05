@@ -8,6 +8,7 @@ __pycache__/
 
 #hidden notebooks
 notebooks_test/
+json_examples/
 
 # Distribution / packaging
 .Python

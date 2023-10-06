@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from .visu_utils import wrap_by_word
 from sklearn.metrics.pairwise import cosine_similarity
 
 from bunkatopics.datamodel import Document
@@ -29,6 +30,7 @@ def plot_query(
     df_unique = pd.DataFrame({"ids": ids, "score": similarities, "content": contents})
     df_unique = df_unique.sort_values("score", ascending=False).reset_index(drop=True)
     df_unique = df_unique[df_unique["score"] > min_score]
+    df_unique["content"] = df_unique["content"].apply(lambda x: wrap_by_word(x, 10))
 
     percent = round(len(df_unique) / len(ids) * 100, 2)
 

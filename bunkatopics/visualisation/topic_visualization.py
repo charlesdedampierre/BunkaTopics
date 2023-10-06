@@ -1,11 +1,9 @@
 import typing as t
 
 import numpy as np
-import pandas as pd
 import plotly.graph_objects as go
 
-from ..datamodel import ConvexHullModel, Document, Topic
-from .convex_hull import get_convex_hull_coord
+from ..datamodel import Document, Topic
 from .visu_utils import wrap_by_word
 
 

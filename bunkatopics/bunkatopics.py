@@ -188,7 +188,7 @@ class Bunka:
         return response
 
     def get_clean_topic_name(
-        self, generative_model, use_doc=False, context="everything"
+        self, generative_model, language="english", use_doc=False, context="everything"
     ) -> pd.DataFrame:
         """
 
@@ -197,7 +197,12 @@ class Bunka:
         """
 
         self.topics: t.List[Topic] = get_clean_topic_all(
-            generative_model, self.topics, self.docs, use_doc=use_doc, context=context
+            generative_model,
+            self.topics,
+            self.docs,
+            language=language,
+            use_doc=use_doc,
+            context=context,
         )
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
 
@@ -232,6 +237,7 @@ class Bunka:
         topic_n_clusters=10,
         topic_terms=2,
         topic_top_terms_overall=500,
+        gen_topic_language="english",
         topic_gen_name=False,
         manual_axis_name=None,
         use_doc_gen_topic=False,
@@ -251,6 +257,7 @@ class Bunka:
             label_size_ratio_label=label_size_ratio_label,
             clustering=clustering,
             topic_gen_name=topic_gen_name,
+            gen_topic_language=gen_topic_language,
             topic_n_clusters=topic_n_clusters,
             topic_terms=topic_terms,
             topic_top_terms_overall=topic_top_terms_overall,

@@ -10,40 +10,7 @@ from bunkatopics.datamodel import Document, Topic
 
 # Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
 
-
-promp_template_topics_terms = """<s>[INST] <<SYS>>
-You are a helpful, respectful and honest assistant in Topic Modeling. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
-<</SYS>>
-
-I have data about {context}
-
-Within the data I have a topic that is described the following keywords: 
-{terms}
-
-Here are some examples of documents separated in the topic:
-{documents}:
-
-Based on the keywords and on the topic information about the topic, create a label in 4 or 5 words that summarizes best the topic.
-
-Only give the name of the topic and nothing else:[/INST]
-
-Topic Name:"""
-
-promp_template_topics_terms_no_docs = """<s>[INST] <<SYS>>
-You are a helpful, respectful and honest assistant in Topic Modeling. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
-<</SYS>>
-
-
-I have data about {context}
-
-I have a topic that is described the following keywords: 
-{terms}
-
-Based on the keywrods about the topic, create a short label that summarizes best the topic.
-
-Only give the name of the topic and nothing else:[/INST]
-
-Topic Name:"""
+from .prompts import promp_template_topics_terms, promp_template_topics_terms_no_docs
 
 
 TERM_ID = str
@@ -53,6 +20,7 @@ def get_clean_topic(
     generative_model,
     specific_terms: t.List[str],
     specific_documents: t.List[str],
+    language="english",
     top_doc: int = 3,
     top_terms: int = 10,
     use_doc=True,
@@ -70,6 +38,7 @@ def get_clean_topic(
                 "terms": ", ".join(specific_terms),
                 "documents": " \n".join(specific_documents),
                 "context": context,
+                "language": language,
             }
         )
     else:
@@ -82,6 +51,7 @@ def get_clean_topic(
             {
                 "terms": ", ".join(specific_terms),
                 "context": context,
+                "language": language,
             }
         )
 
@@ -94,6 +64,7 @@ def get_clean_topic_all(
     generative_model,
     topics: t.List[Topic],
     docs: t.List[Document],
+    language: str = "english",
     top_doc: int = 3,
     top_terms: int = 10,
     use_doc=False,
@@ -110,6 +81,7 @@ def get_clean_topic_all(
     for topic_ic, x, y in zip(topic_ids, specific_terms, top_doc_contents):
         clean_topic_name = get_clean_topic(
             generative_model,
+            language=language,
             specific_terms=x,
             specific_documents=y,
             use_doc=use_doc,

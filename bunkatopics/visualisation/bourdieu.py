@@ -200,7 +200,8 @@ def visualize_bourdieu(
     label_size_ratio_label: int = 50,
     topic_top_terms_overall: int = 500,
     manual_axis_name: dict = None,
-    radius_size=0.3,
+    radius_size: float = 0.3,
+    convex_hull: bool = True,
 ):
     # Reset
     for doc in docs:
@@ -445,6 +446,23 @@ def visualize_bourdieu(
                 bgcolor="white",
                 opacity=1,
             )
+
+        if convex_hull:
+            try:
+                for topic in bourdieu_topics:
+                    # Create a Scatter plot with the convex hull coordinates
+                    trace = go.Scatter(
+                        x=topic.convex_hull.x_coordinates,
+                        y=topic.convex_hull.y_coordinates,  # Assuming y=0 for simplicity
+                        mode="lines",
+                        name="Convex Hull",
+                        line=dict(color="grey"),
+                        showlegend=False,
+                    )
+
+                    fig.add_trace(trace)
+            except:
+                pass
 
     if display_percent:
         # Calculate the percentage for every box

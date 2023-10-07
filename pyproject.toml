@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "bunkatopics"
-version = "0.39"
+version = "0.40"
 description = "Advanced Topic Visualization"
-authors = ["Charles De Dampierre <charles.de-dampierre@hec.edu>"]
+authors = ["Charles De Dampierre <charlesdedampierre@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -24,6 +24,8 @@ python-dotenv = "^1.0.0"
 matplotlib = "^3.7.2"
 datasets = "^2.14.5"
 streamlit = "^1.26.0"
+chromadb = "^0.4.13"
+pytest = "^7.4.2"
 
 [build-system]
 requires = ["poetry-core"]

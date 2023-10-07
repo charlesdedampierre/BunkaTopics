@@ -118,7 +118,9 @@ class Bunka:
         self.vectorstore = Chroma(
             embedding_function=self.embedding_model, collection_name=random_string
         )
-        self.vectorstore.add_documents(documents_langchain)
+
+        self.vectorstore.add_texts(texts=sentences, ids=ids)
+        # self.vectorstore.add_documents(documents_langchain)
 
         # Get all embeddings
 

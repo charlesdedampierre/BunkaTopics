@@ -18,11 +18,26 @@ st.title("Topic Modeling with Bunka")
 # Upload CSV file
 csv_file = st.file_uploader("Upload a CSV file", type=["csv"])
 
-gen_ai = False
+gen_ai = True
 
-# from langchain.llms import OpenAI
-# openai_api_key = st.text_input("Enter Your OpenAI API-key")
-# generative_model = OpenAI(openai_api_key=openai_api_key)
+from langchain.llms import LlamaCpp
+
+generative_model = LlamaCpp(
+    model_path=os.getenv("MODEL_PATH"),
+    n_ctx=2048,
+    temperature=0.75,
+    max_tokens=2000,
+    top_p=1,
+    verbose=False,
+)
+generative_model.client.verbose = False
+
+
+# Initialize Bunka and fit it with the text data (cache the fit operation)
+@st.cache_resource
+def fit_bunka(full_docs):
+    bunka.fit(full_docs)
+    return bunka
 
 
 if csv_file is not None:
@@ -39,19 +54,18 @@ if csv_file is not None:
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
 
-    bunka.fit(full_docs)
+    bunka = fit_bunka(full_docs)
 
     st.subheader("Topic Modeling Visualization")
     num_clusters = 5
     df_topics = bunka.get_topics(n_clusters=num_clusters)
-    # if gen_ai:
-    # df_clean_names = bunka.get_clean_topic_name(generative_model=generative_model)
+    if gen_ai:
+        df_clean_names = bunka.get_clean_topic_name(generative_model=generative_model)
 
     # Visualize topics
     topic_fig = bunka.visualize_topics(width=800, height=800)
     st.plotly_chart(topic_fig)
 
-    """
     # Add a section for customizing the visualize_bourdieu parameters
     st.sidebar.title("Customize visualize_bourdieu Parameters")
 
@@ -81,5 +95,3 @@ if csv_file is not None:
         )
         st.subheader("Bourdieu Visualization")
         st.plotly_chart(bourdieu_fig)
-
-    """

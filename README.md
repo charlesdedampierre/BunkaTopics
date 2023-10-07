@@ -1,4 +1,4 @@
-[![PyPI - Python](https://img.shields.io/badge/python-v3.9+-blue.svg)](https://pypi.org/project/bertopic/)
+[![PyPI - Python](https://img.shields.io/badge/python-v3.10-blue.svg)](https://pypi.org/project/bunkatopics/)
 [![PyPI - PyPi](https://img.shields.io/pypi/v/bunkatopics)](https://pypi.org/project/bunkatopics/)
 [![Downloads](https://static.pepy.tech/badge/bunkatopics)](https://pepy.tech/project/bunkatopics)
 [![Downloads](https://static.pepy.tech/badge/bunkatopics/month)](https://pepy.tech/project/bunkatopics)
@@ -16,7 +16,7 @@ Bunkatopics is built on top of [langchain](<https://python.langchain.com/docs/ge
 First, create a new virtual environment using pyenv
 
 ```bash
-pyenv virtualenv 3.9 bunkatopics_env
+pyenv virtualenv 3.10 bunkatopics_env
 ```
 
 Activate the environment

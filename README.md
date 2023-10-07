@@ -11,11 +11,31 @@ Bunkatopics is a Topic Modeling Visualisation, Frame Analysis & Retrieval Augmen
 
 Bunkatopics is built on top of [langchain](<https://python.langchain.com/docs/get_started/introduction>).
 
+## Installation via pip
+
+First, create a new virtual environment using pyenv
+
+```bash
+pyenv virtualenv 3.9 bunkatopics_env
+```
+
+Activate the environment
+
+```bash
+pyenv activate bunkatopics_env
+```
+
+Then Install the Bunkatopics package:
+
+```bash
+pip install bunkatopics==0.41
+```
+
 ## Pipeline
 
 <img src="images/pipeline.png" width="70%" height="70%" align="center" />
 
-## Installation
+## Installation via Git Clone
 
 ```bash
 pip install poetry
@@ -29,13 +49,13 @@ poetry install # This will install all packages in the .lock file inside a virtu
 poetry shell
 ```
 
+## Quick Start
+
 Install the spacy tokenizer model for english:
 
 ```bash
 python -m spacy download en_core_web_sm
 ```
-
-## Quick Start
 
 We start by Loading Trump data from HuggingFace datasets
 

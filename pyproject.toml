@@ -5,6 +5,7 @@ description = "Advanced Topic Visualization"
 authors = ["Charles De Dampierre <charlesdedampierre@gmail.com>"]
 readme = "README.md"
 
+
 [tool.poetry.dependencies]
 python = "^3.10"
 umap-learn = "^0.5.3"

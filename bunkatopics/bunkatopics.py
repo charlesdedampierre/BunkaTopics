@@ -243,6 +243,7 @@ class Bunka:
         topic_gen_name=False,
         manual_axis_name=None,
         use_doc_gen_topic=False,
+        radius_size: float = 0.3,
     ) -> go.Figure:
         fig, self.df_bourdieu = visualize_bourdieu(
             self.embedding_model,
@@ -265,6 +266,7 @@ class Bunka:
             topic_top_terms_overall=topic_top_terms_overall,
             manual_axis_name=manual_axis_name,
             use_doc_gen_topic=use_doc_gen_topic,
+            radius_size=radius_size,
         )
 
         return fig

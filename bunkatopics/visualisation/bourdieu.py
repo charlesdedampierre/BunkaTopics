@@ -280,6 +280,8 @@ def visualize_bourdieu(
 
     outside_ids = list(df_fig["doc_id"][df_fig["outside"] == "1"])
 
+    df_fig = df_fig[df_fig["doc_id"].isin(outside_ids)]
+
     df_fig = pd.merge(df_content, df_fig, on="doc_id")
     df_fig["Text"] = df_fig["content"].apply(lambda x: wrap_by_word(x, 10))
 
@@ -291,39 +293,83 @@ def visualize_bourdieu(
     y_top_words = dict_bourdieu[y_axis_name]["left_words"]
     y_bottom_words = dict_bourdieu[y_axis_name]["right_words"]
 
-    """
-    fig = px.density_contour(
-        df_fig,
-        x=x_axis_name,
-        y=y_axis_name,
-        # hover_data=["content_plotly"],
-        template="simple_white",
-        height=height,
-        width=width,
-        # marginal_x="histogram",
-        # marginal_y="histogram",
-        # color_discrete_sequence=["grey"],
+    fig = go.Figure(
+        go.Histogram2dContour(
+            x=df_fig[x_axis_name],
+            y=df_fig[y_axis_name],
+            colorscale="delta",
+            showscale=False,
+        )
     )
-    """
-    fig = px.scatter(
+
+    # Add axis lines for x=0 and y=0
+    fig.add_shape(
+        type="line",
+        x0=0,
+        x1=0,
+        y0=min(df_fig[y_axis_name]),
+        y1=max(df_fig[y_axis_name]),
+        line=dict(color="white", width=3),  # Customize line color and width
+    )
+
+    fig.add_shape(
+        type="line",
+        x0=min(df_fig[x_axis_name]),
+        x1=max(df_fig[x_axis_name]),
+        y0=0,
+        y1=0,
+        line=dict(color="white", width=3),  # Customize line color and width
+    )
+
+    fig.update_traces(contours_coloring="fill", contours_showlabels=False)
+
+    fig.update_layout(
+        font_size=25,
+        width=width,
+        height=height,
+        margin=dict(
+            t=width / 100000,
+            b=width / 100000,
+            r=width / 100000,
+            l=width / 100000,
+        ),
+        title=dict(font=dict(size=width / 40)),
+    )
+
+    scatter_fig = px.scatter(
         df_fig,
         x=x_axis_name,
         y=y_axis_name,
         color="outside",
-        color_discrete_map={"1": "blue", "0": "grey"},
+        color_discrete_map={"1": "white", "0": "grey"},
         hover_data=["Text"],
         template="simple_white",
         height=height,
         width=width,
-        opacity=0.2,
+        opacity=0.3,
         title="Bourdieu Plot",
         # color_discrete_sequence=["blue"],
     )
+
+    # Combine the two figures
+    for trace in scatter_fig.data:
+        fig.add_trace(trace)
+
     # fig.add_traces(fig2.data)
-    fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=True)
-    fig.update_yaxes(showgrid=False, showticklabels=False, zeroline=True)
-    # fig.update_yaxes(visible=False, showticklabels=False)
-    # fig.update_xaxes(visible=False, showticklabels=False)
+    fig.update_xaxes(
+        showgrid=False,
+        showticklabels=False,
+        zeroline=True,
+        zerolinecolor="white",
+        zerolinewidth=2,
+    )
+    fig.update_yaxes(
+        showgrid=False,
+        showticklabels=False,
+        zeroline=True,
+        zerolinecolor="white",
+        zerolinewidth=2,
+    )
 
     if manual_axis_name is None:
         y_top_name = y_top_words
@@ -348,7 +394,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="right",
                 yanchor="top",
-                font=dict(size=width / label_size_ratio_label),
+                font=dict(size=width / label_size_ratio_label, color="white"),
             ),
             dict(
                 x=0,
@@ -359,7 +405,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="left",
                 yanchor="bottom",
-                font=dict(size=width / label_size_ratio_label),
+                font=dict(size=width / label_size_ratio_label, color="white"),
             ),
             dict(
                 x=max(df_fig[x_axis_name]),
@@ -370,7 +416,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="right",
                 yanchor="top",
-                font=dict(size=width / label_size_ratio_label),
+                font=dict(size=width / label_size_ratio_label, color="white"),
             ),
             dict(
                 x=min(df_fig[x_axis_name]),
@@ -381,7 +427,7 @@ def visualize_bourdieu(
                 showarrow=False,
                 xanchor="left",
                 yanchor="bottom",
-                font=dict(size=width / label_size_ratio_label),
+                font=dict(size=width / label_size_ratio_label, color="white"),
             ),
         ]
     )

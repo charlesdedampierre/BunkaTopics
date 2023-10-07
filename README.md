@@ -158,6 +158,19 @@ CLusters are created and the names are also summarized using Generative AI.
 The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
 
 ```python
+
+from langchain.llms import LlamaCpp
+
+
+generative_model = LlamaCpp(
+    model_path=MODEL_PATH # Add the path on your local computer
+    n_ctx=2048,
+    temperature=0.75,
+    max_tokens=2000,
+    top_p=1,
+    verbose=False,
+) 
+
 manual_axis_name = {
                     'x_left_name':'positive',
                     'x_right_name':'negative',
@@ -166,7 +179,7 @@ manual_axis_name = {
                     }
 
 bourdieu_fig = bunka.visualize_bourdieu(
-    generative_model=open_ai_generative_model,
+    generative_model=generative_model,
     x_left_words=["this is a positive content"],
     x_right_words=["this is a negative content"],
     y_top_words=["this is about women"],
@@ -188,24 +201,6 @@ bourdieu_fig.show()
 ```
 
 <img src="images/bourdieu.png" width="70%" height="70%" align="center" />
-
-## One-dimentional Map
-
-It is possible to display only the distribution of the data in one continnum
-
-```python
-bunka.visualize_bourdieu_one_dimension(
-    left=["negative", "bad"],
-    right=["positive"],
-    width=600,
-    height=600,
-    explainer=False,
-)
-
-fig_solo.show()
-```
-
-<img src="images/bourdieu_one_dimension.png" width="70%" height="70%" align="center" />
 
 ## Streamlit
 

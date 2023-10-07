@@ -302,11 +302,21 @@ def visualize_bourdieu(
         )
     )
 
+    # Set the axis to the max value to get a square
+    max_val = max(
+        abs(min(df_fig[y_axis_name])),
+        abs(max(df_fig[y_axis_name])),
+        abs(max(df_fig[x_axis_name])),
+        abs(min(df_fig[x_axis_name])),
+    )
+
     # Add axis lines for x=0 and y=0
     fig.add_shape(
         type="line",
         x0=0,
         x1=0,
+        # y0=-max_val,
+        # y1=max_val,
         y0=min(df_fig[y_axis_name]),
         y1=max(df_fig[y_axis_name]),
         line=dict(color="white", width=3),  # Customize line color and width
@@ -316,6 +326,8 @@ def visualize_bourdieu(
         type="line",
         x0=min(df_fig[x_axis_name]),
         x1=max(df_fig[x_axis_name]),
+        # x0=-max_val,
+        # x1=max_val,
         y0=0,
         y1=0,
         line=dict(color="white", width=3),  # Customize line color and width

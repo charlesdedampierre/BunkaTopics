@@ -200,6 +200,7 @@ def visualize_bourdieu(
     label_size_ratio_label: int = 50,
     topic_top_terms_overall: int = 500,
     manual_axis_name: dict = None,
+    radius_size=0.3,
 ):
     # Reset
     for doc in docs:
@@ -258,6 +259,26 @@ def visualize_bourdieu(
     df_fig = df_bourdieu[["doc_id", "coordinates", "names"]]
     df_fig = df_fig.pivot(index="doc_id", columns="names", values="coordinates")
     df_fig = df_fig.reset_index()
+
+    # Remove the data inside the radius of 1/3 of max because central data does not mean mucj
+    df_fig["cont1"] = df_fig["cont1"].astype(float)
+    df_fig["cont2"] = df_fig["cont2"].astype(float)
+
+    import numpy as np
+
+    x_values = df_fig["cont1"].values
+    y_values = df_fig["cont2"].values
+
+    distances = np.sqrt(x_values**2 + y_values**2)
+
+    circle_radius = max(df_fig.cont1) * radius_size
+
+    df_fig["distances"] = distances
+    df_fig["outside"] = "0"
+    df_fig["outside"][df_fig["distances"] >= circle_radius] = "1"
+
+    outside_ids = list(df_fig["doc_id"][df_fig["outside"] == "1"])
+
     df_fig = pd.merge(df_content, df_fig, on="doc_id")
     df_fig["Text"] = df_fig["content"].apply(lambda x: wrap_by_word(x, 10))
 
@@ -287,13 +308,15 @@ def visualize_bourdieu(
         df_fig,
         x=x_axis_name,
         y=y_axis_name,
+        color="outside",
+        color_discrete_map={"1": "blue", "0": "grey"},
         hover_data=["Text"],
         template="simple_white",
         height=height,
         width=width,
         opacity=0.2,
         title="Bourdieu Plot",
-        color_discrete_sequence=["blue"],
+        # color_discrete_sequence=["blue"],
     )
     # fig.add_traces(fig2.data)
     fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=True)
@@ -376,6 +399,8 @@ def visualize_bourdieu(
             doc.x = dict_doc.get(doc.doc_id)["x"]
             doc.y = dict_doc.get(doc.doc_id)["y"]
 
+        new_docs = [doc for doc in new_docs if doc.doc_id in outside_ids]
+
         bourdieu_topics = get_topics(
             docs=new_docs,
             terms=terms,
@@ -424,15 +449,21 @@ def visualize_bourdieu(
     if display_percent:
         # Calculate the percentage for every box
 
+        df_fig_percent = df_fig[df_fig["doc_id"].isin(outside_ids)]
+
         label_size_ratio_percent = 20
         opacity = 0.4
-        case1_count = len(df_fig[(df_fig["cont1"] < 0) & (df_fig["cont2"] < 0)])
-        total_count = len(df_fig)
+        case1_count = len(
+            df_fig_percent[
+                (df_fig_percent["cont1"] < 0) & (df_fig_percent["cont2"] < 0)
+            ]
+        )
+        total_count = len(df_fig_percent)
         case1_percentage = str(round((case1_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=min(df_fig[x_axis_name]),
-            y=min(df_fig[y_axis_name]),
+            x=min(df_fig_percent[x_axis_name]),
+            y=min(df_fig_percent[y_axis_name]),
             text=case1_percentage,
             font=dict(
                 family="Courier New, monospace",
@@ -442,12 +473,16 @@ def visualize_bourdieu(
             opacity=opacity,
         )
 
-        case2_count = len(df_fig[(df_fig["cont1"] < 0) & (df_fig["cont2"] > 0)])
+        case2_count = len(
+            df_fig_percent[
+                (df_fig_percent["cont1"] < 0) & (df_fig_percent["cont2"] > 0)
+            ]
+        )
         case2_percentage = str(round((case2_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=min(df_fig[x_axis_name]),
-            y=max(df_fig[y_axis_name]),
+            x=min(df_fig_percent[x_axis_name]),
+            y=max(df_fig_percent[y_axis_name]),
             text=case2_percentage,
             font=dict(
                 family="Courier New, monospace",
@@ -457,12 +492,16 @@ def visualize_bourdieu(
             opacity=opacity,
         )
 
-        case3_count = len(df_fig[(df_fig["cont1"] > 0) & (df_fig["cont2"] < 0)])
+        case3_count = len(
+            df_fig_percent[
+                (df_fig_percent["cont1"] > 0) & (df_fig_percent["cont2"] < 0)
+            ]
+        )
         case3_percentage = str(round((case3_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=max(df_fig[x_axis_name]),
-            y=min(df_fig[y_axis_name]),
+            x=max(df_fig_percent[x_axis_name]),
+            y=min(df_fig_percent[y_axis_name]),
             text=case3_percentage,
             font=dict(
                 family="Courier New, monospace",
@@ -472,12 +511,16 @@ def visualize_bourdieu(
             opacity=opacity,
         )
 
-        case4_count = len(df_fig[(df_fig["cont1"] > 0) & (df_fig["cont2"] > 0)])
+        case4_count = len(
+            df_fig_percent[
+                (df_fig_percent["cont1"] > 0) & (df_fig_percent["cont2"] > 0)
+            ]
+        )
         case4_percentage = str(round((case4_count / total_count) * 100, 1)) + "%"
 
         fig.add_annotation(
-            x=max(df_fig[x_axis_name]),
-            y=max(df_fig[y_axis_name]),
+            x=max(df_fig_percent[x_axis_name]),
+            y=max(df_fig_percent[y_axis_name]),
             text=case4_percentage,
             font=dict(
                 family="Courier New, monospace",

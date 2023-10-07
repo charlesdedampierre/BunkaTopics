@@ -158,12 +158,19 @@ CLusters are created and the names are also summarized using Generative AI.
 The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
 
 ```python
-bunka.visualize_bourdieu(
-    generative_model=generative_model,
-    x_left_words=["war"],
-    x_right_words=["peace"],
-    y_top_words=["men"],
-    y_bottom_words=["women"],
+manual_axis_name = {
+                    'x_left_name':'positive',
+                    'x_right_name':'negative',
+                    'y_top_name':'women',
+                    'y_bottom_name':'men',
+                    }
+
+bourdieu_fig = bunka.visualize_bourdieu(
+    generative_model=open_ai_generative_model,
+    x_left_words=["this is a positive content"],
+    x_right_words=["this is a negative content"],
+    y_top_words=["this is about women"],
+    y_bottom_words=["this is about men"],
     height=800,
     width=800,
     label_size_ratio_label=50,
@@ -173,10 +180,12 @@ bunka.visualize_bourdieu(
     topic_terms=5,
     topic_top_terms_overall=500,
     topic_gen_name=True,
+    convex_hull = True,
+    radius_size = 0.5,
+    manual_axis_name = manual_axis_name
 )
-
 bourdieu_fig.show()
-```  
+```
 
 <img src="images/bourdieu.png" width="70%" height="70%" align="center" />
 

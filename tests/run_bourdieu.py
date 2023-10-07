@@ -18,7 +18,7 @@ random.seed(42)
 if __name__ == "__main__":
     # Social Data
     dataset = load_dataset("rguo123/trump_tweets")["train"]["content"]
-    full_docs = random.sample(dataset, 5000)
+    full_docs = random.sample(dataset, 500)
     full_docs = [clean_tweet(x) for x in full_docs]
 
     # Scientific Litterature Data

@@ -347,9 +347,11 @@ def visualize_bourdieu(
         height=height,
         width=width,
         opacity=0.3,
-        title="Bourdieu Plot",
+        title="Bourdieu Plot"
         # color_discrete_sequence=["blue"],
     )
+
+    fig.update_layout(showlegend=False)
 
     # Combine the two figures
     for trace in scatter_fig.data:

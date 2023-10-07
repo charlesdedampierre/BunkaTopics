@@ -244,6 +244,7 @@ class Bunka:
         manual_axis_name=None,
         use_doc_gen_topic=False,
         radius_size: float = 0.3,
+        convex_hull=True,
     ) -> go.Figure:
         fig, self.df_bourdieu = visualize_bourdieu(
             self.embedding_model,
@@ -267,6 +268,7 @@ class Bunka:
             manual_axis_name=manual_axis_name,
             use_doc_gen_topic=use_doc_gen_topic,
             radius_size=radius_size,
+            convex_hull=convex_hull,
         )
 
         return fig

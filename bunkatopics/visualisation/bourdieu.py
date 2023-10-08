@@ -293,13 +293,19 @@ def visualize_bourdieu(
     y_top_words = dict_bourdieu[y_axis_name]["left_words"]
     y_bottom_words = dict_bourdieu[y_axis_name]["right_words"]
 
-    fig = go.Figure(
-        go.Histogram2dContour(
-            x=df_fig[x_axis_name],
-            y=df_fig[y_axis_name],
-            colorscale="delta",
-            showscale=False,
-        )
+    fig = px.scatter(
+        df_fig,
+        x=x_axis_name,
+        y=y_axis_name,
+        color="outside",
+        color_discrete_map={"1": "white", "0": "grey"},
+        hover_data=["Text"],
+        template="simple_white",
+        height=height,
+        width=width,
+        opacity=0.3,
+        # title="Bourdieu Plot"
+        # color_discrete_sequence=["blue"],
     )
 
     # Set the axis to the max value to get a square
@@ -315,38 +321,48 @@ def visualize_bourdieu(
         type="line",
         x0=0,
         x1=0,
-        # y0=-max_val,
-        # y1=max_val,
-        y0=min(df_fig[y_axis_name]),
-        y1=max(df_fig[y_axis_name]),
+        y0=-max_val,
+        y1=max_val,
+        # y0=min(df_fig[y_axis_name]),
+        # y1=max(df_fig[y_axis_name]),
         line=dict(color="white", width=3),  # Customize line color and width
     )
 
     fig.add_shape(
         type="line",
-        x0=min(df_fig[x_axis_name]),
-        x1=max(df_fig[x_axis_name]),
-        # x0=-max_val,
-        # x1=max_val,
+        # x0=min(df_fig[x_axis_name]),
+        # x1=max(df_fig[x_axis_name]),
+        x0=-max_val,
+        x1=max_val,
         y0=0,
         y1=0,
         line=dict(color="white", width=3),  # Customize line color and width
     )
-
-    fig.update_traces(contours_coloring="fill", contours_showlabels=False)
 
     fig.update_layout(
         font_size=25,
         width=width,
         height=height,
         margin=dict(
-            t=width / 100000,
-            b=width / 100000,
-            r=width / 100000,
-            l=width / 100000,
+            t=width / 50,
+            b=width / 50,
+            r=width / 50,
+            l=width / 50,
         ),
-        title=dict(font=dict(size=width / 40)),
+        # title=dict(font=dict(size=width / 40)),
     )
+
+    fig.update_layout(showlegend=False)
+
+    histogram2d_contour = go.Figure(
+        go.Histogram2dContour(
+            x=df_fig[x_axis_name],
+            y=df_fig[y_axis_name],
+            colorscale="delta",
+            showscale=False,
+        ),
+    )
+    fig.add_trace(histogram2d_contour.data[0])
 
     scatter_fig = px.scatter(
         df_fig,
@@ -359,17 +375,32 @@ def visualize_bourdieu(
         height=height,
         width=width,
         opacity=0.3,
-        title="Bourdieu Plot"
+        # title="Bourdieu Plot"
         # color_discrete_sequence=["blue"],
     )
 
-    fig.update_layout(showlegend=False)
+    for trace in scatter_fig.data:
+        fig.add_trace(trace)
 
+    """
+
+    # fig.update_traces(contours_coloring="fill", contours_showlabels=False)
     # Combine the two figures
     for trace in scatter_fig.data:
         fig.add_trace(trace)
 
-    # fig.add_traces(fig2.data)
+    fig = go.Figure(
+        go.Histogram2dContour(
+            x=df_fig[x_axis_name],
+            y=df_fig[y_axis_name],
+            colorscale="delta",
+            showscale=False,
+        )
+    )
+
+    """
+
+    """
     fig.update_xaxes(
         showgrid=False,
         showticklabels=False,
@@ -384,6 +415,8 @@ def visualize_bourdieu(
         zerolinecolor="white",
         zerolinewidth=2,
     )
+
+    """
 
     if manual_axis_name is None:
         y_top_name = y_top_words
@@ -401,7 +434,8 @@ def visualize_bourdieu(
         annotations=[
             dict(
                 x=0,
-                y=max(df_fig[y_axis_name]),
+                y=max_val,
+                # y=max(df_fig[y_axis_name]),
                 xref="x",
                 yref="y",
                 text=y_top_name,
@@ -412,7 +446,8 @@ def visualize_bourdieu(
             ),
             dict(
                 x=0,
-                y=min(df_fig[y_axis_name]),
+                # y=min(df_fig[y_axis_name]),
+                y=-max_val,
                 xref="x",
                 yref="y",
                 text=y_bottom_name,
@@ -422,7 +457,8 @@ def visualize_bourdieu(
                 font=dict(size=width / label_size_ratio_label, color="white"),
             ),
             dict(
-                x=max(df_fig[x_axis_name]),
+                # x=max(df_fig[x_axis_name]),
+                x=max_val,
                 y=0,
                 xref="x",
                 yref="y",
@@ -433,7 +469,8 @@ def visualize_bourdieu(
                 font=dict(size=width / label_size_ratio_label, color="white"),
             ),
             dict(
-                x=min(df_fig[x_axis_name]),
+                # x=min(df_fig[x_axis_name]),
+                x=-max_val,
                 y=0,
                 xref="x",
                 yref="y",
@@ -549,6 +586,7 @@ def visualize_bourdieu(
                 color="grey",
             ),
             opacity=opacity,
+            xanchor="left",
         )
 
         case2_count = len(
@@ -568,6 +606,7 @@ def visualize_bourdieu(
                 color="grey",
             ),
             opacity=opacity,
+            xanchor="left",
         )
 
         case3_count = len(
@@ -587,6 +626,7 @@ def visualize_bourdieu(
                 color="grey",
             ),
             opacity=opacity,
+            xanchor="left",
         )
 
         case4_count = len(
@@ -606,10 +646,29 @@ def visualize_bourdieu(
                 color="grey",
             ),
             opacity=opacity,
+            xanchor="left",
         )
 
     # Update the x-axis and y-axis labels
-    fig.update_xaxes(title_text="")
-    fig.update_yaxes(title_text="")
+    fig.update_xaxes(
+        title_text="",
+        scaleanchor="y",
+        scaleratio=1,
+        showgrid=False,
+        showticklabels=False,
+        zeroline=True,
+        zerolinecolor="white",
+        zerolinewidth=2,
+    )
+    fig.update_yaxes(
+        title_text="",
+        scaleanchor="x",
+        scaleratio=1,
+        showgrid=False,
+        showticklabels=False,
+        zeroline=True,
+        zerolinecolor="white",
+        zerolinewidth=2,
+    )
 
     return fig, df_bourdieu

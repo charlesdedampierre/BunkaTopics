@@ -293,7 +293,16 @@ def visualize_bourdieu(
     y_top_words = dict_bourdieu[y_axis_name]["left_words"]
     y_bottom_words = dict_bourdieu[y_axis_name]["right_words"]
 
-    fig = px.scatter(
+    fig = go.Figure(
+        go.Histogram2dContour(
+            x=df_fig[x_axis_name],
+            y=df_fig[y_axis_name],
+            colorscale="delta",
+            showscale=False,
+        ),
+    )
+
+    scatter_fig = px.scatter(
         df_fig,
         x=x_axis_name,
         y=y_axis_name,
@@ -308,6 +317,9 @@ def visualize_bourdieu(
         # color_discrete_sequence=["blue"],
     )
 
+    for trace in scatter_fig.data:
+        fig.add_trace(trace)
+
     # Set the axis to the max value to get a square
     max_val = max(
         abs(min(df_fig[y_axis_name])),
@@ -321,19 +333,19 @@ def visualize_bourdieu(
         type="line",
         x0=0,
         x1=0,
-        y0=-max_val,
-        y1=max_val,
-        # y0=min(df_fig[y_axis_name]),
-        # y1=max(df_fig[y_axis_name]),
+        # y0=-max_val,
+        # y1=max_val,
+        y0=min(df_fig[y_axis_name]),
+        y1=max(df_fig[y_axis_name]),
         line=dict(color="white", width=3),  # Customize line color and width
     )
 
     fig.add_shape(
         type="line",
-        # x0=min(df_fig[x_axis_name]),
-        # x1=max(df_fig[x_axis_name]),
-        x0=-max_val,
-        x1=max_val,
+        x0=min(df_fig[x_axis_name]),
+        x1=max(df_fig[x_axis_name]),
+        # x0=-max_val,
+        # x1=max_val,
         y0=0,
         y1=0,
         line=dict(color="white", width=3),  # Customize line color and width
@@ -353,7 +365,7 @@ def visualize_bourdieu(
     )
 
     fig.update_layout(showlegend=False)
-
+    """
     histogram2d_contour = go.Figure(
         go.Histogram2dContour(
             x=df_fig[x_axis_name],
@@ -384,23 +396,9 @@ def visualize_bourdieu(
 
     """
 
-    # fig.update_traces(contours_coloring="fill", contours_showlabels=False)
-    # Combine the two figures
-    for trace in scatter_fig.data:
-        fig.add_trace(trace)
-
-    fig = go.Figure(
-        go.Histogram2dContour(
-            x=df_fig[x_axis_name],
-            y=df_fig[y_axis_name],
-            colorscale="delta",
-            showscale=False,
-        )
-    )
-
     """
 
-    """
+
     fig.update_xaxes(
         showgrid=False,
         showticklabels=False,
@@ -434,8 +432,8 @@ def visualize_bourdieu(
         annotations=[
             dict(
                 x=0,
-                y=max_val,
-                # y=max(df_fig[y_axis_name]),
+                # y=max_val,
+                y=max(df_fig[y_axis_name]),
                 xref="x",
                 yref="y",
                 text=y_top_name,
@@ -446,8 +444,8 @@ def visualize_bourdieu(
             ),
             dict(
                 x=0,
-                # y=min(df_fig[y_axis_name]),
-                y=-max_val,
+                y=min(df_fig[y_axis_name]),
+                # y=-max_val,
                 xref="x",
                 yref="y",
                 text=y_bottom_name,
@@ -457,8 +455,8 @@ def visualize_bourdieu(
                 font=dict(size=width / label_size_ratio_label, color="white"),
             ),
             dict(
-                # x=max(df_fig[x_axis_name]),
-                x=max_val,
+                x=max(df_fig[x_axis_name]),
+                # x=max_val,
                 y=0,
                 xref="x",
                 yref="y",
@@ -469,8 +467,8 @@ def visualize_bourdieu(
                 font=dict(size=width / label_size_ratio_label, color="white"),
             ),
             dict(
-                # x=min(df_fig[x_axis_name]),
-                x=-max_val,
+                x=min(df_fig[x_axis_name]),
+                # x=-max_val,
                 y=0,
                 xref="x",
                 yref="y",

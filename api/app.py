@@ -8,24 +8,34 @@ import typing as t
 # Import the necessary modules and classes
 from langchain.embeddings import HuggingFaceEmbeddings
 from bunkatopics import Bunka
-from bunkatopics.datamodel import (
-    TopicParam,
-    TopicGenParam,
-    BourdieuQuery,
-    Document,
-    Topic,
-)
+from bunkatopics.datamodel import TopicParam, TopicGenParam, BourdieuQuery
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 import os
 from langchain.llms import OpenAI
 from dotenv import load_dotenv
-from api.datamodel import BourdieuResponse
+from api.datamodel import BourdieuResponse, BunkaResponse
 
 load_dotenv()
 
 open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 
 app = FastAPI()
+
+
+@app.post("/topics/")
+def process_bourdieu_query(full_docs: t.List[str]):
+    # Initialize your embedding_model and Bunka instance here
+    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    bunka = Bunka(embedding_model=embedding_model)
+    bunka.fit(full_docs)
+
+    bunka.fit(full_docs)
+    bunka.get_topics(n_clusters=10)
+
+    docs = bunka.docs
+    topics = bunka.topics
+
+    return BunkaResponse(docs=docs, topics=topics)
 
 
 @app.post("/process_bourdieu_query/")

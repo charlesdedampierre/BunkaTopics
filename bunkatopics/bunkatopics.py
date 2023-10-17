@@ -21,18 +21,29 @@ from langchain.vectorstores import Chroma
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
+from bunkatopics.bunka_logger import logger
+from bunkatopics.datamodel import (
+    DOC_ID,
+    TERM_ID,
+    TOPIC_ID,
+    BourdieuQuery,
+    Document,
+    Term,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
+from bunkatopics.functions.bourdieu_api import bourdieu_api
+from bunkatopics.functions.coherence import get_coherence
+from bunkatopics.functions.extract_terms import extract_terms_df
+from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
+from bunkatopics.functions.topic_utils import get_topic_repartition
+from bunkatopics.functions.topics_modeling import get_topics
+from bunkatopics.visualisation.bourdieu_visu import visualize_bourdieu_one_dimension
+from bunkatopics.visualisation.new_bourdieu_visu import visualize_bourdieu
 from bunkatopics.visualisation.query_visualisation import plot_query
-
-from .bunka_logger import logger
-from .datamodel import DOC_ID, TERM_ID, TOPIC_ID, Document, Term, Topic
-from .functions.coherence import get_coherence
-from .functions.extract_terms import extract_terms_df
-from .functions.topic_document import get_top_documents
-from .functions.topic_utils import get_topic_repartition
-from .functions.topics_modeling import get_topics
-from .visualisation.bourdieu import visualize_bourdieu, visualize_bourdieu_one_dimension
-from .visualisation.topic_visualization import visualize_topics
+from bunkatopics.visualisation.topic_visualization import visualize_topics
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -197,7 +208,6 @@ class Bunka:
         Get the topic name using Generative AI
 
         """
-
         self.topics: t.List[Topic] = get_clean_topic_all(
             generative_model,
             self.topics,
@@ -226,18 +236,18 @@ class Bunka:
 
     def visualize_bourdieu(
         self,
-        generative_model,
+        generative_model=None,
         x_left_words=["war"],
         x_right_words=["peace"],
         y_top_words=["men"],
         y_bottom_words=["women"],
         height=1500,
         width=1500,
-        label_size_ratio_label=50,
         display_percent=True,
         clustering=False,
         topic_n_clusters=10,
         topic_terms=2,
+        topic_ngrams=[1, 2],
         topic_top_terms_overall=500,
         gen_topic_language="english",
         topic_gen_name=False,
@@ -246,29 +256,54 @@ class Bunka:
         radius_size: float = 0.3,
         convex_hull=True,
     ) -> go.Figure:
-        fig, self.df_bourdieu = visualize_bourdieu(
-            self.embedding_model,
-            generative_model=generative_model,
-            docs=self.docs,
-            terms=self.terms,
+        topic_gen_param = TopicGenParam(
+            language=gen_topic_language,
+            top_doc=3,
+            top_terms=10,
+            use_doc=use_doc_gen_topic,
+            context="everything",
+        )
+
+        topic_param = TopicParam(
+            n_clusters=topic_n_clusters,
+            ngrams=topic_ngrams,
+            name_lenght=topic_terms,
+            top_terms_overall=topic_top_terms_overall,
+        )
+
+        bourdieu_query = BourdieuQuery(
             x_left_words=x_left_words,
             x_right_words=x_right_words,
             y_top_words=y_top_words,
             y_bottom_words=y_bottom_words,
+            radius_size=radius_size,
+        )
+
+        # Request Bourdieu API
+        res = bourdieu_api(
+            generative_model=generative_model,
+            embedding_model=self.embedding_model,
+            docs=self.docs,
+            terms=self.terms,
+            bourdieu_query=bourdieu_query,
+            generative_ai_name=topic_gen_name,
+            topic_param=topic_param,
+            topic_gen_param=topic_gen_param,
+        )
+
+        bourdieu_docs = res[0]
+        bourdieu_topics = res[1]
+
+        # Visualize The results from the API
+        fig = visualize_bourdieu(
+            bourdieu_docs,
+            bourdieu_topics,
             height=height,
             width=width,
             display_percent=display_percent,
-            label_size_ratio_label=label_size_ratio_label,
-            clustering=clustering,
-            topic_gen_name=topic_gen_name,
-            gen_topic_language=gen_topic_language,
-            topic_n_clusters=topic_n_clusters,
-            topic_terms=topic_terms,
-            topic_top_terms_overall=topic_top_terms_overall,
-            manual_axis_name=manual_axis_name,
-            use_doc_gen_topic=use_doc_gen_topic,
-            radius_size=radius_size,
             convex_hull=convex_hull,
+            clustering=clustering,
+            manual_axis_name=manual_axis_name,
         )
 
         return fig

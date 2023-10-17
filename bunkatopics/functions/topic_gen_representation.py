@@ -8,9 +8,10 @@ from tqdm import tqdm
 
 from bunkatopics.datamodel import Document, Topic
 
-# Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
+from .prompts import (promp_template_topics_terms,
+                      promp_template_topics_terms_no_docs)
 
-from .prompts import promp_template_topics_terms, promp_template_topics_terms_no_docs
+# Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
 
 
 TERM_ID = str

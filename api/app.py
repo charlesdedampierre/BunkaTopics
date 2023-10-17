@@ -13,7 +13,7 @@ from bunkatopics.functions.bourdieu_api import bourdieu_api
 import os
 from langchain.llms import OpenAI
 from dotenv import load_dotenv
-from api.datamodel import BourdieuResponse, BunkaResponse
+from api.datamodel import BourdieuResponse, BunkaResponse, TopicParameter
 
 load_dotenv()
 
@@ -23,14 +23,12 @@ app = FastAPI()
 
 
 @app.post("/topics/")
-def process_bourdieu_query(full_docs: t.List[str]):
+def process_topics(params: TopicParameter, full_docs: t.List[str]):
     # Initialize your embedding_model and Bunka instance here
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
     bunka.fit(full_docs)
-
-    bunka.fit(full_docs)
-    bunka.get_topics(n_clusters=10)
+    bunka.get_topics(n_clusters=params.n_cluster)
 
     docs = bunka.docs
     topics = bunka.topics

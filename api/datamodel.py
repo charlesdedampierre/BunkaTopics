@@ -12,3 +12,7 @@ class BourdieuResponse(BaseModel):
 class BunkaResponse(BaseModel):
     docs: t.List[Document]
     topics: t.List[Topic]
+
+
+class TopicParameter(BaseModel):
+    n_cluster = 10

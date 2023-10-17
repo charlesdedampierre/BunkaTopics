@@ -1,181 +1,122 @@
 import random
 import typing as t
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from langchain.embeddings import HuggingFaceInstructEmbeddings
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import BourdieuDimension, ContinuumDimension, Document, Term
+from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
+                                   ContinuumDimension, Document, Term, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topics_modeling import get_topics
-from bunkatopics.visualisation.explainer import plot_specific_terms
 from bunkatopics.visualisation.visu_utils import wrap_by_word
 
 pd.options.mode.chained_assignment = None
 
 
-def get_continuum(
-    embedding_model: HuggingFaceInstructEmbeddings,
-    docs: t.List[Document],
-    cont_name: str = "emotion",
-    left_words: list = ["hate", "pain"],
-    right_words: list = ["love", "good"],
-    scale: bool = False,
-) -> t.List[Document]:
-    df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
-    df_emb = df_docs[["doc_id", "embedding"]]
-    df_emb = df_emb.set_index("doc_id")
-    df_emb = pd.DataFrame(list(df_emb["embedding"]))
-    df_emb.index = df_docs["doc_id"]
-
-    continuum = ContinuumDimension(
-        id=cont_name, left_words=left_words, right_words=right_words
-    )
-
-    # Compute the extremity embeddings
-    left_embedding = embedding_model.embed_documents(continuum.left_words)
-    right_embedding = embedding_model.embed_documents(continuum.right_words)
-
-    left_embedding = pd.DataFrame(left_embedding).mean().values.reshape(1, -1)
-    right_embedding = pd.DataFrame(right_embedding).mean().values.reshape(1, -1)
-
-    # Make the difference to get the continnum
-    continuum_embedding = left_embedding - right_embedding
-    df_continuum = pd.DataFrame(continuum_embedding)
-    df_continuum.index = ["distance"]
-
-    # Compute the Cosine Similarity
-    full_emb = pd.concat([df_emb, df_continuum])
-    df_bert = pd.DataFrame(cosine_similarity(full_emb))
-
-    df_bert.index = full_emb.index
-    df_bert.columns = full_emb.index
-    df_bert = df_bert.iloc[-1:,].T
-    df_bert = df_bert.sort_values("distance", ascending=False).reset_index()
-    df_bert = df_bert[1:]
-    df_bert = df_bert.rename(columns={"index": "doc_id"})
-    final_df = pd.merge(df_bert, df_docs[["doc_id", "content"]], on="doc_id")
-
-    if scale:
-        scaler = MinMaxScaler(feature_range=(-1, 1))
-        final_df[["distance"]] = scaler.fit_transform(final_df[["distance"]])
-
-    final_df = final_df.set_index("doc_id")
-    final_df = final_df[["distance"]]
-
-    distance_dict = final_df.to_dict("index")
-
-    new_docs = docs.copy()
-
-    for doc in new_docs:
-        res = BourdieuDimension(
-            continuum=continuum, distance=distance_dict.get(doc.doc_id)["distance"]
-        )
-        doc.bourdieu_dimensions.append(res)
-
-    return new_docs
-
-
-def plot_unique_dimension(
-    docs: t.List[Document],
-    id: str = id,
-    left: list = ["aggressivity"],
-    right: list = ["peacefullness"],
-    height=700,
-    width=600,
-    explainer: bool = True,
-    explainer_ngrams: list = [1, 2],
-) -> go.Figure:
-    left = " ".join(left)
-    right = " ".join(right)
-
-    distances = [
-        x.distance
-        for doc in docs
-        for x in doc.bourdieu_dimensions
-        if x.continuum.id == id
-    ]
-    doc_id = [x.doc_id for x in docs]
-    content = [x.content for x in docs]
-
-    df_distances = pd.DataFrame(
-        {"doc_id": doc_id, "distances": distances, "content": content}
-    )
-
-    name = "<" + right + "-" + left + ">"
-
-    df_fig = df_distances.rename(columns={"distances": name})
-    df_fig["content"] = df_fig["content"].apply(lambda x: wrap_by_word(x, 10))
-
-    fig = px.box(
-        df_fig,
-        y=name,
-        points="all",
-        hover_data=["content"],
-        height=height,
-        width=width,
-        template="plotly_white",
-    )
-
-    fig.add_shape(
-        dict(
-            type="line",
-            x0=df_fig[name].min(),  # Set the minimum x-coordinate of the line
-            x1=df_fig[name].max(),  # Set the maximum x-coordinate of the line
-            y0=0,
-            y1=0,
-            line=dict(color="red", width=4),
-        )
-    )
-    if explainer:
-        plot_specific_terms(
-            docs=docs,
-            left_words=left,
-            right_words=right,
-            id=id,
-            ngrams=explainer_ngrams,
-            quantile=0.80,
-            top_n=20,
-        )
-    return fig
-
-
-def visualize_bourdieu_one_dimension(
-    docs: t.List[Document],
+def bourdieu_api(
     embedding_model,
-    left: str = ["aggressivity"],
-    right: str = ["peacefullness"],
-    height=700,
-    width=600,
-    explainer: bool = True,
-    explainer_ngrams: list = [1, 2],
-) -> go.Figure:
-    id = str(random.randint(0, 10000))
+    docs: t.List[Document],
+    terms: t.List[Term],
+    generative_model=None,
+    bourdieu_query: BourdieuQuery = BourdieuQuery(),
+    topic_param: TopicParam = TopicParam(),
+    generative_ai_name=False,
+    topic_gen_param: TopicGenParam = TopicGenParam(),
+) -> (t.List[Document], t.List[Topic]):
+    # Reset
+    for doc in docs:
+        doc.bourdieu_dimensions = []
 
+    # Compute Continuums
     new_docs = get_continuum(
-        embedding_model=embedding_model,
-        docs=docs,
-        cont_name=id,
-        left_words=left,
-        right_words=right,
-        scale=False,
+        embedding_model,
+        docs,
+        cont_name="cont1",
+        left_words=bourdieu_query.x_left_words,
+        right_words=bourdieu_query.x_right_words,
+    )
+    bourdieu_docs = get_continuum(
+        embedding_model,
+        new_docs,
+        cont_name="cont2",
+        left_words=bourdieu_query.y_top_words,
+        right_words=bourdieu_query.y_bottom_words,
     )
 
-    fig = plot_unique_dimension(
-        new_docs,
-        id=id,
-        left=left,
-        right=right,
-        height=height,
-        width=width,
-        explainer=explainer,
-        explainer_ngrams=explainer_ngrams,
+    # There are two coordinates
+    df_bourdieu = pd.DataFrame(
+        [
+            {
+                "doc_id": x.doc_id,
+                "coordinates": [y.distance for y in x.bourdieu_dimensions],
+                "names": [y.continuum.id for y in x.bourdieu_dimensions],
+            }
+            for x in bourdieu_docs
+        ]
     )
-    return fig
+
+    df_bourdieu = df_bourdieu.explode(["coordinates", "names"])
+
+    df_bourdieu_pivot = df_bourdieu[["doc_id", "coordinates", "names"]]
+    df_bourdieu_pivot = df_bourdieu_pivot.pivot(
+        index="doc_id", columns="names", values="coordinates"
+    )
+
+    # Add to the bourdieu_docs
+
+    df_outsides = df_bourdieu_pivot.reset_index()
+    df_outsides["cont1"] = df_outsides["cont1"].astype(
+        float
+    )  # Cont1 is the default name
+    df_outsides["cont2"] = df_outsides["cont2"].astype(float)
+
+    x_values = df_outsides["cont1"].values
+    y_values = df_outsides["cont2"].values
+
+    distances = np.sqrt(x_values**2 + y_values**2)
+    circle_radius = max(df_outsides.cont1) * bourdieu_query.radius_size
+
+    df_outsides["distances"] = distances
+    df_outsides["outside"] = "0"
+    df_outsides["outside"][df_outsides["distances"] >= circle_radius] = "1"
+
+    outside_ids = list(df_outsides["doc_id"][df_outsides["outside"] == "1"])
+
+    bourdieu_docs = [x for x in bourdieu_docs if x.doc_id in outside_ids]
+    bourdieu_dict = df_bourdieu_pivot.to_dict(orient="index")
+
+    for doc in bourdieu_docs:
+        doc.x = bourdieu_dict.get(doc.doc_id)["cont1"]
+        doc.y = bourdieu_dict.get(doc.doc_id)["cont2"]
+
+    bourdieu_topics = get_topics(
+        docs=bourdieu_docs,
+        terms=terms,
+        n_clusters=topic_param.n_clusters,
+        ngrams=topic_param.ngrams,
+        name_lenght=topic_param.name_lenght,
+        top_terms_overall=topic_param.top_terms_overall,
+    )
+
+    bourdieu_docs = get_top_documents(bourdieu_docs, bourdieu_topics, ranking_terms=20)
+
+    if generative_ai_name:
+        bourdieu_topics: t.List[Topic] = get_clean_topic_all(
+            generative_model,
+            bourdieu_topics,
+            bourdieu_docs,
+            language=topic_gen_param.language,
+            context=topic_gen_param.context,
+            use_doc=topic_gen_param.use_doc,
+        )
+
+    return (bourdieu_docs, bourdieu_topics)
 
 
 def visualize_bourdieu(
@@ -670,3 +611,65 @@ def visualize_bourdieu(
     )
 
     return fig, df_bourdieu
+
+
+def get_continuum(
+    embedding_model,
+    docs: t.List[Document],
+    cont_name: str = "emotion",
+    left_words: list = ["hate", "pain"],
+    right_words: list = ["love", "good"],
+    scale: bool = False,
+) -> t.List[Document]:
+    df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
+    df_emb = df_docs[["doc_id", "embedding"]]
+    df_emb = df_emb.set_index("doc_id")
+    df_emb = pd.DataFrame(list(df_emb["embedding"]))
+    df_emb.index = df_docs["doc_id"]
+
+    continuum = ContinuumDimension(
+        id=cont_name, left_words=left_words, right_words=right_words
+    )
+
+    # Compute the extremity embeddings
+    left_embedding = embedding_model.embed_documents(continuum.left_words)
+    right_embedding = embedding_model.embed_documents(continuum.right_words)
+
+    left_embedding = pd.DataFrame(left_embedding).mean().values.reshape(1, -1)
+    right_embedding = pd.DataFrame(right_embedding).mean().values.reshape(1, -1)
+
+    # Make the difference to get the continnum
+    continuum_embedding = left_embedding - right_embedding
+    df_continuum = pd.DataFrame(continuum_embedding)
+    df_continuum.index = ["distance"]
+
+    # Compute the Cosine Similarity
+    full_emb = pd.concat([df_emb, df_continuum])
+    df_bert = pd.DataFrame(cosine_similarity(full_emb))
+
+    df_bert.index = full_emb.index
+    df_bert.columns = full_emb.index
+    df_bert = df_bert.iloc[
+        -1:,
+    ].T
+    df_bert = df_bert.sort_values("distance", ascending=False).reset_index()
+    df_bert = df_bert[1:]
+    df_bert = df_bert.rename(columns={"index": "doc_id"})
+    final_df = pd.merge(df_bert, df_docs[["doc_id", "content"]], on="doc_id")
+
+    if scale:
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+        final_df[["distance"]] = scaler.fit_transform(final_df[["distance"]])
+
+    final_df = final_df.set_index("doc_id")
+    final_df = final_df[["distance"]]
+
+    distance_dict = final_df.to_dict("index")
+    bourdieu_docs = docs.copy()
+    for doc in bourdieu_docs:
+        res = BourdieuDimension(
+            continuum=continuum, distance=distance_dict.get(doc.doc_id)["distance"]
+        )
+        doc.bourdieu_dimensions.append(res)
+
+    return bourdieu_docs

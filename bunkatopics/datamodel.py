@@ -1,5 +1,6 @@
 import typing as t
 
+from langchain.llms import OpenAI
 from pydantic import BaseModel, Field
 
 TOPIC_ID = str
@@ -16,6 +17,14 @@ class ContinuumDimension(BaseModel):
 class BourdieuDimension(BaseModel):
     continuum: ContinuumDimension
     distance: float
+
+
+class BourdieuQuery(BaseModel):
+    x_left_words: t.List[str] = ["war"]
+    x_right_words: t.List[str] = ["peace"]
+    y_top_words: t.List[str] = ["men"]
+    y_bottom_words: t.List[str] = ["women"]
+    radius_size: float = 0.5
 
 
 class TopicRanking(BaseModel):
@@ -36,6 +45,21 @@ class Document(BaseModel):
     bourdieu_dimensions: t.List[BourdieuDimension] = []
 
 
+class TopicParam(BaseModel):
+    n_clusters = 5
+    ngrams = [1, 2]
+    name_lenght = 3
+    top_terms_overall = 500
+
+
+class TopicGenParam(BaseModel):
+    language: str = "english"
+    top_doc: int = 3
+    top_terms: int = 10
+    use_doc = False
+    context: str = "everything"
+
+
 class ConvexHullModel(BaseModel):
     # topic_id: TOPIC_ID
     x_coordinates: t.Optional[t.List[float]] = None
@@ -46,7 +70,7 @@ class Topic(BaseModel):
     topic_id: TOPIC_ID
     name: str
     lemma_name: t.Optional[str] = None
-    term_id: t.List[TERM_ID]
+    term_id: t.List[TERM_ID] = Field(None, repr=False)
     x_centroid: t.Optional[float] = None
     y_centroid: t.Optional[float] = None
     size: t.Optional[int] = None

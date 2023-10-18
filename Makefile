@@ -13,3 +13,6 @@ run_streamlit:
 format:
 	black bunkatopics
 	isort bunkatopics
+
+api:
+	uvicorn app:app --reload

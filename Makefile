@@ -20,7 +20,6 @@ docker_build:
 docker_run:
 	docker run -p 8000:8000 bunkatopics
 
-
-
-
+poetry_export:
+	poetry export --without-hashes --format=requirements.txt > requirements.txt
 

@@ -186,7 +186,6 @@ bourdieu_fig = bunka.visualize_bourdieu(
     y_bottom_words=["this is about men"],
     height=800,
     width=800,
-    label_size_ratio_label=50,
     display_percent=True,
     clustering=True,
     topic_n_clusters=10,

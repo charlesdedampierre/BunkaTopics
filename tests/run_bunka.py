@@ -71,7 +71,6 @@ if __name__ == "__main__":
         y_bottom_words=["women"],
         height=1500,
         width=1500,
-        label_size_ratio_label=50,
         display_percent=True,
         clustering=True,
         topic_n_clusters=3,

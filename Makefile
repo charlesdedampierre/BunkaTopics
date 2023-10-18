@@ -14,5 +14,13 @@ format:
 	black bunkatopics
 	isort bunkatopics
 
-api:
-	uvicorn app:app --reload
+docker_build:
+	docker build -t bunkatopics .
+
+docker_run:
+	docker run -p 8000:8000 bunkatopics
+
+
+
+
+

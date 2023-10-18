@@ -15,9 +15,7 @@ RUN pip install --upgrade pip
 # - installing torch in a dedicated layer to ease image push to registry
 RUN pip install "torch==1.12.1" "torchvision==0.13.1"
 
-COPY api/requirements.txt requirements.txt
 RUN pip install uvicorn
-RUN pip install -r requirements.txt
 
 # Models
 RUN pip install spacy

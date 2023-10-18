@@ -1,4 +1,0 @@
-fastapi==0.103.2
-langchain==0.0.316
-pydantic==1.8.2
-python-dotenv==1.0.0

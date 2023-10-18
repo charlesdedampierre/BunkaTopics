@@ -7,7 +7,7 @@ RUN apt install -y python3-dev
 # copying dependency
 COPY bunkatopics /app/bunkatopics
 
-ENV OPEN_AI_KEY=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
+ENV OPEN_AI_KEY=
 
 # Workspace
 WORKDIR /app/api

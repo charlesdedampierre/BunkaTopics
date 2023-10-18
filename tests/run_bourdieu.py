@@ -55,7 +55,6 @@ if __name__ == "__main__":
         y_bottom_words=["this is about men"],
         height=1000,
         width=1000,
-        label_size_ratio_label=50,
         display_percent=True,
         use_doc_gen_topic=True,
         clustering=True,

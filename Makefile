@@ -16,3 +16,9 @@ format:
 
 api:
 	uvicorn app:app --reload
+
+access_sentence_transformers:
+	cd ~/.cache/torch/sentence_transformers
+
+access_hf_models:
+	cd ~/.cache/huggingface/hub

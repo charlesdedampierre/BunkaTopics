@@ -24,17 +24,14 @@ from langchain.llms import OpenAI
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
-
 pd.options.mode.chained_assignment = None
 
 
 def bourdieu_api(
+    generative_model,
     embedding_model,
     docs: t.List[Document],
     terms: t.List[Term],
-    generative_model=open_ai_generative_model,
     bourdieu_query: BourdieuQuery = BourdieuQuery(),
     topic_param: TopicParam = TopicParam(),
     generative_ai_name=False,

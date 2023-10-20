@@ -13,7 +13,7 @@ from bunkatopics.functions.bourdieu_api import bourdieu_api
 import os
 from langchain.llms import OpenAI
 from dotenv import load_dotenv
-from api.src.bunka_api.datamodel import BourdieuResponse, BunkaResponse, TopicParameter
+from api.bunka_api.datamodel import BourdieuResponse, BunkaResponse, TopicParameter
 
 load_dotenv()
 

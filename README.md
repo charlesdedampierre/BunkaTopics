@@ -28,7 +28,7 @@ pyenv activate bunkatopics_env
 Then Install the Bunkatopics package:
 
 ```bash
-pip install bunkatopics==0.41
+pip install bunkatopics==0.42
 ```
 
 ## Pipeline
@@ -48,6 +48,12 @@ poetry install # This will install all packages in the .lock file inside a virtu
 # Start the environment
 poetry shell
 ```
+
+## Colab Example
+
+| Name  | Link  |
+|---|---|
+| Visual Topic Modeling With Bunkatopics  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DtPrI82TYepWLoc4RwuQnOqMJb0eWT_t?usp=sharing)  |
 
 ## Quick Start
 
@@ -102,22 +108,16 @@ You can get the topics summarized by Generative AI.
 Use any model from Langchain. We use the 7B-instruct model of [Mistral AI](<https://mistral.ai/news/announcing-mistral-7b/>) thought [llama.cpp](<https://github.com/ggerganov/llama.cpp>) and the [langchain integration](<https://python.langchain.com/docs/integrations/llms/llamacpp>).
 
 ```python
-from langchain.llms import LlamaCpp
+import os
+from langchain.llms import HuggingFaceHub
 
+# Using Mistral AI to Summarize the topics
 
-generative_model = LlamaCpp(
-    model_path=MODEL_PATH # Add the path on your local computer
-    n_ctx=2048,
-    temperature=0.75,
-    max_tokens=2000,
-    top_p=1,
-    verbose=False,
-) 
-generative_model.client.verbose = False
-
-bunka.get_clean_topic_name(generative_model = generative_model)
+llm = HuggingFaceHub(repo_id = 'mistralai/Mistral-7B-v0.1', huggingfacehub_api_token = os.environ.get("HF_TOKEN")
+)
+df_topics = bunka.get_clean_topic_name(generative_model = llm)
+print(df_topics)
 bunka.visualize_topics( width=800, height=800)
-
 ```
 
 <img src="images/newsmap_clean.png" width="70%" height="70%" align="center" />
@@ -159,17 +159,10 @@ The power of this visualisation is to constrain the axis by creating continuums 
 
 ```python
 
-from langchain.llms import LlamaCpp
+from langchain.llms import HuggingFaceHub
 
-
-generative_model = LlamaCpp(
-    model_path=MODEL_PATH # Add the path on your local computer
-    n_ctx=2048,
-    temperature=0.75,
-    max_tokens=2000,
-    top_p=1,
-    verbose=False,
-) 
+llm = HuggingFaceHub(repo_id = 'mistralai/Mistral-7B-v0.1', huggingfacehub_api_token = os.environ.get("HF_TOKEN")
+)
 
 manual_axis_name = {
                     'x_left_name':'positive',
@@ -179,7 +172,7 @@ manual_axis_name = {
                     }
 
 bourdieu_fig = bunka.visualize_bourdieu(
-    generative_model=generative_model,
+    generative_model=llm,
     x_left_words=["this is a positive content"],
     x_right_words=["this is a negative content"],
     y_top_words=["this is about women"],

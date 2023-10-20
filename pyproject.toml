@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bunkatopics"
-version = "0.41"
+version = "0.42"
 description = "Advanced Topic Visualization"
 authors = ["Charles De Dampierre <charlesdedampierre@gmail.com>"]
 readme = "README.md"

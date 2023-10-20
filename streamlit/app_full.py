@@ -85,7 +85,6 @@ if csv_file is not None:
             y_bottom_words=y_bottom_words.split(","),
             height=800,
             width=800,
-            label_size_ratio_label=50,
             display_percent=True,
             clustering=True,
             topic_n_clusters=10,

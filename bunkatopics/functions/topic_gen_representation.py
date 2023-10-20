@@ -8,8 +8,7 @@ from tqdm import tqdm
 
 from bunkatopics.datamodel import Document, Topic
 
-from .prompts import (promp_template_topics_terms,
-                      promp_template_topics_terms_no_docs)
+from .prompts import promp_template_topics_terms, promp_template_topics_terms_no_docs
 
 # Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
 
@@ -81,7 +80,7 @@ def get_clean_topic_all(
     pbar = tqdm(total=len(topic_ids), desc="Creating new labels for clusters")
     for topic_ic, x, y in zip(topic_ids, specific_terms, top_doc_contents):
         clean_topic_name = get_clean_topic(
-            generative_model,
+            generative_model=generative_model,
             language=language,
             specific_terms=x,
             specific_documents=y,

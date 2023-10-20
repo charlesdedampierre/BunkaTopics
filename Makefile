@@ -24,7 +24,6 @@ run_streamlit:
 	python -m streamlit run streamlit/app.py 
 
 
-
 #############
 # Docker  #
 #############

@@ -1,6 +1,5 @@
 import typing as t
 
-from langchain.llms import OpenAI
 from pydantic import BaseModel, Field
 
 TOPIC_ID = str

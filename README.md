@@ -28,7 +28,7 @@ pyenv activate bunkatopics_env
 Then Install the Bunkatopics package:
 
 ```bash
-pip install bunkatopics==0.42
+pip install bunkatopics==0.43
 ```
 
 ## Pipeline

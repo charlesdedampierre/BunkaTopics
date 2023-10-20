@@ -16,7 +16,8 @@ import plotly.graph_objects as go
 import umap
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import DataFrameLoader
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
+
 from langchain.vectorstores import Chroma
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
@@ -51,12 +52,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"
 class Bunka:
     def __init__(self, embedding_model=None, language: str = "en_core_web_sm"):
         if embedding_model is None:
-            embedding_model = HuggingFaceInstructEmbeddings(
-                model_name="hkunlp/instructor-large",
-                embed_instruction="Embed the documents for visualisation of Topic Modeling on a map : ",
-                model_kwargs={"device": "cpu"},
-                encode_kwargs={"normalize_embeddings": True},
-            )
+            embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         self.embedding_model = embedding_model
         self.language = language
 

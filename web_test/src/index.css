@@ -52,10 +52,23 @@ h2 {
   margin: 10px 0;
 }
 
+/* Style for the text container */
+/* Style for the text container */
+.text-container {
+  padding: 20px;
+  /* Add padding for spacing */
+  border: 4px solid lightblue;
+  /* Thick pale blue border */
+  border-radius: 5px;
+  /* Add rounded corners if desired */
+  margin-right: 100px;
+  /* Adjust margin to move away from the right border */
+}
+
 /* Style for the text content within the text container */
 .text-container p {
-  margin: 0;
-  padding: 5px 0;
+  margin: 10px;
+  padding: 2px 0;
 }
 
 /* Style for the scatter plot circles */

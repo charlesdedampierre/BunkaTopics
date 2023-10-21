@@ -163,7 +163,7 @@ const JsonDisplay = () => {
                     const topicName = d.name; // Get the topic name
 
                     // Set a max height and overflow for the text container
-                    textContainerRef.current.style.maxHeight = '800px'; // Adjust the height as needed
+                    textContainerRef.current.style.maxHeight = '1000px'; // Adjust the height as needed
                     textContainerRef.current.style.overflow = 'auto';
 
                     // Display the topic name on top, followed by the content
@@ -184,6 +184,8 @@ const JsonDisplay = () => {
         screenshotButton.style.background = 'darkblue'; // Set the background color to blue
         screenshotButton.style.color = 'white'; // Set text color to white
         screenshotButton.style.border = 'darkblue'; // Add a dark blue border
+        screenshotButton.style.fontSize = '16px'; // Increase font size
+
 
 
         screenshotButton.addEventListener('click', () => {
@@ -211,7 +213,7 @@ const JsonDisplay = () => {
     return (
         <div className="json-display">
             <div className="top-right">
-                <a href="https://www.linkedin.com/company/85881815/" target="_blank" rel="noopener noreferrer" className="linkedin-icon">
+                <a href="https://www.linkedin.com/company/company-profile-link" target="_blank" rel="noopener noreferrer" className="linkedin-icon">
                     <img src="/linkedin_logo.png" alt="LinkedIn" />
                 </a>
                 <img src="/bunka_logo.png" alt="Bunka Logo" className="bunka-logo" />

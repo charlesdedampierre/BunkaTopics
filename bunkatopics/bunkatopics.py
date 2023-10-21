@@ -10,6 +10,7 @@ import typing as t
 import uuid
 import warnings
 import subprocess
+import json
 
 import pandas as pd
 import plotly.express as px
@@ -311,8 +312,18 @@ class Bunka:
         if is_server_running():
             print("Server on port 3000 is already running. Killing it...")
             kill_server()
-
         try:
+            file_path = "../web_test/public" + "/bunka_docs.json"
+            docs_json = [x.dict() for x in self.docs]
+
+            with open(file_path, "w") as json_file:
+                json.dump(docs_json, json_file)
+
+            file_path = "../web_test/public" + "/bunka_topics.json"
+            topics_json = [x.dict() for x in self.topics]
+            with open(file_path, "w") as json_file:
+                json.dump(topics_json, json_file)
+
             subprocess.Popen(["npm", "start"], cwd="../web_test")
             print("NPM server started.")
         except Exception as e:

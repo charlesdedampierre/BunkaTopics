@@ -160,7 +160,7 @@ const JsonDisplay = () => {
                     const topicName = d.name; // Get the topic name
 
                     // Set a max height and overflow for the text container
-                    textContainerRef.current.style.maxHeight = '600px'; // Adjust the height as needed
+                    textContainerRef.current.style.maxHeight = '800px'; // Adjust the height as needed
                     textContainerRef.current.style.overflow = 'auto';
 
                     // Display the topic name on top, followed by the content

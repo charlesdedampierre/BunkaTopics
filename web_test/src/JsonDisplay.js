@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import * as d3Contour from 'd3-contour';
+import html2canvas from 'html2canvas'; // Import html2canvas library
+
 
 const JsonDisplay = () => {
     const [jsonData, setJsonData] = useState(null);
     const [selectedDocument, setSelectedDocument] = useState(null);
     const svgRef = useRef(null);
     const textContainerRef = useRef(null);
+    const scatterPlotContainerRef = useRef(null);
 
     useEffect(() => {
         // Fetch the JSON data
@@ -170,6 +173,35 @@ const JsonDisplay = () => {
                 }
             });
 
+        // Add a button to take a screenshot
+        const screenshotButton = document.createElement('button');
+        screenshotButton.innerText = 'Take Screenshot';
+        screenshotButton.style.position = 'absolute';
+        screenshotButton.style.bottom = '10px'; // Position at the bottom of the scatter plot container
+        screenshotButton.style.left = '50%'; // Center horizontally
+        screenshotButton.style.transform = 'translateX(-50%)'; // Center horizontally
+        screenshotButton.style.padding = '10px 20px'; // Increase padding for a larger button
+        screenshotButton.style.background = 'darkblue'; // Set the background color to blue
+        screenshotButton.style.color = 'white'; // Set text color to white
+        screenshotButton.style.border = 'darkblue'; // Add a dark blue border
+
+
+        screenshotButton.addEventListener('click', () => {
+            // Use html2canvas to capture a screenshot of the scatter plot container
+            html2canvas(scatterPlotContainerRef.current).then((canvas) => {
+                const screenshot = canvas.toDataURL('image/png');
+
+                // Create a temporary anchor element to trigger the download
+                const a = document.createElement('a');
+                a.href = screenshot;
+                a.download = 'bunka_map.png'; // You can change the filename as desired
+                a.click();
+            });
+        });
+
+        // Append the screenshot button to the scatter plot container
+        scatterPlotContainerRef.current.appendChild(screenshotButton);
+
 
 
 
@@ -179,13 +211,13 @@ const JsonDisplay = () => {
     return (
         <div className="json-display">
             <div className="top-right">
-                <a href="https://www.linkedin.com/company/company-profile-link" target="_blank" rel="noopener noreferrer" className="linkedin-icon">
+                <a href="https://www.linkedin.com/company/85881815/" target="_blank" rel="noopener noreferrer" className="linkedin-icon">
                     <img src="/linkedin_logo.png" alt="LinkedIn" />
                 </a>
                 <img src="/bunka_logo.png" alt="Bunka Logo" className="bunka-logo" />
             </div>
             <div className="scatter-plot-and-text-container">
-                <div className="scatter-plot-container">
+                <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
                     <svg ref={svgRef}></svg>
                 </div>
                 <div className="text-container" ref={textContainerRef}>
@@ -199,6 +231,7 @@ const JsonDisplay = () => {
             </div>
         </div>
     );
+
 
 };
 

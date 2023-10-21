@@ -47,7 +47,10 @@ def get_top_documents(
         res = TopicRanking(topic_id=topic_id, rank=rank)
         final_dict[doc_id] = res
 
-    """df_content = pd.DataFrame.from_records([doc.dict() for doc in docs])
+    for doc in docs:
+        doc.topic_ranking = final_dict.get(doc.doc_id)
+
+    df_content = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_content = df_content[["doc_id", "content"]]
 
     df_topics_rank = pd.merge(df_rank, df_content, on="doc_id")
@@ -58,6 +61,5 @@ def get_top_documents(
 
     for topic in topics:
         topic.top_doc_content = dict_topic_rank.get(topic.topic_id)
-        """
 
-    return docs
+    return docs, topics

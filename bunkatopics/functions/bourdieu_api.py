@@ -112,7 +112,9 @@ def bourdieu_api(
         top_terms_overall=topic_param.top_terms_overall,
     )
 
-    bourdieu_docs = get_top_documents(bourdieu_docs, bourdieu_topics, ranking_terms=20)
+    bourdieu_docs, bourdieu_topics = get_top_documents(
+        bourdieu_docs, bourdieu_topics, ranking_terms=20
+    )
 
     if generative_ai_name:
         bourdieu_topics: t.List[Topic] = get_clean_topic_all(

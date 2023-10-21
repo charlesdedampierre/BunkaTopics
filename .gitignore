@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+*bunka_docs.json
+*bunka_topics.json
+
 #hidden notebooks
 notebooks_test/
 json_examples/

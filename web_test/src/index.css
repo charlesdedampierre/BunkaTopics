@@ -1,0 +1,86 @@
+.json-display {
+  font-family: Arial, sans-serif;
+  position: relative;
+  /* Add this line */
+}
+
+/* Add or modify the following CSS for the LinkedIn icon */
+.linkedin-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Adjust the width and height to make the logo smaller */
+.linkedin-icon img {
+  width: 50px;
+  /* Adjust the width to your desired size */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+.scatter-plot-and-text-container {
+  display: flex;
+}
+
+.scatter-plot-container {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+svg {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+}
+
+.text-container {
+  flex: 1;
+  padding: 20px;
+  font-size: 30px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: auto;
+}
+
+/* Style for the title */
+h2 {
+  font-size: 20;
+  margin: 10px 0;
+}
+
+/* Style for the text content within the text container */
+.text-container p {
+  margin: 0;
+  padding: 5px 0;
+}
+
+/* Style for the scatter plot circles */
+circle {
+  cursor: pointer;
+  transition: fill 0.3s;
+}
+
+/* Style for clicked circles */
+circle.clicked {
+  fill: pink;
+}
+
+/* Style for the contour lines */
+path.contour {
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+}
+
+/* Add or modify the following CSS for the Bunka logo */
+.bunka-logo {
+  /* Set the width and height to make the logo smaller */
+  width: 500px;
+  /* Adjust the width as desired */
+  height: auto;
+  /* Maintain aspect ratio */
+}

@@ -1,0 +1,32 @@
+{
+    "name": "@types/istanbul-lib-report",
+    "version": "3.0.2",
+    "description": "TypeScript definitions for istanbul-lib-report",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/istanbul-lib-report",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Jason Cheatham",
+            "githubUsername": "jason0x43",
+            "url": "https://github.com/jason0x43"
+        },
+        {
+            "name": "Zacharias Björngren",
+            "githubUsername": "zache",
+            "url": "https://github.com/zache"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/istanbul-lib-report"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/istanbul-lib-coverage": "*"
+    },
+    "typesPublisherContentHash": "5ad3fea906ff78dd149cad260ab9caad57cbf6df5ab4547d5e9350a5b2175073",
+    "typeScriptVersion": "4.5"
+}

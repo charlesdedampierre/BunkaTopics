@@ -9,6 +9,7 @@ import string
 import typing as t
 import uuid
 import warnings
+import subprocess
 
 import pandas as pd
 import plotly.express as px
@@ -45,6 +46,8 @@ from bunkatopics.visualisation.bourdieu_visu import visualize_bourdieu_one_dimen
 from bunkatopics.visualisation.new_bourdieu_visu import visualize_bourdieu
 from bunkatopics.visualisation.query_visualisation import plot_query
 from bunkatopics.visualisation.topic_visualization import visualize_topics
+from bunkatopics.serveur.utils import is_server_running, kill_server
+
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -303,6 +306,17 @@ class Bunka:
         )
 
         return fig
+
+    def start_server(self):
+        if is_server_running():
+            print("Server on port 3000 is already running. Killing it...")
+            kill_server()
+
+        try:
+            subprocess.Popen(["npm", "start"], cwd="../web_test")
+            print("NPM server started.")
+        except Exception as e:
+            print(f"Error starting NPM server: {e}")
 
     def visualize_topics(
         self, add_scatter=False, label_size_ratio=100, width=1000, height=1000

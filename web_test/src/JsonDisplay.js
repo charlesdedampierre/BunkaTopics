@@ -67,6 +67,10 @@ const JsonDisplay = () => {
             .bandwidth(30) // Adjust the bandwidth as needed
             (data);
 
+        // Define a custom color for the contour lines
+        const contourLineColor = 'rgb(237, 76, 103)'; // Replace with the desired color
+
+        // Append the contour path to the SVG with a custom color
         svg.selectAll('path.contour')
             .data(contourData)
             .enter()
@@ -74,9 +78,12 @@ const JsonDisplay = () => {
             .attr('class', 'contour')
             .attr('d', d3.geoPath())
             .style('fill', 'none')
-            .style('stroke', 'lightblue') // Set the contour line color to light blue
+            .style('stroke', contourLineColor) // Set the contour line color to the custom color
             .style('stroke-width', 1);
 
+
+
+        /*
         const circles = svg.selectAll('circle')
             .data(data)
             .enter()
@@ -91,6 +98,7 @@ const JsonDisplay = () => {
                 // Change the color to pink on click
                 circles.style('fill', (pointData) => (pointData === d) ? 'pink' : 'lightblue');
             });
+            */
 
         const topicsCentroids = data.filter((d) => d.x_centroid && d.y_centroid);
 
@@ -133,7 +141,7 @@ const JsonDisplay = () => {
                 .attr('class', 'convex-hull-polygon')
                 .attr('d', (d) => "M" + d.join("L") + "Z")
                 .style('fill', 'none')
-                .style('stroke', 'darkblue') // Adjust the stroke color as needed
+                .style("stroke", "rgba(255, 255, 255, 0.5)") // White with 50% transparency
                 .style('stroke-width', 2);
         });
 
@@ -161,13 +169,16 @@ const JsonDisplay = () => {
                 if (d.top_doc_content) {
                     const content = d.top_doc_content.join('<br><br>'); // Use '<br><br>' for double spacing
                     const topicName = d.name; // Get the topic name
+                    const topicSize = d.size; // Get the topic name
+                    const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0); // Calculate the total size
+                    const sizeFraction = Math.round((topicSize / totalSize) * 100);
 
                     // Set a max height and overflow for the text container
                     textContainerRef.current.style.maxHeight = '1000px'; // Adjust the height as needed
                     textContainerRef.current.style.overflow = 'auto';
 
                     // Display the topic name on top, followed by the content
-                    textContainerRef.current.innerHTML = `<h2>${topicName}</h2><br>${content}`;
+                    textContainerRef.current.innerHTML = `<h2>${topicName}</h2><h3>${sizeFraction}%</h3><br>${content}`;
                 } else {
                     textContainerRef.current.innerHTML = 'No content available for this topic.';
                 }

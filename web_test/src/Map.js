@@ -1,6 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import * as d3Contour from 'd3-contour';
+import {
+    List,
+    ListItem,
+    ListItemText,
+    Paper,
+    Typography,
+} from '@mui/material';
+
 
 const Map = () => {
     const [jsonData, setJsonData] = useState(null);

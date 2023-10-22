@@ -6,8 +6,8 @@ __pycache__/
 # C extensions
 *.so
 
-*bunka_docs.json
-*bunka_topics.json
+#*bunka_docs.json
+#*bunka_topics.json
 
 #hidden notebooks
 notebooks_test/

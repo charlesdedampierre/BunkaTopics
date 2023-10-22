@@ -3,5 +3,5 @@ make start:
 
 make push:
 	git add .
-	git commit -m 'automatic commit3'
+	git commit -m 'automatic commit4'
 	git push

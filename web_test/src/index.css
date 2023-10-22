@@ -99,6 +99,7 @@ h2 {
   /* Specify the unit, e.g., 'px' */
   margin: 10px 0;
   color: rgb(24, 113, 222);
+  align-items: center;
 }
 
 /* Style for the text content within the text container */
@@ -220,6 +221,7 @@ path.contour {
   position: sticky;
   top: 0;
   background-color: white;
+  align-self: center;
   /* Set the background color to your desired value */
 }
 

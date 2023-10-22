@@ -1,18 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import * as d3Contour from 'd3-contour';
-import html2canvas from 'html2canvas'; // Import html2canvas library
-import Paper from '@mui/material/Paper';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import { grey } from '@mui/material/colors';
-
 
 const Map = () => {
     const [jsonData, setJsonData] = useState(null);
     const [selectedDocument, setSelectedDocument] = useState(null);
+    const [searchQuery, setSearchQuery] = useState(''); // State for search input
     const svgRef = useRef(null);
     const textContainerRef = useRef(null);
     const scatterPlotContainerRef = useRef(null);
@@ -159,14 +152,7 @@ const Map = () => {
                 .style('stroke-width', 2);
         });
 
-
         // Add polygons for topics. Delete if no clicking on polygons
-        // Add polygons for topics. Delete if no clicking on polygons
-        // Add polygons for topics. Delete if no clicking on polygons
-        // Add polygons for topics. Delete if no clicking on polygons
-        // Add polygons for topics. Delete if no clicking on polygons
-
-
         const topicsPolygons = svg
             .selectAll('polygon.topic-polygon')
             .data(topicsCentroids)
@@ -271,10 +257,19 @@ const Map = () => {
 
         */
 
+    };
 
 
-
-
+    const handleSearch = (event) => {
+        const query = event.target.value;
+        setSearchQuery(query);
+        // You can implement your search logic here, e.g., filtering data based on the query
+        // and updating the displayed content.
+        // For simplicity, let's filter based on the "content" property.
+        const filteredData = jsonData.filter((doc) =>
+            doc.content.toLowerCase().includes(query.toLowerCase())
+        );
+        setSelectedDocument(filteredData[0]); // Set the first matching document as selected
     };
 
     return (
@@ -287,6 +282,12 @@ const Map = () => {
                     {selectedDocument && (
                         <div className="text-content">
                             <h2 className="topic-name">Topic: {selectedDocument.topic_id}</h2>
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={searchQuery}
+                                onChange={handleSearch}
+                            />
                             <p>{selectedDocument.content}</p>
                         </div>
                     )}
@@ -294,9 +295,12 @@ const Map = () => {
             </div>
         </div>
     );
-
-
 };
 
 export default Map;
+
+
+
+
+
 

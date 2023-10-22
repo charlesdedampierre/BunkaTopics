@@ -91,19 +91,13 @@ bunka = Bunka(embedding_model=embedding_model)
 bunka.fit(full_docs)
 
 # Get the list of topics
-bunka.get_topics(n_clusters = 20)
+bunka.get_topics(n_clusters = 20, name_lenght=3)
 ```
 
 Then, we can visualize the topics computed
 
 ```python
 bunka.visualize_topics( width=800, height=800)
-```
-
-Start the serveur to visualize the data
-
-```python
-bunka.start_server()
 ```
 
 <img src="images/newsmap.png" width="70%" height="70%" align="center" />
@@ -127,6 +121,12 @@ bunka.visualize_topics( width=800, height=800)
 ```
 
 <img src="images/newsmap_clean.png" width="70%" height="70%" align="center" />
+
+Start the serveur to visualize the data with a proper front-end
+
+```python
+bunka.start_server()
+```
 
 ## Retrieval Augmented Generation (RAG)
 

@@ -172,46 +172,61 @@ const JsonDisplay = () => {
             })
             .style('fill', 'transparent')
             .style('stroke', 'transparent')
-            .on('click', (event, d) => {
-                // Display the topic name and content from top_doc_content with a scroll system
-                if (d.top_doc_content) {
-                    const topicName = d.name;
-                    const topicSize = d.size;
-                    const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
-                    const sizeFraction = Math.round((topicSize / totalSize) * 100);
-                    const content = d.top_doc_content.map((doc, index) => (
-                        `<div class="box" key=${index}>
-                            ${doc}
-                        </div>`
-                    )).join('');
+            .style('stroke-width', 2); // Adjust the border width as needed
 
-                    // Set a max height and overflow for the text container
-                    textContainerRef.current.style.maxHeight = '1000px'; // Adjust the height as needed
-                    textContainerRef.current.style.overflow = 'auto';
+        let currentlyClickedPolygon = null;
 
-                    // Display the topic name on top, followed by the content
-                    textContainerRef.current.innerHTML = `
-                        <div class="topic-box">
-                            <h2>${topicName}</h2>
-                            <h3>${sizeFraction}% of the Territory</h3>
-                            <div class="documents-list">
-                                ${content}
-                            </div>
-                        </div>
-                    `;
+        topicsPolygons.on('click', (event, d) => {
+            if (currentlyClickedPolygon !== null) {
+                // Reset the previously clicked polygon's border to transparent
+                currentlyClickedPolygon.style('stroke', 'transparent');
+            }
 
-                    // Add click event listeners to each box element
-                    const boxes = textContainerRef.current.querySelectorAll('.box');
-                    boxes.forEach(box => {
-                        box.addEventListener('click', () => {
-                            // Toggle the "clicked" class to change the background color
-                            box.classList.toggle('clicked');
-                        });
+            // Set the color of the clicked polygon's border to red
+            d3.select(event.target).style('stroke', 'red');
+
+            currentlyClickedPolygon = d3.select(event.target);
+
+            // Display the topic name and content from top_doc_content with a scroll system
+            if (d.top_doc_content) {
+                const topicName = d.name;
+                const topicSize = d.size;
+                const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
+                const sizeFraction = Math.round((topicSize / totalSize) * 100);
+                const content = d.top_doc_content.map((doc, index) => (
+                    `<div class="box" key=${index}>
+                ${doc}
+            </div>`
+                )).join('');
+
+                // Set a max height and overflow for the text container
+                textContainerRef.current.style.maxHeight = '1000px'; // Adjust the height as needed
+                textContainerRef.current.style.overflow = 'auto';
+
+                // Display the topic name on top, followed by the content
+                textContainerRef.current.innerHTML = `
+            <div class="topic-box">
+                <h2>${topicName}</h2>
+                <h3>${sizeFraction}% of the Territory</h3>
+                <div class="documents-list">
+                    ${content}
+                </div>
+            </div>
+        `;
+
+                // Add click event listeners to each box element
+                const boxes = textContainerRef.current.querySelectorAll('.box');
+                boxes.forEach(box => {
+                    box.addEventListener('click', () => {
+                        // Toggle the "clicked" class to change the background color
+                        box.classList.toggle('clicked');
                     });
-                } else {
-                    textContainerRef.current.innerHTML = 'No content available for this topic.';
-                }
-            });
+                });
+            } else {
+                textContainerRef.current.innerHTML = 'No content available for this topic.';
+            }
+        });
+
         // Add a button to take a screenshot
         const screenshotButton = document.createElement('button');
         screenshotButton.innerText = 'Take Screenshot';

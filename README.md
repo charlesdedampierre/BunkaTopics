@@ -100,6 +100,12 @@ Then, we can visualize the topics computed
 bunka.visualize_topics( width=800, height=800)
 ```
 
+Start the serveur to visualize the data
+
+```python
+bunka.start_server()
+```
+
 <img src="images/newsmap.png" width="70%" height="70%" align="center" />
 
 ## Topic Modeling with GenAI Summarization of Topics

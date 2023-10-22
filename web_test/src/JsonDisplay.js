@@ -74,7 +74,9 @@ const JsonDisplay = () => {
             (data);
 
         // Define a custom color for the contour lines
-        const contourLineColor = 'rgb(24, 113, 222)'; // Replace with the desired color
+
+
+        const contourLineColor = 'rgb(94, 163, 252)';
 
         // Append the contour path to the SVG with a custom color
         svg.selectAll('path.contour')

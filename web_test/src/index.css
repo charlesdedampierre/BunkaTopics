@@ -207,3 +207,24 @@ path.contour {
 
   /* Adjust the margin as needed */
 }
+
+.topic-box {
+  max-height: 1100px;
+  /* Adjust the maximum height as needed */
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.topic-box h2 {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  /* Set the background color to your desired value */
+}
+
+.content-container {
+  /* Adjust these styles as needed */
+  flex: 1;
+  overflow: auto;
+}

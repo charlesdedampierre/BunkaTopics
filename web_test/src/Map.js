@@ -201,15 +201,16 @@ const Map = () => {
 
                 // Display the topic name on top, followed by the content
                 textContainerRef.current.innerHTML = `
-            <div class="topic-box">
-                <h2>${topicName}</h2>
-                <h3>${sizeFraction}% of the Territory</h3>
-                <div class="documents-list">
-                    ${content}
+                <div class="topic-box">
+                    <h2>${topicName}</h2>
+                    <h3>${sizeFraction}% of the Territory</h3>
+                    <div class="content-container">
+                    <div class="documents-list">
+                        ${content}
+                    </div>
+                    </div>
                 </div>
-            </div>
-        `;
-
+                `;
                 // Add click event listeners to each box element
                 const boxes = textContainerRef.current.querySelectorAll('.box');
                 boxes.forEach(box => {

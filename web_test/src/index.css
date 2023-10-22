@@ -30,6 +30,11 @@
   /* Float the logo to the left side */
 }
 
+.topic-title {
+  word-spacing: 10px;
+  /* Adjust the spacing as needed */
+}
+
 /* Style for JsonDisplay to take full screen below the logos */
 .json-display {
   flex: 1;

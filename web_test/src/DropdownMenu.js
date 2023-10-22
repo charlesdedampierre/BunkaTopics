@@ -20,7 +20,8 @@ const DropdownMenu = ({ onSelectView }) => {
             >
                 <MenuItem value="map">Map View</MenuItem>
                 <MenuItem value="docs">Documents View</MenuItem>
-                <MenuItem value="import">Import CSV</MenuItem> {/* Add a new view for importing CSV */}
+                <MenuItem value="treemap">Treemap View</MenuItem> {/* Add a new view for Treemap */}
+                <MenuItem value="query">Query View</MenuItem> {/* Add a new view for Query */}
             </Select>
         </FormControl>
     );

@@ -3,21 +3,44 @@ import DropdownMenu from './DropdownMenu';
 import DocsView from './DocsView';
 import CsvUpload from './CsvUpload';
 import CSVView from './CSVView';
-import Map from './Map'; // Import the MapView component
+import Map from './Map';
+import TreemapView from './TreemapView'; // Import the TreemapView component
+import QueryView from './QueryView'; // Import the QueryView component
 
 const App = () => {
   const [selectedView, setSelectedView] = useState('map'); // Default to 'map'
-
-  // Define a state to hold CSV data
   const [csvData, setCSVData] = useState(null);
 
-  // Callback function to handle CSV import
   const handleCSVImport = (data) => {
     // Process the CSV data as needed
     setCSVData(data);
 
     // Set the selected view back to 'map' or any other desired view
     setSelectedView('map');
+  };
+
+  const handleQuerySubmit = async (csvFile, columnName) => {
+    // Perform API request with the CSV file and column name
+    // Replace the following code with your actual API request
+    const formData = new FormData();
+    formData.append('csvFile', csvFile);
+    formData.append('columnName', columnName);
+
+    try {
+      const response = await fetch('https://your-api-endpoint.com/topics', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+
+      // Handle the API response (topics and docs) as needed
+      console.log('API Response:', data);
+
+      // Update the selected view to display the results
+      setSelectedView('results');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -36,12 +59,17 @@ const App = () => {
           <DropdownMenu onSelectView={setSelectedView} />
         </div>
         {selectedView === 'map' ? (
-          <Map /> // Render the MapView component with "Map" title
+          <Map />
         ) : selectedView === 'docs' ? (
           <DocsView />
+        ) : selectedView === 'treemap' ? (
+          <TreemapView />
+        ) : selectedView === 'query' ? (
+          <QueryView />
+        ) : selectedView === 'results' ? (
+          <CSVView data={csvData} />
         ) : (
-          // Render the CSV import view when 'import' is selected
-          <CSVView onCSVImport={handleCSVImport} />
+          <QueryView onQuerySubmit={handleQuerySubmit} />
         )}
       </div>
     </div>

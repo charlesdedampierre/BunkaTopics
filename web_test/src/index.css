@@ -1,5 +1,43 @@
 .json-display {
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add or modify the following CSS for the LinkedIn icon */
+.linkedin-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  /* Adjust the width and height to make the logo smaller */
+}
+
+.linkedin-icon img {
+  width: 50px;
+  /* Adjust the width to your desired size */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+/* Style for the Bunka logo */
+.bunka-logo {
+  /* Set the width and height to make the logo smaller */
+  width: 500px;
+  /* Adjust the width as desired */
+  height: auto;
+  /* Maintain aspect ratio */
+  float: left;
+  /* Float the logo to the left side */
+}
+
+/* Style for JsonDisplay to take full screen below the logos */
+.json-display {
+  flex: 1;
+  position: relative;
+}
+
+.json-display {
+  font-family: Arial, sans-serif;
   position: relative;
   /* Add this line */
 }
@@ -94,7 +132,10 @@ path.contour {
   /* Adjust the width as desired */
   height: auto;
   /* Maintain aspect ratio */
+  float: left;
+  /* Float the logo to the right side */
 }
+
 
 .box {
   border: 3px solid #ccc;
@@ -144,4 +185,44 @@ path.contour {
 /* Style for the individual text boxes within the content */
 .box {
   /* Your existing styles for the boxes */
+}
+
+/* CsvInsert.css */
+.csv-insert {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.upload-label {
+  background-color: #24a0ed;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.upload-button {
+  background-color: #24a0ed;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#csv-upload {
+  display: none;
+  /* Hide the file input */
 }

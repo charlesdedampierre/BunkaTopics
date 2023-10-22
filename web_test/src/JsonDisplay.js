@@ -45,8 +45,8 @@ const JsonDisplay = () => {
 
     const createScatterPlot = (data) => {
         const margin = { top: 20, right: 20, bottom: 50, left: 50 };
-        const plotWidth = 1000; // Adjust the width as desired
-        const plotHeight = 1000; // Adjust the height as desired
+        const plotWidth = 1500; // Adjust the width as desired
+        const plotHeight = 1100; // Adjust the height as desired
         const fullWidth = plotWidth + margin.left + margin.right;
         const fullHeight = plotHeight + margin.top + margin.bottom;
 
@@ -57,12 +57,18 @@ const JsonDisplay = () => {
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
             .style('background-color', 'blue'); // Set the background color to blue
 
+
+        const xMin = d3.min(data, (d) => d.x);
+        const xMax = d3.max(data, (d) => d.x);
+        const yMin = d3.min(data, (d) => d.y);
+        const yMax = d3.max(data, (d) => d.y);
+
         const xScale = d3.scaleLinear()
-            .domain([d3.min(data, (d) => d.x), d3.max(data, (d) => d.x)])
+            .domain([xMin, xMax]) // Use the full range of your data
             .range([0, plotWidth]);
 
         const yScale = d3.scaleLinear()
-            .domain([d3.min(data, (d) => d.y), d3.max(data, (d) => d.y)])
+            .domain([yMin, yMax]) // Use the full range of your data
             .range([plotHeight, 0]);
 
         // Add contours
@@ -202,7 +208,9 @@ const JsonDisplay = () => {
                 )).join('');
 
                 // Set a max height and overflow for the text container
-                textContainerRef.current.style.maxHeight = '1000px'; // Adjust the height as needed
+                textContainerRef.current.style.maxHeight = '1100px'; // Adjust the height as needed
+                textContainerRef.current.style.maxWitdh = '600'; // Adjust the height as needed
+
                 textContainerRef.current.style.overflow = 'auto';
 
                 // Display the topic name on top, followed by the content
@@ -229,6 +237,7 @@ const JsonDisplay = () => {
             }
         });
 
+        /*
         // Add a button to take a screenshot
         const screenshotButton = document.createElement('button');
         screenshotButton.innerText = 'Take Screenshot';
@@ -241,7 +250,7 @@ const JsonDisplay = () => {
         screenshotButton.style.color = 'white'; // Set text color to white
         screenshotButton.style.border = 'darkblue'; // Add a dark blue border
         screenshotButton.style.fontSize = '16px'; // Increase font size
-
+   
 
 
         screenshotButton.addEventListener('click', () => {
@@ -259,6 +268,8 @@ const JsonDisplay = () => {
 
         // Append the screenshot button to the scatter plot container
         scatterPlotContainerRef.current.appendChild(screenshotButton);
+
+        */
 
 
 

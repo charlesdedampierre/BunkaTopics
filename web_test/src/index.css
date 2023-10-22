@@ -9,9 +9,9 @@
   position: absolute;
   top: 10px;
   right: 10px;
+  /* Adjust the width and height to make the logo smaller */
 }
 
-/* Adjust the width and height to make the logo smaller */
 .linkedin-icon img {
   width: 50px;
   /* Adjust the width to your desired size */
@@ -26,8 +26,10 @@
 .scatter-plot-container {
   flex: 2;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  align-items: left;
+  margin-left: 50px;
+
 }
 
 svg {
@@ -39,6 +41,8 @@ svg {
   flex: 1;
   padding: 20px;
   font-size: 30px;
+  align-items: center;
+  justify-content: center;
   background-color: #fff;
   border: 3px solid lightblue;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -46,26 +50,24 @@ svg {
   overflow: auto;
   margin-right: 20px;
   /* Adjust the margin from the right as needed */
-  margin: 100px;
+  /* margin: 100px; */
+  /* This line is removed to prevent a duplicated margin */
   padding: 10px;
 }
 
 /* Style for the title */
 h2 {
-  font-size: 20;
+  font-size: 50px;
+  /* Specify the unit, e.g., 'px' */
   margin: 10px 0;
   color: rgb(24, 113, 222);
 }
-
-
 
 /* Style for the text content within the text container */
 .text-container p {
   margin: 10px;
   padding: 2px 0;
 }
-
-
 
 /* Style for the scatter plot circles */
 circle {
@@ -95,11 +97,12 @@ path.contour {
 }
 
 .box {
-  border: 1px solid #ccc;
+  border: 3px solid #ccc;
   padding: 10px;
   background-color: white;
   cursor: pointer;
-  margin: 5px;
+  margin: 30px;
+  /* Add margin to create space between each box */
 }
 
 .box.clicked {
@@ -111,8 +114,6 @@ path.contour {
   display: flex;
   flex-direction: column;
 }
-
-
 
 /* Style for the topic title inside the title box */
 .topic-title {
@@ -129,13 +130,6 @@ path.contour {
 .content-container {
   display: flex;
 }
-
-/* Style for the scatter plot container */
-.scatter-plot-container {
-  /* Your styles for the scatter plot container */
-}
-
-
 
 /* Style for the topic title inside the title box */
 .topic-title {

@@ -2,6 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import * as d3Contour from 'd3-contour';
 import html2canvas from 'html2canvas'; // Import html2canvas library
+import Paper from '@mui/material/Paper';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import { grey } from '@mui/material/colors';
 
 
 const JsonDisplay = () => {
@@ -68,7 +74,7 @@ const JsonDisplay = () => {
             (data);
 
         // Define a custom color for the contour lines
-        const contourLineColor = 'rgb(237, 76, 103)'; // Replace with the desired color
+        const contourLineColor = 'rgb(24, 113, 222)'; // Replace with the desired color
 
         // Append the contour path to the SVG with a custom color
         svg.selectAll('path.contour')
@@ -151,6 +157,8 @@ const JsonDisplay = () => {
         // Add polygons for topics. Delete if no clicking on polygons
         // Add polygons for topics. Delete if no clicking on polygons
         // Add polygons for topics. Delete if no clicking on polygons
+
+
         const topicsPolygons = svg
             .selectAll('polygon.topic-polygon')
             .data(topicsCentroids)
@@ -167,23 +175,43 @@ const JsonDisplay = () => {
             .on('click', (event, d) => {
                 // Display the topic name and content from top_doc_content with a scroll system
                 if (d.top_doc_content) {
-                    const content = d.top_doc_content.join('<br><br>'); // Use '<br><br>' for double spacing
-                    const topicName = d.name; // Get the topic name
-                    const topicSize = d.size; // Get the topic name
-                    const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0); // Calculate the total size
+                    const topicName = d.name;
+                    const topicSize = d.size;
+                    const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
                     const sizeFraction = Math.round((topicSize / totalSize) * 100);
+                    const content = d.top_doc_content.map((doc, index) => (
+                        `<div class="box" key=${index}>
+                            ${doc}
+                        </div>`
+                    )).join('');
 
                     // Set a max height and overflow for the text container
                     textContainerRef.current.style.maxHeight = '1000px'; // Adjust the height as needed
                     textContainerRef.current.style.overflow = 'auto';
 
                     // Display the topic name on top, followed by the content
-                    textContainerRef.current.innerHTML = `<h2>${topicName}</h2><h3>${sizeFraction}%</h3><br>${content}`;
+                    textContainerRef.current.innerHTML = `
+                        <div class="topic-box">
+                            <h2>${topicName}</h2>
+                            <h3>${sizeFraction}% of the Territory</h3>
+                            <div class="documents-list">
+                                ${content}
+                            </div>
+                        </div>
+                    `;
+
+                    // Add click event listeners to each box element
+                    const boxes = textContainerRef.current.querySelectorAll('.box');
+                    boxes.forEach(box => {
+                        box.addEventListener('click', () => {
+                            // Toggle the "clicked" class to change the background color
+                            box.classList.toggle('clicked');
+                        });
+                    });
                 } else {
                     textContainerRef.current.innerHTML = 'No content available for this topic.';
                 }
             });
-
         // Add a button to take a screenshot
         const screenshotButton = document.createElement('button');
         screenshotButton.innerText = 'Take Screenshot';

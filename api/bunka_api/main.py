@@ -4,6 +4,8 @@ sys.path.append("../")
 
 from fastapi import FastAPI
 import typing as t
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # Import the necessary modules and classes
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -20,6 +22,15 @@ load_dotenv()
 open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 
 app = FastAPI()
+
+# Allow requests from all origins (not recommended for production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with the specific origins you want to allow
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/topics/")

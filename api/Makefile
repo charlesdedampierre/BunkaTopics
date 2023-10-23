@@ -8,6 +8,9 @@ help:
 # PROD   #
 ##########
 
+run_api:
+	python -m uvicorn main:app
+
 run:
 	python -m uvicorn src.bunka_api.main:app
 

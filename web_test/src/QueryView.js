@@ -5,7 +5,6 @@ import {
     Container,
     Box,
     Button,
-    CircularProgress,
     Table,
     TableContainer,
     TableHead,
@@ -17,15 +16,18 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    Backdrop, // Import Backdrop component
+    CircularProgress, // Import CircularProgress component
 } from '@mui/material';
+
 
 const QueryView = () => {
     const [fileData, setFileData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedColumn, setSelectedColumn] = useState('');
     const [selectedColumnData, setSelectedColumnData] = useState([]);
-    const [topics, setTopics] = useState([]); // State to store topics
-    const [docs, setDocs] = useState([]); // State to store docs
+    const [topics, setTopics] = useState([]);
+    const [docs, setDocs] = useState([]);
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -151,40 +153,42 @@ const QueryView = () => {
                 </FormControl>
             </Box>
             {isLoading ? (
-                <CircularProgress />
+                <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
+                    <CircularProgress color="primary" />
+                </Backdrop>
             ) : (
-                selectedColumnData.length > 0 && (
-                    <TableContainer
-                        component={Paper}
-                        style={{ maxHeight: '400px', overflowY: 'auto' }}
-                    >
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>{selectedColumn}</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {selectedColumnData.map((cell, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{cell}</TableCell>
+                // Content when not loading
+                <div>
+                    {selectedColumnData.length > 0 && (
+                        <TableContainer component={Paper} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>{selectedColumn}</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                )
+                                </TableHead>
+                                <TableBody>
+                                    {selectedColumnData.map((cell, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{cell}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
+                    <Box marginTop={2}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleProcessTopics}
+                            disabled={selectedColumnData.length === 0 || isLoading}
+                        >
+                            {isLoading ? 'Processing...' : 'Process Topics'}
+                        </Button>
+                    </Box>
+                </div>
             )}
-            <Box marginTop={2}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleProcessTopics}
-                    disabled={selectedColumnData.length === 0}
-                >
-                    Process Topics
-                </Button>
-            </Box>
         </Container>
     );
 };

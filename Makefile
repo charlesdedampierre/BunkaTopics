@@ -23,6 +23,12 @@ poetry_export:
 run_streamlit:
 	python -m streamlit run streamlit/app.py 
 
+#############
+# API  #
+#############
+
+run_api:
+	python -m uvicorn api.bunka_api.main:app
 
 #############
 # Docker  #

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import DropdownMenu from './DropdownMenu';
 import DocsView from './DocsView';
-import CsvUpload from './CsvUpload';
-import CSVView from './CSVView';
 import Map from './Map';
 import TreemapView from './TreemapView'; // Import the TreemapView component
 import QueryView from './QueryView'; // Import the QueryView component
@@ -66,8 +64,6 @@ const App = () => {
           <TreemapView />
         ) : selectedView === 'query' ? (
           <QueryView />
-        ) : selectedView === 'results' ? (
-          <CSVView data={csvData} />
         ) : (
           <QueryView onQuerySubmit={handleQuerySubmit} />
         )}

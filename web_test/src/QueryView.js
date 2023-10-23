@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
-import FileSaver from 'file-saver'; // Import the FileSaver library
 import {
     Typography,
     Container,
@@ -46,13 +45,18 @@ const QueryView = () => {
         }
     };
 
-    const parseCSVFile = (file) => {
+    const parseCSVFile = (file, sampleSize = 500) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
 
             reader.onload = (e) => {
                 const csvData = e.target.result;
-                Papa.parse(csvData, {
+                const lines = csvData.split('\n');
+
+                // Take a sample of the first 500 lines
+                const sampleLines = lines.slice(0, sampleSize).join('\n');
+
+                Papa.parse(sampleLines, {
                     complete: (result) => {
                         resolve(result.data);
                     },
@@ -113,10 +117,8 @@ const QueryView = () => {
         }
     };
 
-    // Function to save data to a file
     const saveDataToFile = (fileName, data) => {
-        const jsonData = JSON.stringify(data);
-        const blob = new Blob([jsonData], { type: 'application/json' });
+        const blob = new Blob([data], { type: 'application/json' });
 
         // Create a link element
         const a = document.createElement('a');

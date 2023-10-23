@@ -39,7 +39,7 @@ def process_topics(params: TopicParameter, full_docs: t.List[str]):
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
     bunka.fit(full_docs)
-    bunka.get_topics(n_clusters=params.n_cluster)
+    bunka.get_topics(n_clusters=params.n_cluster, name_lenght=3)
 
     docs = bunka.docs
     topics = bunka.topics

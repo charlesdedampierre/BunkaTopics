@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import * as d3Contour from 'd3-contour';
+import ReactDOM from 'react-dom'; // Import ReactDOM
+
+
+import TextContainer from './TextContainer';
+
 
 const Map = () => {
     const [jsonData, setJsonData] = useState(null);
@@ -178,7 +183,6 @@ const Map = () => {
 
             // Set the color of the clicked polygon's border to red
             d3.select(event.target).style('stroke', 'red');
-
             currentlyClickedPolygon = d3.select(event.target);
 
             // Display the topic name and content from top_doc_content with a scroll system
@@ -187,42 +191,24 @@ const Map = () => {
                 const topicSize = d.size;
                 const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
                 const sizeFraction = Math.round((topicSize / totalSize) * 100);
-                const content = d.top_doc_content.map((doc, index) => (
-                    `<div class="box" key=${index}>
-                ${doc}
-            </div>`
-                )).join('');
 
-                // Set a max height and overflow for the text container
-                textContainerRef.current.style.maxHeight = '1100px'; // Adjust the height as needed
-                textContainerRef.current.style.maxWitdh = '600'; // Adjust the height as needed
+                const content = d.top_doc_content;
 
-                textContainerRef.current.style.overflow = 'auto';
-
-                // Display the topic name on top, followed by the content
-                textContainerRef.current.innerHTML = `
-                <div class="topic-box">
-                    <h2>${topicName}</h2>
-                    <h3>${sizeFraction}% of the Territory</h3>
-                    <div class="content-container">
-                    <div class="documents-list">
-                        ${content}
-                    </div>
-                    </div>
-                </div>
-                `;
-                // Add click event listeners to each box element
-                const boxes = textContainerRef.current.querySelectorAll('.box');
-                boxes.forEach(box => {
-                    box.addEventListener('click', () => {
-                        // Toggle the "clicked" class to change the background color
-                        box.classList.toggle('clicked');
-                    });
-                });
+                // Render the TextContainer component with topic details
+                ReactDOM.render(
+                    <TextContainer topicName={topicName} sizeFraction={sizeFraction} content={content} />,
+                    textContainerRef.current
+                );
             } else {
                 textContainerRef.current.innerHTML = 'No content available for this topic.';
             }
         });
+
+
+
+
+
+
 
         /*
         // Add a button to take a screenshot

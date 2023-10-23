@@ -35,17 +35,6 @@
   /* Adjust the spacing as needed */
 }
 
-/* Style for JsonDisplay to take full screen below the logos */
-.json-display {
-  flex: 1;
-  position: relative;
-}
-
-.json-display {
-  font-family: Arial, sans-serif;
-  position: relative;
-  /* Add this line */
-}
 
 /* Add or modify the following CSS for the LinkedIn icon */
 .linkedin-icon {
@@ -87,7 +76,6 @@ svg {
   align-items: center;
   justify-content: center;
   background-color: #fff;
-  border: 3px solid lightblue;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   overflow: auto;

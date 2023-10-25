@@ -11,26 +11,6 @@ Bunkatopics is a Topic Modeling Visualisation, Frame Analysis & Retrieval Augmen
 
 Bunkatopics is built on top of [langchain](<https://python.langchain.com/docs/get_started/introduction>).
 
-## Installation via pip
-
-First, create a new virtual environment using pyenv
-
-```bash
-pyenv virtualenv 3.10 bunkatopics_env
-```
-
-Activate the environment
-
-```bash
-pyenv activate bunkatopics_env
-```
-
-Then Install the Bunkatopics package:
-
-```bash
-pip install bunkatopics==0.43
-```
-
 ## Pipeline
 
 <img src="images/pipeline.png" width="70%" height="70%" align="center" />
@@ -122,10 +102,32 @@ bunka.visualize_topics( width=800, height=800)
 
 <img src="images/newsmap_clean.png" width="70%" height="70%" align="center" />
 
-Start the serveur to visualize the data with a proper front-end
+Start the serveur to visualize the data with a front-end. The map displayed used data from Arxiv.
 
 ```python
 bunka.start_server()
+```
+
+<img src="images/front.png" width="70%" height="70%" align="center" />
+
+## Installation via pip
+
+First, create a new virtual environment using pyenv
+
+```bash
+pyenv virtualenv 3.10 bunkatopics_env
+```
+
+Activate the environment
+
+```bash
+pyenv activate bunkatopics_env
+```
+
+Then Install the Bunkatopics package:
+
+```bash
+pip install bunkatopics==0.43
 ```
 
 ## Retrieval Augmented Generation (RAG)
@@ -225,6 +227,8 @@ bunka = Bunka(embedding_model=embedding_model, language = 'fr_core_news_lg')
 
 bunka.fit(full_docs)
 bunka.get_topics(n_clusters = 20)
+
+
 ```  
 
 ## Functionality

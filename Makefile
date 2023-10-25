@@ -1,4 +1,3 @@
-
 jupyter:
 	python -m jupyterlab
 
@@ -40,7 +39,6 @@ docker_build:
 
 docker_run:
 	docker run -p 8000:8000 bunkatopics
-
 
 #############
 # scaleway  #

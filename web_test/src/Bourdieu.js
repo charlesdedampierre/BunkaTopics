@@ -8,24 +8,27 @@ import TextContainer from './TextContainer';
 const Bourdieu = () => {
     const [jsonData, setJsonData] = useState(null);
     const [selectedDocument, setSelectedDocument] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
     const svgRef = useRef(null);
     const textContainerRef = useRef(null);
     const scatterPlotContainerRef = useRef(null);
     const [queryData, setQueryData] = useState(null);
 
+    const containerWidth = 2000; // Set the desired container width
+    const containerHeight = 1500; // Set the desired container height
+
+    const svgWidth = 1800; // Set the SVG width to match your map's desired width
+    const svgHeight = 1500; // Set the SVG height to match your map's desired height
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const docsResponse = await fetch('/bunka_bourdieu_docs.json');
                 const docsData = await docsResponse.json();
+                setJsonData(docsData)
 
                 const topicsResponse = await fetch('/bunka_bourdieu_topics.json');
                 const topicsData = await topicsResponse.json();
-
-                const mergedData = docsData.concat(topicsData);
-                setJsonData(mergedData);
+                setJsonData(topicsData)
 
                 // Fetch bunka_bourdieu_query.json
                 const queryResponse = await fetch('/bunka_bourdieu_query.json');
@@ -33,8 +36,7 @@ const Bourdieu = () => {
                 setQueryData(queryData);
 
                 // You now have the data from bunka_bourdieu_query.json in queryData
-
-                createScatterPlot(mergedData, queryData);
+                createScatterPlot(docsData, topicsData, queryData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -43,32 +45,28 @@ const Bourdieu = () => {
         fetchData();
     }, []);
 
-
-    const createScatterPlot = (data, queryData) => {
+    const createScatterPlot = (docsData, topicsData, queryData) => {
         const margin = { top: 20, right: 20, bottom: 50, left: 50 };
         const plotWidth = 1500;
         const plotHeight = 1100;
-        const fullWidth = plotWidth + margin.left + margin.right;
-        const fullHeight = plotHeight + margin.top + margin.bottom;
-
 
 
         const svg = d3.select(svgRef.current)
-            .attr('width', fullWidth)
-            .attr('height', fullHeight)
+            .attr('width', svgWidth)
+            .attr('height', svgHeight)
             .append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
             .style('background-color', 'blue');
 
 
+        const xMin = d3.min(docsData, (d) => d.x);
+        const xMax = d3.max(docsData, (d) => d.x);
+        const yMin = d3.min(docsData, (d) => d.y);
+        const yMax = d3.max(docsData, (d) => d.y);
 
-        const xMin = d3.min(data, (d) => d.x);
-        const xMax = d3.max(data, (d) => d.x);
-        const yMin = d3.min(data, (d) => d.y);
-        const yMax = d3.max(data, (d) => d.y);
 
+        const maxDomainValue = Math.max(xMax, -xMin, yMax, -yMin);
 
-        const maxDomainValue = Math.max(xMin, xMax, yMin, yMax);
 
         // Update the x and y scales to use the maximum value
         const xScale = d3.scaleLinear()
@@ -79,41 +77,71 @@ const Bourdieu = () => {
             .domain([-maxDomainValue, maxDomainValue]) // Updated domain for y scale
             .range([plotHeight, 0]);
 
+        // Replace text with BourdieuQuery words
+        svg.append('text')
+            .attr('x', xScale(xMin))
+            .attr('y', yScale(0))
+            .text(queryData.x_left_words[0])
+            .style('text-anchor', 'start')
+            .style('fill', 'purple');
+
+        svg.append('text')
+            .attr('x', xScale(xMax))
+            .attr('y', yScale(0))
+            .text(queryData.x_right_words[0])
+            .style('text-anchor', 'end')
+            .style('fill', 'purple');
+
+        svg.append('text')
+            .attr('x', xScale(0))
+            .attr('y', yScale(yMax))
+            .text(queryData.y_top_words[0])
+            .style('text-anchor', 'start')
+            .style('fill', 'purple');
+
+        svg.append('text')
+            .attr('x', xScale(0))
+            .attr('y', yScale(yMin))
+            .text(queryData.y_bottom_words[0])
+            .style('text-anchor', 'middle')
+            .style('fill', 'purple');
+
+
+
         const scatter = svg.selectAll('.scatter-point')
-            .data(data)
+            .data(docsData)
             .enter()
             .append('circle')
             .attr('class', 'scatter-point')
             .attr('cx', (d) => xScale(d.x))
             .attr('cy', (d) => yScale(d.y))
-            .attr('r', 4) // Adjust the radius of the scatter points
+            .attr('r', 6) // Adjust the radius of the scatter points
             .style('fill', 'red') // Change the fill color
-            .style('stroke', 'black')
+            .style('stroke', 'lightblue')
             .style('stroke-width', 1)
             .style('opacity', 0.8); // Adjust the opacity
 
-        // Add tooltips on hover
         scatter.on('mouseover', (event, d) => {
-            const topicName = d.name;
-            const topicSize = d.size;
-            const totalSize = data.reduce((sum, topic) => sum + topic.size, 0);
-            const sizeFraction = Math.round((topicSize / totalSize) * 100);
-            const content = d.top_doc_content;
+            const content = d.content;
 
-            // You can display the tooltip using a pop-up or a TextContainer component.
-            // Here's an example of using a pop-up div for the tooltip.
-            const tooltip = d3.select('.tooltip');
-            tooltip.style('display', 'block');
-            tooltip.html(`
-                <strong>Topic:</strong> ${topicName}<br>
-                <strong>Size Fraction:</strong> ${sizeFraction}%<br>
-                <strong>Content:</strong> ${content}
-            `);
-        });
+            // Create the content box div
+            const contentBox = document.createElement('div');
+            contentBox.id = 'content-box';
+            contentBox.style.position = 'absolute';
+            contentBox.style.left = (event.pageX + 10) + 'px'; // Offset the box position
+            contentBox.style.top = (event.pageY - 20) + 'px'; // Offset the box position
+            contentBox.style.backgroundColor = 'blue';
+            contentBox.style.color = 'white';
+            contentBox.style.padding = '10px';
+            contentBox.innerHTML = content;
 
-        scatter.on('mouseout', () => {
-            // Hide the tooltip on mouseout
-            d3.select('.tooltip').style('display', 'none');
+            // Append the content box to the body
+            document.body.appendChild(contentBox);
+
+            // Remove the content box on mouseout (hover out)
+            scatter.on('mouseout', () => {
+                document.body.removeChild(contentBox);
+            });
         });
 
 
@@ -122,7 +150,7 @@ const Bourdieu = () => {
             .y((d) => yScale(d.y))
             .size([plotWidth, plotHeight])
             .bandwidth(30)
-            (data);
+            (docsData);
 
         const contourLineColor = 'rgb(94, 163, 252)';
 
@@ -136,7 +164,7 @@ const Bourdieu = () => {
             .style('stroke', contourLineColor)
             .style('stroke-width', 1);
 
-        const topicsCentroids = data.filter((d) => d.x_centroid && d.y_centroid);
+        const topicsCentroids = topicsData.filter((d) => d.x_centroid && d.y_centroid);
 
         svg.selectAll('circle.topic-centroid')
             .data(topicsCentroids)
@@ -182,7 +210,9 @@ const Bourdieu = () => {
             .style('stroke', 'black')
             .style('stroke-width', 3);
 
-        const convexHullData = data.filter((d) => d.convex_hull);
+
+
+        const convexHullData = topicsData.filter((d) => d.convex_hull);
 
         convexHullData.forEach((d) => {
             const hull = d.convex_hull;
@@ -238,67 +268,22 @@ const Bourdieu = () => {
             }
         });
 
-        const minX = d3.min(data, (d) => d.x);
-        const maxX = d3.max(data, (d) => d.x);
-        const minY = d3.min(data, (d) => d.y);
-        const maxY = d3.max(data, (d) => d.y);
-
-        // Replace text with BourdieuQuery words
-        svg.append('text')
-            .attr('x', xScale(minX))
-            .attr('y', yScale(0))
-            .text(queryData.x_left_words[0])
-            .style('text-anchor', 'start')
-            .style('fill', 'black');
-
-        svg.append('text')
-            .attr('x', xScale(maxX))
-            .attr('y', yScale(0))
-            .text(queryData.x_right_words[0])
-            .style('text-anchor', 'end')
-            .style('fill', 'black');
-
-        svg.append('text')
-            .attr('x', xScale(0))
-            .attr('y', yScale(maxY))
-            .text(queryData.y_top_words[0])
-            .style('text-anchor', 'start')
-            .style('fill', 'black');
-
-        svg.append('text')
-            .attr('x', xScale(0))
-            .attr('y', yScale(minY))
-            .text(queryData.y_bottom_words[0])
-            .style('fill', 'black');
 
 
-    };
 
-    const handleSearch = (event) => {
-        const query = event.target.value;
-        setSearchQuery(query);
-        const filteredData = jsonData.filter((doc) =>
-            doc.content.toLowerCase().includes(query.toLowerCase())
-        );
-        setSelectedDocument(filteredData[0]);
     };
 
     return (
         <div className="json-display">
             <div className="scatter-plot-and-text-container">
-                <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
+                <div className="scatter-plot-container" ref={scatterPlotContainerRef} style={{ width: containerWidth + 'px', height: containerHeight + 'px' }}>
                     <svg ref={svgRef}></svg>
                 </div>
                 <div className="text-container" ref={textContainerRef}>
                     {selectedDocument && (
                         <div className="text-content">
                             <h2 className="topic-name">Topic: {selectedDocument.topic_id}</h2>
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={handleSearch}
-                            />
+
                             <p>{selectedDocument.content}</p>
                         </div>
                     )}

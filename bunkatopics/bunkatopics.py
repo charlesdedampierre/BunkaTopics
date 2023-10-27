@@ -271,7 +271,7 @@ class Bunka:
             top_terms_overall=topic_top_terms_overall,
         )
 
-        bourdieu_query = BourdieuQuery(
+        self.bourdieu_query = BourdieuQuery(
             x_left_words=x_left_words,
             x_right_words=x_right_words,
             y_top_words=y_top_words,
@@ -285,7 +285,7 @@ class Bunka:
             embedding_model=self.embedding_model,
             docs=self.docs,
             terms=self.terms,
-            bourdieu_query=bourdieu_query,
+            bourdieu_query=self.bourdieu_query,
             generative_ai_name=topic_gen_name,
             topic_param=topic_param,
             topic_gen_param=topic_gen_param,
@@ -307,6 +307,31 @@ class Bunka:
         )
 
         return fig
+
+    def start_server_bourdieu(self):
+        if is_server_running():
+            print("Server on port 3000 is already running. Killing it...")
+            kill_server()
+        try:
+            file_path = "../web_test/public" + "/bunka_bourdieu_docs.json"
+            docs_json = [x.dict() for x in self.bourdieu_docs]
+
+            with open(file_path, "w") as json_file:
+                json.dump(docs_json, json_file)
+
+            file_path = "../web_test/public" + "/bunka_bourdieu_topics.json"
+            topics_json = [x.dict() for x in self.bourdieu_topics]
+            with open(file_path, "w") as json_file:
+                json.dump(topics_json, json_file)
+
+            file_path = "../web_test/public" + "/bunka_bourdieu_query.json"
+            with open(file_path, "w") as json_file:
+                json.dump(self.bourdieu_query.dict(), json_file)
+
+            subprocess.Popen(["npm", "start"], cwd="../web_test")
+            print("NPM server started.")
+        except Exception as e:
+            print(f"Error starting NPM server: {e}")
 
     def start_server(self):
         if is_server_running():

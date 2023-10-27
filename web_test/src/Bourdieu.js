@@ -6,12 +6,10 @@ import TextContainer from './TextContainer';
 
 
 const Bourdieu = () => {
-    const [jsonData, setJsonData] = useState(null);
     const [selectedDocument, setSelectedDocument] = useState(null);
     const svgRef = useRef(null);
     const textContainerRef = useRef(null);
     const scatterPlotContainerRef = useRef(null);
-    const [queryData, setQueryData] = useState(null);
 
     const containerWidth = 2000; // Set the desired container width
     const containerHeight = 1500; // Set the desired container height
@@ -24,16 +22,13 @@ const Bourdieu = () => {
             try {
                 const docsResponse = await fetch('/bunka_bourdieu_docs.json');
                 const docsData = await docsResponse.json();
-                setJsonData(docsData)
 
                 const topicsResponse = await fetch('/bunka_bourdieu_topics.json');
                 const topicsData = await topicsResponse.json();
-                setJsonData(topicsData)
 
                 // Fetch bunka_bourdieu_query.json
                 const queryResponse = await fetch('/bunka_bourdieu_query.json');
                 const queryData = await queryResponse.json();
-                setQueryData(queryData);
 
                 // You now have the data from bunka_bourdieu_query.json in queryData
                 createScatterPlot(docsData, topicsData, queryData);
@@ -81,14 +76,14 @@ const Bourdieu = () => {
         svg.append('text')
             .attr('x', xScale(xMin))
             .attr('y', yScale(0))
-            .text(queryData.x_left_words[0])
+            .text(queryData.x_right_words[0])
             .style('text-anchor', 'start')
             .style('fill', 'purple');
 
         svg.append('text')
             .attr('x', xScale(xMax))
             .attr('y', yScale(0))
-            .text(queryData.x_right_words[0])
+            .text(queryData.x_left_words[0])
             .style('text-anchor', 'end')
             .style('fill', 'purple');
 

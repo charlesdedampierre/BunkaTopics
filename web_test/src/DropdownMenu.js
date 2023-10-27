@@ -19,6 +19,7 @@ const DropdownMenu = ({ onSelectView }) => {
                 }}
             >
                 <MenuItem value="map">Map View</MenuItem>
+                <MenuItem value="bourdieu">Bourdieu View</MenuItem>
                 <MenuItem value="docs">Documents View</MenuItem>
                 <MenuItem value="treemap">Treemap View</MenuItem> {/* Add a new view for Treemap */}
                 <MenuItem value="query">Query View</MenuItem> {/* Add a new view for Query */}

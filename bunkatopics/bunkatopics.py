@@ -291,13 +291,13 @@ class Bunka:
             topic_gen_param=topic_gen_param,
         )
 
-        bourdieu_docs = res[0]
-        bourdieu_topics = res[1]
+        self.bourdieu_docs = res[0]
+        self.bourdieu_topics = res[1]
 
         # Visualize The results from the API
         fig = visualize_bourdieu(
-            bourdieu_docs,
-            bourdieu_topics,
+            self.bourdieu_docs,
+            self.bourdieu_topics,
             height=height,
             width=width,
             display_percent=display_percent,

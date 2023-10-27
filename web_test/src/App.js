@@ -4,6 +4,7 @@ import DocsView from './DocsView';
 import Map from './Map';
 import TreemapView from './TreemapView'; // Import the TreemapView component
 import QueryView from './QueryView'; // Import the QueryView component
+import Bourdieu from './Bourdieu'; // Import the QueryView component
 
 const App = () => {
   const [selectedView, setSelectedView] = useState('map'); // Default to 'map'
@@ -64,6 +65,8 @@ const App = () => {
           <TreemapView />
         ) : selectedView === 'query' ? (
           <QueryView />
+        ) : selectedView === 'bourdieu' ? (
+          <Bourdieu />
         ) : (
           <QueryView onQuerySubmit={handleQuerySubmit} />
         )}

@@ -222,6 +222,72 @@ const Bourdieu = () => {
                 .style('stroke-width', 2);
         });
 
+        const xGreaterThanZeroAndYGreaterThanZero = docsData.filter(d => d.x > 0 && d.y > 0).length;
+        const xLessThanZeroAndYGreaterThanZero = docsData.filter(d => d.x < 0 && d.y > 0).length;
+        const xGreaterThanZeroAndYLessThanZero = docsData.filter(d => d.x > 0 && d.y < 0).length;
+        const xLessThanZeroAndYLessThanZero = docsData.filter(d => d.x < 0 && d.y < 0).length;
+
+        // Calculate the total number of documents
+        const totalDocuments = docsData.length;
+
+        // Calculate the percentages
+        const percentageXGreaterThanZeroAndYGreaterThanZero = (xGreaterThanZeroAndYGreaterThanZero / totalDocuments) * 100;
+        const percentageXLessThanZeroAndYGreaterThanZero = (xLessThanZeroAndYGreaterThanZero / totalDocuments) * 100;
+        const percentageXGreaterThanZeroAndYLessThanZero = (xGreaterThanZeroAndYLessThanZero / totalDocuments) * 100;
+        const percentageXLessThanZeroAndYLessThanZero = (xLessThanZeroAndYLessThanZero / totalDocuments) * 100;
+
+        // Add labels to display percentages in the squares
+        const squareSize = 300; // Adjust this based on your map's layout
+        const labelOffsetX = 10; // Adjust these offsets as needed
+        const labelOffsetY = 20;
+
+        // Calculate the maximum X and Y coordinates
+
+        // Calculate the midpoints for the squares
+        const xMid = d3.max(docsData, (d) => d.x) / 2;
+        const yMid = d3.max(docsData, (d) => d.y) / 2;
+
+        // Labels for X > 0 and Y > 0 square
+        svg.append('text')
+            .attr('x', xScale(xMid))
+            .attr('y', yScale(yMid))
+            .text(`${percentageXGreaterThanZeroAndYGreaterThanZero.toFixed(0)}%`) // Remove the prefix
+            .style('text-anchor', 'middle')
+            .style('fill', 'dark') // Change the text color to blue
+            .style('font-size', '100px') // Adjust the font size
+            .style('opacity', 0.1); // Adjust the opacity (0.7 means slightly transparent)
+
+        // Labels for X < 0 and Y > 0 square
+        svg.append('text')
+            .attr('x', xScale(-xMid))
+            .attr('y', yScale(yMid))
+            .text(`${percentageXLessThanZeroAndYGreaterThanZero.toFixed(0)}%`) // Remove the prefix
+            .style('text-anchor', 'middle')
+            .style('fill', 'dark') // Change the text color to light blue
+            .style('font-size', '100px') // Adjust the font size
+            .style('opacity', 0.1); // Adjust the opacity (0.05 means slightly transparent)
+
+        // Labels for X > 0 and Y < 0 square
+        svg.append('text')
+            .attr('x', xScale(xMid))
+            .attr('y', yScale(-yMid))
+            .text(`${percentageXGreaterThanZeroAndYLessThanZero.toFixed(0)}%`) // Remove the prefix
+            .style('text-anchor', 'middle')
+            .style('fill', 'dark') // Change the text color to light blue
+            .style('font-size', '100px') // Adjust the font size
+            .style('opacity', 0.1); // Adjust the opacity (0.05 means slightly transparent)
+
+        // Labels for X > 0 and Y < 0 square
+        svg.append('text')
+            .attr('x', xScale(-xMid))
+            .attr('y', yScale(-yMid))
+            .text(`${percentageXLessThanZeroAndYLessThanZero.toFixed(0)}%`) // Remove the prefix
+            .style('text-anchor', 'middle')
+            .style('fill', 'dark') // Change the text color to light blue
+            .style('font-size', '100px') // Adjust the font size
+            .style('opacity', 0.1); // Adjust the opacity (0.05 means slightly transparent)
+
+
         const topicsPolygons = svg
             .selectAll('polygon.topic-polygon')
             .data(topicsCentroids)
@@ -261,6 +327,9 @@ const Bourdieu = () => {
             } else {
                 textContainerRef.current.innerHTML = 'No content available for this topic.';
             }
+
+
+
         });
 
 

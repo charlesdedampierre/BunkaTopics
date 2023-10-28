@@ -104,6 +104,9 @@ bunka.visualize_topics( width=800, height=800)
 
 Start the serveur to visualize the data with a front-end. The map displayed used data from Arxiv.
 
+YOU MAY CHANGE THE ZOOM LEVEL OF THE BROWSER TO ADAPT THE SIZE (like 65%)
+Bunka is still a work-in-progess and some work is needed front-end wise.
+
 ```python
 bunka.start_server()
 ```

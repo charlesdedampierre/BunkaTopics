@@ -27,6 +27,7 @@ def get_topics(
     ngrams: list = [1, 2],
     name_lenght: int = 15,
     top_terms_overall: int = 1000,
+    min_count_terms: int = 20,
     x_column="x",
     y_column="y",
 ) -> t.List[Topic]:
@@ -56,6 +57,7 @@ def get_topics(
     for doc in docs:
         doc.topic_id = topic_doc_dict.get(doc.doc_id, [])
 
+    terms = [x for x in terms if x.count_terms >= min_count_terms]
     df_terms = pd.DataFrame.from_records([term.dict() for term in terms])
     df_terms = df_terms.sort_values("count_terms", ascending=False)
     df_terms = df_terms.head(top_terms_overall)

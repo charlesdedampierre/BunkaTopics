@@ -11,9 +11,19 @@ const Map = () => {
     const [jsonData, setJsonData] = useState(null);
     const [selectedDocument, setSelectedDocument] = useState(null);
     const [searchQuery, setSearchQuery] = useState(''); // State for search input
+    const [searchResults, setSearchResults] = useState([]); // State for search results
+
     const svgRef = useRef(null);
     const textContainerRef = useRef(null);
     const scatterPlotContainerRef = useRef(null);
+
+    const handleSearch = () => {
+        const results = jsonData.filter((doc) =>
+            doc.content.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setSearchResults(results);
+    };
+
 
     useEffect(() => {
         // Fetch the JSON data
@@ -247,18 +257,6 @@ const Map = () => {
     };
 
 
-    const handleSearch = (event) => {
-        const query = event.target.value;
-        setSearchQuery(query);
-        // You can implement your search logic here, e.g., filtering data based on the query
-        // and updating the displayed content.
-        // For simplicity, let's filter based on the "content" property.
-        const filteredData = jsonData.filter((doc) =>
-            doc.content.toLowerCase().includes(query.toLowerCase())
-        );
-        setSelectedDocument(filteredData[0]); // Set the first matching document as selected
-    };
-
     return (
         <div className="json-display">
             <div className="scatter-plot-and-text-container">
@@ -268,13 +266,6 @@ const Map = () => {
                 <div className="text-container" ref={textContainerRef}>
                     {selectedDocument && (
                         <div className="text-content">
-                            <h2 className="topic-name">Topic: {selectedDocument.topic_id}</h2>
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={handleSearch}
-                            />
                             <p>{selectedDocument.content}</p>
                         </div>
                     )}

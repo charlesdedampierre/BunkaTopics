@@ -168,7 +168,14 @@ class Bunka:
         df_topics = self.get_topics(n_clusters=n_clusters)
         return df_topics
 
-    def get_topics(self, n_clusters=5, ngrams=[1, 2], name_lenght=15) -> pd.DataFrame:
+    def get_topics(
+        self,
+        n_clusters=5,
+        ngrams=[1, 2],
+        name_lenght=15,
+        top_terms_overall=2000,
+        min_count_terms=20,
+    ) -> pd.DataFrame:
         self.topics: t.List[Topic] = get_topics(
             docs=self.docs,
             terms=self.terms,
@@ -177,6 +184,8 @@ class Bunka:
             name_lenght=name_lenght,
             x_column="x",
             y_column="y",
+            top_terms_overall=top_terms_overall,
+            min_count_terms=min_count_terms,
         )
 
         self.docs, self.topics = get_top_documents(

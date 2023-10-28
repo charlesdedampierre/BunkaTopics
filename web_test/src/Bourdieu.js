@@ -102,7 +102,7 @@ const Bourdieu = () => {
             .style('fill', 'purple');
 
 
-
+        /*
         const scatter = svg.selectAll('.scatter-point')
             .data(docsData)
             .enter()
@@ -138,7 +138,7 @@ const Bourdieu = () => {
                 document.body.removeChild(contentBox);
             });
         });
-
+        */
 
         const contourData = d3Contour.contourDensity()
             .x((d) => xScale(d.x))

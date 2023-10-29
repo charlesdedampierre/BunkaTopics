@@ -187,13 +187,14 @@ const Map = () => {
 
         topicsPolygons.on('click', (event, d) => {
             if (currentlyClickedPolygon !== null) {
-                // Reset the previously clicked polygon's border to transparent
-                currentlyClickedPolygon.style('stroke', 'transparent');
+                // Reset the previously clicked polygon's fill color to transparent light grey
+                currentlyClickedPolygon.style('fill', 'rgba(200, 200, 200, 0.4)'); // Adjust the alpha (0.5) for the desired transparency
             }
 
-            // Set the color of the clicked polygon's border to red
-            d3.select(event.target).style('stroke', 'red');
+            // Set the fill color of the clicked polygon to transparent light grey
+            d3.select(event.target).style('fill', 'rgba(200, 200, 200, 0.4)'); // Adjust the alpha (0.9) for the desired transparency
             currentlyClickedPolygon = d3.select(event.target);
+            currentlyClickedPolygon.style('stroke', 'red'); /// Optionally, set the border color to red
 
             // Display the topic name and content from top_doc_content with a scroll system
             if (d.top_doc_content) {

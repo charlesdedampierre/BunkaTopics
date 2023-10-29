@@ -307,11 +307,14 @@ const Bourdieu = () => {
 
         topicsPolygons.on('click', (event, d) => {
             if (currentlyClickedPolygon !== null) {
-                currentlyClickedPolygon.style('stroke', 'transparent');
+                // Reset the previously clicked polygon's fill color to transparent light grey
+                currentlyClickedPolygon.style('fill', 'rgba(200, 200, 200, 0.4)'); // Adjust the alpha (0.5) for the desired transparency
             }
 
-            d3.select(event.target).style('stroke', 'red');
+            // Set the fill color of the clicked polygon to transparent light grey
+            d3.select(event.target).style('fill', 'rgba(200, 200, 200, 0.4)'); // Adjust the alpha (0.9) for the desired transparency
             currentlyClickedPolygon = d3.select(event.target);
+            currentlyClickedPolygon.style('stroke', 'red'); /// Optionally, set the border color to red
 
             if (d.top_doc_content) {
                 const topicName = d.name;

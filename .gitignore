@@ -88,3 +88,6 @@ venv.bak/
 .idea/
 .vscode
 .DS_Store
+
+# NODE.JS
+node_modules

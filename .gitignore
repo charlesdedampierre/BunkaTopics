@@ -90,4 +90,4 @@ venv.bak/
 .DS_Store
 
 # NODE.JS
-node_modules
+node_modules/

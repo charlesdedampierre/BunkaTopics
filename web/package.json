@@ -21,14 +21,17 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.17.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^3.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "docker build -t yourusername/yourimagename:version .",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "push": "docker push yourusername/yourimagename:version",
+    "deploy": "npm run build && npm run push",
+    "docker_tag": "docker tag $IMAGE_NAME $CONTAINER_REGISTRY_URL/$IMAGE_NAME:latest"
   },
   "eslintConfig": {
     "extends": [
@@ -47,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1"
   }
 }

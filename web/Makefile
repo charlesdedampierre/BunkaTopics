@@ -1,3 +1,5 @@
+IMAGE_NAME = bunkatopics_web
+
 start:
 	npm start
 
@@ -6,23 +8,22 @@ start:
 #############
 
 docker_build:
-	docker build -t bunkatopics_web .
+	docker build -t $(IMAGE_NAME) .
 
 docker_run:
-	docker run -d -p 8080:80 bunkatopics_web
+	docker run -d -p 8080:80 $(IMAGE_NAME)
 
 #############
 # Registry  #
 #############
 
-REGISTRY = rg.fr-par.scw.cloud/$(SCW_CONTAINER_REGISTRY_ID)
-IMAGE_NAME = bunkatopics_web:latest
 
 docker_tag:
-	docker tag $(IMAGE_NAME) $(REGISTRY)/$(IMAGE_NAME)
+	echo "$(CONTAINER_REGISTRY_URL)"
+	docker tag $(IMAGE_NAME) $(CONTAINER_REGISTRY_URL)/$(IMAGE_NAME):latest
 
 docker_push:
-	docker push $(REGISTRY)/$(IMAGE_NAME)
+	docker push $(CONTAINER_REGISTRY_URL)/$(IMAGE_NAME):latest
 
 registry__login:
-	docker login $(REGISTRY) -u nologin --password-stdin <<< $(SCW_SECRET_KEY)
+	docker login $(CONTAINER_REGISTRY_URL) -u nologin --password-stdin <<< $(SCW_SECRET_KEY)

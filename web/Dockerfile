@@ -22,6 +22,9 @@ FROM nginx:latest
 # Copy the built React app from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
 
+# Copy the custom default server block configuration for Nginx
+COPY ./nginx-configuration.conf /etc/nginx/conf.d/default.conf
+
 # Expose port 80 for Nginx
 EXPOSE 80
 

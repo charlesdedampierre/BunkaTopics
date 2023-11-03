@@ -25,13 +25,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "docker build -t yourusername/yourimagename:version .",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "push": "docker push yourusername/yourimagename:version",
-    "deploy": "npm run build && npm run push",
-    "docker_tag": "docker tag $IMAGE_NAME $CONTAINER_REGISTRY_URL/$IMAGE_NAME:latest"
+    "start": "react-scripts  --openssl-legacy-provider start",
+    "build": "react-scripts  --openssl-legacy-provider build",
+    "test": "react-scripts --openssl-legacy-provider test",
+    "docker:build": "npx dotenv -- make docker_build",
+    "docker:run": "npx dotenv -- make docker_run",
+    "docker:push": "npx dotenv -- make docker_push",
+    "docker:tag": "npx dotenv -- make docker_tag",
+    "deploy": "npm run docker:build && npm run docker:push"
   },
   "eslintConfig": {
     "extends": [
@@ -52,6 +53,7 @@
     ]
   },
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "dotenv-cli": "^7.3.0"
   }
 }

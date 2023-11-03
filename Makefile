@@ -45,7 +45,7 @@ docker_run:
 #############
 
 #REGISTRY = rg.fr-par.scw.cloud/bunkatopics
-REGISTRY = rg.fr-par.scw.cloud/funcscwbunkatopicskrug38hz
+REGISTRY = rg.fr-par.scw.cloud/$(SCW_CONTAINER_REGISTRY_ID)
 IMAGE_NAME = bunkatopics:latest
 
 registry__login:
@@ -65,6 +65,3 @@ docker_tag:
 
 docker_push:
 	docker push $(REGISTRY)/$(IMAGE_NAME)
-
-get_ssh_key:
-	cat ~/.ssh/id_ed25519.pub

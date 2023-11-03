@@ -47,7 +47,7 @@ const Bourdieu = () => {
 
 
         const svg = d3.select(svgRef.current)
-            .attr('width', svgWidth)
+            .attr('width', "100%")
             .attr('height', svgHeight)
             .append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)

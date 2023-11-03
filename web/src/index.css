@@ -56,12 +56,9 @@
 }
 
 .scatter-plot-container {
-  flex: 2;
   display: flex;
-  justify-content: left;
-  align-items: left;
   margin-left: 50px;
-
+  width: 100%;
 }
 
 svg {
@@ -70,7 +67,7 @@ svg {
 }
 
 .text-container {
-  flex: 1;
+  width: 20%;
   padding: 20px;
   font-size: 30px;
   align-items: center;

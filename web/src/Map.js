@@ -59,7 +59,7 @@ const Map = () => {
         const fullHeight = plotHeight + margin.top + margin.bottom;
 
         const svg = d3.select(svgRef.current)
-            .attr('width', fullWidth)
+            .attr('width', "100%")
             .attr('height', fullHeight)
             .append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)

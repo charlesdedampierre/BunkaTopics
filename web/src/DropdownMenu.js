@@ -7,7 +7,7 @@ const DropdownMenu = ({ onSelectView }) => {
     };
 
     return (
-        <FormControl variant="outlined" className="dropdown-menu" sx={{ minWidth: '200px', marginTop: '85px' }}>
+        <FormControl variant="outlined" className="dropdown-menu" sx={{ minWidth: '200px', marginTop: '1em' }}>
             <InputLabel htmlFor="view-select">Select a View</InputLabel>
             <Select
                 label="Select a View"

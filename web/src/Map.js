@@ -54,13 +54,11 @@ const Map = () => {
     const createScatterPlot = (data) => {
         const margin = { top: 20, right: 20, bottom: 50, left: 50 };
         const plotWidth = 1500; // Adjust the width as desired
-        const plotHeight = 1100; // Adjust the height as desired
-        const fullWidth = plotWidth + margin.left + margin.right;
-        const fullHeight = plotHeight + margin.top + margin.bottom;
+        const plotHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50; // Adjust the height as desired
 
         const svg = d3.select(svgRef.current)
             .attr('width', "100%")
-            .attr('height', fullHeight)
+            .attr('height', plotHeight)
             .append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
             .style('background-color', 'blue'); // Set the background color to blue
@@ -277,9 +275,3 @@ const Map = () => {
 };
 
 export default Map;
-
-
-
-
-
-

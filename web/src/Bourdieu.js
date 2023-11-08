@@ -4,26 +4,29 @@ import * as d3Contour from 'd3-contour';
 import ReactDOM from 'react-dom';
 import TextContainer from './TextContainer';
 
+const bunka_bourdieu_docs = 'bunka_bourdieu_docs.json';
+const bunka_bourdieu_topics = 'bunka_bourdieu_topics.json';
+const bunka_bourdieu_query = 'bunka_bourdieu_query.json';
 
 const Bourdieu = () => {
     const [selectedDocument, setSelectedDocument] = useState(null);
     const svgRef = useRef(null);
     const textContainerRef = useRef(null);
-    const scatterPlotContainerRef = useRef(null);    
+    const scatterPlotContainerRef = useRef(null);
     // Set the SVG height to match your map's desired height
-    const svgHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50;
+    const svgHeight = window.innerHeight - document.getElementById('top-banner').clientHeight - 50;
     const svgWidth = window.innerWidth * 0.65; // Set the svg container height to match the layout
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const docsResponse = await fetch('/bunka_bourdieu_docs.json');
+                const docsResponse = await fetch(process.env.REACT_APP_API_ENDPOINT === 'local' ? `/${bunka_bourdieu_docs}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`);
                 const docsData = await docsResponse.json();
 
-                const topicsResponse = await fetch('/bunka_bourdieu_topics.json');
+                const topicsResponse = await fetch(process.env.REACT_APP_API_ENDPOINT === 'local' ? `/${bunka_bourdieu_topics}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`);
                 const topicsData = await topicsResponse.json();
 
-                // Fetch bunka_bourdieu_query.json
-                const queryResponse = await fetch('/bunka_bourdieu_query.json');
+                const queryResponse = await fetch(process.env.REACT_APP_API_ENDPOINT === 'local' ? `/${bunka_bourdieu_query}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`);
+
                 const queryData = await queryResponse.json();
 
                 // You now have the data from bunka_bourdieu_query.json in queryData
@@ -43,7 +46,7 @@ const Bourdieu = () => {
 
 
         const svg = d3.select(svgRef.current)
-            .attr('width', "100%")
+            .attr('width', '100%')
             .attr('height', svgHeight)
             .append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
@@ -212,9 +215,9 @@ const Bourdieu = () => {
             svg.append('path')
                 .datum(d3.polygonHull(hullPoints))
                 .attr('class', 'convex-hull-polygon')
-                .attr('d', (d) => "M" + d.join("L") + "Z")
+                .attr('d', (d) => 'M' + d.join('L') + 'Z')
                 .style('fill', 'none')
-                .style("stroke", "rgba(255, 255, 255, 0.5)")
+                .style('stroke', 'rgba(255, 255, 255, 0.5)')
                 .style('stroke-width', 2);
         });
 
@@ -337,15 +340,15 @@ const Bourdieu = () => {
     };
 
     return (
-        <div className="json-display">
-            <div className="scatter-plot-and-text-container">
-                <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
+        <div className='json-display'>
+            <div className='scatter-plot-and-text-container'>
+                <div className='scatter-plot-container' ref={scatterPlotContainerRef}>
                     <svg ref={svgRef}></svg>
                 </div>
-                <div className="text-container" ref={textContainerRef}>
+                <div className='text-container' ref={textContainerRef}>
                     {selectedDocument && (
-                        <div className="text-content">
-                            <h2 className="topic-name">Topic: {selectedDocument.topic_id}</h2>
+                        <div className='text-content'>
+                            <h2 className='topic-name'>Topic: {selectedDocument.topic_id}</h2>
 
                             <p>{selectedDocument.content}</p>
                         </div>

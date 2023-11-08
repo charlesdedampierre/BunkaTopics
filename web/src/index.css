@@ -75,6 +75,7 @@ svg {
 
 .text-container {
   width: 35%;
+  min-width: 100px;
   padding: 20px;
   font-size: 30px;
   align-items: center;

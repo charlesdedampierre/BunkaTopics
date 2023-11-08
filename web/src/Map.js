@@ -53,7 +53,7 @@ const Map = () => {
 
     const createScatterPlot = (data) => {
         const margin = { top: 20, right: 20, bottom: 50, left: 50 };
-        const plotWidth = 1500; // Adjust the width as desired
+        const plotWidth = window.innerWidth * 0.6;
         const plotHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50; // Adjust the height as desired
 
         const svg = d3.select(svgRef.current)

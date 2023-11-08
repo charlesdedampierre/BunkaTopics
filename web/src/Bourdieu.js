@@ -9,16 +9,10 @@ const Bourdieu = () => {
     const [selectedDocument, setSelectedDocument] = useState(null);
     const svgRef = useRef(null);
     const textContainerRef = useRef(null);
-    const scatterPlotContainerRef = useRef(null);
-
-
-    const svgWidth = window.innerWidth; // Set the SVG height to match your map's desired height
+    const scatterPlotContainerRef = useRef(null);    
     // Set the SVG height to match your map's desired height
     const svgHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50;
-
-    const containerWidth = svgWidth; // Set the desired container width
-    const containerHeight = svgHeight; // Set the desired container height
-
+    const svgWidth = window.innerWidth * 0.65; // Set the svg container height to match the layout
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -44,7 +38,7 @@ const Bourdieu = () => {
 
     const createScatterPlot = (docsData, topicsData, queryData) => {
         const margin = { top: 20, right: 20, bottom: 50, left: 50 };
-        const plotWidth = svgWidth - 400;
+        const plotWidth = svgWidth;
         const plotHeight = svgHeight;
 
 
@@ -345,7 +339,7 @@ const Bourdieu = () => {
     return (
         <div className="json-display">
             <div className="scatter-plot-and-text-container">
-                <div className="scatter-plot-container" ref={scatterPlotContainerRef} style={{ width: containerWidth + 'px', height: containerHeight + 'px' }}>
+                <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
                     <svg ref={svgRef}></svg>
                 </div>
                 <div className="text-container" ref={textContainerRef}>

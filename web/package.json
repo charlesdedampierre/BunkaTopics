@@ -15,19 +15,20 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "d3": "^7.8.5",
+    "d3-contour": "^4.0.2",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.17.0",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts  --openssl-legacy-provider start",
     "build": "react-scripts  --openssl-legacy-provider build",
     "test": "react-scripts --openssl-legacy-provider test",
+    "eject": "react-scripts eject",
     "lint": "eslint --fix ./src",
     "docker:build": "npx dotenv -- make docker_build",
     "docker:run": "npx dotenv -- make docker_run",
@@ -59,7 +60,11 @@
     "dotenv": "^16.3.1",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.53.0",
+    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-react-app": "^7.0.1",
-    "husky": "^8.0.3"
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
+    "prettier": "3.0.3"
   }
 }

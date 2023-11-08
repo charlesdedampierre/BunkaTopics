@@ -12,13 +12,21 @@ import {
   Container,
 } from "@mui/material";
 
+const bunkaDocs = "bunka_docs.json";
+const bunkaTopics = "bunka_topics.json";
+const { REACT_APP_API_ENDPOINT } = process.env;
+
 function DocsView() {
   const [docs, setDocs] = useState(null);
   const [topics, setTopics] = useState(null);
 
   useEffect(() => {
     // Fetch the content of "docs.json" when the component mounts
-    fetch("/bunka_docs.json")
+    fetch(
+      REACT_APP_API_ENDPOINT === "local"
+        ? `/${bunkaDocs}`
+        : `${REACT_APP_API_ENDPOINT}/${bunkaDocs}`,
+    )
       .then((response) => response.json())
       .then((data) => {
         setDocs(data);
@@ -28,7 +36,11 @@ function DocsView() {
       });
 
     // Fetch the topics data when the component mounts
-    fetch("/bunka_topics.json")
+    fetch(
+      REACT_APP_API_ENDPOINT === "local"
+        ? `/${bunkaTopics}`
+        : `${REACT_APP_API_ENDPOINT}/${bunkaTopics}`,
+    )
       .then((response) => response.json())
       .then((data) => {
         setTopics(data);
@@ -38,15 +50,13 @@ function DocsView() {
       });
   }, []);
 
-  const docsWithTopics =
-    docs && topics
-      ? docs.map((doc) => ({
-          ...doc,
-          topic_name:
-            topics.find((topic) => topic.topic_id === doc.topic_id)?.name ||
-            "Unknown",
-        }))
-      : [];
+  const docsWithTopics = docs && topics
+    ? docs.map((doc) => ({
+      ...doc,
+      topic_name:
+        topics.find((topic) => topic.topic_id === doc.topic_id)?.name
+        || "Unknown",
+    })) : [];
 
   const downloadCSV = () => {
     // Create a CSV content string from the data
@@ -109,7 +119,7 @@ function DocsView() {
                   <TableBody>
                     {docsWithTopics.map((doc, index) => (
                       <TableRow
-                        key={index}
+                        key={doc.doc_id}
                         sx={{
                           borderBottom: "1px solid lightblue", // Add light blue border
                         }}

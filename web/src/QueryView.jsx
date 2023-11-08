@@ -28,6 +28,28 @@ function QueryView() {
   const [topics, setTopics] = useState([]);
   const [docs, setDocs] = useState([]);
 
+  const parseCSVFile = (file, sampleSize = 500) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const csvData = e.target.result;
+      const lines = csvData.split("\n");
+
+      // Take a sample of the first 500 lines
+      const sampleLines = lines.slice(0, sampleSize).join("\n");
+
+      Papa.parse(sampleLines, {
+        complete: (result) => {
+          resolve(result.data);
+        },
+        error: (error) => {
+          reject(error.message);
+        },
+      });
+    };
+    reader.readAsText(file);
+  });
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
 
@@ -46,30 +68,6 @@ function QueryView() {
     }
   };
 
-  const parseCSVFile = (file, sampleSize = 500) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const csvData = e.target.result;
-        const lines = csvData.split("\n");
-
-        // Take a sample of the first 500 lines
-        const sampleLines = lines.slice(0, sampleSize).join("\n");
-
-        Papa.parse(sampleLines, {
-          complete: (result) => {
-            resolve(result.data);
-          },
-          error: (error) => {
-            reject(error.message);
-          },
-        });
-      };
-
-      reader.readAsText(file);
-    });
-
   const handleColumnSelect = (e) => {
     const columnName = e.target.value;
     setSelectedColumn(columnName);
@@ -79,6 +77,18 @@ function QueryView() {
     const columnData = fileData.slice(1).map((row) => row[columnIndex]);
 
     setSelectedColumnData(columnData);
+  };
+
+  const saveDataToFile = (fileName, data) => {
+    const blob = new Blob([data], { type: "application/json" });
+
+    // Create a link element
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+
+    // Trigger a click event to download the file
+    a.click();
   };
 
   const handleProcessTopics = async () => {
@@ -116,18 +126,6 @@ function QueryView() {
     }
   };
 
-  const saveDataToFile = (fileName, data) => {
-    const blob = new Blob([data], { type: "application/json" });
-
-    // Create a link element
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = fileName;
-
-    // Trigger a click event to download the file
-    a.click();
-  };
-
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
@@ -140,9 +138,9 @@ function QueryView() {
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Select a Column</InputLabel>
           <Select value={selectedColumn} onChange={handleColumnSelect}>
-            {fileData[0] &&
-              fileData[0].map((header, index) => (
-                <MenuItem key={index} value={header}>
+            {fileData[0]
+              && fileData[0].map((header, index) => (
+                <MenuItem key={`${header}`} value={header}>
                   {header}
                 </MenuItem>
               ))}
@@ -169,7 +167,7 @@ function QueryView() {
                 </TableHead>
                 <TableBody>
                   {selectedColumnData.map((cell, index) => (
-                    <TableRow key={index}>
+                    <TableRow key={`${cell}`}>
                       <TableCell>{cell}</TableCell>
                     </TableRow>
                   ))}

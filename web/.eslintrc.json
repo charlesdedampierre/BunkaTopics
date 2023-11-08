@@ -1,7 +1,8 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
   "extends": ["airbnb", "eslint:recommended", "plugin:react/recommended", "plugin:react-hooks/recommended"],
   "parserOptions": {
@@ -16,6 +17,10 @@
     "quotes": ["error", "double"],
     "no-nested-ternary": "off",
     "no-unused-vars": "warn",
-    "camelcase": "warn"
+    "camelcase": "warn",
+    "react/no-deprecated": "warn",
+    "react/forbid-prop-types": "warn",
+    "react/react-in-jsx-scope": "off",
+    "jsx-a11y/label-has-associated-control": "warn"
   }
 }

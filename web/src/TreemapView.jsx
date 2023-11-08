@@ -1,24 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import * as d3 from "d3";
-import { Paper, Typography, List, ListItem } from "@mui/material";
+import {
+  Paper, Typography, List, ListItem,
+} from "@mui/material";
 
 function TreemapView() {
   const svgRef = useRef(null);
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState({ name: "", content: [] });
-
-  useEffect(() => {
-    // Fetch the topics data when the component mounts
-    fetch("/bunka_topics.json")
-      .then((response) => response.json())
-      .then((data) => {
-        setTopics(data);
-        createTreemap(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching topics data:", error);
-      });
-  }, []);
 
   const createTreemap = (data) => {
     const width = window.innerWidth * 0.6; // Adjust the width for the treemap
@@ -75,6 +64,19 @@ function TreemapView() {
     svg.selectAll("text").attr("font-size", 13).attr("fill", "black");
   };
 
+  useEffect(() => {
+    // Fetch the topics data when the component mounts
+    fetch("/bunka_topics.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setTopics(data);
+        createTreemap(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching topics data:", error);
+      });
+  }, []);
+
   return (
     <div>
       <h2>Treemap View</h2>
@@ -100,7 +102,7 @@ function TreemapView() {
               {selectedTopic.name}
             </Typography>
             {selectedTopic.content.map((doc, index) => (
-              <List key={index}>
+              <List key={doc.id}>
                 <ListItem>
                   <Typography variant="h5">{doc}</Typography>
                 </ListItem>

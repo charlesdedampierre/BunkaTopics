@@ -30,23 +30,8 @@ run_api:
 	python -m uvicorn api.bunka_api.main:app
 
 #############
-# Docker  #
-#############
-
-
-docker_build:
-	docker build -t bunkatopics .
-
-docker_run:
-	docker run -p 8000:8000 bunkatopics
-
-#############
 # scaleway  #
 #############
-
-#REGISTRY = rg.fr-par.scw.cloud/bunkatopics
-REGISTRY = rg.fr-par.scw.cloud/$(SCW_CONTAINER_REGISTRY_ID)
-IMAGE_NAME = bunkatopics:latest
 
 registry__login:
 	docker login $(REGISTRY) -u nologin --password-stdin <<< $(SCW_SECRET_KEY)
@@ -60,8 +45,18 @@ container__list:
 container__get:
 	scw container container get $(ID)
 
+#############
+# Docker  #
+#############
+
+docker_build:
+	docker build -t $$IMAGE_NAME .
+
+docker_run:
+	docker run -d -p 8000:8000 $$IMAGE_NAME
+
 docker_tag:
-	docker tag $(IMAGE_NAME) $(REGISTRY)/$(IMAGE_NAME)
+	docker tag $$IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
 
 docker_push:
-	docker push $(REGISTRY)/$(IMAGE_NAME)
+	docker push $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest

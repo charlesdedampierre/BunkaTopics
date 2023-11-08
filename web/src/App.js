@@ -44,8 +44,8 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="json-display">
-        <div className="top-right">
+      <div className="main-display">
+        <div className="top-right" id="top-banner">
           <a
             href="https://www.linkedin.com/company/company-profile-link"
             target="_blank"

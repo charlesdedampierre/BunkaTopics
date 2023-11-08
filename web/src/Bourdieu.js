@@ -11,11 +11,13 @@ const Bourdieu = () => {
     const textContainerRef = useRef(null);
     const scatterPlotContainerRef = useRef(null);
 
-    const containerWidth = 2000; // Set the desired container width
-    const containerHeight = 1500; // Set the desired container height
 
-    const svgWidth = 1800; // Set the SVG width to match your map's desired width
-    const svgHeight = 1500; // Set the SVG height to match your map's desired height
+    const svgWidth = window.innerWidth; // Set the SVG height to match your map's desired height
+    // Set the SVG height to match your map's desired height
+    const svgHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50;
+
+    const containerWidth = svgWidth; // Set the desired container width
+    const containerHeight = svgHeight; // Set the desired container height
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,8 +44,8 @@ const Bourdieu = () => {
 
     const createScatterPlot = (docsData, topicsData, queryData) => {
         const margin = { top: 20, right: 20, bottom: 50, left: 50 };
-        const plotWidth = 1500;
-        const plotHeight = 1100;
+        const plotWidth = svgWidth - 400;
+        const plotHeight = svgHeight;
 
 
         const svg = d3.select(svgRef.current)

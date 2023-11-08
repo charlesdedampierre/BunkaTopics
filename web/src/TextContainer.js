@@ -20,7 +20,7 @@ const TextContainer = (props) => {
     };
 
     return (
-        <Box className="topic-box">
+        <Box className="topic-box"> 
             <Box
                 style={{
                     display: 'flex',
@@ -43,7 +43,7 @@ const TextContainer = (props) => {
             <Typography variant="h5" style={{ marginBottom: '20px', marginTop: '20px', textAlign: 'center' }}>
                 {props.sizeFraction}% of the Territory
             </Typography>
-            <Paper elevation={3} style={{ maxHeight: '900px', overflowY: 'auto' }}>
+            <Paper elevation={3} style={{ maxHeight: '70vh', overflowY: 'auto' }}>
                 <List>
                     {props.content.map((doc, index) => (
                         <ListItem

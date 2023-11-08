@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Dialog,
   DialogTitle,
@@ -45,5 +46,11 @@ function TopicDocuments({ open, onClose, documents }) {
     </Dialog>
   );
 }
+
+TopicDocuments.propTypes = {
+  open: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  documents: PropTypes.array.isRequired,
+};
 
 export default TopicDocuments;

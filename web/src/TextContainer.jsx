@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -8,7 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import DescriptionIcon from "@mui/icons-material/Description"; // Import the document icon
 
-function TextContainer(props) {
+function TextContainer({ topicName, sizeFraction, content }) {
   const [selectedDocument, setSelectedDocument] = useState(null);
 
   const handleDocumentClick = (docIndex) => {
@@ -37,7 +38,7 @@ function TextContainer(props) {
           }}
         >
           <Typography variant="h4" style={{ marginBottom: "8px" }}>
-            {props.topicName}
+            {topicName}
           </Typography>
         </Box>
         <Typography
@@ -48,19 +49,22 @@ function TextContainer(props) {
             textAlign: "center",
           }}
         >
-          {props.sizeFraction}% of the Territory
+          {sizeFraction}
+          % of the Territory
         </Typography>
         <Paper elevation={3} style={{ maxHeight: "70vh", overflowY: "auto" }}>
           <List>
-            {props.content.map((doc, index) => (
+            {content.map((doc, index) => (
               <ListItem
                 button
-                key={index}
+                key={doc.id}
                 onClick={() => handleDocumentClick(index)}
                 selected={selectedDocument === index}
               >
                 <ListItemIcon>
-                  <DescriptionIcon /> {/* Display a document icon */}
+                  <DescriptionIcon />
+                  {" "}
+                  {/* Display a document icon */}
                 </ListItemIcon>
                 <ListItemText
                   primary={<span style={{ fontSize: "16px" }}>{doc}</span>}
@@ -73,5 +77,11 @@ function TextContainer(props) {
     </div>
   );
 }
+
+TextContainer.propTypes = {
+  topicName: PropTypes.string.isRequired,
+  sizeFraction: PropTypes.string.isRequired,
+  content: PropTypes.array.isRequired,
+};
 
 export default TextContainer;

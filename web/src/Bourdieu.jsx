@@ -14,10 +14,9 @@ function Bourdieu() {
   const textContainerRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
   // Set the SVG height to match your map's desired height
-  const svgHeight =
-    window.innerHeight -
-    document.getElementById("top-banner").clientHeight -
-    50;
+  const svgHeight = window.innerHeight
+    - document.getElementById("top-banner").clientHeight
+    - 50;
   const svgWidth = window.innerWidth * 0.65; // Set the svg container height to match the layout
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +54,9 @@ function Bourdieu() {
   }, []);
 
   const createScatterPlot = (docsData, topicsData, queryData) => {
-    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+    const margin = {
+      top: 20, right: 20, bottom: 50, left: 50,
+    };
     const plotWidth = svgWidth;
     const plotHeight = svgHeight;
 
@@ -131,10 +132,10 @@ function Bourdieu() {
                 .style('stroke', 'lightblue')
                 .style('stroke-width', 1)
                 .style('opacity', 0.8); // Adjust the opacity
-    
+
             scatter.on('mouseover', (event, d) => {
                 const content = d.content;
-    
+
                 // Create the content box div
                 const contentBox = document.createElement('div');
                 contentBox.id = 'content-box';
@@ -145,10 +146,10 @@ function Bourdieu() {
                 contentBox.style.color = 'white';
                 contentBox.style.padding = '10px';
                 contentBox.innerHTML = content;
-    
+
                 // Append the content box to the body
                 document.body.appendChild(contentBox);
-    
+
                 // Remove the content box on mouseout (hover out)
                 scatter.on('mouseout', () => {
                     document.body.removeChild(contentBox);
@@ -262,14 +263,10 @@ function Bourdieu() {
     const totalDocuments = docsData.length;
 
     // Calculate the percentages
-    const percentageXGreaterThanZeroAndYGreaterThanZero =
-      (xGreaterThanZeroAndYGreaterThanZero / totalDocuments) * 100;
-    const percentageXLessThanZeroAndYGreaterThanZero =
-      (xLessThanZeroAndYGreaterThanZero / totalDocuments) * 100;
-    const percentageXGreaterThanZeroAndYLessThanZero =
-      (xGreaterThanZeroAndYLessThanZero / totalDocuments) * 100;
-    const percentageXLessThanZeroAndYLessThanZero =
-      (xLessThanZeroAndYLessThanZero / totalDocuments) * 100;
+    const percentageXGreaterThanZeroAndYGreaterThanZero = (xGreaterThanZeroAndYGreaterThanZero / totalDocuments) * 100;
+    const percentageXLessThanZeroAndYGreaterThanZero = (xLessThanZeroAndYGreaterThanZero / totalDocuments) * 100;
+    const percentageXGreaterThanZeroAndYLessThanZero = (xGreaterThanZeroAndYLessThanZero / totalDocuments) * 100;
+    const percentageXLessThanZeroAndYLessThanZero = (xLessThanZeroAndYLessThanZero / totalDocuments) * 100;
 
     // Add labels to display percentages in the squares
     const squareSize = 300; // Adjust this based on your map's layout
@@ -376,8 +373,7 @@ function Bourdieu() {
           textContainerRef.current,
         );
       } else {
-        textContainerRef.current.innerHTML =
-          "No content available for this topic.";
+        textContainerRef.current.innerHTML = "No content available for this topic.";
       }
     });
   };
@@ -391,7 +387,10 @@ function Bourdieu() {
         <div className="text-container" ref={textContainerRef}>
           {selectedDocument && (
             <div className="text-content">
-              <h2 className="topic-name">Topic: {selectedDocument.topic_id}</h2>
+              <h2 className="topic-name">
+                Topic:
+                {selectedDocument.topic_id}
+              </h2>
 
               <p>{selectedDocument.content}</p>
             </div>

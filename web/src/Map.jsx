@@ -5,6 +5,10 @@ import ReactDOM from "react-dom"; // Import ReactDOM
 
 import TextContainer from "./TextContainer";
 
+const bunkaDocs = "bunka_docs.json";
+const bunkaTopics = "bunka_topics.json";
+const { REACT_APP_API_ENDPOINT } = process.env;
+
 function Map() {
   const [jsonData, setJsonData] = useState(null);
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -15,46 +19,24 @@ function Map() {
   const textContainerRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
 
-  const handleSearch = () => {
-    const results = jsonData.filter((doc) =>
-      doc.content.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setSearchResults(results);
-  };
-
-  useEffect(() => {
-    // Fetch the JSON data
-    fetch("/bunka_docs.json")
-      .then((response) => response.json())
-      .then((data) => {
-        setJsonData(data);
-
-        // Fetch the topics data and merge it with the existing data
-        fetch("/bunka_topics.json")
-          .then((response) => response.json())
-          .then((topicsData) => {
-            // Merge the topics data with the existing data
-            const mergedData = data.concat(topicsData);
-
-            // Call the function to create the scatter plot after data is loaded
-            createScatterPlot(mergedData);
-          })
-          .catch((error) => {
-            console.error("Error fetching topics data:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON data:", error);
-      });
-  }, []);
+  // const handleSearch = () => {
+  //   const results = jsonData.filter((doc) =>
+  //     doc.content.toLowerCase().includes(searchQuery.toLowerCase()),
+  //   );
+  //   setSearchResults(results);
+  // };
 
   const createScatterPlot = (data) => {
-    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+    const margin = {
+      top: 20,
+      right: 20,
+      bottom: 50,
+      left: 50,
+    };
     const plotWidth = window.innerWidth * 0.6;
-    const plotHeight =
-      window.innerHeight -
-      document.getElementById("top-banner").clientHeight -
-      50; // Adjust the height as desired
+    const plotHeight = window.innerHeight
+      - document.getElementById("top-banner").clientHeight
+      - 50; // Adjust the height as desired
 
     const svg = d3
       .select(svgRef.current)
@@ -86,9 +68,9 @@ function Map() {
       .y((d) => yScale(d.y))
       .size([plotWidth, plotHeight])
       .bandwidth(30)(
-      // Adjust the bandwidth as needed
-      data,
-    );
+        // Adjust the bandwidth as needed
+        data,
+      );
 
     // Define a custom color for the contour lines
 
@@ -167,7 +149,7 @@ function Map() {
         .append("path")
         .datum(d3.polygonHull(hullPoints))
         .attr("class", "convex-hull-polygon")
-        .attr("d", (d) => `M${d.join("L")}Z`)
+        .attr("d", (d1) => `M${d1.join("L")}Z`)
         .style("fill", "none")
         .style("stroke", "rgba(255, 255, 255, 0.5)") // White with 50% transparency
         .style("stroke-width", 2);
@@ -227,45 +209,44 @@ function Map() {
           textContainerRef.current,
         );
       } else {
-        textContainerRef.current.innerHTML =
-          "No content available for this topic.";
+        textContainerRef.current.innerHTML = "No content available for this topic.";
       }
     });
-
-    /*
-        // Add a button to take a screenshot
-        const screenshotButton = document.createElement('button');
-        screenshotButton.innerText = 'Take Screenshot';
-        screenshotButton.style.position = 'absolute';
-        screenshotButton.style.bottom = '10px'; // Position at the bottom of the scatter plot container
-        screenshotButton.style.left = '50%'; // Center horizontally
-        screenshotButton.style.transform = 'translateX(-50%)'; // Center horizontally
-        screenshotButton.style.padding = '10px 20px'; // Increase padding for a larger button
-        screenshotButton.style.background = 'darkblue'; // Set the background color to blue
-        screenshotButton.style.color = 'white'; // Set text color to white
-        screenshotButton.style.border = 'darkblue'; // Add a dark blue border
-        screenshotButton.style.fontSize = '16px'; // Increase font size
-   
-
-
-        screenshotButton.addEventListener('click', () => {
-            // Use html2canvas to capture a screenshot of the scatter plot container
-            html2canvas(scatterPlotContainerRef.current).then((canvas) => {
-                const screenshot = canvas.toDataURL('image/png');
-
-                // Create a temporary anchor element to trigger the download
-                const a = document.createElement('a');
-                a.href = screenshot;
-                a.download = 'bunka_map.png'; // You can change the filename as desired
-                a.click();
-            });
-        });
-
-        // Append the screenshot button to the scatter plot container
-        scatterPlotContainerRef.current.appendChild(screenshotButton);
-
-        */
   };
+
+  useEffect(() => {
+    // Fetch the JSON data
+    fetch(
+      REACT_APP_API_ENDPOINT === "local"
+        ? `/${bunkaDocs}`
+        : `${REACT_APP_API_ENDPOINT}/${bunkaDocs}`,
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setJsonData(data);
+
+        // Fetch the topics data and merge it with the existing data
+        fetch(
+          REACT_APP_API_ENDPOINT === "local"
+            ? `/${bunkaTopics}`
+            : `${REACT_APP_API_ENDPOINT}/${bunkaTopics}`,
+        )
+          .then((response) => response.json())
+          .then((topicsData) => {
+            // Merge the topics data with the existing data
+            const mergedData = data.concat(topicsData);
+
+            // Call the function to create the scatter plot after data is loaded
+            createScatterPlot(mergedData);
+          })
+          .catch((error) => {
+            console.error("Error fetching topics data:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching JSON data:", error);
+      });
+  }, [createScatterPlot, setJsonData]);
 
   return (
     <div className="json-display">

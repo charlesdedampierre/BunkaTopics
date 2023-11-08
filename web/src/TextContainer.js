@@ -20,6 +20,7 @@ const TextContainer = (props) => {
     };
 
     return (
+        <div id="topic-box-container">
         <Box className="topic-box"> 
             <Box
                 style={{
@@ -60,7 +61,7 @@ const TextContainer = (props) => {
                     ))}
                 </List>
             </Paper>
-        </Box >
+        </Box ></div>
     );
 };
 

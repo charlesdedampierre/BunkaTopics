@@ -347,11 +347,8 @@ class Bunka:
             print("Server on port 3000 is already running. Killing it...")
             kill_server()
         try:
-            new_docs = self.docs.copy()
-            for doc in new_docs:
-                doc.embedding = None
             file_path = "../web/public" + "/bunka_docs.json"
-            docs_json = [x.dict() for x in new_docs]
+            docs_json = [x.dict() for x in self.docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)

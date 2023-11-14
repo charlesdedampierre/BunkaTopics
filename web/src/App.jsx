@@ -41,7 +41,7 @@ function App() {
       <div className="main-display">
         <div className="top-right" id="top-banner">
           <a
-            href="https://www.linkedin.com/company/company-profile-link"
+            href="https://www.linkedin.com/company/bunka-ai/"
             target="_blank"
             rel="noopener noreferrer"
             className="linkedin-icon"

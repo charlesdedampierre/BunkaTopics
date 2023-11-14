@@ -3,6 +3,8 @@ import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
 import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const bunka_bourdieu_docs = "bunka_bourdieu_docs.json";
 const bunka_bourdieu_topics = "bunka_bourdieu_topics.json";
@@ -100,7 +102,7 @@ function Bourdieu() {
       .attr("x", xScale(xMax))
       .attr("y", yScale(0))
       .text(queryData.x_left_words[0])
-      .style("text-anchor", "end")
+      .style("text-anchor", "start")
       .style("fill", "purple");
 
     svg
@@ -116,7 +118,7 @@ function Bourdieu() {
       .attr("x", xScale(0))
       .attr("y", yScale(yMin))
       .text(queryData.y_bottom_words[0])
-      .style("text-anchor", "middle")
+      .style("text-anchor", "end")
       .style("fill", "purple");
 
     /*

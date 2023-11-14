@@ -15,7 +15,8 @@ body {
 .top-right {
   display: flex;
   flex-direction: row;
-  align-items: center; /* Center vertically */
+  align-items: center;
+  /* Center vertically */
   min-height: 3vh;
 }
 
@@ -116,7 +117,7 @@ path.contour {
   fill: none;
   stroke: black;
   stroke-width: 1;
-} 
+}
 
 .box {
   border: 3px solid #ccc;

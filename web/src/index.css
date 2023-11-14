@@ -1,0 +1,201 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.json-display {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh;
+  overflow-y: hidden;
+
+}
+
+.top-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Center vertically */
+  min-height: 3vh;
+}
+
+.linkedin-icon img {
+  width: 50px;
+  /* Adjust the width to your desired size */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+/* Style for the Bunka logo */
+.bunka-logo {
+  /* Set the width and height to make the logo smaller */
+  width: 200px;
+  /* Adjust the width as desired */
+  height: fit-content;
+  /* Maintain aspect ratio */
+  margin-top: 1em;
+}
+
+.topic-title {
+  word-spacing: 10px;
+  /* Adjust the spacing as needed */
+}
+
+
+/* Add or modify the following CSS for the LinkedIn icon */
+.linkedin-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  /* Adjust the width and height to make the logo smaller */
+}
+
+.linkedin-icon img {
+  width: 50px;
+  /* Adjust the width to your desired size */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+.scatter-plot-and-text-container {
+  display: flex;
+  padding: 1em;
+  min-height: 89vh;
+}
+
+.scatter-plot-container {
+  display: flex;
+  width: 100%;
+}
+
+svg {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+}
+
+.text-container {
+  width: 35%;
+  min-width: 100px;
+  padding: 20px;
+  font-size: 30px;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+/* Style for the title */
+h2 {
+  font-size: 50px;
+  /* Specify the unit, e.g., 'px' */
+  margin: 10px 0;
+  color: rgb(24, 113, 222);
+  align-items: center;
+}
+
+/* Style for the text content within the text container */
+.text-container p {
+  margin: 10px;
+  padding: 2px 0;
+}
+
+/* Style for the scatter plot circles */
+circle {
+  cursor: pointer;
+  transition: fill 0.3s;
+}
+
+/* Style for clicked circles */
+circle.clicked {
+  fill: pink;
+}
+
+/* Style for the contour lines */
+path.contour {
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
+} 
+
+.box {
+  border: 3px solid #ccc;
+  padding: 10px;
+  background-color: white;
+  cursor: pointer;
+  margin: 30px;
+  /* Add margin to create space between each box */
+}
+
+.box.clicked {
+  background-color: lightgray;
+}
+
+/* Style for the fixed header container */
+.topic-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style for the topic title inside the title box */
+.topic-title {
+  margin: 0;
+}
+
+/* Style for the main content box */
+.topic-content {
+  padding-top: 40px;
+  /* Adjust as needed to provide space for the fixed title */
+}
+
+/* Style for the content container */
+.content-container {
+  display: flex;
+}
+
+/* Style for the topic title inside the title box */
+.topic-title {
+  margin: 0;
+}
+
+.csv-upload-container {
+  margin-top: 50px;
+  flex: 1;
+  align-items: left;
+  margin-left: 0;
+  /* Remove margin from the left side */
+
+  /* Adjust the margin as needed */
+}
+
+
+.csv-upload-input {
+  margin-top: 50px;
+  flex: 1;
+  align-items: left;
+  margin-left: 0;
+  /* Remove margin from the left side */
+
+  /* Adjust the margin as needed */
+}
+
+.topic-box {
+  /* Adjust the maximum height as needed */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.topic-box h2 {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  align-self: center;
+  /* Set the background color to your desired value */
+}
+
+.content-container {
+  /* Adjust these styles as needed */
+  flex: 1;
+  overflow-y: auto;
+}

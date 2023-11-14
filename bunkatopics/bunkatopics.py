@@ -322,22 +322,22 @@ class Bunka:
             print("Server on port 3000 is already running. Killing it...")
             kill_server()
         try:
-            file_path = "../web_test/public" + "/bunka_bourdieu_docs.json"
+            file_path = "../web/public" + "/bunka_bourdieu_docs.json"
             docs_json = [x.dict() for x in self.bourdieu_docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
-            file_path = "../web_test/public" + "/bunka_bourdieu_topics.json"
+            file_path = "../web/public" + "/bunka_bourdieu_topics.json"
             topics_json = [x.dict() for x in self.bourdieu_topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 
-            file_path = "../web_test/public" + "/bunka_bourdieu_query.json"
+            file_path = "../web/public" + "/bunka_bourdieu_query.json"
             with open(file_path, "w") as json_file:
                 json.dump(self.bourdieu_query.dict(), json_file)
 
-            subprocess.Popen(["npm", "start"], cwd="../web_test")
+            subprocess.Popen(["npm", "start"], cwd="../web")
             print("NPM server started.")
         except Exception as e:
             print(f"Error starting NPM server: {e}")
@@ -347,18 +347,18 @@ class Bunka:
             print("Server on port 3000 is already running. Killing it...")
             kill_server()
         try:
-            file_path = "../web_test/public" + "/bunka_docs.json"
+            file_path = "../web/public" + "/bunka_docs.json"
             docs_json = [x.dict() for x in self.docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
-            file_path = "../web_test/public" + "/bunka_topics.json"
+            file_path = "../web/public" + "/bunka_topics.json"
             topics_json = [x.dict() for x in self.topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 
-            subprocess.Popen(["npm", "start"], cwd="../web_test")
+            subprocess.Popen(["npm", "start"], cwd="../web")
             print("NPM server started.")
         except Exception as e:
             print(f"Error starting NPM server: {e}")

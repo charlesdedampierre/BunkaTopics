@@ -6,7 +6,6 @@ import {
 
 function TreemapView() {
   const svgRef = useRef(null);
-  const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState({ name: "", content: [] });
 
   const createTreemap = (data) => {
@@ -69,7 +68,6 @@ function TreemapView() {
     fetch("/bunka_topics.json")
       .then((response) => response.json())
       .then((data) => {
-        setTopics(data);
         createTreemap(data);
       })
       .catch((error) => {

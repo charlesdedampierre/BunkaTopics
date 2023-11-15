@@ -1,6 +1,8 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect } from 'react';
+import axios from 'axios'
 import useSWR from 'swr';
 import  md5 from 'crypto-js/md5';
+import { Alert } from "@mui/material";
 
 // Create the Context
 export const TopicsContext = createContext();
@@ -44,6 +46,7 @@ async function hashPartialFile(file) {
  * @param {String} fileName 
  * @param {Object} data 
  */
+/*
 const saveDataToFile = (fileName, data) => {
   const blob = new Blob([data], { type: "application/json" });
 
@@ -55,23 +58,24 @@ const saveDataToFile = (fileName, data) => {
   // Trigger a click event to download the file
   a.click();
 };
+*/
 
 // Fetcher function for useSWR
-const fetcher = url => fetch(url).then(res => res.json());
+const fetcher = (url, data) => axios.post(url, data).then(res => res.data)
 
 // Provider Component
-export const TopicsProvider = ({ children }) => {
+export const TopicsProvider = ({ children, onSelectView }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errorText, setErrorText] = useState('');
 
   // Use SWR for data fetching
-  const { data, mutate } = useSWR('/topics', fetcher);
-
+  const { data, mutate, error } = useSWR('/topics', fetcher, { shouldRetryOnError: false });
+  
   // Handle File Upload and POST Request
   const uploadFile = async (file, params) => {
     setIsLoading(true);
-    setError('');
-  
+    setErrorText('');
+    
     try {
       // Generate SHA-256 hash of the file
       const fileHash = await hashPartialFile(file);
@@ -82,37 +86,46 @@ export const TopicsProvider = ({ children }) => {
       formData.append('n_cluster', params.n_cluster);
       formData.append('openapi_key', params.openapi_key);
       formData.append('selected_column', params.selected_column);
-
+      
       const apiUrl = `${process.env.REACT_APP_API_ENDPOINT}/topics?md5=${fileHash}`;
       // Perform the POST request
-      const response = await fetch(apiUrl, {
+      await fetch(apiUrl, {
         method: 'POST',
         body: formData,
       });
+
+      onSelectView("map");
+      // Save topics and docs to files in the public directory
+      // saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
+      // saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));
   
-      if (response.ok) {
-        const data = await response.json();
-  
-        // Save topics and docs to files in the public directory
-        saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
-        saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));
-      }
       // Trigger a revalidation with the new URL
       mutate(`/topics?md5=${fileHash}`);
-    } catch (error) {
-      setError('Error uploading file. Please try again.');
-      console.error('Error uploading file:', error);
+    } catch (errorExc) {
+      setErrorText(`Error uploading file. Please try later : ${errorExc}`);
+      console.error('Error uploading file:', errorExc);
     } finally {
       setIsLoading(false);
     }
   };
   
+  useEffect(() => {
+    if (error !== undefined && error.length) {
+      const message = error.response ? error.response.data.message : error.message;
+      setErrorText(`Error uploading file.\n${message}`);
+      console.error('Error uploading file:', message);
+    }
+  }, [error]);
 
   return (
     <TopicsContext.Provider value={{ data, uploadFile, isLoading, error }}>
-      {isLoading && <div className="loader"></div>}
-      {error && <div className="errorMessage">{error}</div>}
-      {children}
+      <>
+        {isLoading && <div className="loader"></div>}
+        {errorText &&
+          <Alert severity="error" className="errorMessage">{errorText}</Alert>
+        }
+        {children}
+      </>
     </TopicsContext.Provider>
   );
 };

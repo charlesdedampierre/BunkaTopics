@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
   FormControl,
@@ -13,7 +13,7 @@ function DropdownMenu({ onSelectView, selectedView }) {
     bourdieu: "Bourdieu View",
     docs: "Documents View",
     treemap: "Treemap View",
-    query: "Query View"
+    query: "Query View",
   };
 
   const handleSelectView = (event) => {
@@ -48,6 +48,7 @@ function DropdownMenu({ onSelectView, selectedView }) {
 
 DropdownMenu.propTypes = {
   onSelectView: PropTypes.func.isRequired,
+  selectedView: PropTypes.string.isRequired,
 };
 
 export default DropdownMenu;

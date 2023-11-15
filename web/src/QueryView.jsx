@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { TopicsContext } from "./UploadFileContext"
 import Papa from "papaparse";
 import {
   Typography,
@@ -18,15 +19,17 @@ import {
   MenuItem,
   Backdrop, // Import Backdrop component
   CircularProgress, // Import CircularProgress component
+  Input,
 } from "@mui/material";
 
 function QueryView() {
   const [fileData, setFileData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
+  const [openApiKey, setOpenApiKey] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedColumnData, setSelectedColumnData] = useState([]);
-  const [topics, setTopics] = useState([]);
-  const [docs, setDocs] = useState([]);
+
+  const { uploadFile, isLoading, error } = useContext(TopicsContext);
 
   const parseCSVFile = (file, sampleSize = 500) => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -52,19 +55,16 @@ function QueryView() {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    setSelectedFile(file);
 
     if (!file) return;
-
-    setIsLoading(true);
-
+    // prepare data for the preview Table
     try {
       const parsedData = await parseCSVFile(file);
       setFileData(parsedData);
       setSelectedColumn(""); // Clear the selected column when a new file is uploaded
     } catch (error) {
       console.error("Error parsing CSV:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -79,50 +79,16 @@ function QueryView() {
     setSelectedColumnData(columnData);
   };
 
-  const saveDataToFile = (fileName, data) => {
-    const blob = new Blob([data], { type: "application/json" });
-
-    // Create a link element
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = fileName;
-
-    // Trigger a click event to download the file
-    a.click();
-  };
-
   const handleProcessTopics = async () => {
     if (selectedColumnData.length === 0) return;
-
-    const apiUrl = `${process.env.REACT_APP_API_ENDPOINT}/topics`;
-
     const params = {
       n_cluster: 10, // You can set the desired number of clusters here
+      // TODO add an optional text input for the server to use it instead of the default key
+      openapi_key: openApiKey,
+      selected_column: selectedColumn
     };
-
-    // Transform selectedColumnData into a list of strings
-    const full_docs = selectedColumnData.map((item) => String(item));
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ params, full_docs }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-
-      // Set the topics and docs in the state
-      setTopics(data.topics);
-      setDocs(data.docs);
-
-      // Save topics and docs to files in the public directory
-      saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
-      saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));
-    } else {
-      console.error("API Request Failed");
+    if (selectedFile) {
+      uploadFile(selectedFile, params);
     }
   };
 
@@ -151,7 +117,7 @@ function QueryView() {
         <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
           <CircularProgress color="primary" />
         </Backdrop>
-      ) : (
+      ) : error ? (<div>Error: {error}</div>) : (
         // Content when not loading
         <div>
           {selectedColumnData.length > 0 && (
@@ -184,6 +150,7 @@ function QueryView() {
             >
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
+            <Input type="text" onChange={setOpenApiKey} />
           </Box>
         </div>
       )}

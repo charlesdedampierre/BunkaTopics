@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   FormControl,
@@ -7,7 +7,15 @@ import {
   Select,
 } from "@mui/material";
 
-function DropdownMenu({ onSelectView }) {
+function DropdownMenu({ onSelectView, selectedView }) {
+  const LABELS = {
+    map: "Map View",
+    bourdieu: "Bourdieu View",
+    docs: "Documents View",
+    treemap: "Treemap View",
+    query: "Query View"
+  };
+
   const handleSelectView = (event) => {
     if (onSelectView) onSelectView(`${event.target.value}`);
   };
@@ -21,22 +29,18 @@ function DropdownMenu({ onSelectView }) {
       <InputLabel htmlFor="view-select">Select a View</InputLabel>
       <Select
         label="Select a View"
-        value=""
+        value={selectedView}
         onChange={handleSelectView}
         inputProps={{
           name: "view-select",
           id: "view-select",
         }}
       >
-        <MenuItem value="map">Map View</MenuItem>
-        <MenuItem value="bourdieu">Bourdieu View</MenuItem>
-        <MenuItem value="docs">Documents View</MenuItem>
-        <MenuItem value="treemap">Treemap View</MenuItem>
-        {" "}
-        {/* Add a new view for Treemap */}
-        <MenuItem value="query">Query View</MenuItem>
-        {" "}
-        {/* Add a new view for Query */}
+        <MenuItem value="map">{LABELS.map}</MenuItem>
+        <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem>
+        <MenuItem value="docs">{LABELS.docs}</MenuItem>
+        <MenuItem value="treemap">{LABELS.treemap}</MenuItem>
+        <MenuItem value="query">{LABELS.query}</MenuItem>
       </Select>
     </FormControl>
   );

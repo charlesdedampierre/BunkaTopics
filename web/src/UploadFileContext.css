@@ -3,8 +3,6 @@
   position: fixed;
   top: 0;
   width: 100%;
-  background-color: red;
-  color: white;
   text-align: center;
   padding: 10px;
   z-index: 1000;
@@ -15,13 +13,13 @@
   border: 4px solid #f3f3f3; /* Light grey */
   border-top: 4px solid #3498db; /* Blue */
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 400px;
+  height: 400px;
   animation: spin 2s linear infinite;
 
   /* Positioning */
   position: fixed;
-  top: 10px; /* Adjust as needed */
+  top: 100px; /* Adjust as needed */
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;

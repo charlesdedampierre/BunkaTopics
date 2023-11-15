@@ -19,8 +19,22 @@ import {
   MenuItem,
   Backdrop, // Import Backdrop component
   CircularProgress, // Import CircularProgress component
-  Input,
+  TextField,
 } from "@mui/material";
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 function QueryView() {
   const [fileData, setFileData] = useState([]);
@@ -28,8 +42,16 @@ function QueryView() {
   const [openApiKey, setOpenApiKey] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedColumnData, setSelectedColumnData] = useState([]);
+  const [openSelector, setOpenSelector] = React.useState(false);
+  const { uploadFile, isLoading } = useContext(TopicsContext);
 
-  const { uploadFile, isLoading, error } = useContext(TopicsContext);
+  const handleClose = () => {
+    setOpenSelector(false);
+  };
+
+  const handleOpen = () => {
+    setOpenSelector(true);
+  };
 
   const parseCSVFile = (file, sampleSize = 500) => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -45,8 +67,8 @@ function QueryView() {
         complete: (result) => {
           resolve(result.data);
         },
-        error: (error) => {
-          reject(error.message);
+        error: (parseError) => {
+          reject(parseError.message);
         },
       });
     };
@@ -63,8 +85,9 @@ function QueryView() {
       const parsedData = await parseCSVFile(file);
       setFileData(parsedData);
       setSelectedColumn(""); // Clear the selected column when a new file is uploaded
-    } catch (error) {
-      console.error("Error parsing CSV:", error);
+      handleOpen();
+    } catch (exc) {
+      console.error("Error parsing CSV:", exc);
     }
   };
 
@@ -93,17 +116,26 @@ function QueryView() {
   };
 
   return (
-    <Container>
+    <Container component="form">
       <Typography variant="h4" gutterBottom>
         CSV File Viewer
       </Typography>
       <Box marginBottom={2}>
-        <input type="file" accept=".csv" onChange={handleFileChange} required />
+        <Button component="label" variant="outlined" startIcon={<CloudUploadIcon />}>
+          Upload a file with at least one column containing text
+          <VisuallyHiddenInput type="file" onChange={handleFileChange} required/>
+        </Button>
       </Box>
       <Box marginBottom={2}>
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Select a Column</InputLabel>
-          <Select value={selectedColumn} onChange={handleColumnSelect}>
+          <Select
+            value={selectedColumn}
+            onChange={handleColumnSelect}
+            onClose={handleClose}
+            onOpen={handleOpen}
+            open={openSelector}
+          >
             {fileData[0]
               && fileData[0].map((header, index) => (
                 <MenuItem key={`${header}`} value={header}>
@@ -117,7 +149,7 @@ function QueryView() {
         <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
           <CircularProgress color="primary" />
         </Backdrop>
-      ) : error ? (<div>Error: {error}</div>) : (
+      ) : (
         // Content when not loading
         <div>
           {selectedColumnData.length > 0 && (
@@ -141,7 +173,7 @@ function QueryView() {
               </Table>
             </TableContainer>
           )}
-          <Box marginTop={2}>
+          <Box marginTop={2} display={"flex"}>
             <Button
               variant="contained"
               color="primary"
@@ -150,7 +182,7 @@ function QueryView() {
             >
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
-            <Input type="text" onChange={setOpenApiKey} />
+            <TextField id="input-api-key" label="Use your own OpenAI key" variant="outlined" onChange={setOpenApiKey} />
           </Box>
         </div>
       )}

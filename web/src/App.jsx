@@ -25,7 +25,7 @@ function App() {
           <img src="/bunka_logo.png" alt="Bunka Logo" className="bunka-logo" />
           <DropdownMenu onSelectView={setSelectedView} />
         </div>
-        <TopicsProvider>
+        <TopicsProvider onSelectView={setSelectedView}>
           {selectedView === "map" ? (
             <Map />
           ) : selectedView === "docs" ? (
@@ -33,7 +33,7 @@ function App() {
           ) : selectedView === "treemap" ? (
             <TreemapView />
           ) : selectedView === "query" ? (
-            <QueryView />
+            <QueryView/>
           ) : selectedView === "bourdieu" ? (
             <Bourdieu />
           ) : (

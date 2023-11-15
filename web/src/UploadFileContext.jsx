@@ -93,8 +93,8 @@ export const TopicsProvider = ({ children, onSelectView }) => {
         method: 'POST',
         body: formData,
       });
-
-      onSelectView("map");
+      // auto-switch to Map view
+      if (onSelectView) onSelectView("map");
       // Save topics and docs to files in the public directory
       // saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
       // saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));

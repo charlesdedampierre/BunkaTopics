@@ -23,7 +23,7 @@ function App() {
             <img src="/linkedin_logo.png" alt="LinkedIn" />
           </a>
           <img src="/bunka_logo.png" alt="Bunka Logo" className="bunka-logo" />
-          <DropdownMenu onSelectView={setSelectedView} />
+          <DropdownMenu onSelectView={setSelectedView} selectedView={selectedView} />
         </div>
         <TopicsProvider onSelectView={setSelectedView}>
           {selectedView === "map" ? (

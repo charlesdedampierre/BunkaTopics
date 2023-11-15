@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  useEffect, useState, useRef, useCallback,
+} from "react";
 import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
 import ReactDOM from "react-dom";
@@ -206,7 +208,7 @@ function Bourdieu() {
         .append("path")
         .datum(d3.polygonHull(hullPoints))
         .attr("class", "convex-hull-polygon")
-        .attr("d", (d) => `M${d.join("L")}Z`)
+        .attr("d", (dAttr) => `M${dAttr.join("L")}Z`)
         .style("fill", "none")
         .style("stroke", "rgba(255, 255, 255, 0.5)")
         .style("stroke-width", 2);

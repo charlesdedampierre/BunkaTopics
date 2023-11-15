@@ -1,4 +1,8 @@
-FROM python:3.10
+# How to
+# copy .env.model to .env and write your own OPEN_AI_KEY
+# docker build -t bunkatopicsapi .
+# docker run --env-file .env -p 8000:8000 bunkatopicsapi
+FROM python:3.10 as bunkatopicsbasedocker
 
 RUN apt update
 RUN apt install -y python3-dev
@@ -6,9 +10,6 @@ RUN apt install -y python3-dev
 
 # copying dependency
 COPY bunkatopics /app/bunkatopics
-
-# Rajouter variables environemment
-ENV OPEN_AI_KEY=
 
 # Workspace
 WORKDIR /app/api
@@ -29,11 +30,12 @@ RUN pip install --upgrade pip
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-
+######################################
+# changing user & downloading models #
+######################################
+FROM bunkatopicsbasedocker
 # Models
-#RUN pip install spacy
 RUN python -m spacy download en_core_web_sm
-
 # reducing privilege
 RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app

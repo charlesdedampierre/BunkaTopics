@@ -33,7 +33,7 @@ function App() {
           ) : selectedView === "treemap" ? (
             <TreemapView />
           ) : selectedView === "query" ? (
-            <QueryView/>
+            <QueryView />
           ) : selectedView === "bourdieu" ? (
             <Bourdieu />
           ) : (

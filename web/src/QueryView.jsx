@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { TopicsContext } from "./UploadFileContext"
 import Papa from "papaparse";
 import {
   Typography,
@@ -21,18 +20,19 @@ import {
   CircularProgress, // Import CircularProgress component
   TextField,
 } from "@mui/material";
-import { styled } from '@mui/material/styles';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from "@mui/material/styles";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { TopicsContext } from "./UploadFileContext";
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
@@ -108,7 +108,7 @@ function QueryView() {
       n_cluster: 10, // You can set the desired number of clusters here
       // TODO add an optional text input for the server to use it instead of the default key
       openapi_key: openApiKey,
-      selected_column: selectedColumn
+      selected_column: selectedColumn,
     };
     if (selectedFile) {
       uploadFile(selectedFile, params);
@@ -123,7 +123,7 @@ function QueryView() {
       <Box marginBottom={2}>
         <Button component="label" variant="outlined" startIcon={<CloudUploadIcon />}>
           Upload a file with at least one column containing text
-          <VisuallyHiddenInput type="file" onChange={handleFileChange} required/>
+          <VisuallyHiddenInput type="file" onChange={handleFileChange} required />
         </Button>
       </Box>
       <Box marginBottom={2}>
@@ -173,7 +173,7 @@ function QueryView() {
               </Table>
             </TableContainer>
           )}
-          <Box marginTop={2} display={"flex"}>
+          <Box marginTop={2} display="flex">
             <Button
               variant="contained"
               color="primary"

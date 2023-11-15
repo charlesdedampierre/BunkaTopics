@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
 import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
 const bunka_bourdieu_docs = "bunka_bourdieu_docs.json";
 const bunka_bourdieu_topics = "bunka_bourdieu_topics.json";
@@ -20,42 +18,8 @@ function Bourdieu() {
     - document.getElementById("top-banner").clientHeight
     - 50;
   const svgWidth = window.innerWidth * 0.65; // Set the svg container height to match the layout
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const docsResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local"
-            ? `/${bunka_bourdieu_docs}`
-            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
-        );
-        const docsData = await docsResponse.json();
 
-        const topicsResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local"
-            ? `/${bunka_bourdieu_topics}`
-            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
-        );
-        const topicsData = await topicsResponse.json();
-
-        const queryResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local"
-            ? `/${bunka_bourdieu_query}`
-            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
-        );
-
-        const queryData = await queryResponse.json();
-
-        // You now have the data from bunka_bourdieu_query.json in queryData
-        createScatterPlot(docsData, topicsData, queryData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const createScatterPlot = (docsData, topicsData, queryData) => {
+  const createScatterPlot = useCallback((docsData, topicsData, queryData) => {
     const margin = {
       top: 20, right: 20, bottom: 50, left: 50,
     };
@@ -271,9 +235,9 @@ function Bourdieu() {
     const percentageXLessThanZeroAndYLessThanZero = (xLessThanZeroAndYLessThanZero / totalDocuments) * 100;
 
     // Add labels to display percentages in the squares
-    const squareSize = 300; // Adjust this based on your map's layout
-    const labelOffsetX = 10; // Adjust these offsets as needed
-    const labelOffsetY = 20;
+    // const squareSize = 300; // Adjust this based on your map's layout
+    // const labelOffsetX = 10; // Adjust these offsets as needed
+    // const labelOffsetY = 20;
 
     // Calculate the maximum X and Y coordinates
 
@@ -381,7 +345,42 @@ function Bourdieu() {
         textContainerRef.current.innerHTML = "No content available for this topic.";
       }
     });
-  };
+  }, [svgHeight, svgWidth]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const docsResponse = await fetch(
+          process.env.REACT_APP_API_ENDPOINT === "local"
+            ? `/${bunka_bourdieu_docs}`
+            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
+        );
+        const docsData = await docsResponse.json();
+
+        const topicsResponse = await fetch(
+          process.env.REACT_APP_API_ENDPOINT === "local"
+            ? `/${bunka_bourdieu_topics}`
+            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
+        );
+        const topicsData = await topicsResponse.json();
+
+        const queryResponse = await fetch(
+          process.env.REACT_APP_API_ENDPOINT === "local"
+            ? `/${bunka_bourdieu_query}`
+            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
+        );
+
+        const queryData = await queryResponse.json();
+
+        // You now have the data from bunka_bourdieu_query.json in queryData
+        createScatterPlot(docsData, topicsData, queryData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [createScatterPlot]);
 
   return (
     <div className="json-display">

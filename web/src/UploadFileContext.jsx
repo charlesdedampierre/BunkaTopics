@@ -1,11 +1,9 @@
-import React, {
-  useState, createContext, useEffect, useMemo, useCallback,
-} from "react";
-import PropTypes from "prop-types";
-import axios from "axios";
-import useSWR from "swr";
-import md5 from "crypto-js/md5";
 import { Alert } from "@mui/material";
+import axios from "axios";
+import md5 from "crypto-js/md5";
+import PropTypes from "prop-types";
+import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import useSWR from "swr";
 
 // Create the Context
 export const TopicsContext = createContext();
@@ -62,9 +60,14 @@ const saveDataToFile = (fileName, data) => {
   a.click();
 };
 */
-
+const endpoint = "/topics/csv";
 // Fetcher function for useSWR
-const fetcher = (url, data) => axios.post(url, data).then((res) => res.data);
+
+const fetcher = (url, data) => axios.post(url, data, {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+}).then((res) => res.data);
 
 // Provider Component
 export function TopicsProvider({ children, onSelectView }) {
@@ -72,45 +75,53 @@ export function TopicsProvider({ children, onSelectView }) {
   const [errorText, setErrorText] = useState("");
 
   // Use SWR for data fetching
-  const { data, mutate, error } = useSWR("/topics", fetcher, { shouldRetryOnError: false });
+  const { data, mutate, error } = useSWR(endpoint, fetcher, { shouldRetryOnError: false });
 
   // Handle File Upload and POST Request
-  const uploadFile = useCallback(async (file, params) => {
-    setIsLoading(true);
-    setErrorText("");
+  const uploadFile = useCallback(
+    async (file, params) => {
+      setIsLoading(true);
+      setErrorText("");
 
-    try {
-      // Generate SHA-256 hash of the file
-      const fileHash = await hashPartialFile(file);
+      try {
+        // Generate SHA-256 hash of the file
+        const fileHash = await hashPartialFile(file);
 
-      const formData = new FormData();
-      formData.append("file", file);
-      // Append additional parameters to formData
-      formData.append("n_cluster", params.n_cluster);
-      formData.append("openapi_key", params.openapi_key);
-      formData.append("selected_column", params.selected_column);
+        const formData = new FormData();
+        formData.append("file", file);
+        // Append additional parameters to formData
+        formData.append("n_clusters", params.n_clusters);
+        formData.append("openapi_key", params.openapi_key);
+        formData.append("selected_column", params.selected_column);
 
-      const apiUrl = `${process.env.REACT_APP_API_ENDPOINT}/topics?md5=${fileHash}`;
-      // Perform the POST request
-      await fetch(apiUrl, {
-        method: "POST",
-        body: formData,
-      });
-      // auto-switch to Map view
-      if (onSelectView) onSelectView("map");
-      // Save topics and docs to files in the public directory
-      // saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
-      // saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));
+        const apiURI = `${process.env.REACT_APP_API_ENDPOINT}${endpoint}?md5=${fileHash}`;
+        // Perform the POST request
+        const response = await fetcher(apiURI, formData);
+        if (response.ok !== true) {
+          throw new Error(response);
+        } else {
+          // auto-switch to Map view
+          if (onSelectView) onSelectView("map");
 
-      // Trigger a revalidation with the new URL
-      mutate(`/topics?md5=${fileHash}`);
-    } catch (errorExc) {
-      setErrorText(`Error uploading file. Please try later : ${errorExc}`);
-      console.error("Error uploading file:", errorExc);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [onSelectView, setErrorText, mutate, setIsLoading]);
+          // TODO Save topics and docs to files in the public directory
+          // saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
+          // saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));
+
+          // Trigger a revalidation with the new complete URI
+          mutate(apiURI);
+        }
+        
+      } catch (errorExc) {
+        // Handle error
+        const errorMessage = errorExc.response?.data?.message || errorExc.message || 'An unknown error occurred';
+        console.error('Error:', errorMessage);
+        setErrorText(errorMessage);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onSelectView, setErrorText, mutate, setIsLoading],
+  );
 
   useEffect(() => {
     if (error !== undefined && error.length) {
@@ -120,16 +131,25 @@ export function TopicsProvider({ children, onSelectView }) {
     }
   }, [error]);
 
-  const providerValue = useMemo(() => ({
-    data, uploadFile, isLoading, error,
-  }), [data, uploadFile, isLoading, error]);
+  const providerValue = useMemo(
+    () => ({
+      data,
+      uploadFile,
+      isLoading,
+      error,
+    }),
+    [data, uploadFile, isLoading, error],
+  );
 
   return (
     <TopicsContext.Provider value={providerValue}>
       <>
         {isLoading && <div className="loader" />}
-        {errorText
-          && <Alert severity="error" className="errorMessage">{errorText}</Alert>}
+        {errorText && (
+          <Alert severity="error" className="errorMessage">
+            {errorText}
+          </Alert>
+        )}
         {children}
       </>
     </TopicsContext.Provider>

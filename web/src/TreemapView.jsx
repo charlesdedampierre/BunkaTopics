@@ -1,14 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef,useContext, useCallback } from "react";
 import * as d3 from "d3";
+import { TopicsContext } from "./UploadFileContext";
 import {
-  Paper, Typography, List, ListItem,
+  Paper, Typography, List, ListItem, CircularProgress, Backdrop
 } from "@mui/material";
+
+const bunkaTopics = "bunka_topics.json";
+const { REACT_APP_API_ENDPOINT } = process.env;
 
 function TreemapView() {
   const svgRef = useRef(null);
   const [selectedTopic, setSelectedTopic] = useState({ name: "", content: [] });
+  const { data: apiData, isLoading } = useContext(TopicsContext);
 
-  const createTreemap = (data) => {
+  const createTreemap = useCallback((data) => {
     const width = window.innerWidth * 0.6; // Adjust the width for the treemap
     const height = 800; // Adjust the height as needed
 
@@ -61,23 +66,33 @@ function TreemapView() {
       .text((d) => d);
 
     svg.selectAll("text").attr("font-size", 13).attr("fill", "black");
-  };
+  }, []);
 
   useEffect(() => {
-    // Fetch the topics data when the component mounts
-    fetch("/bunka_topics.json")
-      .then((response) => response.json())
-      .then((data) => {
-        createTreemap(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching topics data:", error);
-      });
-  }, []);
+    if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
+      // Fetch the JSON data locally
+      fetch(`/${bunkaTopics}`)
+        .then((response) => response.json())
+        .then((localData) => {
+          createTreemap(localData);
+        })
+        .catch((error) => {
+          console.error("Error fetching JSON data:", error);
+        });
+    } else {
+      // Call the function with the data provided by TopicsContext
+      createTreemap(apiData);
+    }
+  }, [apiData, createTreemap]);
 
   return (
     <div>
       <h2>Treemap View</h2>
+      {isLoading ? (
+        <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
+          <CircularProgress color="primary" />
+        </Backdrop>
+      ) : (
       <div style={{ display: "flex" }}>
         <svg ref={svgRef} style={{ marginRight: "20px" }} />
         <div
@@ -111,7 +126,7 @@ function TreemapView() {
             )}
           </Paper>
         </div>
-      </div>
+      </div>)}
     </div>
   );
 }

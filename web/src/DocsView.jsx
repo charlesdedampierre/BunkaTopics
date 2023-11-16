@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Button,
   Table,
@@ -10,7 +10,10 @@ import {
   Paper,
   Box,
   Container,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
+import { TopicsContext } from "./UploadFileContext";
 
 const bunkaDocs = "bunka_docs.json";
 const bunkaTopics = "bunka_topics.json";
@@ -19,36 +22,36 @@ const { REACT_APP_API_ENDPOINT } = process.env;
 function DocsView() {
   const [docs, setDocs] = useState(null);
   const [topics, setTopics] = useState(null);
+  const { data: apiData, isLoading } = useContext(TopicsContext);
 
   useEffect(() => {
-    // Fetch the content of "docs.json" when the component mounts
-    fetch(
-      REACT_APP_API_ENDPOINT === "local"
-        ? `/${bunkaDocs}`
-        : `${REACT_APP_API_ENDPOINT}/${bunkaDocs}`,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setDocs(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON data:", error);
-      });
+    if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
+      // Fetch the JSON data locally
+      fetch(`/${bunkaDocs}`)
+        .then((response) => response.json())
+        .then((localData) => {
+          setDocs(localData);
+          // Fetch the topics data and merge it with the existing data
+          fetch(`/${bunkaTopics}`)
+            .then((response) => response.json())
+            .then((topicsData) => {
+              // Set the topics data with the existing data
+              setTopics(topicsData);
 
-    // Fetch the topics data when the component mounts
-    fetch(
-      REACT_APP_API_ENDPOINT === "local"
-        ? `/${bunkaTopics}`
-        : `${REACT_APP_API_ENDPOINT}/${bunkaTopics}`,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setTopics(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching topics data:", error);
-      });
-  }, []);
+            })
+            .catch((error) => {
+              console.error("Error fetching topics data:", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error fetching JSON data:", error);
+        });
+    } else {
+      // Call the function to create the scatter plot with the data provided by TopicsContext
+      setDocs(apiData);
+      setTopics(apiData);
+    }
+  }, [apiData, setTopics, setDocs]);
 
   const docsWithTopics = docs && topics
     ? docs.map((doc) => ({
@@ -92,7 +95,11 @@ function DocsView() {
     <Container fixed>
       <div className="docs-view">
         <h2>Documents View</h2>
-        {docs ? (
+        {isLoading ? (
+        <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
+          <CircularProgress color="primary" />
+        </Backdrop>
+      ) : (
           <div>
             <Box
               sx={{
@@ -138,8 +145,6 @@ function DocsView() {
               Download CSV
             </Button>
           </div>
-        ) : (
-          <p>Loading...</p>
         )}
       </div>
     </Container>

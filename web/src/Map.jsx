@@ -220,17 +220,13 @@ function Map() {
   };
 
   useEffect(() => {
-    if (REACT_APP_API_ENDPOINT === "local" && apiData === undefined) {
+    if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
       // Fetch the JSON data locally
       fetch(`/${bunkaDocs}`)
         .then((response) => response.json())
         .then((localData) => {
-          // Fetch the topics data and merge it with the existing data
-          fetch(
-            REACT_APP_API_ENDPOINT === "local"
-              ? `/${bunkaTopics}`
-              : `${REACT_APP_API_ENDPOINT}/${bunkaTopics}`,
-          )
+          // Fetch the local topics data and merge it with the existing data
+          fetch(`/${bunkaTopics}`)
             .then((response) => response.json())
             .then((topicsData) => {
               // Merge the topics data with the existing data

@@ -1,5 +1,5 @@
 import React, {
-  useState, createContext, useEffect, useMemo,
+  useState, createContext, useEffect, useMemo, useCallback,
 } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -75,7 +75,7 @@ export function TopicsProvider({ children, onSelectView }) {
   const { data, mutate, error } = useSWR("/topics", fetcher, { shouldRetryOnError: false });
 
   // Handle File Upload and POST Request
-  const uploadFile = async (file, params) => {
+  const uploadFile = useCallback(async (file, params) => {
     setIsLoading(true);
     setErrorText("");
 
@@ -110,7 +110,7 @@ export function TopicsProvider({ children, onSelectView }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [onSelectView, setErrorText, mutate, setIsLoading]);
 
   useEffect(() => {
     if (error !== undefined && error.length) {

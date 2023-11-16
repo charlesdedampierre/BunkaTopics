@@ -19,13 +19,7 @@ function CsvUpload() {
       <Typography variant="h5" gutterBottom>
         Upload a CSV File
       </Typography>
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleFileUpload}
-        style={{ display: "none" }}
-        id="csv-upload-input"
-      />
+      <input type="file" accept=".csv" onChange={handleFileUpload} style={{ display: "none" }} id="csv-upload-input" />
       <label htmlFor="csv-upload-input">
         <Button variant="contained" color="primary" component="span">
           Choose File
@@ -34,12 +28,7 @@ function CsvUpload() {
       <Typography variant="subtitle1" gutterBottom>
         {file ? `Selected file: ${file.name}` : "No file selected"}
       </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        disabled={!file}
-        onClick={handleUpload}
-      >
+      <Button variant="contained" color="primary" disabled={!file} onClick={handleUpload}>
         Upload CSV
       </Button>
     </Container>

@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useRef,useContext, useCallback } from "react";
+import React, { useEffect, useState, useRef, useContext, useCallback } from "react";
 import * as d3 from "d3";
 import { TopicsContext } from "./UploadFileContext";
-import {
-  Paper, Typography, List, ListItem, CircularProgress, Backdrop
-} from "@mui/material";
+import { Paper, Typography, List, ListItem, CircularProgress, Backdrop } from "@mui/material";
 
 const bunkaTopics = "bunka_topics.json";
 const { REACT_APP_API_ENDPOINT } = process.env;
@@ -17,18 +15,11 @@ function TreemapView() {
     const width = window.innerWidth * 0.6; // Adjust the width for the treemap
     const height = 800; // Adjust the height as needed
 
-    const svg = d3
-      .select(svgRef.current)
-      .attr("width", width)
-      .attr("height", height);
+    const svg = d3.select(svgRef.current).attr("width", width).attr("height", height);
 
     const root = d3.hierarchy({ children: data }).sum((d) => d.size);
 
-    const treemapLayout = d3
-      .treemap()
-      .size([width, height])
-      .padding(1)
-      .round(true);
+    const treemapLayout = d3.treemap().size([width, height]).padding(1).round(true);
 
     treemapLayout(root);
 
@@ -93,40 +84,39 @@ function TreemapView() {
           <CircularProgress color="primary" />
         </Backdrop>
       ) : (
-      <div style={{ display: "flex" }}>
-        <svg ref={svgRef} style={{ marginRight: "20px" }} />
-        <div
-          style={{
-            width: window.innerWidth * 0.25,
-            maxHeight: "800px",
-            overflowY: "auto",
-          }}
-        >
-          <Paper>
-            <Typography
-              variant="h4"
-              style={{
-                position: "sticky",
-                top: 0,
-                backgroundColor: "white",
-                color: "blue",
-              }}
-            >
-              {selectedTopic.name}
-            </Typography>
-            {selectedTopic.content.map((doc, index) => (
-              <List key={doc.id}>
-                <ListItem>
-                  <Typography variant="h5">{doc}</Typography>
-                </ListItem>
-              </List>
-            ))}
-            {selectedTopic.content.length === 0 && (
-              <Typography variant="h4">Click on a Square.</Typography>
-            )}
-          </Paper>
+        <div style={{ display: "flex" }}>
+          <svg ref={svgRef} style={{ marginRight: "20px" }} />
+          <div
+            style={{
+              width: window.innerWidth * 0.25,
+              maxHeight: "800px",
+              overflowY: "auto",
+            }}
+          >
+            <Paper>
+              <Typography
+                variant="h4"
+                style={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "white",
+                  color: "blue",
+                }}
+              >
+                {selectedTopic.name}
+              </Typography>
+              {selectedTopic.content.map((doc, index) => (
+                <List key={doc.id}>
+                  <ListItem>
+                    <Typography variant="h5">{doc}</Typography>
+                  </ListItem>
+                </List>
+              ))}
+              {selectedTopic.content.length === 0 && <Typography variant="h4">Click on a Square.</Typography>}
+            </Paper>
+          </div>
         </div>
-      </div>)}
+      )}
     </div>
   );
 }

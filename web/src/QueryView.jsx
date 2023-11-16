@@ -53,27 +53,28 @@ function QueryView() {
     setOpenSelector(true);
   };
 
-  const parseCSVFile = (file, sampleSize = 500) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
+  const parseCSVFile = (file, sampleSize = 500) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-    reader.onload = (e) => {
-      const csvData = e.target.result;
-      const lines = csvData.split("\n");
+      reader.onload = (e) => {
+        const csvData = e.target.result;
+        const lines = csvData.split("\n");
 
-      // Take a sample of the first 500 lines
-      const sampleLines = lines.slice(0, sampleSize).join("\n");
+        // Take a sample of the first 500 lines
+        const sampleLines = lines.slice(0, sampleSize).join("\n");
 
-      Papa.parse(sampleLines, {
-        complete: (result) => {
-          resolve(result.data);
-        },
-        error: (parseError) => {
-          reject(parseError.message);
-        },
-      });
-    };
-    reader.readAsText(file);
-  });
+        Papa.parse(sampleLines, {
+          complete: (result) => {
+            resolve(result.data);
+          },
+          error: (parseError) => {
+            reject(parseError.message);
+          },
+        });
+      };
+      reader.readAsText(file);
+    });
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -129,15 +130,9 @@ function QueryView() {
       <Box marginBottom={2}>
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Select a Column</InputLabel>
-          <Select
-            value={selectedColumn}
-            onChange={handleColumnSelect}
-            onClose={handleClose}
-            onOpen={handleOpen}
-            open={openSelector}
-          >
-            {fileData[0]
-              && fileData[0].map((header, index) => (
+          <Select value={selectedColumn} onChange={handleColumnSelect} onClose={handleClose} onOpen={handleOpen} open={openSelector}>
+            {fileData[0] &&
+              fileData[0].map((header, index) => (
                 <MenuItem key={`${header}`} value={header}>
                   {header}
                 </MenuItem>
@@ -153,10 +148,7 @@ function QueryView() {
         // Content when not loading
         <div>
           {selectedColumnData.length > 0 && (
-            <TableContainer
-              component={Paper}
-              style={{ maxHeight: "400px", overflowY: "auto" }}
-            >
+            <TableContainer component={Paper} style={{ maxHeight: "400px", overflowY: "auto" }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -174,12 +166,7 @@ function QueryView() {
             </TableContainer>
           )}
           <Box marginTop={2} display="flex">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleProcessTopics}
-              disabled={selectedColumnData.length === 0 || isLoading}
-            >
+            <Button variant="contained" color="primary" onClick={handleProcessTopics} disabled={selectedColumnData.length === 0 || isLoading}>
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
             <TextField id="input-api-key" label="Use your own OpenAI key" variant="outlined" onChange={setOpenApiKey} />

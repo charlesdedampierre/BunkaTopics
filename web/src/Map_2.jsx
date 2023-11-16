@@ -34,9 +34,7 @@ function Map() {
       left: 50,
     };
     const plotWidth = window.innerWidth * 0.6;
-    const plotHeight = window.innerHeight
-            - document.getElementById("top-banner").clientHeight
-            - 50; // Adjust the height as desired
+    const plotHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50; // Adjust the height as desired
 
     const svg = d3
       .select(svgRef.current)
@@ -68,9 +66,9 @@ function Map() {
       .y((d) => yScale(d.y))
       .size([plotWidth, plotHeight])
       .bandwidth(30)(
-        // Adjust the bandwidth as needed
-        data,
-      );
+      // Adjust the bandwidth as needed
+      data,
+    );
 
     // Define a custom color for the contour lines
 
@@ -140,10 +138,7 @@ function Map() {
 
     convexHullData.forEach((d) => {
       const hull = d.convex_hull;
-      const hullPoints = hull.x_coordinates.map((x, i) => [
-        xScale(x),
-        yScale(hull.y_coordinates[i]),
-      ]);
+      const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
 
       svg
         .append("path")
@@ -164,10 +159,7 @@ function Map() {
       .attr("class", "topic-polygon")
       .attr("points", (d) => {
         const hull = d.convex_hull;
-        const hullPoints = hull.x_coordinates.map((x, i) => [
-          xScale(x),
-          yScale(hull.y_coordinates[i]),
-        ]);
+        const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
         return hullPoints.map((point) => point.join(",")).join(" ");
       })
       .style("fill", "transparent")
@@ -191,23 +183,13 @@ function Map() {
       if (d.top_doc_content) {
         const topicName = d.name;
         const topicSize = d.size;
-        const totalSize = topicsCentroids.reduce(
-          (sum, topic) => sum + topic.size,
-          0,
-        );
+        const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
         const sizeFraction = Math.round((topicSize / totalSize) * 100);
 
         const content = d.top_doc_content;
 
         // Render the TextContainer component with topic details
-        ReactDOM.render(
-          <TextContainer
-            topicName={topicName}
-            sizeFraction={sizeFraction}
-            content={content}
-          />,
-          textContainerRef.current,
-        );
+        ReactDOM.render(<TextContainer topicName={topicName} sizeFraction={sizeFraction} content={content} />, textContainerRef.current);
       } else {
         textContainerRef.current.innerHTML = "No content available for this topic.";
       }
@@ -216,21 +198,13 @@ function Map() {
 
   useEffect(() => {
     // Fetch the JSON data
-    fetch(
-      REACT_APP_API_ENDPOINT === "local"
-        ? `/${bunkaDocs}`
-        : `${REACT_APP_API_ENDPOINT}/${bunkaDocs}`,
-    )
+    fetch(REACT_APP_API_ENDPOINT === "local" ? `/${bunkaDocs}` : `${REACT_APP_API_ENDPOINT}/${bunkaDocs}`)
       .then((response) => response.json())
       .then((data) => {
         setJsonData(data);
 
         // Fetch the topics data and merge it with the existing data
-        fetch(
-          REACT_APP_API_ENDPOINT === "local"
-            ? `/${bunkaTopics}`
-            : `${REACT_APP_API_ENDPOINT}/${bunkaTopics}`,
-        )
+        fetch(REACT_APP_API_ENDPOINT === "local" ? `/${bunkaTopics}` : `${REACT_APP_API_ENDPOINT}/${bunkaTopics}`)
           .then((response) => response.json())
           .then((topicsData) => {
             // Merge the topics data with the existing data

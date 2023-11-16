@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
 
@@ -315,17 +315,20 @@ function Bourdieu() {
     const fetchData = async () => {
       try {
         const docsResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_docs}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
+          `/${bunka_bourdieu_docs}`
+          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_docs}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
         );
         const docsData = await docsResponse.json();
 
         const topicsResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_topics}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
+          `/${bunka_bourdieu_topics}`
+          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_topics}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
         );
         const topicsData = await topicsResponse.json();
 
         const queryResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_query}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
+          `/${bunka_bourdieu_query}`
+          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_query}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
         );
 
         const queryData = await queryResponse.json();

@@ -1,27 +1,27 @@
-import React, { useState, useContext } from "react";
-import Papa from "papaparse";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
-  Typography,
-  Container,
+  Backdrop, // Import Backdrop component
   Box,
   Button,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
+  CircularProgress, // Import CircularProgress component
+  Container,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  Backdrop, // Import Backdrop component
-  CircularProgress, // Import CircularProgress component
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Papa from "papaparse";
+import React, { useContext, useState } from "react";
 import { TopicsContext } from "./UploadFileContext";
 
 const VisuallyHiddenInput = styled("input")({
@@ -106,7 +106,7 @@ function QueryView() {
   const handleProcessTopics = async () => {
     if (selectedColumnData.length === 0) return;
     const params = {
-      n_cluster: 10, // You can set the desired number of clusters here
+      n_clusters: 10, // You can set the desired number of clusters here
       // TODO add an optional text input for the server to use it instead of the default key
       openapi_key: openApiKey,
       selected_column: selectedColumn,
@@ -114,7 +114,7 @@ function QueryView() {
     if (selectedFile) {
       uploadFile(selectedFile, params);
     }
-  };
+  };  
 
   return (
     <Container component="form">

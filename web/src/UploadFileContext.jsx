@@ -54,6 +54,7 @@ const saveDataToFile = (fileName, data) => {
   a.click();
 };
 */
+const { REACT_APP_API_ENDPOINT } = process.env;
 
 const ENDPOINT_PATH = "/topics/csv";
 // Fetcher function 
@@ -86,7 +87,7 @@ export function TopicsProvider({ children, onSelectView }) {
         formData.append("openapi_key", params.openapi_key);
         formData.append("selected_column", params.selected_column);
 
-        const apiURI = `${process.env.REACT_APP_API_ENDPOINT}${ENDPOINT_PATH}?md5=${fileHash}`;
+        const apiURI = `${REACT_APP_API_ENDPOINT}${ENDPOINT_PATH}?md5=${fileHash}`;
         // Perform the POST request
         const response = await fetcher(apiURI, formData);
         setData(response);

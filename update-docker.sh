@@ -17,7 +17,7 @@ if [ "$(docker ps -q -f name=$API_CONTAINER_NAME)" ]; then
 fi
 
 # Start the container with the new image API_IMAGE_NAME
-docker run -d -p 127.0.0.1:8080:80 --restart always --name $API_CONTAINER_NAME $API_IMAGE_NAME
+docker run -d -p 127.0.0.1:8000:8000 --restart always --name $API_CONTAINER_NAME $API_IMAGE_NAME
 
 # Check if the container is running and stop it
 if [ "$(docker ps -q -f name=$FRONT_CONTAINER_NAME)" ]; then

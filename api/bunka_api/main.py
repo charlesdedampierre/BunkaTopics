@@ -48,7 +48,7 @@ def process_topics(full_docs, n_clusters):
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
     bunka.fit(full_docs)
-    bunka.get_topics(n_clusters=n_clusters, name_length=3)
+    bunka.get_topics(n_clusters=n_clusters, name_lenght=3)
     
     docs = bunka.docs
     topics = bunka.topics

@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import { Backdrop, CircularProgress } from "@mui/material";
 import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom"; // Import ReactDOM
-import { Backdrop, CircularProgress } from "@mui/material";
 
 import TextContainer from "./TextContainer";
 import { TopicsContext } from "./UploadFileContext";
@@ -224,7 +224,7 @@ function Map() {
         });
     } else {
       // Call the function to create the scatter plot with the data provided by TopicsContext
-      createScatterPlot(apiData);
+      createScatterPlot(apiData.docs.concat(apiData.topics));
     }
   }, [apiData]);
 

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Container, Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import { TopicsContext } from "./UploadFileContext";
 
 const bunkaDocs = "bunka_docs.json";
@@ -34,8 +34,8 @@ function DocsView() {
         });
     } else {
       // Call the function to create the scatter plot with the data provided by TopicsContext
-      setDocs(apiData);
-      setTopics(apiData);
+      setDocs(apiData.docs);
+      setTopics(apiData.topics);
     }
   }, [apiData, setTopics, setDocs]);
 

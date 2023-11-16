@@ -38,8 +38,7 @@
     "docker:run": "npx dotenv -- make docker_run",
     "docker:push": "npx dotenv -- make docker_push",
     "docker:tag": "npx dotenv -- make docker_tag",
-    "deploy": "npm run docker:build && npm run docker:push",
-    "prepare": "cd .. && husky install web/.husky"
+    "deploy": "npm run docker:build && npm run docker:push"
   },
   "browserslist": {
     "production": [

@@ -33,20 +33,14 @@
     "build": "react-scripts  --openssl-legacy-provider build",
     "test": "react-scripts --openssl-legacy-provider test",
     "eject": "react-scripts eject",
-    "lint": "eslint -c .eslintrc.json --fix ./src/*.jsx",
-    "lint:lazy": "eslint -c eslintrc.json --fix ./src/*.jsx",
+    "lint": "biome lint ./src",
+    "format": "biome format --write ./src",
     "docker:build": "npx dotenv -- make docker_build",
     "docker:run": "npx dotenv -- make docker_run",
     "docker:push": "npx dotenv -- make docker_push",
     "docker:tag": "npx dotenv -- make docker_tag",
     "deploy": "npm run docker:build && npm run docker:push",
     "prepare": "cd .. && husky install web/.husky"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -62,14 +56,8 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@biomejs/biome": "1.3.3",
     "dotenv": "^16.3.1",
-    "dotenv-cli": "^7.3.0",
-    "eslint": "^8.53.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "husky": "^8.0.3",
-    "prettier": "3.0.3"
+    "dotenv-cli": "^7.3.0"
   }
 }

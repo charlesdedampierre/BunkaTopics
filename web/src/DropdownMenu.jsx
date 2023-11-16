@@ -1,11 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 function DropdownMenu({ onSelectView, selectedView }) {
   const LABELS = {
@@ -21,11 +16,7 @@ function DropdownMenu({ onSelectView, selectedView }) {
   };
 
   return (
-    <FormControl
-      variant="outlined"
-      className="dropdown-menu"
-      sx={{ minWidth: "200px", marginTop: "1em" }}
-    >
+    <FormControl variant="outlined" className="dropdown-menu" sx={{ minWidth: "200px", marginTop: "1em" }}>
       <InputLabel htmlFor="view-select">Select a View</InputLabel>
       <Select
         label="Select a View"

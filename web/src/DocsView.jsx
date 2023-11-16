@@ -1,18 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Box,
-  Container,
-  Backdrop,
-  CircularProgress,
-} from "@mui/material";
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Container, Backdrop, CircularProgress } from "@mui/material";
 import { TopicsContext } from "./UploadFileContext";
 
 const bunkaDocs = "bunka_docs.json";
@@ -37,7 +24,6 @@ function DocsView() {
             .then((topicsData) => {
               // Set the topics data with the existing data
               setTopics(topicsData);
-
             })
             .catch((error) => {
               console.error("Error fetching topics data:", error);
@@ -53,24 +39,19 @@ function DocsView() {
     }
   }, [apiData, setTopics, setDocs]);
 
-  const docsWithTopics = docs && topics
-    ? docs.map((doc) => ({
-      ...doc,
-      topic_name:
-        topics.find((topic) => topic.topic_id === doc.topic_id)?.name
-        || "Unknown",
-    })) : [];
+  const docsWithTopics =
+    docs && topics
+      ? docs.map((doc) => ({
+          ...doc,
+          topic_name: topics.find((topic) => topic.topic_id === doc.topic_id)?.name || "Unknown",
+        }))
+      : [];
 
   const downloadCSV = () => {
     // Create a CSV content string from the data
     const csvContent = `data:text/csv;charset=utf-8,${[
       ["Doc ID", "Topic ID", "Topic Name", "Content"], // CSV header
-      ...docsWithTopics.map((doc) => [
-        doc.doc_id,
-        doc.topic_id,
-        doc.topic_name,
-        doc.content,
-      ]), // CSV data
+      ...docsWithTopics.map((doc) => [doc.doc_id, doc.topic_id, doc.topic_name, doc.content]), // CSV data
     ]
       .map((row) => row.map((cell) => `"${cell}"`).join(",")) // Wrap cells in double quotes
       .join("\n")}`; // Join rows with newline
@@ -96,10 +77,10 @@ function DocsView() {
       <div className="docs-view">
         <h2>Documents View</h2>
         {isLoading ? (
-        <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
-          <CircularProgress color="primary" />
-        </Backdrop>
-      ) : (
+          <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
+            <CircularProgress color="primary" />
+          </Backdrop>
+        ) : (
           <div>
             <Box
               sx={{

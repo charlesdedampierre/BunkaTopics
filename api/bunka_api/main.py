@@ -44,17 +44,13 @@ app.add_middleware(
 )
 
 def process_topics(full_docs, n_clusters):
-    # Initialize your embedding_model and Bunka instance here
+    # Initialize your embedding_model and Bunka instance then process topic modeling
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
     bunka.fit(full_docs)
-    bunka.get_topics(n_clusters=n_clusters, name_lenght=3)
-    
-    docs = bunka.docs
-    topics = bunka.topics
-    
-    return BunkaResponse(docs=docs, topics=topics)
-
+    bunka.get_topics(n_clusters=n_clusters, name_lenght=3, min_count_terms=3)
+    bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
+    return BunkaResponse(docs=bunka.docs, topics=bunka.topics)
 
 @app.post("/topics/csv")
 async def process_topics_csv(file: UploadFile, n_clusters: int = Form(...), openapi_key: str = Form(None), selected_column: str = Form(...)):

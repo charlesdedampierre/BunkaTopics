@@ -9,3 +9,8 @@ docker_tag:
 
 docker_push:
 	docker push $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
+
+#http://localhost:8080:80
+
+registry__login:
+	docker login $$CONTAINER_REGISTRY_URL -u nologin --password $$SCW_SECRET_KEY

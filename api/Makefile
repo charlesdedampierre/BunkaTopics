@@ -28,7 +28,7 @@ poetry_export:
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 docker_build:
-	docker build . -t bunka-api
+	docker build -t bunka-api .
 
 docker_run:
 	docker run --network host bunka-api:latest

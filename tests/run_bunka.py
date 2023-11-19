@@ -28,6 +28,7 @@ if __name__ == "__main__":
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
 
+    """
     generative_model = LlamaCpp(
         model_path=os.getenv("MODEL_PATH"),
         n_ctx=2048,
@@ -37,6 +38,13 @@ if __name__ == "__main__":
         verbose=False,
     )
     generative_model.client.verbose = False
+
+
+    """
+
+    from langchain.llms import OpenAI
+
+    generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 
     bunka.fit(full_docs)
 

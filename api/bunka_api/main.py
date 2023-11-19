@@ -48,15 +48,18 @@ app.add_middleware(
 )
 
 
-def process_topics(full_docs, n_clusters):
-    # Initialize your embedding_model and Bunka instance then process topic modeling
+@app.post("/topics_test/")
+def process_topics(params: TopicParameter, full_docs: t.List[str]):
+    # Initialize your embedding_model and Bunka instance here
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
     bunka.fit(full_docs)
-    bunka.get_topics(n_clusters=n_clusters, name_lenght=2, min_count_terms=5)
-    bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
+    bunka.get_topics(n_clusters=params.n_cluster, name_lenght=3)
 
-    return process_topics(full_docs, n_clusters)
+    docs = bunka.docs
+    topics = bunka.topics
+
+    return BunkaResponse(docs=docs, topics=topics)
 
 
 @app.post("/topics/")

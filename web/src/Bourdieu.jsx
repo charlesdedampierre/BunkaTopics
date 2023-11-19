@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
 import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
 const bunka_bourdieu_docs = "bunka_bourdieu_docs.json";
 const bunka_bourdieu_topics = "bunka_bourdieu_topics.json";
@@ -16,112 +14,80 @@ function Bourdieu() {
   const textContainerRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
   // Set the SVG height to match your map's desired height
-  const svgHeight = window.innerHeight
-    - document.getElementById("top-banner").clientHeight
-    - 50;
+  const svgHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50;
   const svgWidth = window.innerWidth * 0.65; // Set the svg container height to match the layout
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const docsResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local"
-            ? `/${bunka_bourdieu_docs}`
-            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
-        );
-        const docsData = await docsResponse.json();
 
-        const topicsResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local"
-            ? `/${bunka_bourdieu_topics}`
-            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
-        );
-        const topicsData = await topicsResponse.json();
+  const createScatterPlot = useCallback(
+    (docsData, topicsData, queryData) => {
+      const margin = {
+        top: 20,
+        right: 20,
+        bottom: 50,
+        left: 50,
+      };
+      const plotWidth = svgWidth;
+      const plotHeight = svgHeight;
 
-        const queryResponse = await fetch(
-          process.env.REACT_APP_API_ENDPOINT === "local"
-            ? `/${bunka_bourdieu_query}`
-            : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
-        );
+      const svg = d3
+        .select(svgRef.current)
+        .attr("width", "100%")
+        .attr("height", svgHeight)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`)
+        .style("background-color", "blue");
 
-        const queryData = await queryResponse.json();
+      const xMin = d3.min(docsData, (d) => d.x);
+      const xMax = d3.max(docsData, (d) => d.x);
+      const yMin = d3.min(docsData, (d) => d.y);
+      const yMax = d3.max(docsData, (d) => d.y);
 
-        // You now have the data from bunka_bourdieu_query.json in queryData
-        createScatterPlot(docsData, topicsData, queryData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+      const maxDomainValue = Math.max(xMax, -xMin, yMax, -yMin);
 
-    fetchData();
-  }, []);
+      // Update the x and y scales to use the maximum value
+      const xScale = d3
+        .scaleLinear()
+        .domain([-maxDomainValue, maxDomainValue]) // Updated domain for x scale
+        .range([0, plotWidth]);
 
-  const createScatterPlot = (docsData, topicsData, queryData) => {
-    const margin = {
-      top: 20, right: 20, bottom: 50, left: 50,
-    };
-    const plotWidth = svgWidth;
-    const plotHeight = svgHeight;
+      const yScale = d3
+        .scaleLinear()
+        .domain([-maxDomainValue, maxDomainValue]) // Updated domain for y scale
+        .range([plotHeight, 0]);
 
-    const svg = d3
-      .select(svgRef.current)
-      .attr("width", "100%")
-      .attr("height", svgHeight)
-      .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`)
-      .style("background-color", "blue");
+      // Replace text with BourdieuQuery words
+      svg
+        .append("text")
+        .attr("x", xScale(xMin))
+        .attr("y", yScale(0))
+        .text(queryData.x_right_words[0])
+        .style("text-anchor", "start")
+        .style("fill", "purple");
 
-    const xMin = d3.min(docsData, (d) => d.x);
-    const xMax = d3.max(docsData, (d) => d.x);
-    const yMin = d3.min(docsData, (d) => d.y);
-    const yMax = d3.max(docsData, (d) => d.y);
+      svg
+        .append("text")
+        .attr("x", xScale(xMax))
+        .attr("y", yScale(0))
+        .text(queryData.x_left_words[0])
+        .style("text-anchor", "start")
+        .style("fill", "purple");
 
-    const maxDomainValue = Math.max(xMax, -xMin, yMax, -yMin);
+      svg
+        .append("text")
+        .attr("x", xScale(0))
+        .attr("y", yScale(yMax))
+        .text(queryData.y_top_words[0])
+        .style("text-anchor", "start")
+        .style("fill", "purple");
 
-    // Update the x and y scales to use the maximum value
-    const xScale = d3
-      .scaleLinear()
-      .domain([-maxDomainValue, maxDomainValue]) // Updated domain for x scale
-      .range([0, plotWidth]);
+      svg
+        .append("text")
+        .attr("x", xScale(0))
+        .attr("y", yScale(yMin))
+        .text(queryData.y_bottom_words[0])
+        .style("text-anchor", "end")
+        .style("fill", "purple");
 
-    const yScale = d3
-      .scaleLinear()
-      .domain([-maxDomainValue, maxDomainValue]) // Updated domain for y scale
-      .range([plotHeight, 0]);
-
-    // Replace text with BourdieuQuery words
-    svg
-      .append("text")
-      .attr("x", xScale(xMin))
-      .attr("y", yScale(0))
-      .text(queryData.x_right_words[0])
-      .style("text-anchor", "start")
-      .style("fill", "purple");
-
-    svg
-      .append("text")
-      .attr("x", xScale(xMax))
-      .attr("y", yScale(0))
-      .text(queryData.x_left_words[0])
-      .style("text-anchor", "start")
-      .style("fill", "purple");
-
-    svg
-      .append("text")
-      .attr("x", xScale(0))
-      .attr("y", yScale(yMax))
-      .text(queryData.y_top_words[0])
-      .style("text-anchor", "start")
-      .style("fill", "purple");
-
-    svg
-      .append("text")
-      .attr("x", xScale(0))
-      .attr("y", yScale(yMin))
-      .text(queryData.y_bottom_words[0])
-      .style("text-anchor", "end")
-      .style("fill", "purple");
-
-    /*
+      /*
             const scatter = svg.selectAll('.scatter-point')
                 .data(docsData)
                 .enter()
@@ -159,229 +125,223 @@ function Bourdieu() {
             });
             */
 
-    const contourData = d3Contour
-      .contourDensity()
-      .x((d) => xScale(d.x))
-      .y((d) => yScale(d.y))
-      .size([plotWidth, plotHeight])
-      .bandwidth(30)(docsData);
+      const contourData = d3Contour
+        .contourDensity()
+        .x((d) => xScale(d.x))
+        .y((d) => yScale(d.y))
+        .size([plotWidth, plotHeight])
+        .bandwidth(30)(docsData);
 
-    const contourLineColor = "rgb(94, 163, 252)";
-
-    svg
-      .selectAll("path.contour")
-      .data(contourData)
-      .enter()
-      .append("path")
-      .attr("class", "contour")
-      .attr("d", d3.geoPath())
-      .style("fill", "none")
-      .style("stroke", contourLineColor)
-      .style("stroke-width", 1);
-
-    const topicsCentroids = topicsData.filter(
-      (d) => d.x_centroid && d.y_centroid,
-    );
-
-    svg
-      .selectAll("circle.topic-centroid")
-      .data(topicsCentroids)
-      .enter()
-      .append("circle")
-      .attr("class", "topic-centroid")
-      .attr("cx", (d) => xScale(d.x_centroid))
-      .attr("cy", (d) => yScale(d.y_centroid))
-      .attr("r", 8)
-      .style("fill", "red")
-      .style("stroke", "black")
-      .style("stroke-width", 2)
-      .on("click", (event, d) => {
-        setSelectedDocument(d);
-      });
-
-    svg
-      .selectAll("text.topic-label")
-      .data(topicsCentroids)
-      .enter()
-      .append("text")
-      .attr("class", "topic-label")
-      .attr("x", (d) => xScale(d.x_centroid))
-      .attr("y", (d) => yScale(d.y_centroid) - 12)
-      .text((d) => d.name)
-      .style("text-anchor", "middle");
-
-    svg
-      .append("line")
-      .attr("x1", 0)
-      .attr("x2", plotWidth)
-      .attr("y1", yScale(0))
-      .attr("y2", yScale(0))
-      .style("stroke", "black")
-      .style("stroke-width", 3);
-
-    // Add a thick line at x = 0
-    svg
-      .append("line")
-      .attr("x1", xScale(0))
-      .attr("x2", xScale(0))
-      .attr("y1", 0)
-      .attr("y2", plotHeight)
-      .style("stroke", "black")
-      .style("stroke-width", 3);
-
-    const convexHullData = topicsData.filter((d) => d.convex_hull);
-
-    convexHullData.forEach((d) => {
-      const hull = d.convex_hull;
-      const hullPoints = hull.x_coordinates.map((x, i) => [
-        xScale(x),
-        yScale(hull.y_coordinates[i]),
-      ]);
+      const contourLineColor = "rgb(94, 163, 252)";
 
       svg
+        .selectAll("path.contour")
+        .data(contourData)
+        .enter()
         .append("path")
-        .datum(d3.polygonHull(hullPoints))
-        .attr("class", "convex-hull-polygon")
-        .attr("d", (d) => `M${d.join("L")}Z`)
+        .attr("class", "contour")
+        .attr("d", d3.geoPath())
         .style("fill", "none")
-        .style("stroke", "rgba(255, 255, 255, 0.5)")
-        .style("stroke-width", 2);
-    });
+        .style("stroke", contourLineColor)
+        .style("stroke-width", 1);
 
-    const xGreaterThanZeroAndYGreaterThanZero = docsData.filter(
-      (d) => d.x > 0 && d.y > 0,
-    ).length;
-    const xLessThanZeroAndYGreaterThanZero = docsData.filter(
-      (d) => d.x < 0 && d.y > 0,
-    ).length;
-    const xGreaterThanZeroAndYLessThanZero = docsData.filter(
-      (d) => d.x > 0 && d.y < 0,
-    ).length;
-    const xLessThanZeroAndYLessThanZero = docsData.filter(
-      (d) => d.x < 0 && d.y < 0,
-    ).length;
+      const topicsCentroids = topicsData.filter((d) => d.x_centroid && d.y_centroid);
 
-    // Calculate the total number of documents
-    const totalDocuments = docsData.length;
+      svg
+        .selectAll("circle.topic-centroid")
+        .data(topicsCentroids)
+        .enter()
+        .append("circle")
+        .attr("class", "topic-centroid")
+        .attr("cx", (d) => xScale(d.x_centroid))
+        .attr("cy", (d) => yScale(d.y_centroid))
+        .attr("r", 8)
+        .style("fill", "red")
+        .style("stroke", "black")
+        .style("stroke-width", 2)
+        .on("click", (event, d) => {
+          setSelectedDocument(d);
+        });
 
-    // Calculate the percentages
-    const percentageXGreaterThanZeroAndYGreaterThanZero = (xGreaterThanZeroAndYGreaterThanZero / totalDocuments) * 100;
-    const percentageXLessThanZeroAndYGreaterThanZero = (xLessThanZeroAndYGreaterThanZero / totalDocuments) * 100;
-    const percentageXGreaterThanZeroAndYLessThanZero = (xGreaterThanZeroAndYLessThanZero / totalDocuments) * 100;
-    const percentageXLessThanZeroAndYLessThanZero = (xLessThanZeroAndYLessThanZero / totalDocuments) * 100;
+      svg
+        .selectAll("text.topic-label")
+        .data(topicsCentroids)
+        .enter()
+        .append("text")
+        .attr("class", "topic-label")
+        .attr("x", (d) => xScale(d.x_centroid))
+        .attr("y", (d) => yScale(d.y_centroid) - 12)
+        .text((d) => d.name)
+        .style("text-anchor", "middle");
 
-    // Add labels to display percentages in the squares
-    const squareSize = 300; // Adjust this based on your map's layout
-    const labelOffsetX = 10; // Adjust these offsets as needed
-    const labelOffsetY = 20;
+      svg.append("line").attr("x1", 0).attr("x2", plotWidth).attr("y1", yScale(0)).attr("y2", yScale(0)).style("stroke", "black").style("stroke-width", 3);
 
-    // Calculate the maximum X and Y coordinates
+      // Add a thick line at x = 0
+      svg.append("line").attr("x1", xScale(0)).attr("x2", xScale(0)).attr("y1", 0).attr("y2", plotHeight).style("stroke", "black").style("stroke-width", 3);
 
-    // Calculate the midpoints for the squares
-    const xMid = d3.max(docsData, (d) => d.x) / 2;
-    const yMid = d3.max(docsData, (d) => d.y) / 2;
+      const convexHullData = topicsData.filter((d) => d.convex_hull);
 
-    // Labels for X > 0 and Y > 0 square
-    svg
-      .append("text")
-      .attr("x", xScale(xMid))
-      .attr("y", yScale(yMid))
-      .text(`${percentageXGreaterThanZeroAndYGreaterThanZero.toFixed(0)}%`) // Remove the prefix
-      .style("text-anchor", "middle")
-      .style("fill", "dark") // Change the text color to blue
-      .style("font-size", "100px") // Adjust the font size
-      .style("opacity", 0.1); // Adjust the opacity (0.7 means slightly transparent)
-
-    // Labels for X < 0 and Y > 0 square
-    svg
-      .append("text")
-      .attr("x", xScale(-xMid))
-      .attr("y", yScale(yMid))
-      .text(`${percentageXLessThanZeroAndYGreaterThanZero.toFixed(0)}%`) // Remove the prefix
-      .style("text-anchor", "middle")
-      .style("fill", "dark") // Change the text color to light blue
-      .style("font-size", "100px") // Adjust the font size
-      .style("opacity", 0.1); // Adjust the opacity (0.05 means slightly transparent)
-
-    // Labels for X > 0 and Y < 0 square
-    svg
-      .append("text")
-      .attr("x", xScale(xMid))
-      .attr("y", yScale(-yMid))
-      .text(`${percentageXGreaterThanZeroAndYLessThanZero.toFixed(0)}%`) // Remove the prefix
-      .style("text-anchor", "middle")
-      .style("fill", "dark") // Change the text color to light blue
-      .style("font-size", "100px") // Adjust the font size
-      .style("opacity", 0.1); // Adjust the opacity (0.05 means slightly transparent)
-
-    // Labels for X > 0 and Y < 0 square
-    svg
-      .append("text")
-      .attr("x", xScale(-xMid))
-      .attr("y", yScale(-yMid))
-      .text(`${percentageXLessThanZeroAndYLessThanZero.toFixed(0)}%`) // Remove the prefix
-      .style("text-anchor", "middle")
-      .style("fill", "dark") // Change the text color to light blue
-      .style("font-size", "100px") // Adjust the font size
-      .style("opacity", 0.1); // Adjust the opacity (0.05 means slightly transparent)
-
-    const topicsPolygons = svg
-      .selectAll("polygon.topic-polygon")
-      .data(topicsCentroids)
-      .enter()
-      .append("polygon")
-      .attr("class", "topic-polygon")
-      .attr("points", (d) => {
+      convexHullData.forEach((d) => {
         const hull = d.convex_hull;
-        const hullPoints = hull.x_coordinates.map((x, i) => [
-          xScale(x),
-          yScale(hull.y_coordinates[i]),
-        ]);
-        return hullPoints.map((point) => point.join(",")).join(" ");
-      })
-      .style("fill", "transparent")
-      .style("stroke", "transparent")
-      .style("stroke-width", 2);
+        const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
 
-    let currentlyClickedPolygon = null;
+        svg
+          .append("path")
+          .datum(d3.polygonHull(hullPoints))
+          .attr("class", "convex-hull-polygon")
+          .attr("d", (dAttr) => `M${dAttr.join("L")}Z`)
+          .style("fill", "none")
+          .style("stroke", "rgba(255, 255, 255, 0.5)")
+          .style("stroke-width", 2);
+      });
 
-    topicsPolygons.on("click", (event, d) => {
-      // Reset the fill color of the previously clicked polygon to transparent light grey
-      if (currentlyClickedPolygon !== null) {
-        currentlyClickedPolygon.style("fill", "transparent");
-        currentlyClickedPolygon.style("stroke", "transparent");
-      }
+      const xGreaterThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x > 0 && d.y > 0).length;
+      const xLessThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x < 0 && d.y > 0).length;
+      const xGreaterThanZeroAndYLessThanZero = docsData.filter((d) => d.x > 0 && d.y < 0).length;
+      const xLessThanZeroAndYLessThanZero = docsData.filter((d) => d.x < 0 && d.y < 0).length;
 
-      // Set the fill color of the clicked polygon to transparent light grey and add a red border
-      const clickedPolygon = d3.select(event.target);
-      clickedPolygon.style("fill", "rgba(200, 200, 200, 0.4)");
-      clickedPolygon.style("stroke", "red");
+      // Calculate the total number of documents
+      const totalDocuments = docsData.length;
 
-      currentlyClickedPolygon = clickedPolygon;
+      // Calculate the percentages
+      const percentageXGreaterThanZeroAndYGreaterThanZero = (xGreaterThanZeroAndYGreaterThanZero / totalDocuments) * 100;
+      const percentageXLessThanZeroAndYGreaterThanZero = (xLessThanZeroAndYGreaterThanZero / totalDocuments) * 100;
+      const percentageXGreaterThanZeroAndYLessThanZero = (xGreaterThanZeroAndYLessThanZero / totalDocuments) * 100;
+      const percentageXLessThanZeroAndYLessThanZero = (xLessThanZeroAndYLessThanZero / totalDocuments) * 100;
 
-      if (d.top_doc_content) {
-        const topicName = d.name;
-        const topicSize = d.size;
-        const totalSize = topicsCentroids.reduce(
-          (sum, topic) => sum + topic.size,
-          0,
+      // Add labels to display percentages in the squares
+      // const squareSize = 300; // Adjust this based on your map's layout
+      // const labelOffsetX = 10; // Adjust these offsets as needed
+      // const labelOffsetY = 20;
+
+      // Calculate the maximum X and Y coordinates
+
+      // Calculate the midpoints for the squares
+      const xMid = d3.max(docsData, (d) => d.x) / 2;
+      const yMid = d3.max(docsData, (d) => d.y) / 2;
+
+      // Labels for X > 0 and Y > 0 square
+      svg
+        .append("text")
+        .attr("x", xScale(xMid))
+        .attr("y", yScale(yMid))
+        .text(`${percentageXGreaterThanZeroAndYGreaterThanZero.toFixed(0)}%`) // Remove the prefix
+        .style("text-anchor", "middle")
+        .style("fill", "dark") // Change the text color to blue
+        .style("font-size", "100px") // Adjust the font size
+        .style("opacity", 0.1); // Adjust the opacity (0.7 means slightly transparent)
+
+      // Labels for X < 0 and Y > 0 square
+      svg
+        .append("text")
+        .attr("x", xScale(-xMid))
+        .attr("y", yScale(yMid))
+        .text(`${percentageXLessThanZeroAndYGreaterThanZero.toFixed(0)}%`) // Remove the prefix
+        .style("text-anchor", "middle")
+        .style("fill", "dark") // Change the text color to light blue
+        .style("font-size", "100px") // Adjust the font size
+        .style("opacity", 0.1); // Adjust the opacity (0.05 means slightly transparent)
+
+      // Labels for X > 0 and Y < 0 square
+      svg
+        .append("text")
+        .attr("x", xScale(xMid))
+        .attr("y", yScale(-yMid))
+        .text(`${percentageXGreaterThanZeroAndYLessThanZero.toFixed(0)}%`) // Remove the prefix
+        .style("text-anchor", "middle")
+        .style("fill", "dark") // Change the text color to light blue
+        .style("font-size", "100px") // Adjust the font size
+        .style("opacity", 0.1); // Adjust the opacity (0.05 means slightly transparent)
+
+      // Labels for X > 0 and Y < 0 square
+      svg
+        .append("text")
+        .attr("x", xScale(-xMid))
+        .attr("y", yScale(-yMid))
+        .text(`${percentageXLessThanZeroAndYLessThanZero.toFixed(0)}%`) // Remove the prefix
+        .style("text-anchor", "middle")
+        .style("fill", "dark") // Change the text color to light blue
+        .style("font-size", "100px") // Adjust the font size
+        .style("opacity", 0.1); // Adjust the opacity (0.05 means slightly transparent)
+
+      const topicsPolygons = svg
+        .selectAll("polygon.topic-polygon")
+        .data(topicsCentroids)
+        .enter()
+        .append("polygon")
+        .attr("class", "topic-polygon")
+        .attr("points", (d) => {
+          const hull = d.convex_hull;
+          const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
+          return hullPoints.map((point) => point.join(",")).join(" ");
+        })
+        .style("fill", "transparent")
+        .style("stroke", "transparent")
+        .style("stroke-width", 2);
+
+      let currentlyClickedPolygon = null;
+
+      topicsPolygons.on("click", (event, d) => {
+        // Reset the fill color of the previously clicked polygon to transparent light grey
+        if (currentlyClickedPolygon !== null) {
+          currentlyClickedPolygon.style("fill", "transparent");
+          currentlyClickedPolygon.style("stroke", "transparent");
+        }
+
+        // Set the fill color of the clicked polygon to transparent light grey and add a red border
+        const clickedPolygon = d3.select(event.target);
+        clickedPolygon.style("fill", "rgba(200, 200, 200, 0.4)");
+        clickedPolygon.style("stroke", "red");
+
+        currentlyClickedPolygon = clickedPolygon;
+
+        if (d.top_doc_content) {
+          const topicName = d.name;
+          const topicSize = d.size;
+          const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
+          const sizeFraction = Math.round((topicSize / totalSize) * 100);
+          const content = d.top_doc_content;
+
+          ReactDOM.render(<TextContainer topicName={topicName} sizeFraction={sizeFraction} content={content} />, textContainerRef.current);
+        } else {
+          textContainerRef.current.innerHTML = "No content available for this topic.";
+        }
+      });
+    },
+    [svgHeight, svgWidth],
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const docsResponse = await fetch(
+          `/${bunka_bourdieu_docs}`
+          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_docs}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
         );
-        const sizeFraction = Math.round((topicSize / totalSize) * 100);
-        const content = d.top_doc_content;
+        const docsData = await docsResponse.json();
 
-        ReactDOM.render(
-          <TextContainer
-            topicName={topicName}
-            sizeFraction={sizeFraction}
-            content={content}
-          />,
-          textContainerRef.current,
+        const topicsResponse = await fetch(
+          `/${bunka_bourdieu_topics}`
+          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_topics}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
         );
-      } else {
-        textContainerRef.current.innerHTML = "No content available for this topic.";
+        const topicsData = await topicsResponse.json();
+
+        const queryResponse = await fetch(
+          `/${bunka_bourdieu_query}`
+          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_query}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
+        );
+
+        const queryData = await queryResponse.json();
+
+        // You now have the data from bunka_bourdieu_query.json in queryData
+        createScatterPlot(docsData, topicsData, queryData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    });
-  };
+    };
+
+    fetchData();
+  }, [createScatterPlot]);
 
   return (
     <div className="json-display">

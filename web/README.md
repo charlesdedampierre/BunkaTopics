@@ -1,6 +1,7 @@
 # BunkaTopics web app
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- Please copy env.model to .env before starting the server
 
 ## Available Scripts
 

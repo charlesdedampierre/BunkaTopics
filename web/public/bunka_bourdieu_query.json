@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"x_left_words": ["this is about about positive content"], "x_right_words": ["this is a about negative content"], "y_top_words": ["this is about women"], "y_bottom_words": ["this is about men"], "radius_size": 0.5}
+=======
+{"x_left_words": ["this is about about super positive content"], "x_right_words": ["this is a about negative content"], "y_top_words": ["this is about business"], "y_bottom_words": ["this is about politics"], "radius_size": 0.5}
+>>>>>>> my_feature_branch

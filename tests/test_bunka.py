@@ -11,11 +11,16 @@ from langchain.llms import LlamaCpp
 
 import os
 from dotenv import load_dotenv
+from langchain.llms import OpenAI
+
+open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 
 load_dotenv()
 
 random.seed(42)
 
+
+"""
 generative_model = LlamaCpp(
     model_path=os.getenv("MODEL_PATH"),
     n_ctx=2048,
@@ -25,19 +30,21 @@ generative_model = LlamaCpp(
     verbose=False,
 )
 generative_model.client.verbose = False
+"""
 
 
 class BunkaTestCase(unittest.TestCase):
     def setUp(self):
         docs = load_dataset("rguo123/trump_tweets")["train"]["content"]
-        docs = random.sample(docs, 100)
+        docs = random.sample(docs, 500)
         self.bunka = Bunka()
         self.bunka.fit(docs)
 
     def test_pipeline(self):
         # test Topic Modeling
-        n_clusters = 2
-        df_topics = self.bunka.get_topics(n_clusters=n_clusters)
+        n_clusters = 3
+        df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
+
         self.assertEqual(len(df_topics), n_clusters)
         self.assertIsInstance(df_topics, pd.DataFrame)
 
@@ -46,7 +53,7 @@ class BunkaTestCase(unittest.TestCase):
 
         # test Bourdieu Map
         bourdieu_fig = self.bunka.visualize_bourdieu(
-            generative_model=generative_model,
+            generative_model=open_ai_generative_model,
             x_left_words=["past"],
             x_right_words=["future", "futuristic"],
             y_top_words=["politics", "Government"],
@@ -74,7 +81,7 @@ class BunkaTestCase(unittest.TestCase):
         top_doc_len = 3
         res = self.bunka.rag_query(
             query="What are the main fight of Donald Trump ?",
-            generative_model=generative_model,
+            generative_model=open_ai_generative_model,
             top_doc=top_doc_len,
         )
 

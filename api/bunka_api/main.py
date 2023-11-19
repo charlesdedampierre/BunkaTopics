@@ -27,12 +27,16 @@ open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 
 app = FastAPI()
 
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-	exc_str = f'{exc}'.replace('\n', ' ').replace('   ', ' ')
-	logging.error(f"{request}: {exc_str}")
-	content = {'status_code': 10422, 'message': exc_str, 'data': None}
-	return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")
+    logging.error(f"{request}: {exc_str}")
+    content = {"status_code": 10422, "message": exc_str, "data": None}
+    return JSONResponse(
+        content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
+
 
 # Allow requests from all origins (not recommended for production)
 app.add_middleware(
@@ -43,6 +47,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 def process_topics(full_docs, n_clusters):
     # Initialize your embedding_model and Bunka instance then process topic modeling
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -52,17 +57,25 @@ def process_topics(full_docs, n_clusters):
     bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
     return BunkaResponse(docs=bunka.docs, topics=bunka.topics)
 
+
 @app.post("/topics/csv")
-async def process_topics_csv(file: UploadFile, n_clusters: int = Form(...), openapi_key: str = Form(None), selected_column: str = Form(...)):
+async def process_topics_csv(
+    file: UploadFile,
+    n_clusters: int = Form(...),
+    openapi_key: str = Form(None),
+    selected_column: str = Form(...),
+):
     # Read the CSV file
     df = pd.read_csv(file.file)
     full_docs = df[selected_column].tolist()
 
     return process_topics(full_docs, n_clusters)
 
+
 @app.post("/topics/")
 def post_process_topics(params: TopicParameter, full_docs: t.List[str]):
     return process_topics(full_docs, n_clusters)
+
 
 @app.post("/process_bourdieu_query/")
 def post_process_bourdieu_query(query: BourdieuQuery, full_docs: t.List[str]):

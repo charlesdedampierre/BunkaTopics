@@ -53,32 +53,14 @@ def process_topics(full_docs, n_clusters):
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
     bunka.fit(full_docs)
-<<<<<<< HEAD
-    bunka.get_topics(n_clusters=params.n_cluster, name_lenght=2, min_count_terms=5)
+    bunka.get_topics(n_clusters=n_clusters, name_lenght=2, min_count_terms=5)
     bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
-=======
-    bunka.get_topics(n_clusters=n_clusters, name_lenght=3, min_count_terms=3)
-    bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
-    return BunkaResponse(docs=bunka.docs, topics=bunka.topics)
-
-
-@app.post("/topics/csv")
-async def process_topics_csv(
-    file: UploadFile,
-    n_clusters: int = Form(...),
-    openapi_key: str = Form(None),
-    selected_column: str = Form(...),
-):
-    # Read the CSV file
-    df = pd.read_csv(file.file)
-    full_docs = df[selected_column].tolist()
->>>>>>> my_feature_branch
 
     return process_topics(full_docs, n_clusters)
 
 
 @app.post("/topics/")
-def post_process_topics(params: TopicParameter, full_docs: t.List[str]):
+def post_process_topics(n_clusters, full_docs: t.List[str]):
     return process_topics(full_docs, n_clusters)
 
 

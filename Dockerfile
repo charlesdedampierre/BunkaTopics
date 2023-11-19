@@ -3,12 +3,11 @@ FROM python:3.10
 RUN apt update
 RUN apt install -y python3-dev
 
-
 # copying dependency
 COPY bunkatopics /app/bunkatopics
 
 # Rajouter variables environemment
-ENV OPEN_AI_KEY=
+ENV OPEN_AI_KEY=${OPEN_AI_KEY}
 
 # Workspace
 WORKDIR /app/api

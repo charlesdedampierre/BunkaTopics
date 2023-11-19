@@ -50,7 +50,7 @@ container__get:
 #############
 
 docker_build:
-	docker build -t $$IMAGE_NAME .
+	docker build -t $$IMAGE_NAME
 
 docker_run:
 	docker run -d -p 8000:8000 $$IMAGE_NAME

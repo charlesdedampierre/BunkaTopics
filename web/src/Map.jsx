@@ -66,9 +66,9 @@ function Map() {
       .y((d) => yScale(d.y))
       .size([plotWidth, plotHeight])
       .bandwidth(30)(
-      // Adjust the bandwidth as needed
-      data,
-    );
+        // Adjust the bandwidth as needed
+        data,
+      );
 
     // Define a custom color for the contour lines
 

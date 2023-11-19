@@ -1,70 +1,94 @@
-import React, { useState } from "react";
-import Papa from "papaparse";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
-  Typography,
-  Container,
+  Backdrop, // Import Backdrop component
   Box,
   Button,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
+  CircularProgress, // Import CircularProgress component
+  Container,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  Backdrop, // Import Backdrop component
-  CircularProgress, // Import CircularProgress component
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import Papa from "papaparse";
+import React, { useContext, useState } from "react";
+import { TopicsContext } from "./UploadFileContext";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 function QueryView() {
   const [fileData, setFileData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
+  const [openApiKey, setOpenApiKey] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedColumnData, setSelectedColumnData] = useState([]);
-  const [topics, setTopics] = useState([]);
-  const [docs, setDocs] = useState([]);
+  const [openSelector, setOpenSelector] = React.useState(false);
+  const { uploadFile, isLoading } = useContext(TopicsContext);
 
-  const parseCSVFile = (file, sampleSize = 500) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
+  const handleClose = () => {
+    setOpenSelector(false);
+  };
 
-    reader.onload = (e) => {
-      const csvData = e.target.result;
-      const lines = csvData.split("\n");
+  const handleOpen = () => {
+    setOpenSelector(true);
+  };
 
-      // Take a sample of the first 500 lines
-      const sampleLines = lines.slice(0, sampleSize).join("\n");
+  const parseCSVFile = (file, sampleSize = 500) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-      Papa.parse(sampleLines, {
-        complete: (result) => {
-          resolve(result.data);
-        },
-        error: (error) => {
-          reject(error.message);
-        },
-      });
-    };
-    reader.readAsText(file);
-  });
+      reader.onload = (e) => {
+        const csvData = e.target.result;
+        const lines = csvData.split("\n");
+
+        // Take a sample of the first 500 lines
+        const sampleLines = lines.slice(0, sampleSize).join("\n");
+
+        Papa.parse(sampleLines, {
+          complete: (result) => {
+            resolve(result.data);
+          },
+          error: (parseError) => {
+            reject(parseError.message);
+          },
+        });
+      };
+      reader.readAsText(file);
+    });
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    setSelectedFile(file);
 
     if (!file) return;
-
-    setIsLoading(true);
-
+    // prepare data for the preview Table
     try {
       const parsedData = await parseCSVFile(file);
       setFileData(parsedData);
       setSelectedColumn(""); // Clear the selected column when a new file is uploaded
-    } catch (error) {
-      console.error("Error parsing CSV:", error);
-    } finally {
-      setIsLoading(false);
+      handleOpen();
+    } catch (exc) {
+      console.error("Error parsing CSV:", exc);
     }
   };
 
@@ -79,67 +103,36 @@ function QueryView() {
     setSelectedColumnData(columnData);
   };
 
-  const saveDataToFile = (fileName, data) => {
-    const blob = new Blob([data], { type: "application/json" });
-
-    // Create a link element
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = fileName;
-
-    // Trigger a click event to download the file
-    a.click();
-  };
-
   const handleProcessTopics = async () => {
     if (selectedColumnData.length === 0) return;
-
-    const apiUrl = `${process.env.REACT_APP_API_ENDPOINT}/topics`;
-
     const params = {
-      n_cluster: 10, // You can set the desired number of clusters here
+      n_clusters: 10, // You can set the desired number of clusters here
+      // TODO add an optional text input for the server to use it instead of the default key
+      openapi_key: openApiKey,
+      selected_column: selectedColumn,
     };
-
-    // Transform selectedColumnData into a list of strings
-    const full_docs = selectedColumnData.map((item) => String(item));
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ params, full_docs }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-
-      // Set the topics and docs in the state
-      setTopics(data.topics);
-      setDocs(data.docs);
-
-      // Save topics and docs to files in the public directory
-      saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
-      saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));
-    } else {
-      console.error("API Request Failed");
+    if (selectedFile) {
+      uploadFile(selectedFile, params);
     }
-  };
+  };  
 
   return (
-    <Container>
+    <Container component="form">
       <Typography variant="h4" gutterBottom>
         CSV File Viewer
       </Typography>
       <Box marginBottom={2}>
-        <input type="file" accept=".csv" onChange={handleFileChange} required />
+        <Button component="label" variant="outlined" startIcon={<CloudUploadIcon />}>
+          Upload a file with at least one column containing text
+          <VisuallyHiddenInput type="file" onChange={handleFileChange} required />
+        </Button>
       </Box>
       <Box marginBottom={2}>
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Select a Column</InputLabel>
-          <Select value={selectedColumn} onChange={handleColumnSelect}>
-            {fileData[0]
-              && fileData[0].map((header, index) => (
+          <Select value={selectedColumn} onChange={handleColumnSelect} onClose={handleClose} onOpen={handleOpen} open={openSelector}>
+            {fileData[0] &&
+              fileData[0].map((header, index) => (
                 <MenuItem key={`${header}`} value={header}>
                   {header}
                 </MenuItem>
@@ -155,10 +148,7 @@ function QueryView() {
         // Content when not loading
         <div>
           {selectedColumnData.length > 0 && (
-            <TableContainer
-              component={Paper}
-              style={{ maxHeight: "400px", overflowY: "auto" }}
-            >
+            <TableContainer component={Paper} style={{ maxHeight: "400px", overflowY: "auto" }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -175,15 +165,11 @@ function QueryView() {
               </Table>
             </TableContainer>
           )}
-          <Box marginTop={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleProcessTopics}
-              disabled={selectedColumnData.length === 0 || isLoading}
-            >
+          <Box marginTop={2} display="flex">
+            <Button variant="contained" color="primary" onClick={handleProcessTopics} disabled={selectedColumnData.length === 0 || isLoading}>
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
+            <TextField id="input-api-key" label="Use your own OpenAI key" variant="outlined" onChange={setOpenApiKey} />
           </Box>
         </div>
       )}

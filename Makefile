@@ -53,7 +53,10 @@ docker_build:
 	docker build -t $$IMAGE_NAME
 
 docker_run:
-	docker run -d -p 8000:8000 $$IMAGE_NAME
+	docker run --env-file .env -d -p 8000:8000 $$IMAGE_NAME
+
+docker_run_attach:
+	docker run --env-file .env -p 8000:8000 $$IMAGE_NAME
 
 docker_tag:
 	docker tag $$IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest

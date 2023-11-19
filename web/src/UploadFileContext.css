@@ -1,0 +1,31 @@
+/* CSS for Error Message */
+.errorMessage {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  z-index: 1000;
+}
+
+/* CSS for Loader */
+.loader {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 400px;
+  height: 400px;
+  animation: spin 2s linear infinite;
+
+  /* Positioning */
+  position: fixed;
+  top: 100px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

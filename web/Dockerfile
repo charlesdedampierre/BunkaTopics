@@ -13,6 +13,10 @@ RUN npm install
 # Copy the source code to the container
 COPY . .
 
+# docker build --build-arg REACT_APP_API_ENDPOINT=$REACT_APP_API_ENDPOINT -t bunkafront .
+ARG REACT_APP_API_ENDPOINT
+ENV REACT_APP_API_ENDPOINT $REACT_APP_API_ENDPOINT
+
 # Build the React app
 RUN npm run build
 

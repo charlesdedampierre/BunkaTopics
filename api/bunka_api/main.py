@@ -2,8 +2,12 @@ import sys
 
 sys.path.append("../")
 
-from fastapi import FastAPI
 import typing as t
+import pandas as pd
+import logging
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from fastapi import FastAPI, UploadFile, Form, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -23,6 +27,17 @@ open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 
 app = FastAPI()
 
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")
+    logging.error(f"{request}: {exc_str}")
+    content = {"status_code": 10422, "message": exc_str, "data": None}
+    return JSONResponse(
+        content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
+
+
 # Allow requests from all origins (not recommended for production)
 app.add_middleware(
     CORSMiddleware,
@@ -33,23 +48,42 @@ app.add_middleware(
 )
 
 
-@app.post("/topics/")
-def process_topics(params: TopicParameter, full_docs: t.List[str]):
-    # Initialize your embedding_model and Bunka instance here
+def process_topics(full_docs, n_clusters):
+    # Initialize your embedding_model and Bunka instance then process topic modeling
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)
     bunka.fit(full_docs)
+<<<<<<< HEAD
     bunka.get_topics(n_clusters=params.n_cluster, name_lenght=2, min_count_terms=5)
     bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
+=======
+    bunka.get_topics(n_clusters=n_clusters, name_lenght=3, min_count_terms=3)
+    bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
+    return BunkaResponse(docs=bunka.docs, topics=bunka.topics)
 
-    docs = bunka.docs
-    topics = bunka.topics
 
-    return BunkaResponse(docs=docs, topics=topics)
+@app.post("/topics/csv")
+async def process_topics_csv(
+    file: UploadFile,
+    n_clusters: int = Form(...),
+    openapi_key: str = Form(None),
+    selected_column: str = Form(...),
+):
+    # Read the CSV file
+    df = pd.read_csv(file.file)
+    full_docs = df[selected_column].tolist()
+>>>>>>> my_feature_branch
+
+    return process_topics(full_docs, n_clusters)
+
+
+@app.post("/topics/")
+def post_process_topics(params: TopicParameter, full_docs: t.List[str]):
+    return process_topics(full_docs, n_clusters)
 
 
 @app.post("/process_bourdieu_query/")
-def process_bourdieu_query(query: BourdieuQuery, full_docs: t.List[str]):
+def post_process_bourdieu_query(query: BourdieuQuery, full_docs: t.List[str]):
     # Initialize your embedding_model and Bunka instance here
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     bunka = Bunka(embedding_model=embedding_model)

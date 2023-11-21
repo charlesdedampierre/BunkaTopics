@@ -47,8 +47,8 @@ class Document(BaseModel):
 class TopicParam(BaseModel):
     n_clusters = 5
     ngrams = [1, 2]
-    name_lenght = 3
-    top_terms_overall = 500
+    name_lenght = 4
+    top_terms_overall = 1000
 
 
 class TopicGenParam(BaseModel):

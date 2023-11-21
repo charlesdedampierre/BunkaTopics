@@ -27,7 +27,7 @@ def get_topics(
     ngrams: list = [1, 2],
     name_lenght: int = 15,
     top_terms_overall: int = 1000,
-    min_count_terms: int = 20,
+    min_count_terms: int = 2,
     x_column="x",
     y_column="y",
 ) -> t.List[Topic]:

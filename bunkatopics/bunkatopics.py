@@ -174,7 +174,7 @@ class Bunka:
         ngrams=[1, 2],
         name_lenght=15,
         top_terms_overall=2000,
-        min_count_terms=3,
+        min_count_terms=2,
     ) -> pd.DataFrame:
         self.topics: t.List[Topic] = get_topics(
             docs=self.docs,

@@ -48,40 +48,63 @@ app.add_middleware(
 )
 
 
-@app.post("/topics_test/")
-def process_topics(params: TopicParameter, full_docs: t.List[str]):
-    # Initialize your embedding_model and Bunka instance here
-    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    bunka = Bunka(embedding_model=embedding_model)
-    bunka.fit(full_docs)
-    bunka.get_topics(n_clusters=params.n_cluster, name_lenght=3)
-
-    docs = bunka.docs
-    topics = bunka.topics
-
-    return BunkaResponse(docs=docs, topics=topics)
-
-
 @app.post("/topics/")
 def post_process_topics(n_clusters, full_docs: t.List[str]):
     return process_topics(full_docs, n_clusters)
 
 
-@app.post("/process_bourdieu_query/")
-def post_process_bourdieu_query(query: BourdieuQuery, full_docs: t.List[str]):
-    # Initialize your embedding_model and Bunka instance here
-    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    bunka = Bunka(embedding_model=embedding_model)
-    bunka.fit(full_docs)
+class GlobalBunka:
+    def __init__(self):
+        self.bunka = None
+        self.bunka_results = None
+
+
+# Initialize a global instance during startup
+@app.on_event("startup")
+def startup_event():
+    app.state.existing_bunka = GlobalBunka()
+
+
+# Your /topics_test/ endpoint
+@app.post("/topics_test/")
+def process_topics(params: TopicParameter, full_docs: t.List[str]):
+    existing_bunka = app.state.existing_bunka.bunka
+
+    if existing_bunka is None:
+        existing_bunka = Bunka(
+            embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        )
+        app.state.existing_bunka.bunka = existing_bunka
+
+    existing_bunka.fit(full_docs)
+    existing_bunka.get_topics(
+        n_clusters=params.n_cluster, name_lenght=1, min_count_terms=2
+    )
+
+    docs = existing_bunka.docs
+    topics = existing_bunka.topics
+
+    return BunkaResponse(docs=docs, topics=topics)
+
+
+@app.post("/bourdieu/")
+def post_process_bourdieu_query(query: BourdieuQuery, topics_param: TopicParam):
+    existing_bunka = app.state.existing_bunka.bunka
+
+    if existing_bunka is None:
+        # Handle the case where /topics_test/ hasn't been run yet
+        return {"error": "Run /topics_test/ first"}
 
     # Call your bourdieu_api function to get results
     res = bourdieu_api(
-        bunka.embedding_model,
-        bunka.docs,
-        bunka.terms,
+        generative_model=open_ai_generative_model,
+        embedding_model=existing_bunka.embedding_model,
+        docs=existing_bunka.docs,
+        terms=existing_bunka.terms,
         bourdieu_query=query,
-        topic_param=TopicParam(n_clusters=10),
+        topic_param=topics_param,
         generative_ai_name=False,
+        min_count_terms=2,
         topic_gen_param=TopicGenParam(generative_model=open_ai_generative_model),
     )
 

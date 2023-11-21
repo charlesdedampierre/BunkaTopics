@@ -36,6 +36,7 @@ def bourdieu_api(
     topic_param: TopicParam = TopicParam(),
     generative_ai_name=False,
     topic_gen_param: TopicGenParam = TopicGenParam(),
+    min_count_terms: int = 2,
 ) -> (t.List[Document], t.List[Topic]):
     # Reset
     for doc in docs:
@@ -110,6 +111,7 @@ def bourdieu_api(
         ngrams=topic_param.ngrams,
         name_lenght=topic_param.name_lenght,
         top_terms_overall=topic_param.top_terms_overall,
+        min_count_terms=min_count_terms,
     )
 
     bourdieu_docs, bourdieu_topics = get_top_documents(

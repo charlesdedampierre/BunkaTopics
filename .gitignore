@@ -91,3 +91,6 @@ venv.bak/
 
 # NODE.JS
 node_modules/
+
+# CELERY JOB
+results.db

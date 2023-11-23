@@ -12,6 +12,8 @@ format:
 	isort bunkatopics
 
 poetry_export:
+	poetry shell
+	poetry self add poetry-plugin-export
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 
@@ -27,7 +29,7 @@ run_streamlit:
 #############
 
 run_api:
-	python -m uvicorn api.bunka_api.main:app
+	python -m uvicorn api.bunka_api.routes:app
 
 #############
 # scaleway  #
@@ -50,7 +52,7 @@ container__get:
 #############
 
 docker_build:
-	docker build -t $$IMAGE_NAME
+	docker build -t $$IMAGE_NAME .
 
 docker_run:
 	docker run --env-file .env -d -p 8000:8000 $$IMAGE_NAME

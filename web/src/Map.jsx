@@ -1,7 +1,7 @@
 import { Backdrop, CircularProgress } from "@mui/material";
 import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom"; // Import ReactDOM
 
 import TextContainer from "./TextContainer";
@@ -11,7 +11,7 @@ const bunkaDocs = "bunka_docs.json";
 const bunkaTopics = "bunka_topics.json";
 const { REACT_APP_API_ENDPOINT } = process.env;
 
-function Map() {
+function MapView() {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const { data: apiData, isLoading } = useContext(TopicsContext);
 
@@ -26,7 +26,7 @@ function Map() {
   //   setSearchResults(results);
   // };
 
-  const createScatterPlot = (data) => {
+  const createScatterPlot = useCallback((data) => {
     const margin = {
       top: 20,
       right: 20,
@@ -66,9 +66,9 @@ function Map() {
       .y((d) => yScale(d.y))
       .size([plotWidth, plotHeight])
       .bandwidth(30)(
-        // Adjust the bandwidth as needed
-        data,
-      );
+      // Adjust the bandwidth as needed
+      data,
+    );
 
     // Define a custom color for the contour lines
 
@@ -136,10 +136,10 @@ function Map() {
 
     const convexHullData = data.filter((d) => d.convex_hull);
 
-    convexHullData.forEach((d) => {
+    for (const d of convexHullData) {
       const hull = d.convex_hull;
       const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
-
+  
       svg
         .append("path")
         .datum(d3.polygonHull(hullPoints))
@@ -148,7 +148,7 @@ function Map() {
         .style("fill", "none")
         .style("stroke", "rgba(255, 255, 255, 0.5)") // White with 50% transparency
         .style("stroke-width", 2);
-    });
+    }
 
     // Add polygons for topics. Delete if no clicking on polygons
     const topicsPolygons = svg
@@ -197,7 +197,7 @@ function Map() {
         textContainerRef.current.innerHTML = "No content available for this topic.";
       }
     });
-  };
+  }, [ReactDOM, d3, d3Contour]);
 
   useEffect(() => {
     if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
@@ -226,7 +226,7 @@ function Map() {
       // Call the function to create the scatter plot with the data provided by TopicsContext
       createScatterPlot(apiData.docs.concat(apiData.topics));
     }
-  }, [apiData]);
+  }, [apiData, createScatterPlot]);
 
   return (
     <div className="json-display">
@@ -252,4 +252,4 @@ function Map() {
   );
 }
 
-export default Map;
+export default MapView;

@@ -1,4 +1,4 @@
-import { Alert } from "@mui/material";
+import { Alert, Box, LinearProgress, Typography } from "@mui/material";
 import axios from "axios";
 import md5 from "crypto-js/md5";
 import PropTypes from "prop-types";
@@ -57,12 +57,15 @@ const saveDataToFile = (fileName, data) => {
 const { REACT_APP_API_ENDPOINT } = process.env;
 
 const ENDPOINT_PATH = "/topics/csv";
-// Fetcher function 
-const fetcher = (url, data) => axios.post(url, data, {
-  headers: {
-    'Content-Type': 'multipart/form-data'
-  }
-}).then((res) => res.data);
+// Fetcher function
+const fetcher = (url, data) =>
+  axios
+    .post(url, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => res.data);
 
 // Provider Component
 export function TopicsProvider({ children, onSelectView }) {
@@ -70,6 +73,39 @@ export function TopicsProvider({ children, onSelectView }) {
   const [data, setData] = useState();
   const [error, setError] = useState();
   const [errorText, setErrorText] = useState("");
+  const [taskProgress, setTaskProgress] = useState(0); // Add state for task progress
+  const [taskID, setTaskID] = useState(null); // Add state for task ID
+
+  const fetchTaskResult = async (taskId) => {
+    try {
+      const response = await fetch(`/tasks/${taskId}/result`);
+      if (response.ok) {
+        const data = await response.json();
+        setData(data);
+      } else {
+        console.error("Failed to fetch task result");
+      }
+    } catch (error) {
+      console.error("Error fetching task result:", error);
+    }
+  };
+
+  const monitorTaskProgress = (taskId) => {
+    const evtSource = new EventSource(`/tasks/${taskId}/progress`);
+    evtSource.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+      console.log("Task Progress:", data);
+      setTaskProgress(data.progress); // Update progress in state
+      if (data.state === "SUCCESS") {
+        evtSource.close();
+        fetchTaskResult(taskId); // Fetch the task result
+        if (onSelectView) onSelectView("map");
+      } else if (data.state === "FAILURE") {
+        evtSource.close();
+      }
+    };
+  };
+
   // Handle File Upload and POST Request
   const uploadFile = useCallback(
     async (file, params) => {
@@ -90,27 +126,23 @@ export function TopicsProvider({ children, onSelectView }) {
         const apiURI = `${REACT_APP_API_ENDPOINT}${ENDPOINT_PATH}?md5=${fileHash}`;
         // Perform the POST request
         const response = await fetcher(apiURI, formData);
-        setData(response);
-        // auto-switch to Map view
-        if (onSelectView) onSelectView("map");
-        // TODO Save topics and docs to files in the public directory
-        // saveDataToFile("bunka_topics.json", JSON.stringify(data.topics));
-        // saveDataToFile("bunka_docs.json", JSON.stringify(data.docs));
+        setTaskID(response.task_id);
+        monitorTaskProgress(response.task_id); // Start monitoring task progress
       } catch (errorExc) {
         // Handle error
-        const errorMessage = errorExc.response?.data?.message || errorExc.message || 'An unknown error occurred';
-        console.error('Error:', errorMessage);
+        const errorMessage = errorExc.response?.data?.message || errorExc.message || "An unknown error occurred";
+        console.error("Error:", errorMessage);
         setErrorText(errorMessage);
         setError(errorExc.response);
       } finally {
         setIsLoading(false);
       }
     },
-    [onSelectView, setErrorText, setError, setIsLoading, setData],
+    [monitorTaskProgress],
   );
 
   useEffect(() => {
-    if (error !== undefined && error.length) {
+    if (error?.length) {
       const message = error.response ? error.response.data.message : error.message;
       setErrorText(`Error uploading file.\n${message}`);
       console.error("Error uploading file:", message);
@@ -131,6 +163,18 @@ export function TopicsProvider({ children, onSelectView }) {
     <TopicsContext.Provider value={providerValue}>
       <>
         {isLoading && <div className="loader" />}
+        {/* Display a progress bar based on task progress */}
+        {taskID && (
+          <Box display="flex" alignItems="center">
+            <Box width="100%" mr={1}>
+              <LinearProgress variant="determinate" value={taskProgress} />
+            </Box>
+            <Box minWidth={35}>
+              <Typography variant="body2" color="textSecondary">{`${Math.round(taskProgress)}%`}</Typography>
+            </Box>
+          </Box>
+        )}
+
         {errorText && (
           <Alert severity="error" className="errorMessage">
             {errorText}

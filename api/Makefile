@@ -9,7 +9,7 @@ help:
 ##########
 
 run:
-	python -m uvicorn bunka_api.main:app
+	python -m uvicorn bunka_api.routes:app
 
 ##########
 # DEV    #
@@ -19,4 +19,8 @@ format_code:
 	python -m black bunka_api/*.py
 
 run_dev: 
-	python -m uvicorn src.bunka_api.main:app --reload
+	python -m uvicorn bunka_api.routes:app --reload
+
+
+run_worker: 
+	python -m celery worker -l INFO

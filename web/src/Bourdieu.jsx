@@ -180,8 +180,7 @@ function Bourdieu() {
       svg.append("line").attr("x1", xScale(0)).attr("x2", xScale(0)).attr("y1", 0).attr("y2", plotHeight).style("stroke", "black").style("stroke-width", 3);
 
       const convexHullData = topicsData.filter((d) => d.convex_hull);
-
-      convexHullData.forEach((d) => {
+      for (const d of convexHullData) {
         const hull = d.convex_hull;
         const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
 
@@ -193,8 +192,7 @@ function Bourdieu() {
           .style("fill", "none")
           .style("stroke", "rgba(255, 255, 255, 0.5)")
           .style("stroke-width", 2);
-      });
-
+      }
       const xGreaterThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x > 0 && d.y > 0).length;
       const xLessThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x < 0 && d.y > 0).length;
       const xGreaterThanZeroAndYLessThanZero = docsData.filter((d) => d.x > 0 && d.y < 0).length;
@@ -315,19 +313,19 @@ function Bourdieu() {
     const fetchData = async () => {
       try {
         const docsResponse = await fetch(
-          `/${bunka_bourdieu_docs}`
+          `/${bunka_bourdieu_docs}`,
           // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_docs}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
         );
         const docsData = await docsResponse.json();
 
         const topicsResponse = await fetch(
-          `/${bunka_bourdieu_topics}`
+          `/${bunka_bourdieu_topics}`,
           // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_topics}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
         );
         const topicsData = await topicsResponse.json();
 
         const queryResponse = await fetch(
-          `/${bunka_bourdieu_query}`
+          `/${bunka_bourdieu_query}`,
           // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_query}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
         );
 

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import DropdownMenu from "./DropdownMenu";
-import DocsView from "./DocsView";
-import Map from "./Map";
-import TreemapView from "./TreemapView";
-import QueryView from "./QueryView";
 import Bourdieu from "./Bourdieu";
+import DocsView from "./DocsView";
+import DropdownMenu from "./DropdownMenu";
+import MapView from "./Map";
+import QueryView from "./QueryView";
+import TreemapView from "./TreemapView";
 import { TopicsProvider } from "./UploadFileContext";
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
         </div>
         <TopicsProvider onSelectView={setSelectedView}>
           {selectedView === "map" ? (
-            <Map />
+            <MapView />
           ) : selectedView === "docs" ? (
             <DocsView />
           ) : selectedView === "treemap" ? (

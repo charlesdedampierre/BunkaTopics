@@ -114,7 +114,7 @@ function QueryView() {
     if (selectedFile) {
       uploadFile(selectedFile, params);
     }
-  };  
+  };
 
   return (
     <Container component="form">
@@ -131,8 +131,7 @@ function QueryView() {
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Select a Column</InputLabel>
           <Select value={selectedColumn} onChange={handleColumnSelect} onClose={handleClose} onOpen={handleOpen} open={openSelector}>
-            {fileData[0] &&
-              fileData[0].map((header, index) => (
+            {fileData[0]?.map((header, index) => (
                 <MenuItem key={`${header}`} value={header}>
                   {header}
                 </MenuItem>

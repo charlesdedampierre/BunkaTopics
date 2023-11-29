@@ -17,8 +17,7 @@ import pandas as pd
 
 # Import the necessary modules and classes
 from api.bunka_api.app import app
-from bunkatopics.datamodel import BourdieuQuery
-from api.bunka_api.datamodel import BourdieuResponse, BunkaResponse, TopicParameter
+from api.bunka_api.datamodel import BourdieuResponse, BunkaResponse, TopicParameterApi, BourdieuQueryApi
 from api.bunka_api.jobs import process_topics_task, bourdieu_api_task
 
 load_dotenv()
@@ -26,7 +25,7 @@ load_dotenv()
 
 @app.post("/topics/")
 def post_process_topics(n_clusters, full_docs: t.List[str]):
-    topics_param =  TopicParameter(n_clusters=n_clusters)
+    topics_param =  TopicParameterApi(n_clusters=n_clusters)
     task = process_topics_task.delay(full_docs, topics_param.to_dict())
     return {"task_id": task.id}
 
@@ -41,14 +40,14 @@ async def process_topics_csv(
     # Read the CSV file
     df = pd.read_csv(file.file)
     full_docs = df[selected_column].tolist()
-    topics_param =  TopicParameter(n_clusters=n_clusters)
+    topics_param =  TopicParameterApi(n_clusters=n_clusters)
     task = process_topics_task.delay(full_docs, topics_param.to_dict())
     return {"task_id": task.id}
 
 
 @app.post("/bourdieu/")
-def post_process_bourdieu_query(query: BourdieuQuery, topics_param: TopicParameter):
-    task = bourdieu_api_task.delay(query, topics_param.to_dict())
+def post_process_bourdieu_query(query: BourdieuQueryApi, topics_param: TopicParameterApi):
+    task = bourdieu_api_task.delay(query.to_dict(), topics_param.to_dict())
     return {"task_id": task.id}
 
 

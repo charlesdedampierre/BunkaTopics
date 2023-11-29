@@ -1,8 +1,17 @@
 from pydantic import BaseModel
 import typing as t
 
-from bunkatopics.datamodel import Document, Topic, TopicParam
+from bunkatopics.datamodel import Document, Topic, TopicParam, BourdieuQuery
 
+class BourdieuQueryApi(BourdieuQuery):
+    def to_dict(self):
+        return {    
+            "x_left_words": self.x_left_words,
+            "x_right_words": self.x_right_words,
+            "y_top_words": self.y_top_words,
+            "y_bottom_words": self.y_bottom_words,
+            "radius_size": self.radius_size,
+        }
 
 class BourdieuResponse(BaseModel):
     bourdieu_docs: t.List[Document]
@@ -13,7 +22,7 @@ class BunkaResponse(BaseModel):
     docs: t.List[Document]
     topics: t.List[Topic]
 
-class TopicParameter(TopicParam):
+class TopicParameterApi(TopicParam):
     """Override default value"""
     n_clusters = 10
 

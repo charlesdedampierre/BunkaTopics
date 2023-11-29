@@ -43,10 +43,10 @@ RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app
 USER runuser
 
-
 # code
-COPY --chown=runuser:rungroup api/run_docker.sh run_docker.sh
+COPY --chown=runuser:rungroup api/run_server.sh run_server.sh
 COPY --chown=runuser:rungroup api/bunka_api bunka_api
+COPY --chown=runuser:rungroup api/celeryconfig.py celeryconfig.py
 
 EXPOSE 8000
 

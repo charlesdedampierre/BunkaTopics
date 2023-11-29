@@ -21,6 +21,5 @@ format_code:
 run_dev: 
 	python -m uvicorn bunka_api.routes:app --reload
 
-
 run_worker: 
 	python -m celery worker -l INFO

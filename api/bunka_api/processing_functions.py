@@ -5,7 +5,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import OpenAI
 
 from api.bunka_api.app import app
-from api.bunka_api.datamodel import BunkaResponse, TopicParameter
+from api.bunka_api.datamodel import BunkaResponse, TopicParameterApi
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics import Bunka
 
@@ -24,7 +24,7 @@ def get_or_init_bunka_instance():
     return existing_bunka
 
 
-def process_topics(full_docs: t.List[str], params: TopicParameter):
+def process_topics(full_docs: t.List[str], params: TopicParameterApi):
     existing_bunka = get_or_init_bunka_instance()
     existing_bunka.fit(full_docs)
     existing_bunka.get_topics(
@@ -37,15 +37,15 @@ def process_topics(full_docs: t.List[str], params: TopicParameter):
     return BunkaResponse(docs=docs, topics=topics)
 
 
-def process_bourdieu(open_ai_generative_model, existing_bunka, topics_param):
+def process_bourdieu(full_docs: t.List[str], bourdieu_query, topics_param):
+    bunka_response = process_topics(full_docs, TopicParameterApi())
     existing_bunka = get_or_init_bunka_instance()
-
     return bourdieu_api(
         generative_model=open_ai_generative_model,
         embedding_model=existing_bunka.embedding_model,
-        docs=existing_bunka.docs,
-        terms=existing_bunka.terms,
-        bourdieu_query=query,
+        docs=bunka_response.docs,
+        terms=bunka_response.terms,
+        bourdieu_query=bourdieu_query,
         topic_param=topics_param,
         generative_ai_name=False,
         min_count_terms=2,

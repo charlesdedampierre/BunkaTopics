@@ -56,7 +56,8 @@ const saveDataToFile = (fileName, data) => {
 */
 const { REACT_APP_API_ENDPOINT } = process.env;
 
-const ENDPOINT_PATH = "/topics/csv";
+const TOPICS_ENDPOINT_PATH = "/topics/csv";
+const BOURDIEU_ENDPOINT_PATH = "/bourdieu/csv";
 // Fetcher function
 const fetcher = (url, data) =>
   axios
@@ -76,29 +77,17 @@ export function TopicsProvider({ children, onSelectView }) {
   const [taskProgress, setTaskProgress] = useState(0); // Add state for task progress
   const [taskID, setTaskID] = useState(null); // Add state for task ID
 
-  const fetchTaskResult = async (taskId) => {
-    try {
-      const response = await fetch(`/tasks/${taskId}/result`);
-      if (response.ok) {
-        const data = await response.json();
-        setData(data);
-      } else {
-        console.error("Failed to fetch task result");
-      }
-    } catch (error) {
-      console.error("Error fetching task result:", error);
-    }
-  };
 
-  const monitorTaskProgress = (taskId) => {
-    const evtSource = new EventSource(`/tasks/${taskId}/progress`);
+  const monitorTaskProgress = async (selectedView, taskId) => {
+    const evtSource = new EventSource(`${REACT_APP_API_ENDPOINT}/tasks/${selectedView === 'map' ? "topics" : "bourdieu"}/${taskId}/progress`);
     evtSource.onmessage = function (event) {
       const data = JSON.parse(event.data);
       console.log("Task Progress:", data);
       setTaskProgress(data.progress); // Update progress in state
       if (data.state === "SUCCESS") {
+        const result = JSON.parse(data.result);
+        setData(result);
         evtSource.close();
-        fetchTaskResult(taskId); // Fetch the task result
         if (onSelectView) onSelectView("map");
       } else if (data.state === "FAILURE") {
         evtSource.close();
@@ -111,23 +100,38 @@ export function TopicsProvider({ children, onSelectView }) {
     async (file, params) => {
       setIsLoading(true);
       setErrorText("");
+      const {
+        nClusters,
+        selectedColumn,
+        selectedView,
+        xLeftWord,
+        xRightWord,
+        yTopWord,
+        yBottomWord,
+        radiusSize
+      } = params;
 
       try {
         // Generate SHA-256 hash of the file
         const fileHash = await hashPartialFile(file);
-
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("selected_column", selectedColumn);
         // Append additional parameters to formData
-        formData.append("n_clusters", params.n_clusters);
-        formData.append("openapi_key", params.openapi_key);
-        formData.append("selected_column", params.selected_column);
-
-        const apiURI = `${REACT_APP_API_ENDPOINT}${ENDPOINT_PATH}?md5=${fileHash}`;
+        if (selectedView === "map") {
+          formData.append("n_clusters", nClusters);
+        } else if (selectedView === "bourdieu") {
+          formData.append("x_left_word", xLeftWord);
+          formData.append("x_right_word", xRightWord);
+          formData.append("y_top_word", yTopWord);
+          formData.append("y_bottom_word", yBottomWord);
+          formData.append("radius_size", radiusSize);
+        }
+        const apiURI = `${REACT_APP_API_ENDPOINT}${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}?md5=${fileHash}`;
         // Perform the POST request
         const response = await fetcher(apiURI, formData);
         setTaskID(response.task_id);
-        monitorTaskProgress(response.task_id); // Start monitoring task progress
+        await monitorTaskProgress(selectedView, response.task_id); // Start monitoring task progress
       } catch (errorExc) {
         // Handle error
         const errorMessage = errorExc.response?.data?.message || errorExc.message || "An unknown error occurred";

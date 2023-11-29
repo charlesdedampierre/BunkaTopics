@@ -2,8 +2,6 @@ from celery import Celery, states
 from celery.exceptions import Ignore
 import typing as t
 
-from bunkatopics.datamodel import BourdieuQuery
-from api.bunka_api.datamodel import TopicParameter
 from api.bunka_api.processing_functions import (
     process_topics,
     process_bourdieu,
@@ -22,7 +20,9 @@ def process_topics_task(self, full_docs: t.List[str], params: t.Dict):
         # Initialization
         total = len(full_docs)
         self.update_state(state=states.STARTED, meta={"progress": 0})
-        result = process_topics(full_docs, params)
+        result = process_topics(full_docs, TopicParameterApi(
+            n_clusters=n_clusters
+        ))
         # TODO get the real progress
         i = total
         progress = (i + 1) / total * 100
@@ -40,16 +40,22 @@ def process_topics_task(self, full_docs: t.List[str], params: t.Dict):
 
 
 @celery.task(bind=True)
-def bourdieu_api_task(self, query: BourdieuQuery, topics_param: t.Dict):
+def bourdieu_api_task(self, full_docs: t.List[str], bourdieu_query: t.Dict, topics_param: t.Dict):
     try:
         # Initialization
         total = len(full_docs)
+        topics_param_ins =  TopicParameterApi(n_clusters=topics_param.n_clusters)
+        bourdieu_query_ins = BourdieuQueryApi(
+            x_left_words=bourdieu_query.x_left_words, 
+            x_right_words=bourdieu_query.x_right_words, 
+            y_top_words=bourdieu_query.y_top_words, 
+            y_bottom_words=bourdieu_query.y_bottom_words, 
+            radius_size=bourdieu_query.radius_size)
         self.update_state(state=states.STARTED, meta={"progress": 0})
         res = process_bourdieu(
-            generative_model=open_ai_generative_model,
-            bunka_instance=existing_bunka,
-            bourdieu_query=query,
-            topic_param=topics_param,
+            full_docs=full_docs,
+            bourdieu_query=bourdieu_query_ins,
+            topic_param=topicstopics_param_ins_param,
         )
         # TODO get the real progress
         i = total

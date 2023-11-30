@@ -83,6 +83,7 @@ export function TopicsProvider({ children, onSelectView }) {
     evtSource.onmessage = function (event) {
       const data = JSON.parse(event.data);
       console.log("Task Progress:", data);
+      const progress = !isNaN(parseInt(data.progress, 10)) ? parseInt(data.progress, 10): 0;
       setTaskProgress(data.progress); // Update progress in state
       if (data.state === "SUCCESS") {
         const result = JSON.parse(data.result);
@@ -90,6 +91,9 @@ export function TopicsProvider({ children, onSelectView }) {
         evtSource.close();
         if (onSelectView) onSelectView("map");
       } else if (data.state === "FAILURE") {
+        setError(data.error);
+        setTaskProgress(0);
+        setIsLoading(false);
         evtSource.close();
       }
     };
@@ -134,10 +138,7 @@ export function TopicsProvider({ children, onSelectView }) {
         await monitorTaskProgress(selectedView, response.task_id); // Start monitoring task progress
       } catch (errorExc) {
         // Handle error
-        const errorMessage = errorExc.response?.data?.message || errorExc.message || "An unknown error occurred";
-        console.error("Error:", errorMessage);
-        setErrorText(errorMessage);
-        setError(errorExc.response);
+        setError(errorExc);
       } finally {
         setIsLoading(false);
       }
@@ -145,9 +146,12 @@ export function TopicsProvider({ children, onSelectView }) {
     [monitorTaskProgress],
   );
 
+  /**
+   * Handle request errors
+   */
   useEffect(() => {
-    if (error?.length) {
-      const message = error.response ? error.response.data.message : error.message;
+    if (error) {
+      const message = errorExc.response?.data?.message || errorExc.message || `${error}` || "An unknown error occurred";
       setErrorText(`Error uploading file.\n${message}`);
       console.error("Error uploading file:", message);
     }

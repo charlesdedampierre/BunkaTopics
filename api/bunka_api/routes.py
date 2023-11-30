@@ -86,6 +86,7 @@ async def get_task_progress(task_name: str, task_id: str):
 
     async def event_stream():
         while not task.ready():
+            print(task)
             if task.state == 'PENDING':
                 data = {'state': task.state, 'progress': 0}
             elif task.state != 'FAILURE':
@@ -103,27 +104,28 @@ async def get_task_progress(task_name: str, task_id: str):
 
         # Send final task result
         if task.state == 'SUCCESS':
+            print("success")
             yield sse_format({'state': task.state, 'result': task.result})
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
-@app.get("/tasks/{task_name}/{task_id}/result")
-async def get_task_result(task_name: str, task_id: str):
-    """Return the result data"""
-    if task_name == "topics":
-        task = process_topics_task.AsyncResult(task_id)
-    elif task_name == "bourdieu":
-        task = bourdieu_api_task.AsyncResult(task_id)
-    else:
-        return JSONResponse(
-            status_code=404,
-            content={"message": "No result available or task not in success state."},
-        )
+# @app.get("/tasks/{task_name}/{task_id}/result")
+# async def get_task_result(task_name: str, task_id: str):
+#     """Return the result data"""
+#     if task_name == "topics":
+#         task = process_topics_task.AsyncResult(task_id)
+#     elif task_name == "bourdieu":
+#         task = bourdieu_api_task.AsyncResult(task_id)
+#     else:
+#         return JSONResponse(
+#             status_code=404,
+#             content={"message": "No result available or task not in success state."},
+#         )
 
-    if task.state == "SUCCESS":
-        return task.result
-    else:
-        return JSONResponse(
-            status_code=404,
-            content={"message": "No result available or task not in success state."},
-        )
+#     if task.state == "SUCCESS":
+#         return task.result
+#     else:
+#         return JSONResponse(
+#             status_code=404,
+#             content={"message": "No result available or task not in success state."},
+#         )

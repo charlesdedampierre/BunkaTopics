@@ -7,7 +7,7 @@ from api.bunka_api.processing_functions import (
     process_bourdieu,
     open_ai_generative_model,
 )
-
+from api.bunka_api.datamodel import TopicParameterApi, BourdieuQueryApi
 from api import celeryconfig
 
 celery = Celery()
@@ -21,7 +21,7 @@ def process_topics_task(self, full_docs: t.List[str], params: t.Dict):
         total = len(full_docs)
         self.update_state(state=states.STARTED, meta={"progress": 0})
         result = process_topics(full_docs, TopicParameterApi(
-            n_clusters=n_clusters
+            n_clusters=params.n_clusters
         ))
         # TODO get the real progress
         i = total
@@ -32,6 +32,7 @@ def process_topics_task(self, full_docs: t.List[str], params: t.Dict):
 
     except Exception as e:
         # Handle exceptions
+        print(e)
         self.update_state(
             state=states.FAILURE,
             meta={"exc_type": type(e).__name__, "exc_message": str(e)},
@@ -70,6 +71,7 @@ def bourdieu_api_task(self, full_docs: t.List[str], bourdieu_query: t.Dict, topi
         )
 
     except Exception as e:
+        print(e)
         # Handle exceptions
         self.update_state(
             state=states.FAILURE,

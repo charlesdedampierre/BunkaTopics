@@ -18,18 +18,6 @@ app.add_middleware(
 )
 
 
-class GlobalBunka:
-    def __init__(self):
-        self.bunka = None
-        self.bunka_results = None
-
-
-# Initialize a global instance during startup
-@app.on_event("startup")
-def startup_event():
-    app.state.existing_bunka = GlobalBunka()
-
-
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")

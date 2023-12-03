@@ -55,16 +55,14 @@ const saveDataToFile = (fileName, data) => {
 };
 */
 const { REACT_APP_API_ENDPOINT } = process.env;
-const axiosnInstance = axios.create({
-  baseURL: REACT_APP_API_ENDPOINT !== "local" ? REACT_APP_API_ENDPOINT : undefined
-});
 
-const TOPICS_ENDPOINT_PATH = "/topics/csv";
-const BOURDIEU_ENDPOINT_PATH = "/bourdieu/csv";
+const TOPICS_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/topics/csv/`;
+const BOURDIEU_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/bourdieu/csv/`;
+
 
 // Fetcher function
 const fetcher = (url, data) =>
-  axiosnInstance.post(url,
+  axios.post(url,
     data,
     {
       headers: {

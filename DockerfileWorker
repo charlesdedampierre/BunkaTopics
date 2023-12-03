@@ -21,7 +21,7 @@ RUN pip3 install --upgrade pip
 
 COPY requirements.txt requirements.txt
 RUN pip3 install --no-cache-dir --upgrade --ignore-installed blinker -r requirements.txt
-
+RUN pip3 install async_timeout pymongo
 ######################################
 # changing user & downloading models #
 ######################################

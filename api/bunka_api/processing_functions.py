@@ -8,7 +8,7 @@ from api.bunka_api.datamodel import BunkaResponse, TopicParameterApi
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics import Bunka
 
-open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
+open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"), openai_organization=os.getenv("OPEN_AI_ORG_ID"))
 existing_bunka = Bunka(
     embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 )

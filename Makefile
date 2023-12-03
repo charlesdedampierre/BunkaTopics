@@ -78,10 +78,10 @@ docker_build_worker:
 	docker build -f DockerfileWorker -t $$WORKER_IMAGE_NAME .
 
 docker_run_worker:
-	docker run --restart=always --env-file ../.env -d --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+	docker run --restart=always --env-file .env -d --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
 
 docker_run_worker_attach:
-	docker run --env-file ../.env --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+	docker run --env-file .env --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
 
 docker_tag_worker:
 	docker tag $$WORKER_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest

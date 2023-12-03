@@ -65,3 +65,29 @@ docker_tag:
 
 docker_push:
 	docker push $$CONTAINER_REGISTRY_URL/$$API_IMAGE_NAME:latest
+
+
+#############
+# Docker CELERY WORKER #
+#############
+
+run_worker: 
+	python -m celery worker -l INFO
+
+docker_build_worker:
+	docker build -t $$WORKER_IMAGE_NAME .
+
+docker_run_worker:
+	docker run --restart=always --env-file ../.env -d --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+
+docker_run_worker_attach:
+	docker run --env-file ../.env --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+
+docker_tag_worker:
+	docker tag $$WORKER_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
+
+docker_push_worker:
+	docker push $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
+
+docker_run_redis:
+	 docker run --restart=always -d -p 6379:6379 --name redis redis

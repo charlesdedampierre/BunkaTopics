@@ -1,3 +1,9 @@
+import sys
+from dotenv import load_dotenv
+
+load_dotenv()
+sys.path.append("../")
+
 from fastapi.encoders import jsonable_encoder
 from celery import Celery, states
 from celery.exceptions import Ignore

@@ -1,5 +1,7 @@
 import sys
+from dotenv import load_dotenv
 
+load_dotenv()
 sys.path.append("../")
 
 import json
@@ -8,7 +10,6 @@ import typing as t
 import os
 import asyncio
 from celery.result import AsyncResult
-from dotenv import load_dotenv
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi import FastAPI, UploadFile, Form, Request, status, Response
@@ -22,8 +23,6 @@ from api.bunka_api.datamodel import (
     BourdieuQueryApi,
 )
 from api.bunka_api.jobs import process_topics_task, bourdieu_api_task
-
-load_dotenv()
 
 
 @app.post("/topics/")

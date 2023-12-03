@@ -55,10 +55,10 @@ docker_build:
 	docker build -t $$API_IMAGE_NAME .
 
 docker_run:
-	docker run --restart=always --env-file .env -d --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
+	docker run --restart=always --network bunkatopics_network --env-file .env -d --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_run_attach:
-	docker run --env-file .env --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
+	docker run --network bunkatopics_network --env-file .env --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_tag:
 	docker tag $$API_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$API_IMAGE_NAME:latest
@@ -74,14 +74,17 @@ docker_push:
 run_worker: 
 	python -m celery worker -l INFO
 
+docker_create_network:
+	docker network create bunkatopics_network
+
 docker_build_worker:
 	docker build -f DockerfileWorker -t $$WORKER_IMAGE_NAME .
 
 docker_run_worker:
-	docker run --restart=always --env-file .env -d --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+	docker run --restart=always --network bunkatopics_network --env-file .env -d --gpus all --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
 
 docker_run_worker_attach:
-	docker run --env-file .env --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+	docker run --network bunkatopics_network --env-file .env --gpus all --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
 
 docker_tag_worker:
 	docker tag $$WORKER_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
@@ -90,4 +93,4 @@ docker_push_worker:
 	docker push $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
 
 docker_run_redis:
-	 docker run --restart=always -d -p 6379:6379 --name redis redis
+	 docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name redis redis

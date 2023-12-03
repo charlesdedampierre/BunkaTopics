@@ -55,20 +55,22 @@ const saveDataToFile = (fileName, data) => {
 };
 */
 const { REACT_APP_API_ENDPOINT } = process.env;
+const axiosnInstance = axios.create({
+  baseURL: REACT_APP_API_ENDPOINT !== local ? REACT_APP_API_ENDPOINT : undefined
+});
 
 const TOPICS_ENDPOINT_PATH = "/topics/csv";
 const BOURDIEU_ENDPOINT_PATH = "/bourdieu/csv";
+
 // Fetcher function
 const fetcher = (url, data) =>
-  axios({
-    url,
+  axiosnInstance.post(url,
     data,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    method: 'post',
-    baseURL: REACT_APP_API_ENDPOINT !== "local" ? REACT_APP_API_ENDPOINT : undefined,
-  })
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    })
     .then((res) => res.data);
 
 // Provider Component

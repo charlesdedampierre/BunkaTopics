@@ -93,4 +93,6 @@ docker_push_worker:
 	docker push $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
 
 docker_run_redis:
-	 docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name redis redis
+	docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name redis redis
+docker_run_mongodb:
+	docker run --restart=always --network bunkatopics_network -d --name mongodb -v /root/mongo/data:/data/db -p 27017:27017 mongo:latest

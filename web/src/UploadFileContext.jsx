@@ -131,9 +131,10 @@ export function TopicsProvider({ children, onSelectView }) {
           formData.append("y_bottom_word", yBottomWord);
           formData.append("radius_size", radiusSize);
         }
-        const apiURI = `${REACT_APP_API_ENDPOINT}${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}?md5=${fileHash}`;
+        const apiURI = `${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}?md5=${fileHash}`;
         // Perform the POST request
-        const response = await fetcher(apiURI, formData);
+        console.log(`Will upload to the endpoint ${REACT_APP_API_ENDPOINT}`);
+        const response = await fetcher(`${REACT_APP_API_ENDPOINT}${apiURI}`, formData);
         setTaskID(response.task_id);
         await monitorTaskProgress(selectedView, response.task_id); // Start monitoring task progress
       } catch (errorExc) {

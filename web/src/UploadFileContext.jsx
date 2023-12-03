@@ -60,16 +60,15 @@ const TOPICS_ENDPOINT_PATH = "/topics/csv";
 const BOURDIEU_ENDPOINT_PATH = "/bourdieu/csv";
 // Fetcher function
 const fetcher = (url, data) =>
-  axios
-    .post({
-      url,
-      data,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      method: 'post',
-      baseUrl: REACT_APP_API_ENDPOINT !== "local" ? REACT_APP_API_ENDPOINT : undefined,
-    })
+  axios({
+    url,
+    data,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    method: 'post',
+    baseUrl: REACT_APP_API_ENDPOINT !== "local" ? REACT_APP_API_ENDPOINT : undefined,
+  })
     .then((res) => res.data);
 
 // Provider Component

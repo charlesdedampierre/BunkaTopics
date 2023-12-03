@@ -1,5 +1,5 @@
 docker_run:
-	docker run --restart=always -d -p 8080:80 --name $$FRONT_CONTAINER_NAME $$FRONT_IMAGE_NAME
+	docker run --env REACT_APP_API_ENDPOINT=/api --restart=always -d -p 8080:80 --name $$FRONT_CONTAINER_NAME $$FRONT_IMAGE_NAME
 
 docker_build:
 	docker build --build-arg REACT_APP_API_ENDPOINT=/api -t $$FRONT_IMAGE_NAME .

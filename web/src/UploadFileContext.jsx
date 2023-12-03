@@ -67,7 +67,7 @@ const fetcher = (url, data) =>
       "Content-Type": "multipart/form-data",
     },
     method: 'post',
-    baseUrl: REACT_APP_API_ENDPOINT !== "local" ? REACT_APP_API_ENDPOINT : undefined,
+    baseURL: REACT_APP_API_ENDPOINT !== "local" ? REACT_APP_API_ENDPOINT : undefined,
   })
     .then((res) => res.data);
 

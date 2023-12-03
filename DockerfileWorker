@@ -38,6 +38,7 @@ USER runuser
 COPY --chown=runuser:rungroup api/run_worker.sh run_worker.sh
 COPY --chown=runuser:rungroup api/bunka_api bunka_api
 COPY --chown=runuser:rungroup api/celeryconfig.py celeryconfig.py
+COPY --chown=runuser:rungroup api/__init__.py __init__.py
 
 # start the server
 CMD ["bash", "run_worker.sh"]

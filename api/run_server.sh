@@ -3,4 +3,4 @@
 set -e
 set -x
 
-python -m uvicorn bunka_api.routes:app --host 0.0.0.0
+python3 -m uvicorn bunka_api.routes:app --host 0.0.0.0

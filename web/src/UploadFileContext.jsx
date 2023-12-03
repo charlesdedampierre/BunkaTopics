@@ -61,10 +61,14 @@ const BOURDIEU_ENDPOINT_PATH = "/bourdieu/csv";
 // Fetcher function
 const fetcher = (url, data) =>
   axios
-    .post(url, data, {
+    .post({
+      url,
+      data,
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      method: 'post',
+      baseUrl: REACT_APP_API_ENDPOINT !== "local" ? REACT_APP_API_ENDPOINT : undefined,
     })
     .then((res) => res.data);
 
@@ -133,8 +137,7 @@ export function TopicsProvider({ children, onSelectView }) {
         }
         const apiURI = `${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}?md5=${fileHash}`;
         // Perform the POST request
-        console.log(`Will upload to the endpoint ${REACT_APP_API_ENDPOINT}`);
-        const response = await fetcher(`${REACT_APP_API_ENDPOINT}${apiURI}`, formData);
+        const response = await fetcher(apiURI, formData);
         setTaskID(response.task_id);
         await monitorTaskProgress(selectedView, response.task_id); // Start monitoring task progress
       } catch (errorExc) {

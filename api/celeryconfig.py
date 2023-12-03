@@ -1,6 +1,8 @@
+import sys
 from dotenv import load_dotenv
 
 load_dotenv()
+sys.path.append("..")
 
 ## Broker settings.
 broker_url = "redis://redis:6379/0"

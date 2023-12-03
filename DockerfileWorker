@@ -17,17 +17,17 @@ ENV OPEN_AI_KEY=${OPEN_AI_KEY}
 WORKDIR /app/api
 
 # Python requirements (poetry has issues with fasttext: pybind11)
-RUN pip install --upgrade pip
+RUN pip3 install --upgrade pip
 
 COPY requirements.txt requirements.txt
-RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
+RUN pip3 install --no-cache-dir --upgrade --ignore-installed blinker -r requirements.txt
 
 ######################################
 # changing user & downloading models #
 ######################################
 FROM bunkatopicsbasedocker
 # Models
-RUN python -m spacy download en_core_web_sm
+RUN python3 -m spacy download en_core_web_sm
 # reducing privilege
 RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app

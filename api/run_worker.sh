@@ -3,4 +3,4 @@
 set -e
 set -x
 
-python -m celery worker -l INFO
+python3 -m celery worker -l INFO

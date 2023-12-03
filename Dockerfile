@@ -34,7 +34,7 @@ RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
 ######################################
 FROM bunkatopicsbasedocker
 # Models
-RUN python -m spacy download en_core_web_sm
+# RUN python -m spacy download en_core_web_sm
 # reducing privilege
 RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app

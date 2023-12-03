@@ -1,8 +1,8 @@
 # How to
 # copy .env.model to .env and write your own OPEN_AI_KEY
 # docker build -t bunkatopicsworker .
-# docker run --env-file .env -p 8000:8000 bunkatopicsworker
-FROM python:3.10 as bunkatopicsbasedocker
+# docker run --gpus all --env-file .env -p 8000:8000 bunkatopicsworker
+FROM tensorflow/tensorflow:latest-gpu as bunkatopicsbasedocker
 
 RUN apt update
 RUN apt install -y python3-dev

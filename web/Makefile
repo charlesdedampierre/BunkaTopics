@@ -1,14 +1,14 @@
 docker_run:
-	docker run -d -p 8080:80 $$IMAGE_NAME
+	docker run --restart=always -d -p 8080:80 --name $$FRONT_CONTAINER_NAME $$FRONT_IMAGE_NAME
 
 docker_build:
-	docker build --build-arg REACT_APP_API_ENDPOINT=/api -t $$IMAGE_NAME .
+	docker build --build-arg REACT_APP_API_ENDPOINT=/api -t $$FRONT_IMAGE_NAME .
 
 docker_tag:
-	docker tag $$IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
+	docker tag $$FRONT_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$FRONT_IMAGE_NAME:latest
 
 docker_push:
-	docker push $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
+	docker push $$CONTAINER_REGISTRY_URL/$$FRONT_IMAGE_NAME:latest
 
 #http://localhost:8080:80
 

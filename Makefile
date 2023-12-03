@@ -48,20 +48,20 @@ container__get:
 	scw container container get $(ID)
 
 #############
-# Docker  #
+# Docker API #
 #############
 
 docker_build:
-	docker build -t $$IMAGE_NAME .
+	docker build -t $$API_IMAGE_NAME .
 
 docker_run:
-	docker run --env-file .env -d -p 8000:8000 $$IMAGE_NAME
+	docker run --restart=always --env-file .env -d --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_run_attach:
-	docker run --env-file .env -p 8000:8000 $$IMAGE_NAME
+	docker run --env-file .env --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_tag:
-	docker tag $$IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
+	docker tag $$API_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$API_IMAGE_NAME:latest
 
 docker_push:
-	docker push $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
+	docker push $$CONTAINER_REGISTRY_URL/$$API_IMAGE_NAME:latest

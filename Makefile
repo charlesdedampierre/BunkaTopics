@@ -75,7 +75,7 @@ run_worker:
 	python -m celery worker -l INFO
 
 docker_build_worker:
-	docker build -t $$WORKER_IMAGE_NAME .
+	docker build -f DockerfileWorker -t $$WORKER_IMAGE_NAME .
 
 docker_run_worker:
 	docker run --restart=always --env-file ../.env -d --gpus all -p 6379:6379 --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME

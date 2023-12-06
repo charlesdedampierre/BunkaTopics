@@ -276,8 +276,10 @@ function Bourdieu() {
         .attr("class", "topic-polygon")
         .attr("points", (d) => {
           const hull = d.convex_hull;
-          const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
-          return hullPoints.map((point) => point.join(",")).join(" ");
+          if (hull) {
+            const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
+            return hullPoints.map((point) => point.join(",")).join(" ");
+          }
         })
         .style("fill", "transparent")
         .style("stroke", "transparent")

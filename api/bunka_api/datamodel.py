@@ -4,6 +4,14 @@ import typing as t
 from bunkatopics.datamodel import Document, Topic, TopicParam, BourdieuQuery
 
 
+class BourdieuQueryDict(t.TypedDict):
+    x_left_words: List[str]
+    x_right_words: List[str]
+    y_top_words: List[str]
+    y_bottom_words: List[str]
+    radius_size: float
+
+
 class BourdieuQueryApi(BourdieuQuery):
     def to_dict(self):
         return {
@@ -21,7 +29,7 @@ class TopicsResponse(BaseModel):
 
 
 class BourdieuResponse(TopicsResponse):
-    query: t.Dict[BourdieuQueryApi]
+    query: BourdieuQueryDict
 
 
 class TopicParameterApi(TopicParam):

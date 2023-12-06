@@ -84,20 +84,27 @@ export function TopicsProvider({ children, onSelectView }) {
   const monitorTaskProgress = async (selectedView, taskId) => {
     const evtSource = new EventSource(`${REACT_APP_API_ENDPOINT}/tasks/${selectedView === 'map' ? "topics" : "bourdieu"}/${taskId}/progress`);
     evtSource.onmessage = function (event) {
-      const data = JSON.parse(event.data);
-      console.log("Task Progress:", data);
-      const progress = !isNaN(parseInt(data.progress, 10)) ? parseInt(data.progress, 10) : 0;
-      setTaskProgress(data.progress); // Update progress in state
-      if (data.state === "SUCCESS") {
-        const result = JSON.parse(data.result);
-        setData(result);
-        evtSource.close();
-        if (onSelectView) onSelectView("map");
-      } else if (data.state === "FAILURE") {
-        setError(data.error);
-        setTaskProgress(0);
+      try {
+        const data = JSON.parse(event.data);
+        console.log("Task Progress:", data);
+        const progress = !isNaN(Math.ceil(data.progress)) ? Math.ceil(data.progress) : 0;
+        setTaskProgress(progress); // Update progress in state
+        if (data.state === "SUCCESS") {
+          setData(data.result);
+          evtSource.close();
+          if (onSelectView) onSelectView("map");
+        } else if (data.state === "FAILURE") {
+          setError(data.error);
+          setTaskProgress(0);
+          setIsLoading(false);
+          evtSource.close();
+        }
+      } catch (error) {
+        console.error(error);
+        setError(error);
+      } finally {
+        evtSource.close()
         setIsLoading(false);
-        evtSource.close();
       }
     };
   };

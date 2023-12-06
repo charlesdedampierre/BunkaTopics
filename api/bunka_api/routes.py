@@ -61,7 +61,7 @@ async def upload_process_bourdieu_csv(
     x_right_words: str = Form(...),
     y_top_words: str = Form(...),
     y_bottom_words: str = Form(...),
-    radius_size: int = Form(...),
+    radius_size: float = Form(...),
 ):
     # Read the CSV file
     df = pd.read_csv(file.file)

@@ -1,3 +1,4 @@
+import logging
 from dotenv import load_dotenv
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse

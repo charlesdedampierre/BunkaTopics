@@ -5,10 +5,10 @@ from bunkatopics.datamodel import Document, Topic, TopicParam, BourdieuQuery
 
 
 class BourdieuQueryDict(t.TypedDict):
-    x_left_words: List[str]
-    x_right_words: List[str]
-    y_top_words: List[str]
-    y_bottom_words: List[str]
+    x_left_words: t.List[str]
+    x_right_words: t.List[str]
+    y_top_words: t.List[str]
+    y_bottom_words: t.List[str]
     radius_size: float
 
 

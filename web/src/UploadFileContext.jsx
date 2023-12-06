@@ -91,18 +91,22 @@ export function TopicsProvider({ children, onSelectView }) {
         setTaskProgress(progress); // Update progress in state
         if (data.state === "SUCCESS") {
           setData(data.result);
+          setTaskProgress(100);
           evtSource.close();
+          setIsLoading(false);
+          setTaskID(null);
           if (onSelectView) onSelectView("map");
         } else if (data.state === "FAILURE") {
           setError(data.error);
           setTaskProgress(0);
+          evtSource.close();
           setIsLoading(false);
           evtSource.close();
         }
       } catch (error) {
+        console.error("EventSource exception");
         console.error(error);
         setError(error);
-      } finally {
         evtSource.close()
         setIsLoading(false);
       }
@@ -177,6 +181,7 @@ export function TopicsProvider({ children, onSelectView }) {
     [data, uploadFile, isLoading, error],
   );
 
+  const normalise = (value) => ((value - MIN) * 100) / (MAX - MIN);
   return (
     <TopicsContext.Provider value={providerValue}>
       <>
@@ -185,7 +190,8 @@ export function TopicsProvider({ children, onSelectView }) {
         {taskID && (
           <Box display="flex" alignItems="center">
             <Box width="100%" mr={1}>
-              <LinearProgress variant="determinate" value={taskProgress} />
+              <CircularProgress variant="indeterminate" value={normalise(taskProgress)} />
+              <LinearProgress variant="determinate" value={normalise(taskProgress)} />
             </Box>
             <Box minWidth={35}>
               <Typography variant="body2" color="textSecondary">{`${Math.round(taskProgress)}%`}</Typography>

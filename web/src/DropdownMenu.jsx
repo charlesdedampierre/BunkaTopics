@@ -11,7 +11,6 @@ export const LABELS = {
 };
 
 function DropdownMenu({ onSelectView, selectedView }) {
-
   const handleSelectView = (event) => {
     if (onSelectView) onSelectView(`${event.target.value}`);
   };

@@ -43,7 +43,7 @@ function QueryView() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedColumnData, setSelectedColumnData] = useState([]);
   const [openSelector, setOpenSelector] = React.useState(false);
-  const [selectedView, setSelectedView] = useState("map")
+  const [selectedView, setSelectedView] = useState("map");
   const [xLeftWord, setXLeftWord] = useState("");
   const [xRightWord, setXRightWord] = useState("");
   const [yTopWord, setYTopWord] = useState("");
@@ -125,7 +125,7 @@ function QueryView() {
         xRightWord,
         yTopWord,
         yBottomWord,
-        radiusSize
+        radiusSize,
       });
     }
   };
@@ -146,10 +146,10 @@ function QueryView() {
           <InputLabel>Select a Column</InputLabel>
           <Select value={selectedColumn} onChange={handleColumnSelect} onClose={handleClose} onOpen={handleOpen} open={openSelector}>
             {fileData[0]?.map((header, index) => (
-                <MenuItem key={`${header}`} value={header}>
-                  {header}
-                </MenuItem>
-              ))}
+              <MenuItem key={`${header}`} value={header}>
+                {header}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
@@ -197,13 +197,15 @@ function QueryView() {
                 <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem>
               </Select>
             </FormControl>
-            {selectedView === "bourdieu" && (<>
-              <TextField id="input-bourdieu-xl" label="X left word" variant="outlined" onChange={setXLeftWord} />
-              <TextField id="input-bourdieu-xr" label="X right word" variant="outlined" onChange={setXRightWord} />
-              <TextField id="input-bourdieu-yt" label="Y top word" variant="outlined" onChange={setYTopWord} />
-              <TextField id="input-bourdieu-yb" label="Y bottom word" variant="outlined" onChange={setYBottomWord} />
-              <TextField id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={setRadiusSize} />
-            </>)}
+            {selectedView === "bourdieu" && (
+              <>
+                <TextField id="input-bourdieu-xl" label="X left word" variant="outlined" onChange={setXLeftWord} />
+                <TextField id="input-bourdieu-xr" label="X right word" variant="outlined" onChange={setXRightWord} />
+                <TextField id="input-bourdieu-yt" label="Y top word" variant="outlined" onChange={setYTopWord} />
+                <TextField id="input-bourdieu-yb" label="Y bottom word" variant="outlined" onChange={setYBottomWord} />
+                <TextField id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={setRadiusSize} />
+              </>
+            )}
           </Box>
         </div>
       )}

@@ -18,9 +18,10 @@ class BourdieuQueryApi(BourdieuQuery):
 class BourdieuResponse(BaseModel):
     bourdieu_docs: t.List[Document]
     bourdieu_topics: t.List[Topic]
+    bourdieu_query: BourdieuQueryApi
 
 
-class BunkaResponse(BaseModel):
+class TopicsResponse(BaseModel):
     docs: t.List[Document]
     topics: t.List[Topic]
 

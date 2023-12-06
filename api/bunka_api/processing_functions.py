@@ -4,17 +4,22 @@ import typing as t
 from langchain.llms import OpenAI
 from langchain.embeddings import HuggingFaceEmbeddings
 
-from api.bunka_api.datamodel import BunkaResponse, TopicParameterApi
+from api.bunka_api.datamodel import TopicsResponse, TopicParameterApi
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics import Bunka
 
-open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"), openai_organization=os.getenv("OPEN_AI_ORG_ID"))
+open_ai_generative_model = OpenAI(
+    openai_api_key=os.getenv("OPEN_AI_KEY"),
+    openai_organization=os.getenv("OPEN_AI_ORG_ID"),
+)
 existing_bunka = Bunka(
     embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 )
 
 
-def process_topics(full_docs: t.List[str], params: TopicParameterApi, clean_topic=False):
+def process_topics(
+    full_docs: t.List[str], params: TopicParameterApi, clean_topic=False
+):
     existing_bunka.fit(full_docs)
     existing_bunka.get_topics(
         n_clusters=params.n_clusters, name_lenght=1, min_count_terms=2
@@ -24,10 +29,12 @@ def process_topics(full_docs: t.List[str], params: TopicParameterApi, clean_topi
     docs = existing_bunka.docs
     topics = existing_bunka.topics
 
-    return BunkaResponse(docs=docs, topics=topics)
+    return TopicsResponse(docs=docs, topics=topics)
 
 
-def process_bourdieu(full_docs: t.List[str], bourdieu_query, topics_param, clean_topic=False):
+def process_bourdieu(
+    full_docs: t.List[str], bourdieu_query, topics_param, clean_topic=False
+):
     bunka_response = process_topics(full_docs, TopicParameterApi(), clean_topic)
     return bourdieu_api(
         generative_model=open_ai_generative_model,

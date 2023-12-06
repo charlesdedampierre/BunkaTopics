@@ -14,7 +14,11 @@ from api.bunka_api.processing_functions import (
     process_bourdieu,
     open_ai_generative_model,
 )
-from api.bunka_api.datamodel import TopicParameterApi, BourdieuQueryApi
+from api.bunka_api.datamodel import (
+    TopicParameterApi,
+    BourdieuQueryApi,
+    BourdieuResponse,
+)
 from api import celeryconfig
 
 celery = Celery()
@@ -77,7 +81,9 @@ def bourdieu_api_task(
         bourdieu_topics = res[1]
 
         response = BourdieuResponse(
-            bourdieu_docs=bourdieu_docs, bourdieu_topics=bourdieu_topics
+            bourdieu_docs=bourdieu_docs,
+            bourdieu_topics=bourdieu_topics,
+            bourdieu_query=bourdieu_query_ins,
         )
         return jsonable_encoder(response)
 

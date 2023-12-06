@@ -7,40 +7,6 @@ import React, { createContext, useCallback, useEffect, useMemo, useState } from 
 // Create the Context
 export const TopicsContext = createContext();
 
-/**
- * Return a MD5 from the contents of a text file.
- * @param {Promise<FileReader>} file
- * @returns String
- */
-async function hashPartialFile(file) {
-  const reader = new FileReader();
-  reader.readAsText(file);
-
-  return new Promise((resolve, reject) => {
-    reader.onload = async (event) => {
-      const text = event.target.result;
-      const lines = text.split("\n");
-
-      let contentToHash;
-      if (lines.length < 5) {
-        // If less than 5 lines, use the entire content
-        contentToHash = text;
-      } else {
-        // Otherwise, use the first two and the last two lines
-        contentToHash = [...lines.slice(0, 2), ...lines.slice(-2)].join("\n");
-      }
-
-      // Compute MD5 hash
-      const hash = md5(contentToHash).toString();
-      resolve(hash);
-    };
-
-    reader.onerror = (error) => {
-      reject(error);
-    };
-  });
-}
-
 /*
 const saveDataToFile = (fileName, data) => {
   const blob = new Blob([data], { type: "application/json" });
@@ -59,15 +25,13 @@ const { REACT_APP_API_ENDPOINT } = process.env;
 const TOPICS_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/topics/csv/`;
 const BOURDIEU_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/bourdieu/csv/`;
 
-
 // Fetcher function
 const fetcher = (url, data) =>
-  axios.post(url,
-    data,
-    {
+  axios
+    .post(url, data, {
       headers: {
         "Content-Type": "multipart/form-data",
-      }
+      },
     })
     .then((res) => res.data);
 
@@ -80,9 +44,8 @@ export function TopicsProvider({ children, onSelectView }) {
   const [taskProgress, setTaskProgress] = useState(0); // Add state for task progress
   const [taskID, setTaskID] = useState(null); // Add state for task ID
 
-
   const monitorTaskProgress = async (selectedView, taskId) => {
-    const evtSource = new EventSource(`${REACT_APP_API_ENDPOINT}/tasks/${selectedView === 'map' ? "topics" : "bourdieu"}/${taskId}/progress`);
+    const evtSource = new EventSource(`${REACT_APP_API_ENDPOINT}/tasks/${selectedView === "map" ? "topics" : "bourdieu"}/${taskId}/progress`);
     evtSource.onmessage = function (event) {
       try {
         const data = JSON.parse(event.data);
@@ -107,7 +70,7 @@ export function TopicsProvider({ children, onSelectView }) {
         console.error("EventSource exception");
         console.error(error);
         setError(error);
-        evtSource.close()
+        evtSource.close();
         setIsLoading(false);
       }
     };
@@ -118,20 +81,10 @@ export function TopicsProvider({ children, onSelectView }) {
     async (file, params) => {
       setIsLoading(true);
       setErrorText("");
-      const {
-        nClusters,
-        selectedColumn,
-        selectedView,
-        xLeftWord,
-        xRightWord,
-        yTopWord,
-        yBottomWord,
-        radiusSize
-      } = params;
+      const { nClusters, selectedColumn, selectedView, xLeftWord, xRightWord, yTopWord, yBottomWord, radiusSize } = params;
 
       try {
         // Generate SHA-256 hash of the file
-        const fileHash = await hashPartialFile(file);
         const formData = new FormData();
         formData.append("file", file);
         formData.append("selected_column", selectedColumn);
@@ -145,7 +98,7 @@ export function TopicsProvider({ children, onSelectView }) {
           formData.append("y_bottom_word", yBottomWord);
           formData.append("radius_size", radiusSize);
         }
-        const apiURI = `${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}?md5=${fileHash}`;
+        const apiURI = `${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}`;
         // Perform the POST request
         const response = await fetcher(apiURI, formData);
         setTaskID(response.task_id);
@@ -181,7 +134,7 @@ export function TopicsProvider({ children, onSelectView }) {
     [data, uploadFile, isLoading, error],
   );
 
-  const normalise = (value) => ((value) * 100) / 100;
+  const normalise = (value) => (value * 100) / 100;
 
   return (
     <TopicsContext.Provider value={providerValue}>

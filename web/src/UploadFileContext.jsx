@@ -181,7 +181,8 @@ export function TopicsProvider({ children, onSelectView }) {
     [data, uploadFile, isLoading, error],
   );
 
-  const normalise = (value) => ((value - MIN) * 100) / (MAX - MIN);
+  const normalise = (value) => ((value) * 100) / 100;
+
   return (
     <TopicsContext.Provider value={providerValue}>
       <>

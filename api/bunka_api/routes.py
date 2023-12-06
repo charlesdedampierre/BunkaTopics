@@ -102,7 +102,6 @@ async def get_task_progress(task_name: str, task_id: str):
 
     async def event_stream():
         while not task.ready():
-            print(task)
             if task.state == "PENDING":
                 data = {"state": task.state, "progress": 0}
             elif task.state != "FAILURE":
@@ -117,7 +116,6 @@ async def get_task_progress(task_name: str, task_id: str):
 
         # Send final task result
         if task.state == "SUCCESS":
-            print("success")
             yield sse_format({"state": task.state, "result": task.result})
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")

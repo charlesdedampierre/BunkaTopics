@@ -1,4 +1,5 @@
 import sys
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -43,7 +44,7 @@ def process_topics_task(self, full_docs: t.List[str], params: t.Dict):
 
     except Exception as e:
         # Handle exceptions
-        print(e)
+        logging.error(e)
         self.update_state(
             state=states.FAILURE,
             meta={"exc_type": type(e).__name__, "exc_message": str(e)},
@@ -88,7 +89,7 @@ def bourdieu_api_task(
         return jsonable_encoder(response)
 
     except Exception as e:
-        print(e)
+        logging.error(e)
         # Handle exceptions
         self.update_state(
             state=states.FAILURE,

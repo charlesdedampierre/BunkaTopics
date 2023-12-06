@@ -12,6 +12,8 @@ format:
 	isort bunkatopics
 
 poetry_export:
+	poetry shell
+	poetry self add poetry-plugin-export
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 
@@ -27,7 +29,7 @@ run_streamlit:
 #############
 
 run_api:
-	python -m uvicorn api.bunka_api.main:app
+	python -m uvicorn api.bunka_api.routes:app
 
 #############
 # scaleway  #
@@ -46,20 +48,51 @@ container__get:
 	scw container container get $(ID)
 
 #############
-# Docker  #
+# Docker API #
 #############
 
 docker_build:
-	docker build -t $$IMAGE_NAME
+	docker build -t $$API_IMAGE_NAME .
 
 docker_run:
-	docker run --env-file .env -d -p 8000:8000 $$IMAGE_NAME
+	docker run --restart=always --network bunkatopics_network --env-file .env -d --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_run_attach:
-	docker run --env-file .env -p 8000:8000 $$IMAGE_NAME
+	docker run --network bunkatopics_network --env-file .env --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_tag:
-	docker tag $$IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
+	docker tag $$API_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$API_IMAGE_NAME:latest
 
 docker_push:
-	docker push $$CONTAINER_REGISTRY_URL/$$IMAGE_NAME:latest
+	docker push $$CONTAINER_REGISTRY_URL/$$API_IMAGE_NAME:latest
+
+
+#############
+# Docker CELERY WORKER #
+#############
+
+run_worker: 
+	python -m celery worker -l INFO
+
+docker_create_network:
+	docker network create bunkatopics_network
+
+docker_build_worker:
+	docker build -f DockerfileWorker -t $$WORKER_IMAGE_NAME .
+
+docker_run_worker:
+	docker run --restart=always --network bunkatopics_network --env-file .env -d --gpus all --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+
+docker_run_worker_attach:
+	docker run --network bunkatopics_network --env-file .env --gpus all --name $$WORKER_CONTAINER_NAME $$WORKER_IMAGE_NAME
+
+docker_tag_worker:
+	docker tag $$WORKER_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
+
+docker_push_worker:
+	docker push $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
+
+docker_run_redis:
+	docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name redis redis
+docker_run_mongodb:
+	docker run --restart=always --network bunkatopics_network -d --name mongodb -v /root/mongo/data:/data/db -p 27017:27017 mongo:latest

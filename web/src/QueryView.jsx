@@ -23,6 +23,7 @@ import { styled } from "@mui/material/styles";
 import Papa from "papaparse";
 import React, { useContext, useState } from "react";
 import { TopicsContext } from "./UploadFileContext";
+import { LABELS } from "./DropdownMenu";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -39,10 +40,15 @@ const VisuallyHiddenInput = styled("input")({
 function QueryView() {
   const [fileData, setFileData] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState("");
-  const [openApiKey, setOpenApiKey] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedColumnData, setSelectedColumnData] = useState([]);
   const [openSelector, setOpenSelector] = React.useState(false);
+  const [selectedView, setSelectedView] = useState("map");
+  const [xLeftWord, setXLeftWord] = useState("left");
+  const [xRightWord, setXRightWord] = useState("right");
+  const [yTopWord, setYTopWord] = useState("top");
+  const [yBottomWord, setYBottomWord] = useState("bottom");
+  const [radiusSize, setRadiusSize] = useState(0.5);
   const { uploadFile, isLoading } = useContext(TopicsContext);
 
   const handleClose = () => {
@@ -51,6 +57,10 @@ function QueryView() {
 
   const handleOpen = () => {
     setOpenSelector(true);
+  };
+
+  const handleSelectView = (event) => {
+    setSelectedView(`${event.target.value}`);
   };
 
   const parseCSVFile = (file, sampleSize = 500) =>
@@ -105,16 +115,20 @@ function QueryView() {
 
   const handleProcessTopics = async () => {
     if (selectedColumnData.length === 0) return;
-    const params = {
-      n_clusters: 10, // You can set the desired number of clusters here
-      // TODO add an optional text input for the server to use it instead of the default key
-      openapi_key: openApiKey,
-      selected_column: selectedColumn,
-    };
+
     if (selectedFile) {
-      uploadFile(selectedFile, params);
+      uploadFile(selectedFile, {
+        nClusters: 10, // TODO set the desired number of clusters in UI ?
+        selectedColumn,
+        selectedView,
+        xLeftWord,
+        xRightWord,
+        yTopWord,
+        yBottomWord,
+        radiusSize,
+      });
     }
-  };  
+  };
 
   return (
     <Container component="form">
@@ -131,12 +145,11 @@ function QueryView() {
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Select a Column</InputLabel>
           <Select value={selectedColumn} onChange={handleColumnSelect} onClose={handleClose} onOpen={handleOpen} open={openSelector}>
-            {fileData[0] &&
-              fileData[0].map((header, index) => (
-                <MenuItem key={`${header}`} value={header}>
-                  {header}
-                </MenuItem>
-              ))}
+            {fileData[0]?.map((header, index) => (
+              <MenuItem key={`${header}`} value={header}>
+                {header}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
@@ -169,7 +182,30 @@ function QueryView() {
             <Button variant="contained" color="primary" onClick={handleProcessTopics} disabled={selectedColumnData.length === 0 || isLoading}>
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
-            <TextField id="input-api-key" label="Use your own OpenAI key" variant="outlined" onChange={setOpenApiKey} />
+            <FormControl variant="outlined" className="dropdown-menu" sx={{ minWidth: "200px", marginTop: "1em" }}>
+              <InputLabel htmlFor="view-select">Select a View</InputLabel>
+              <Select
+                label="Select a View"
+                value={selectedView}
+                onChange={handleSelectView}
+                inputProps={{
+                  name: "prop-view-select",
+                  id: "prop-view-select",
+                }}
+              >
+                <MenuItem value="map">{LABELS.map}</MenuItem>
+                <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem>
+              </Select>
+            </FormControl>
+            {selectedView === "bourdieu" && (
+              <FormControl variant="outlined" sx={{ marginTop: "1em" }}>
+                <TextField required id="input-bourdieu-xl" sx={{ marginBottom: "1em" }} label="X left words (comma separated)" variant="outlined" onChange={e => setXLeftWord(e.target.value)} value={xLeftWord} />
+                <TextField required id="input-bourdieu-xr" sx={{ marginBottom: "1em" }} label="X right words (comma separated)" variant="outlined" onChange={e => setXRightWord(e.target.value)} value={xRightWord} />
+                <TextField required id="input-bourdieu-yt" sx={{ marginBottom: "1em" }} label="Y top words (comma separated)" variant="outlined" onChange={e => setYTopWord(e.target.value)} value={yTopWord} />
+                <TextField required id="input-bourdieu-yb" sx={{ marginBottom: "1em" }} label="Y bottom words (comma separated)" variant="outlined" onChange={e => setYBottomWord(e.target.value)} value={yBottomWord} />
+                <TextField required id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={e => setRadiusSize(e.target.value)} value={radiusSize} />
+              </FormControl>
+            )}
           </Box>
         </div>
       )}

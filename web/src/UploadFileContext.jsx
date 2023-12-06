@@ -92,10 +92,10 @@ export function TopicsProvider({ children, onSelectView }) {
         if (selectedView === "map") {
           formData.append("n_clusters", nClusters);
         } else if (selectedView === "bourdieu") {
-          formData.append("x_left_word", xLeftWord);
-          formData.append("x_right_word", xRightWord);
-          formData.append("y_top_word", yTopWord);
-          formData.append("y_bottom_word", yBottomWord);
+          formData.append("x_left_words", xLeftWord);
+          formData.append("x_right_words", xRightWord);
+          formData.append("y_top_words", yTopWord);
+          formData.append("y_bottom_words", yBottomWord);
           formData.append("radius_size", radiusSize);
         }
         const apiURI = `${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}`;

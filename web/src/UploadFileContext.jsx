@@ -88,10 +88,9 @@ export function TopicsProvider({ children, onSelectView }) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("selected_column", selectedColumn);
+        formData.append("n_clusters", nClusters);
         // Append additional parameters to formData
-        if (selectedView === "map") {
-          formData.append("n_clusters", nClusters);
-        } else if (selectedView === "bourdieu") {
+        if (selectedView === "bourdieu") {
           formData.append("x_left_words", xLeftWord);
           formData.append("x_right_words", xRightWord);
           formData.append("y_top_words", yTopWord);

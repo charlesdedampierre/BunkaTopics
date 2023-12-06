@@ -199,11 +199,11 @@ function QueryView() {
             </FormControl>
             {selectedView === "bourdieu" && (
               <>
-                <TextField id="input-bourdieu-xl" label="X left word" variant="outlined" onChange={(input) => setXLeftWord(input.target.value)} />
-                <TextField id="input-bourdieu-xr" label="X right word" variant="outlined" onChange={(input) => setXRightWord(input.target.value)} />
-                <TextField id="input-bourdieu-yt" label="Y top word" variant="outlined" onChange={(input) => setYTopWord(input.target.value)} />
-                <TextField id="input-bourdieu-yb" label="Y bottom word" variant="outlined" onChange={(input) => setYBottomWord(input.target.value)} />
-                <TextField id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={(input) => setRadiusSize(input.target.value)} />
+                <TextField id="input-bourdieu-xl" label="X left word" variant="outlined" onChange={(input) => setXLeftWord(input.target.value)} value="left" />
+                <TextField id="input-bourdieu-xr" label="X right word" variant="outlined" onChange={(input) => setXRightWord(input.target.value)} value="right" />
+                <TextField id="input-bourdieu-yt" label="Y top word" variant="outlined" onChange={(input) => setYTopWord(input.target.value)} value="bottom" />
+                <TextField id="input-bourdieu-yb" label="Y bottom word" variant="outlined" onChange={(input) => setYBottomWord(input.target.value)} value="top" />
+                <TextField id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={(input) => setRadiusSize(input.target.value)} value="0.5" />
               </>
             )}
           </Box>

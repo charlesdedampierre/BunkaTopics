@@ -56,6 +56,7 @@ def post_process_bourdieu_query(
 @app.post("/bourdieu/csv/")
 async def upload_process_bourdieu_csv(
     file: UploadFile,
+    n_clusters: int = Form(...),
     selected_column: str = Form(...),
     x_left_words: str = Form(...),
     x_right_words: str = Form(...),

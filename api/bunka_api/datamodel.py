@@ -15,13 +15,13 @@ class BourdieuQueryApi(BourdieuQuery):
         }
 
 
-class BourdieuResponse(TopicsResponse):
-    query: t.Dict[BourdieuQueryApi]
-
-
 class TopicsResponse(BaseModel):
     docs: t.List[Document]
     topics: t.List[Topic]
+
+
+class BourdieuResponse(TopicsResponse):
+    query: t.Dict[BourdieuQueryApi]
 
 
 class TopicParameterApi(TopicParam):

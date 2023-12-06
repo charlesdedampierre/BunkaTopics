@@ -201,8 +201,8 @@ function QueryView() {
               <FormControl variant="outlined" sx={{ marginTop: "1em" }}>
                 <TextField required id="input-bourdieu-xl" sx={{ marginBottom: "1em" }} label="X left words (comma separated)" variant="outlined" onChange={e => setXLeftWord(e.target.value)} value={xLeftWord} />
                 <TextField required id="input-bourdieu-xr" sx={{ marginBottom: "1em" }} label="X right words (comma separated)" variant="outlined" onChange={e => setXRightWord(e.target.value)} value={xRightWord} />
-                <TextField required id="input-bourdieu-yt" sx={{ marginBottom: "1em" }} label="Y top words (comma separated)" variant="outlined" onChange={e => setYTopWord(e.target.value)} value={yBottomWord} />
-                <TextField required id="input-bourdieu-yb" sx={{ marginBottom: "1em" }} label="Y bottom words (comma separated)" variant="outlined" onChange={e => setYBottomWord(e.target.value)} value={yTopWord} />
+                <TextField required id="input-bourdieu-yt" sx={{ marginBottom: "1em" }} label="Y top words (comma separated)" variant="outlined" onChange={e => setYTopWord(e.target.value)} value={yTopWord} />
+                <TextField required id="input-bourdieu-yb" sx={{ marginBottom: "1em" }} label="Y bottom words (comma separated)" variant="outlined" onChange={e => setYBottomWord(e.target.value)} value={yBottomWord} />
                 <TextField required id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={e => setRadiusSize(e.target.value)} value={radiusSize} />
               </FormControl>
             )}

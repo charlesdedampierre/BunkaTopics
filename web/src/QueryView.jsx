@@ -44,11 +44,11 @@ function QueryView() {
   const [selectedColumnData, setSelectedColumnData] = useState([]);
   const [openSelector, setOpenSelector] = React.useState(false);
   const [selectedView, setSelectedView] = useState("map");
-  const [xLeftWord, setXLeftWord] = useState("");
-  const [xRightWord, setXRightWord] = useState("");
-  const [yTopWord, setYTopWord] = useState("");
-  const [yBottomWord, setYBottomWord] = useState("");
-  const [radiusSize, setRadiusSize] = useState("");
+  const [xLeftWord, setXLeftWord] = useState("left");
+  const [xRightWord, setXRightWord] = useState("right");
+  const [yTopWord, setYTopWord] = useState("top");
+  const [yBottomWord, setYBottomWord] = useState("bottom");
+  const [radiusSize, setRadiusSize] = useState(0.5);
   const { uploadFile, isLoading } = useContext(TopicsContext);
 
   const handleClose = () => {
@@ -199,11 +199,11 @@ function QueryView() {
             </FormControl>
             {selectedView === "bourdieu" && (
               <FormControl variant="outlined" sx={{ marginTop: "1em" }}>
-                <TextField required id="input-bourdieu-xl" sx={{ marginRight: "1em" }} label="X left word" variant="outlined" onChange={(_event, val) => setXLeftWord(val)} defaultValue="left" />
-                <TextField required id="input-bourdieu-xr" sx={{ marginRight: "1em" }} label="X right word" variant="outlined" onChange={(_event, val) => setXRightWord(val)} defaultValue="right" />
-                <TextField required id="input-bourdieu-yt" sx={{ marginRight: "1em" }} label="Y top word" variant="outlined" onChange={(_event, val) => setYTopWord(val)} defaultValue="bottom" />
-                <TextField required id="input-bourdieu-yb" sx={{ marginRight: "1em" }} label="Y bottom word" variant="outlined" onChange={(_event, val) => setYBottomWord(val)} defaultValue="top" />
-                <TextField required id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={(_event, val) => setRadiusSize(val)} value="0.5" />
+                <TextField required id="input-bourdieu-xl" sx={{ marginBottom: "1em" }} label="X left word" variant="outlined" onChange={e => setXLeftWord(e.target.value)} value={xLeftWord} />
+                <TextField required id="input-bourdieu-xr" sx={{ marginBottom: "1em" }} label="X right word" variant="outlined" onChange={e => setXRightWord(e.target.value)} value={xRightWord} />
+                <TextField required id="input-bourdieu-yt" sx={{ marginBottom: "1em" }} label="Y top word" variant="outlined" onChange={e => setYTopWord(e.target.value)} value={yBottomWord} />
+                <TextField required id="input-bourdieu-yb" sx={{ marginBottom: "1em" }} label="Y bottom word" variant="outlined" onChange={e => setYBottomWord(e.target.value)} value={yTopWord} />
+                <TextField required id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={e => setRadiusSize(e.target.value)} value={radiusSize} />
               </FormControl>
             )}
           </Box>

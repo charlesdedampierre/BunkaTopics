@@ -186,16 +186,18 @@ function Bourdieu() {
       const convexHullData = topicsData.filter((d) => d.convex_hull);
       for (const d of convexHullData) {
         const hull = d.convex_hull;
-        const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
+        if (hull) {
+          const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
 
-        svg
-          .append("path")
-          .datum(d3.polygonHull(hullPoints))
-          .attr("class", "convex-hull-polygon")
-          .attr("d", (dAttr) => `M${dAttr.join("L")}Z`)
-          .style("fill", "none")
-          .style("stroke", "rgba(255, 255, 255, 0.5)")
-          .style("stroke-width", 2);
+          svg
+            .append("path")
+            .datum(d3.polygonHull(hullPoints))
+            .attr("class", "convex-hull-polygon")
+            .attr("d", (dAttr) => `M${dAttr.join("L")}Z`)
+            .style("fill", "none")
+            .style("stroke", "rgba(255, 255, 255, 0.5)")
+            .style("stroke-width", 2);
+        }
       }
       const xGreaterThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x > 0 && d.y > 0).length;
       const xLessThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x < 0 && d.y > 0).length;

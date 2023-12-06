@@ -2,15 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-function DropdownMenu({ onSelectView, selectedView }) {
-  const LABELS = {
-    map: "Map View",
-    bourdieu: "Bourdieu View",
-    docs: "Documents View",
-    treemap: "Treemap View",
-    query: "Query View",
-  };
+export const LABELS = {
+  map: "Map View",
+  bourdieu: "Bourdieu View",
+  docs: "Documents View",
+  // treemap: "Treemap View",
+  query: "Query View",
+};
 
+function DropdownMenu({ onSelectView, selectedView }) {
   const handleSelectView = (event) => {
     if (onSelectView) onSelectView(`${event.target.value}`);
   };
@@ -30,7 +30,7 @@ function DropdownMenu({ onSelectView, selectedView }) {
         <MenuItem value="map">{LABELS.map}</MenuItem>
         <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem>
         <MenuItem value="docs">{LABELS.docs}</MenuItem>
-        <MenuItem value="treemap">{LABELS.treemap}</MenuItem>
+        {/* <MenuItem value="treemap">{LABELS.treemap}</MenuItem> */}
         <MenuItem value="query">{LABELS.query}</MenuItem>
       </Select>
     </FormControl>

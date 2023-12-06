@@ -37,7 +37,7 @@ function DocsView() {
       setDocs(apiData.docs);
       setTopics(apiData.topics);
     }
-  }, [apiData, setTopics, setDocs]);
+  }, [apiData]);
 
   const docsWithTopics =
     docs && topics

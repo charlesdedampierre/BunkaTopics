@@ -1,15 +1,19 @@
 import * as d3 from "d3";
 import * as d3Contour from "d3-contour";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
+import { TopicsContext } from "./UploadFileContext";
 
-const bunka_bourdieu_docs = "bunka_bourdieu_docs.json";
-const bunka_bourdieu_topics = "bunka_bourdieu_topics.json";
-const bunka_bourdieu_query = "bunka_bourdieu_query.json";
+const bunkaDocs = "bunka_bourdieu_docs.json";
+const bunkaTopics = "bunka_bourdieu_topics.json";
+const bunkaQuery = "bunka_bourdieu_query.json";
+const { REACT_APP_API_ENDPOINT } = process.env;
 
 function Bourdieu() {
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const { data: apiData, isLoading } = useContext(TopicsContext);
+
   const svgRef = useRef(null);
   const textContainerRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
@@ -180,8 +184,7 @@ function Bourdieu() {
       svg.append("line").attr("x1", xScale(0)).attr("x2", xScale(0)).attr("y1", 0).attr("y2", plotHeight).style("stroke", "black").style("stroke-width", 3);
 
       const convexHullData = topicsData.filter((d) => d.convex_hull);
-
-      convexHullData.forEach((d) => {
+      for (const d of convexHullData) {
         const hull = d.convex_hull;
         const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
 
@@ -193,8 +196,7 @@ function Bourdieu() {
           .style("fill", "none")
           .style("stroke", "rgba(255, 255, 255, 0.5)")
           .style("stroke-width", 2);
-      });
-
+      }
       const xGreaterThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x > 0 && d.y > 0).length;
       const xLessThanZeroAndYGreaterThanZero = docsData.filter((d) => d.x < 0 && d.y > 0).length;
       const xGreaterThanZeroAndYLessThanZero = docsData.filter((d) => d.x > 0 && d.y < 0).length;
@@ -312,56 +314,64 @@ function Bourdieu() {
   );
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const docsResponse = await fetch(
-          `/${bunka_bourdieu_docs}`
-          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_docs}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_docs}`,
-        );
-        const docsData = await docsResponse.json();
-
-        const topicsResponse = await fetch(
-          `/${bunka_bourdieu_topics}`
-          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_topics}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_topics}`,
-        );
-        const topicsData = await topicsResponse.json();
-
-        const queryResponse = await fetch(
-          `/${bunka_bourdieu_query}`
-          // process.env.REACT_APP_API_ENDPOINT === "local" ? `/${bunka_bourdieu_query}` : `${process.env.REACT_APP_API_ENDPOINT}/${bunka_bourdieu_query}`,
-        );
-
-        const queryData = await queryResponse.json();
-
-        // You now have the data from bunka_bourdieu_query.json in queryData
-        createScatterPlot(docsData, topicsData, queryData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [createScatterPlot]);
+    if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
+      // Fetch the JSON data locally
+      fetch(`/${bunkaDocs}`)
+        .then((response) => response.json())
+        .then((docsData) => {
+          // Fetch the local topics data and merge it with the existing data
+          fetch(`/${bunkaTopics}`)
+            .then((response) => response.json())
+            .then((topicsData) => {
+              fetch(`/${bunkaQuery}`)
+                .then((response) => response.json())
+                .then((queryData) => {
+                  // Call the function to create the scatter plot after data is loaded
+                  createScatterPlot(docsData, topicsData, queryData);
+                })
+                .catch((error) => {
+                  console.error("Error fetching bourdieu query data:", error);
+                });
+            })
+            .catch((error) => {
+              console.error("Error fetching topics data:", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error fetching documents data:", error);
+        });
+    } else {
+      console.log(apiData);
+      // Call the function to create the scatter plot with the data provided by TopicsContext
+      createScatterPlot(apiData.docs, apiData.topics, apiData.query);
+    }
+  }, [apiData, createScatterPlot]);
 
   return (
     <div className="json-display">
-      <div className="scatter-plot-and-text-container">
-        <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
-          <svg ref={svgRef} />
-        </div>
-        <div className="text-container" ref={textContainerRef}>
-          {selectedDocument && (
-            <div className="text-content">
-              <h2 className="topic-name">
-                Topic:
-                {selectedDocument.topic_id}
-              </h2>
+      {isLoading ? (
+        <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
+          <CircularProgress color="primary" />
+        </Backdrop>
+      ) : (
+        <div className="scatter-plot-and-text-container">
+          <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
+            <svg ref={svgRef} />
+          </div>
+          <div className="text-container" ref={textContainerRef}>
+            {selectedDocument && (
+              <div className="text-content">
+                <h2 className="topic-name">
+                  Topic:
+                  {selectedDocument.topic_id}
+                </h2>
 
-              <p>{selectedDocument.content}</p>
-            </div>
-          )}
+                <p>{selectedDocument.content}</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

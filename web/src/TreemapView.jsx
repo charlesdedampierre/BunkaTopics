@@ -1,6 +1,6 @@
 import { Backdrop, CircularProgress, List, ListItem, Paper, Typography } from "@mui/material";
 import * as d3 from "d3";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { TopicsContext } from "./UploadFileContext";
 
 const bunkaTopics = "bunka_topics.json";
@@ -11,7 +11,7 @@ function TreemapView() {
   const [selectedTopic, setSelectedTopic] = useState({ name: "", content: [] });
   const { data: apiData, isLoading } = useContext(TopicsContext);
 
-  const createTreemap = (data) => {
+  const createTreemap = useCallback((data) => {
     const width = window.innerWidth * 0.6; // Adjust the width for the treemap
     const height = 800; // Adjust the height as needed
 
@@ -57,7 +57,7 @@ function TreemapView() {
       .text((d) => d);
 
     svg.selectAll("text").attr("font-size", 13).attr("fill", "black");
-  };
+  }, []);
 
   useEffect(() => {
     if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
@@ -74,7 +74,7 @@ function TreemapView() {
       // Call the function with the data provided by TopicsContext
       createTreemap(apiData.topics);
     }
-  }, [apiData]);
+  }, [apiData, createTreemap]);
 
   return (
     <div>

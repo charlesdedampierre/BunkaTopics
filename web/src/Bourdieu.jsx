@@ -341,8 +341,9 @@ function Bourdieu() {
           console.error("Error fetching documents data:", error);
         });
     } else {
+      console.log(apiData);
       // Call the function to create the scatter plot with the data provided by TopicsContext
-      createScatterPlot(apiData.bourdieu_docs, apiData.bourdieu_topics, apiData.bourdieu_query);
+      createScatterPlot(apiData.docs, apiData.topics, apiData.query);
     }
   }, [apiData, createScatterPlot]);
 

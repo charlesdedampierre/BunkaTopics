@@ -58,7 +58,7 @@ export function TopicsProvider({ children, onSelectView }) {
           evtSource.close();
           setIsLoading(false);
           setTaskID(null);
-          if (onSelectView) onSelectView("map");
+          if (onSelectView) onSelectView(selectedView);
         } else if (data.state === "FAILURE") {
           setError(data.error);
           setTaskProgress(0);

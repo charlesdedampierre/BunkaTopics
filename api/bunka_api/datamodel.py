@@ -15,10 +15,8 @@ class BourdieuQueryApi(BourdieuQuery):
         }
 
 
-class BourdieuResponse(BaseModel):
-    bourdieu_docs: t.List[Document]
-    bourdieu_topics: t.List[Topic]
-    bourdieu_query: BourdieuQueryApi
+class BourdieuResponse(TopicsResponse):
+    query: t.Dict[BourdieuQueryApi]
 
 
 class TopicsResponse(BaseModel):

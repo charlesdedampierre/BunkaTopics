@@ -198,13 +198,13 @@ function QueryView() {
               </Select>
             </FormControl>
             {selectedView === "bourdieu" && (
-              <>
-                <TextField id="input-bourdieu-xl" label="X left word" variant="outlined" onChange={(input) => setXLeftWord(input.target.value)} value="left" />
-                <TextField id="input-bourdieu-xr" label="X right word" variant="outlined" onChange={(input) => setXRightWord(input.target.value)} value="right" />
-                <TextField id="input-bourdieu-yt" label="Y top word" variant="outlined" onChange={(input) => setYTopWord(input.target.value)} value="bottom" />
-                <TextField id="input-bourdieu-yb" label="Y bottom word" variant="outlined" onChange={(input) => setYBottomWord(input.target.value)} value="top" />
-                <TextField id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={(input) => setRadiusSize(input.target.value)} value="0.5" />
-              </>
+              <FormControl variant="outlined" sx={{ marginTop: "1em" }}>
+                <TextField required id="input-bourdieu-xl" sx={{ marginRight: "1em" }} label="X left word" variant="outlined" onChange={(_event, val) => setXLeftWord(val)} defaultValue="left" />
+                <TextField required id="input-bourdieu-xr" sx={{ marginRight: "1em" }} label="X right word" variant="outlined" onChange={(_event, val) => setXRightWord(val)} defaultValue="right" />
+                <TextField required id="input-bourdieu-yt" sx={{ marginRight: "1em" }} label="Y top word" variant="outlined" onChange={(_event, val) => setYTopWord(val)} defaultValue="bottom" />
+                <TextField required id="input-bourdieu-yb" sx={{ marginRight: "1em" }} label="Y bottom word" variant="outlined" onChange={(_event, val) => setYBottomWord(val)} defaultValue="top" />
+                <TextField required id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={(_event, val) => setRadiusSize(val)} value="0.5" />
+              </FormControl>
             )}
           </Box>
         </div>

@@ -70,7 +70,7 @@ def bourdieu_api_task(
         res = process_bourdieu(
             full_docs=full_docs,
             bourdieu_query=bourdieu_query_ins,
-            topic_param=topicstopics_param_ins_param,
+            topic_param=topics_param_ins,
         )
         # TODO get the real progress
         i = total

@@ -69,10 +69,10 @@ async def upload_process_bourdieu_csv(
     full_docs = df[selected_column].tolist()
     topics_param = TopicParameterApi(n_clusters=n_clusters)
     query = BourdieuQueryApi(
-        x_left_words=x_left_words,
-        x_right_words=x_right_words,
-        y_top_words=y_top_words,
-        y_bottom_words=y_bottom_words,
+        x_left_words=[x.strip() for x in x_left_words.split(",")],
+        x_right_words=[x.strip() for x in x_right_words.split(",")],
+        y_top_words=[x.strip() for x in y_top_words.split(",")],
+        y_bottom_words=[x.strip() for x in y_bottom_words.split(",")],
         radius_size=radius_size,
     )
     task = bourdieu_api_task.delay(full_docs, query.to_dict(), topics_param.to_dict())

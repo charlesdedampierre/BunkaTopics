@@ -33,7 +33,7 @@ def process_topics(
 
 
 def process_bourdieu(
-    full_docs: t.List[str], bourdieu_query, topics_param, clean_topic=False
+    full_docs: t.List[str], bourdieu_query, topic_param, clean_topic=False
 ):
     bunka_response = process_topics(full_docs, TopicParameterApi(), clean_topic)
     return bourdieu_api(
@@ -42,7 +42,7 @@ def process_bourdieu(
         docs=bunka_response.docs,
         terms=bunka_response.terms,
         bourdieu_query=bourdieu_query,
-        topic_param=topics_param,
+        topic_param=topic_param,
         generative_ai_name=clean_topic,
         min_count_terms=2,
         topic_gen_param=TopicGenParam(generative_model=open_ai_generative_model),

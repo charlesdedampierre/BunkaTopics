@@ -74,7 +74,7 @@ bunka = Bunka(embedding_model=embedding_model)
 bunka.fit(full_docs)
 
 # Get the list of topics
-bunka.get_topics(n_clusters = 20, name_lenght=3)
+bunka.get_topics(n_clusters = 20, name_lenght=3,  min_count_terms=2)
 ```
 
 Then, we can visualize the topics computed

@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
-app = FastAPI()
+app = FastAPI(root_path="/api/")
 
 # Allow requests from all origins (not recommended for production)
 app.add_middleware(

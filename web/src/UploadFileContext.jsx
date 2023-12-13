@@ -82,6 +82,7 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
       setIsLoading(true);
       setErrorText("");
       const { nClusters, selectedColumn, selectedView, xLeftWord, xRightWord, yTopWord, yBottomWord, radiusSize } = params;
+      const { nameLength, language, cleanTopics, minCountTerms } = params;
 
       try {
         // Generate SHA-256 hash of the file
@@ -89,6 +90,10 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
         formData.append("file", file);
         formData.append("selected_column", selectedColumn);
         formData.append("n_clusters", nClusters);
+        formData.append("name_length", nameLength);
+        formData.append("language", language);
+        formData.append("clean_topics", cleanTopics);
+        formData.append("min_count_terms", minCountTerms);
         // Append additional parameters to formData
         if (selectedView === "bourdieu") {
           formData.append("x_left_words", xLeftWord);

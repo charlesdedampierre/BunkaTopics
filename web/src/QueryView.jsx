@@ -20,6 +20,7 @@ import {
   RadioGroup,
   Radio,
   FormControlLabel,
+  FormLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Papa from "papaparse";
@@ -119,7 +120,7 @@ function QueryView() {
 
     if (selectedFile) {
       uploadFile(selectedFile, {
-        nClusters: 10, // TODO set the desired number of clusters in UI ?
+        nClusters,
         selectedColumn,
         selectedView,
         xLeftWord,
@@ -180,7 +181,7 @@ function QueryView() {
               </Table>
             </TableContainer>
           )}
-          <Box marginTop={2} display="flex" alignItems={"center"}>
+          <Box marginTop={2} display="flex" alignItems="center" flexDirection="column">
             <Button variant="contained" color="primary" onClick={handleProcessTopics} disabled={selectedColumnData.length === 0 || isLoading}>
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
@@ -198,10 +199,12 @@ function QueryView() {
               <TextField required id="input-map-namelength" sx={{ marginBottom: "1em" }} label="Name length" variant="outlined" onChange={e => setNameLength(e.target.value)} value={nameLength} />
               <TextField required id="input-map-mincountterms" sx={{ marginBottom: "1em" }} label="Min Count Terms" variant="outlined" onChange={e => setMinCountTerms(e.target.value)} value={minCountTerms} />
               <RadioGroup required name="cleantopics-radio-group" defaultValue={cleanTopics} onChange={e => setCleanTopics(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }}>
+                <FormLabel id="clean-topics-group-label">Clean Topics</FormLabel>
                 <FormControlLabel value={true} label="Yes" control={<Radio />} />
                 <FormControlLabel value={false} label="No" control={<Radio />} />
               </RadioGroup>
               <RadioGroup required name="language-radio-group" defaultValue={language} onChange={e => setLanguage(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} >
+                <FormLabel id="language-group-label">Language</FormLabel>
                 <FormControlLabel value="french" label="fr" control={<Radio />} />
                 <FormControlLabel value="english" label="en" control={<Radio />} />
               </RadioGroup>

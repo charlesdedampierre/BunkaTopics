@@ -39,6 +39,7 @@ const fetcher = (url, data) =>
 export function TopicsProvider({ children, onSelectView, selectedView }) {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState();
+  const [bourdieuData, setBourdieuData] = useState();
   const [error, setError] = useState();
   const [errorText, setErrorText] = useState("");
   const [taskProgress, setTaskProgress] = useState(0); // Add state for task progress
@@ -53,7 +54,11 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
         const progress = !isNaN(Math.ceil(data.progress)) ? Math.ceil(data.progress) : 0;
         setTaskProgress(progress); // Update progress in state
         if (data.state === "SUCCESS") {
-          setData(data.result);
+          if (selectedView === "map") {
+            setData(data.result);
+          } else if (selectedView === "bourdieu") {
+            setBourdieuData(data.result);
+          }
           setTaskProgress(100);
           evtSource.close();
           setIsLoading(false);
@@ -131,6 +136,7 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
   const providerValue = useMemo(
     () => ({
       data,
+      bourdieuData,
       uploadFile,
       isLoading,
       error,

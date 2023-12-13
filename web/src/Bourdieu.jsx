@@ -13,7 +13,7 @@ const { REACT_APP_API_ENDPOINT } = process.env;
 
 function Bourdieu() {
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const { data: apiData, isLoading } = useContext(TopicsContext);
+  const { bourdieuData: apiData, isLoading } = useContext(TopicsContext);
 
   const svgRef = useRef(null);
   const textContainerRef = useRef(null);

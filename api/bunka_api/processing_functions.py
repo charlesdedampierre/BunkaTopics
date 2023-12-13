@@ -25,7 +25,7 @@ def process_topics(
 ):
     existing_bunka.fit(full_docs)
     existing_bunka.get_topics(
-        n_clusters=params.n_clusters, name_lenght=1, min_count_terms=1
+        n_clusters=params.n_clusters, name_lenght=3, min_count_terms=2
     )
     if clean_topic:
         existing_bunka.get_clean_topic_name(generative_model=open_ai_generative_model)

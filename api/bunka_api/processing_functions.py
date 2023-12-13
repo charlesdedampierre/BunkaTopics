@@ -4,7 +4,7 @@ import typing as t
 from langchain.llms import OpenAI
 from langchain.embeddings import HuggingFaceEmbeddings
 
-from api.bunka_api.datamodel import TopicsResponse, TopicParameterApi
+from api.bunka_api.datamodel import TopicsResponse, TopicParameterApi, BourdieuQueryApi
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics import Bunka
 from bunkatopics.datamodel import (
@@ -42,7 +42,7 @@ def process_topics(
     if params.clean_topics:
         bunka.get_clean_topic_name(
             generative_model=open_ai_generative_model,
-            language=language)
+            language=params.language)
 
     docs = bunka.docs
     topics = bunka.topics
@@ -55,21 +55,21 @@ def process_bourdieu(
     bourdieu_query: BourdieuQueryApi,
     topic_param: TopicParameterApi
 ):
-    if params.language == "french":
+    if topic_param.language == "french":
         bunka = french_bunka
     else:
         bunka = english_bunka
 
     bunka.fit(full_docs)
     bunka.get_topics(
-        n_clusters=params.n_clusters,
-        name_lenght=params.name_lenght,
-        min_count_terms=params.min_count_terms
+        n_clusters=topic_param.n_clusters,
+        name_lenght=topic_param.name_lenght,
+        min_count_terms=topic_param.min_count_terms
     )
-    if params.clean_topics:
+    if topic_param.clean_topics:
         bunka.get_clean_topic_name(
             generative_model=open_ai_generative_model,
-            language=language)
+            language=topic_param.language)
 
     return bourdieu_api(
         generative_model=open_ai_generative_model,
@@ -78,7 +78,7 @@ def process_bourdieu(
         terms=bunka.terms,
         bourdieu_query=bourdieu_query,
         topic_param=topic_param,
-        generative_ai_name=clean_topic,
+        generative_ai_name=topic_param.clean_topics,
         min_count_terms=1,
         topic_gen_param=TopicGenParam(),
     )

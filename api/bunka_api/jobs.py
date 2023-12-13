@@ -13,12 +13,12 @@ import typing as t
 from api.bunka_api.processing_functions import (
     process_topics,
     process_bourdieu,
-    open_ai_generative_model,
 )
 from api.bunka_api.datamodel import (
     TopicParameterApi,
     BourdieuQueryApi,
     BourdieuResponse,
+    BourdieuQueryDict
 )
 from api import celeryconfig
 
@@ -66,11 +66,11 @@ def bourdieu_api_task(
         # Initialization
         total = len(full_docs)
         topics_param_ins = TopicParameterApi(
-            n_clusters=params["n_clusters"],
-            language=params["language"],
-            clean_topics=params["clean_topics"],
-            min_count_terms=params["min_count_terms"],
-            name_lenght=params["name_lenght"]
+            n_clusters=topics_param["n_clusters"],
+            language=topics_param["language"],
+            clean_topics=topics_param["clean_topics"],
+            min_count_terms=topics_param["min_count_terms"],
+            name_lenght=topics_param["name_lenght"]
         )
         bourdieu_query_ins = BourdieuQueryApi(
             x_left_words=bourdieu_query["x_left_words"],
@@ -96,7 +96,7 @@ def bourdieu_api_task(
         response = BourdieuResponse(
             docs=bourdieu_docs,
             topics=bourdieu_topics,
-            query=bourdieu_query_ins.to_dict(),
+            query=BourdieuQueryDict(bourdieu_query_ins.to_dict()),
         )
         return jsonable_encoder(response)
 

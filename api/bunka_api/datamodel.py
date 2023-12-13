@@ -33,10 +33,13 @@ class BourdieuResponse(TopicsResponse):
 
 
 class TopicParameterApi(TopicParam):
-    """Override default value"""
+    """API specific Topics parameters"""
 
-    n_clusters = 10
-
+    n_clusters: int = 10
+    language : str = "english"
+    clean_topics = True
+    min_count_terms: int = 1
+    
     def to_dict(self):
         return {
             # Convert all attributes to a serializable format
@@ -44,4 +47,7 @@ class TopicParameterApi(TopicParam):
             "ngrams": self.ngrams,
             "name_lenght": self.name_lenght,
             "top_terms_overall": self.top_terms_overall,
+            "language": self.language,
+            "clean_topics": self.clean_topics,
+            "min_count_terms": self.min_count_terms
         }

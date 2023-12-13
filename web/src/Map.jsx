@@ -6,6 +6,7 @@ import ReactDOM from "react-dom"; // Import ReactDOM
 
 import TextContainer from "./TextContainer";
 import { TopicsContext } from "./UploadFileContext";
+import QueryView from "./QueryView";
 
 const bunkaDocs = "bunka_docs.json";
 const bunkaTopics = "bunka_topics.json";
@@ -243,11 +244,11 @@ function MapView() {
             <svg ref={svgRef} />
           </div>
           <div className="text-container" ref={textContainerRef}>
-            {selectedDocument && (
+            {selectedDocument ? (
               <div className="text-content">
                 <p>{selectedDocument.content}</p>
               </div>
-            )}
+            ) : <QueryView />}
           </div>
         </div>
       )}

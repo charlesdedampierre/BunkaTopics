@@ -33,7 +33,13 @@ def process_topics_task(self, full_docs: t.List[str], params: t.Dict):
         total = len(full_docs)
         self.update_state(state=states.STARTED, meta={"progress": 0})
         result = process_topics(
-            full_docs, TopicParameterApi(n_clusters=params["n_clusters"])
+            full_docs, TopicParameterApi(
+                n_clusters=params["n_clusters"],
+                language=params["language"],
+                clean_topics=params["clean_topics"],
+                min_count_terms=params["min_count_terms"],
+                name_lenght=params["name_lenght"]
+            )
         )
         # TODO get the real progress
         i = total
@@ -59,7 +65,13 @@ def bourdieu_api_task(
     try:
         # Initialization
         total = len(full_docs)
-        topics_param_ins = TopicParameterApi(n_clusters=topics_param["n_clusters"])
+        topics_param_ins = TopicParameterApi(
+            n_clusters=params["n_clusters"],
+            language=params["language"],
+            clean_topics=params["clean_topics"],
+            min_count_terms=params["min_count_terms"],
+            name_lenght=params["name_lenght"]
+        )
         bourdieu_query_ins = BourdieuQueryApi(
             x_left_words=bourdieu_query["x_left_words"],
             x_right_words=bourdieu_query["x_right_words"],

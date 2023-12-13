@@ -17,13 +17,14 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Papa from "papaparse";
 import React, { useContext, useState } from "react";
 import { TopicsContext } from "./UploadFileContext";
-import { LABELS } from "./DropdownMenu";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -43,13 +44,17 @@ function QueryView() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedColumnData, setSelectedColumnData] = useState([]);
   const [openSelector, setOpenSelector] = React.useState(false);
-  const [selectedView, setSelectedView] = useState("map");
   const [xLeftWord, setXLeftWord] = useState("left");
   const [xRightWord, setXRightWord] = useState("right");
   const [yTopWord, setYTopWord] = useState("top");
   const [yBottomWord, setYBottomWord] = useState("bottom");
   const [radiusSize, setRadiusSize] = useState(0.5);
-  const { uploadFile, isLoading } = useContext(TopicsContext);
+  const [nClusters, setNClusters] = useState(15);
+  const [minCountTerms, setMinCountTerms] = useState(1);
+  const [nameLength, setNameLength] = useState(3);
+  const [cleanTopics, setCleanTopics] = useState(false);
+  const [language, setLanguage] = useState("english");
+  const { uploadFile, isLoading, selectedView } = useContext(TopicsContext);
 
   const handleClose = () => {
     setOpenSelector(false);
@@ -57,10 +62,6 @@ function QueryView() {
 
   const handleOpen = () => {
     setOpenSelector(true);
-  };
-
-  const handleSelectView = (event) => {
-    setSelectedView(`${event.target.value}`);
   };
 
   const parseCSVFile = (file, sampleSize = 500) =>
@@ -132,12 +133,9 @@ function QueryView() {
 
   return (
     <Container component="form">
-      <Typography variant="h4" gutterBottom>
-        CSV File Viewer
-      </Typography>
       <Box marginBottom={2}>
         <Button component="label" variant="outlined" startIcon={<CloudUploadIcon />}>
-          Upload a file with at least one column containing text
+          Upload a CSV with at least one text column
           <VisuallyHiddenInput type="file" onChange={handleFileChange} required />
         </Button>
       </Box>
@@ -178,27 +176,12 @@ function QueryView() {
               </Table>
             </TableContainer>
           )}
-          <Box marginTop={2} display="flex">
+          <Box marginTop={2} display="flex" alignItems={"center"}>
             <Button variant="contained" color="primary" onClick={handleProcessTopics} disabled={selectedColumnData.length === 0 || isLoading}>
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
-            <FormControl variant="outlined" className="dropdown-menu" sx={{ minWidth: "200px", marginTop: "1em" }}>
-              <InputLabel htmlFor="view-select">Select a View</InputLabel>
-              <Select
-                label="Select a View"
-                value={selectedView}
-                onChange={handleSelectView}
-                inputProps={{
-                  name: "prop-view-select",
-                  id: "prop-view-select",
-                }}
-              >
-                <MenuItem value="map">{LABELS.map}</MenuItem>
-                <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem>
-              </Select>
-            </FormControl>
             {selectedView === "bourdieu" && (
-              <FormControl variant="outlined" sx={{ marginTop: "1em" }}>
+              <FormControl variant="outlined" sx={{ marginTop: "1em", marginLeft: "1em" }}>
                 <TextField required id="input-bourdieu-xl" sx={{ marginBottom: "1em" }} label="X left words (comma separated)" variant="outlined" onChange={e => setXLeftWord(e.target.value)} value={xLeftWord} />
                 <TextField required id="input-bourdieu-xr" sx={{ marginBottom: "1em" }} label="X right words (comma separated)" variant="outlined" onChange={e => setXRightWord(e.target.value)} value={xRightWord} />
                 <TextField required id="input-bourdieu-yt" sx={{ marginBottom: "1em" }} label="Y top words (comma separated)" variant="outlined" onChange={e => setYTopWord(e.target.value)} value={yTopWord} />
@@ -206,6 +189,19 @@ function QueryView() {
                 <TextField required id="input-bourdieu-radius" label="Radius Size" variant="outlined" onChange={e => setRadiusSize(e.target.value)} value={radiusSize} />
               </FormControl>
             )}
+            <FormControl variant="outlined" sx={{ marginTop: "1em", marginLeft: "1em" }}>
+              <TextField required id="input-map-nclusters" sx={{ marginBottom: "1em" }} label="N° Clusters" variant="outlined" onChange={e => setNClusters(e.target.value)} value={nClusters} />
+              <TextField required id="input-map-namelength" sx={{ marginBottom: "1em" }} label="Name length" variant="outlined" onChange={e => setNameLength(e.target.value)} value={nameLength} />
+              <TextField required id="input-map-mincountterms" sx={{ marginBottom: "1em" }} label="Min Count Terms" variant="outlined" onChange={e => setMinCountTerms(e.target.value)} value={minCountTerms} />
+              <RadioGroup required name="cleantopics-radio-group" defaultValue={cleanTopics} onChange={e => setCleanTopics(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }}>
+                <FormControlLabel value={true} label="Yes" control={<Radio />} />
+                <FormControlLabel value={false} label="No" control={<Radio />} />
+              </RadioGroup>
+              <RadioGroup required name="language-radio-group" defaultValue={language} onChange={e => setLanguage(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} >
+                <FormControlLabel value="french" label="fr" control={<Radio />} />
+                <FormControlLabel value="english" label="en" control={<Radio />} />
+              </RadioGroup>
+            </FormControl>
           </Box>
         </div>
       )}

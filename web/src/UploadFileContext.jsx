@@ -36,7 +36,7 @@ const fetcher = (url, data) =>
     .then((res) => res.data);
 
 // Provider Component
-export function TopicsProvider({ children, onSelectView }) {
+export function TopicsProvider({ children, onSelectView, selectedView }) {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState();
   const [error, setError] = useState();
@@ -129,11 +129,12 @@ export function TopicsProvider({ children, onSelectView }) {
       uploadFile,
       isLoading,
       error,
+      selectedView
     }),
-    [data, uploadFile, isLoading, error],
+    [data, uploadFile, isLoading, error, selectedView],
   );
 
-  const normalise = (value) => (value * 100) / 100;
+  const normalisePercentage = (value) => (value * 100) / 100;
 
   return (
     <TopicsContext.Provider value={providerValue}>
@@ -143,11 +144,11 @@ export function TopicsProvider({ children, onSelectView }) {
         {taskID && (
           <Box display="flex" alignItems="center">
             <Box width="100%" mr={1}>
-              <CircularProgress variant="indeterminate" value={normalise(taskProgress)} />
-              <LinearProgress variant="determinate" value={normalise(taskProgress)} />
+              <CircularProgress variant="indeterminate" value={normalisePercentage(taskProgress)} />
+              <LinearProgress variant="determinate" value={normalisePercentage(taskProgress)} />
             </Box>
             <Box minWidth={35}>
-              <Typography variant="body2" color="textSecondary">{`${Math.round(taskProgress)}%`}</Typography>
+              <Typography variant="body2" color="textSecondary">{`${Math.min(100, Math.round(taskProgress))}%`}</Typography>
             </Box>
           </Box>
         )}

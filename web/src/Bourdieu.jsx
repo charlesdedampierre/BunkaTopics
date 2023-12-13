@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState, useContext } from "rea
 import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
 import { TopicsContext } from "./UploadFileContext";
+import QueryView from "./QueryView";
 
 const bunkaDocs = "bunka_bourdieu_docs.json";
 const bunkaTopics = "bunka_bourdieu_topics.json";
@@ -363,7 +364,7 @@ function Bourdieu() {
             <svg ref={svgRef} />
           </div>
           <div className="text-container" ref={textContainerRef}>
-            {selectedDocument && (
+            {selectedDocument ? (
               <div className="text-content">
                 <h2 className="topic-name">
                   Topic:
@@ -372,7 +373,7 @@ function Bourdieu() {
 
                 <p>{selectedDocument.content}</p>
               </div>
-            )}
+            ): <QueryView />}
           </div>
         </div>
       )}

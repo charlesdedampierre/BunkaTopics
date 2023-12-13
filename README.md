@@ -25,6 +25,9 @@ cd BunkaTopics
 # Create the environment from the .lock file. 
 poetry install # This will install all packages in the .lock file inside a virtual environmnet
 
+# if there is a problem with chromadb, please do:
+pip install chromadb==0.4.13
+
 # Start the environment
 poetry shell
 ```

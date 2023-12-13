@@ -31,7 +31,7 @@ function DropdownMenu({ onSelectView, selectedView }) {
         <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem>
         <MenuItem value="docs">{LABELS.docs}</MenuItem>
         {/* <MenuItem value="treemap">{LABELS.treemap}</MenuItem> */}
-        <MenuItem value="query">{LABELS.query}</MenuItem>
+        {/* <MenuItem value="query">{LABELS.query}</MenuItem> */}
       </Select>
     </FormControl>
   );

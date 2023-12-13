@@ -29,6 +29,7 @@ RUN pip3 install async_timeout pymongo
 FROM bunkatopicsbasedocker
 # Models
 RUN python3 -m spacy download en_core_web_sm
+RUN python3 -m spacy download fr_core_news_lg
 # reducing privilege
 RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app

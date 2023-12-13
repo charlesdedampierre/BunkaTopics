@@ -35,19 +35,31 @@ def post_process_topics(full_docs: t.List[str], topics_param: TopicParameterApi)
 async def upload_process_topics_csv(
     file: UploadFile,
     n_clusters: int = Form(...),
+    language: str = Form(...),
+    name_length: int = Form(...),
+    clean_topics: bool = Form(...),
+    min_count_terms: int = Form(...),
     selected_column: str = Form(...),
 ):
     # Read the CSV file
     df = pd.read_csv(file.file)
     full_docs = df[selected_column].tolist()
-    topics_param = TopicParameterApi(n_clusters=n_clusters)
+    topics_param = TopicParameterApi(
+        n_clusters=n_clusters,
+        language=language,
+        name_lenght=name_length,
+        clean_topics=clean_topics,
+        min_count_terms=min_count_terms
+    )
     task = process_topics_task.delay(full_docs, topics_param.to_dict())
     return {"task_id": task.id}
 
 
 @app.post("/bourdieu/")
 def post_process_bourdieu_query(
-    full_docs: t.List[str], query: BourdieuQueryApi, topics_param: TopicParameterApi
+    full_docs: t.List[str],
+    query: BourdieuQueryApi,
+    topics_param: TopicParameterApi
 ):
     task = bourdieu_api_task.delay(full_docs, query.to_dict(), topics_param.to_dict())
     return {"task_id": task.id}
@@ -57,6 +69,10 @@ def post_process_bourdieu_query(
 async def upload_process_bourdieu_csv(
     file: UploadFile,
     n_clusters: int = Form(...),
+    language: str = Form(...),
+    name_length: int = Form(...),
+    clean_topics: bool = Form(...),
+    min_count_terms: int = Form(...),
     selected_column: str = Form(...),
     x_left_words: str = Form(...),
     x_right_words: str = Form(...),
@@ -67,7 +83,13 @@ async def upload_process_bourdieu_csv(
     # Read the CSV file
     df = pd.read_csv(file.file)
     full_docs = df[selected_column].tolist()
-    topics_param = TopicParameterApi(n_clusters=n_clusters)
+    topics_param = TopicParameterApi(
+        n_clusters=n_clusters,
+        language=language,
+        name_lenght=name_length,
+        clean_topics=clean_topics,
+        min_count_terms=min_count_terms
+    )
     query = BourdieuQueryApi(
         x_left_words=[x.strip() for x in x_left_words.split(",")],
         x_right_words=[x.strip() for x in x_right_words.split(",")],

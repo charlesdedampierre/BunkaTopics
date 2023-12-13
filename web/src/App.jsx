@@ -3,7 +3,6 @@ import Bourdieu from "./Bourdieu";
 import DocsView from "./DocsView";
 import DropdownMenu from "./DropdownMenu";
 import MapView from "./Map";
-import QueryView from "./QueryView";
 import TreemapView from "./TreemapView";
 import { TopicsProvider } from "./UploadFileContext";
 
@@ -20,19 +19,20 @@ function App() {
           <img src="/bunka_logo.png" alt="Bunka Logo" className="bunka-logo" />
           <DropdownMenu onSelectView={setSelectedView} selectedView={selectedView} />
         </div>
-        <TopicsProvider onSelectView={setSelectedView}>
+        <TopicsProvider onSelectView={setSelectedView} selectedView={selectedView}>
           {selectedView === "map" ? (
             <MapView />
           ) : selectedView === "docs" ? (
             <DocsView />
           ) : selectedView === "treemap" ? (
+            /**
+             * Hidden view for the moment
+             */
             <TreemapView />
-          ) : selectedView === "query" ? (
-            <QueryView />
           ) : selectedView === "bourdieu" ? (
             <Bourdieu />
           ) : (
-            <QueryView />
+            <Map />
           )}
         </TopicsProvider>
       </div>

@@ -15,41 +15,67 @@ open_ai_generative_model = OpenAI(
     openai_api_key=os.getenv("OPEN_AI_KEY"),
     openai_organization=os.getenv("OPEN_AI_ORG_ID"),
 )
-existing_bunka = Bunka(
-    embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+english_bunka = Bunka(
+    embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
+    language = 'en_core_web_sm'
+)
+french_bunka = Bunka(
+    embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
+    language = 'fr_core_news_lg'
 )
 
 
 def process_topics(
-    full_docs: t.List[str], params: TopicParameterApi, clean_topic=False
+    full_docs: t.List[str], params: TopicParameterApi
 ):
-    existing_bunka.fit(full_docs)
-    existing_bunka.get_topics(
-        n_clusters=params.n_clusters, name_lenght=3, min_count_terms=2
+    if params.language == "french":
+        bunka = french_bunka
+    else:
+        bunka = english_bunka
+
+    bunka.fit(full_docs)
+    bunka.get_topics(
+        n_clusters=params.n_clusters,
+        name_lenght=params.name_lenght,
+        min_count_terms=params.min_count_terms
     )
-    if clean_topic:
-        existing_bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
-    docs = existing_bunka.docs
-    topics = existing_bunka.topics
+    if params.clean_topics:
+        bunka.get_clean_topic_name(
+            generative_model=open_ai_generative_model,
+            language=language)
+
+    docs = bunka.docs
+    topics = bunka.topics
 
     return TopicsResponse(docs=docs, topics=topics)
 
 
 def process_bourdieu(
-    full_docs: t.List[str], bourdieu_query, topic_param, clean_topic=False
+    full_docs: t.List[str],
+    bourdieu_query: BourdieuQueryApi,
+    topic_param: TopicParameterApi
 ):
-    existing_bunka.fit(full_docs)
-    existing_bunka.get_topics(
-        n_clusters=topic_param.n_clusters, name_lenght=1, min_count_terms=1
+    if params.language == "french":
+        bunka = french_bunka
+    else:
+        bunka = english_bunka
+
+    bunka.fit(full_docs)
+    bunka.get_topics(
+        n_clusters=params.n_clusters,
+        name_lenght=params.name_lenght,
+        min_count_terms=params.min_count_terms
     )
-    if clean_topic:
-        existing_bunka.get_clean_topic_name(generative_model=open_ai_generative_model)
+    if params.clean_topics:
+        bunka.get_clean_topic_name(
+            generative_model=open_ai_generative_model,
+            language=language)
 
     return bourdieu_api(
         generative_model=open_ai_generative_model,
-        embedding_model=existing_bunka.embedding_model,
-        docs=existing_bunka.docs,
-        terms=existing_bunka.terms,
+        embedding_model=bunka.embedding_model,
+        docs=bunka.docs,
+        terms=bunka.terms,
         bourdieu_query=bourdieu_query,
         topic_param=topic_param,
         generative_ai_name=clean_topic,

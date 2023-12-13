@@ -137,6 +137,7 @@ Then Install the Bunkatopics package:
 
 ```bash
 pip install bunkatopics==0.43
+pip install chromadb==0.4.13
 ```
 
 ## Retrieval Augmented Generation (RAG)

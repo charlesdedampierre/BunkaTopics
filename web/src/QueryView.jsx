@@ -127,6 +127,10 @@ function QueryView() {
         yTopWord,
         yBottomWord,
         radiusSize,
+        nameLength,
+        minCountTerms,
+        language,
+        cleanTopics
       });
     }
   };

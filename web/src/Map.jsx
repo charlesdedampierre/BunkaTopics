@@ -1,4 +1,6 @@
 import { Backdrop, CircularProgress, Box, Button } from "@mui/material";
+import HelpIcon from '@mui/icons-material/Help';
+import Tooltip from '@mui/material/Tooltip';
 import * as d3 from "d3";
 import { ZoomTransform } from 'd3'
 import * as d3Contour from "d3-contour";
@@ -268,6 +270,8 @@ function MapView() {
     }
   }, [apiData, createScatterPlot]);
 
+  const mapDescription = "This map is created by embedding documents in a two-dimensional space. Two documents are close to each other if they share similar semantic features, such as vocabulary, expressions, and language. The documents are not directly represented on the map; instead, they are grouped into clusters. A cluster is a set of documents that share similarities. This topic is automatically described by a few words.";
+
   return (
     <div className="json-display">
       {isLoading ? (
@@ -277,6 +281,12 @@ function MapView() {
       ) : (
         <div className="scatter-plot-and-text-container">
           <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
+            <Tooltip
+              style={{ position: "relative", top: 10, left: 40 }}
+              title={mapDescription}
+            >
+              <HelpIcon />
+            </Tooltip>
             <svg ref={svgRef} />
           </div>
           <div className="text-container" ref={textContainerRef}>

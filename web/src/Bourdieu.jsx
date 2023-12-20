@@ -80,7 +80,7 @@ function Bourdieu() {
         : d3.zoomIdentity;
       svg.call(zoom.transform, initialTransform);
 
-    // Axes
+      // Axes
       const xMin = d3.min(docsData, (d) => d.x);
       const xMax = d3.max(docsData, (d) => d.x);
       const yMin = d3.min(docsData, (d) => d.y);
@@ -103,36 +103,32 @@ function Bourdieu() {
       svg
         .append("text")
         .attr("x", xScale(xMin))
-        .attr("y", yScale(10))
+        .attr("y", yScale(0.01))
         .text(queryData.x_right_words[0])
-        .style("background-color", "white")
         .style("text-anchor", "start")
         .style("fill", "blue");
 
       svg
         .append("text")
         .attr("x", xScale(xMax))
-        .attr("y", yScale(10))
+        .attr("y", yScale(0.01))
         .text(queryData.x_left_words[0])
-        .style("background-color", "white")
         .style("text-anchor", "start")
         .style("fill", "blue");
 
       svg
         .append("text")
-        .attr("x", xScale(10))
+        .attr("x", xScale(0.01))
         .attr("y", yScale(yMax))
         .text(queryData.y_top_words[0])
-        .style("background-color", "white")
         .style("text-anchor", "start")
         .style("fill", "blue");
 
       svg
         .append("text")
-        .attr("x", xScale(10))
+        .attr("x", xScale(0.01))
         .attr("y", yScale(yMin))
         .text(queryData.y_bottom_words[0])
-        .style("background-color", "white")
         .style("text-anchor", "end")
         .style("fill", "blue");
 

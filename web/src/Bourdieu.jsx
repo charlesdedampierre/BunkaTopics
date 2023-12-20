@@ -1,6 +1,7 @@
 import * as d3 from "d3";
+import { ZoomTransform } from "d3";
 import * as d3Contour from "d3-contour";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, CircularProgress, Box, Button } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
@@ -37,11 +38,47 @@ function Bourdieu() {
       const svg = d3
         .select(svgRef.current)
         .attr("width", "100%")
-        .attr("height", svgHeight)
-        .append("g")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`)
-        .style("background-color", "blue");
+        .attr("height", svgHeight);
+      /**
+       * SVG canvas group on which transforms apply.
+       */
+      const g = svg.append("g")
+      .classed("canvas", true)
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+      /**
+       * Zoom.
+       */
+      const zoom = d3.zoom()
+        .scaleExtent([1, 3])
+        .translateExtent([[0,0], [plotWidth, plotHeight]])
+        .on("zoom", function ({ transform }) {
+          g.attr(
+            "transform",
+            `translate(${transform.x ?? 0}, ${transform.y ?? 0}) scale(${transform.k ?? 1})`
+          )
+          //positionLabels()
+          // props.setTransform?.({
+          //   x: transform.x,
+          //   y: transform.y,
+          //   k: transform.k
+          // })
+        });
+      svg.call(zoom);
 
+      /**
+       * Initial zoom.
+       */
+      const defaultTransform = { k: 1 };
+      const initialTransform = defaultTransform?.k != null
+        ? new ZoomTransform(
+          defaultTransform.k ?? 1,
+          defaultTransform.x ?? 0,
+          defaultTransform.y ?? 0
+        )
+        : d3.zoomIdentity;
+      svg.call(zoom.transform, initialTransform);
+
+    // Axes
       const xMin = d3.min(docsData, (d) => d.x);
       const xMax = d3.max(docsData, (d) => d.x);
       const yMin = d3.min(docsData, (d) => d.y);
@@ -64,34 +101,38 @@ function Bourdieu() {
       svg
         .append("text")
         .attr("x", xScale(xMin))
-        .attr("y", yScale(0))
+        .attr("y", yScale(10))
         .text(queryData.x_right_words[0])
+        .style("background-color", "white")
         .style("text-anchor", "start")
-        .style("fill", "purple");
+        .style("fill", "blue");
 
       svg
         .append("text")
         .attr("x", xScale(xMax))
-        .attr("y", yScale(0))
+        .attr("y", yScale(10))
         .text(queryData.x_left_words[0])
+        .style("background-color", "white")
         .style("text-anchor", "start")
-        .style("fill", "purple");
+        .style("fill", "blue");
 
       svg
         .append("text")
-        .attr("x", xScale(0))
+        .attr("x", xScale(10))
         .attr("y", yScale(yMax))
         .text(queryData.y_top_words[0])
+        .style("background-color", "white")
         .style("text-anchor", "start")
-        .style("fill", "purple");
+        .style("fill", "blue");
 
       svg
         .append("text")
-        .attr("x", xScale(0))
+        .attr("x", xScale(10))
         .attr("y", yScale(yMin))
         .text(queryData.y_bottom_words[0])
+        .style("background-color", "white")
         .style("text-anchor", "end")
-        .style("fill", "purple");
+        .style("fill", "blue");
 
       /*
             const scatter = svg.selectAll('.scatter-point')
@@ -366,14 +407,21 @@ function Bourdieu() {
           </div>
           <div className="text-container" ref={textContainerRef}>
             {selectedDocument ? (
-              <div className="text-content">
-                <h2 className="topic-name">
-                  Topic:
-                  {selectedDocument.topic_id}
-                </h2>
+              <>
+                <Box marginBottom={2}>
+                  <Button component="label" variant="outlined" startIcon={<RepeatIcon />} onClick={setSelectedDocument(null)}>
+                    Upload another CSV file
+                  </Button>
+                </Box>
+                <div className="text-content">
+                  <h2 className="topic-name">
+                    Topic:
+                    {selectedDocument.topic_id}
+                  </h2>
 
-                <p>{selectedDocument.content}</p>
-              </div>
+                  <p>{selectedDocument.content}</p>
+                </div>
+              </>
             ): <QueryView />}
           </div>
         </div>

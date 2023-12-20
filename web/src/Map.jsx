@@ -1,5 +1,6 @@
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, CircularProgress, Box, Button } from "@mui/material";
 import * as d3 from "d3";
+import { ZoomTransform } from 'd3'
 import * as d3Contour from "d3-contour";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom"; // Import ReactDOM
@@ -41,10 +42,45 @@ function MapView() {
       const svg = d3
         .select(svgRef.current)
         .attr("width", "100%")
-        .attr("height", plotHeight)
-        .append("g")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`)
-        .style("background-color", "blue"); // Set the background color to blue
+        .attr("height", plotHeight);
+      /**
+      * SVG canvas group on which transforms apply.
+      */
+      const g = svg.append("g")
+        .classed("canvas", true)
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+      /**
+      * Zoom.
+      */
+      const zoom = d3.zoom()
+        .scaleExtent([1, 3])
+        .translateExtent([[0,0], [1000, 1000]])
+        .on("zoom", function ({ transform }) {
+          g.attr(
+            "transform",
+            `translate(${transform.x ?? 0}, ${transform.y ?? 0}) scale(${transform.k ?? 1})`
+          )
+          //positionLabels()
+          // props.setTransform?.({
+          //   x: transform.x,
+          //   y: transform.y,
+          //   k: transform.k
+          // })
+        });
+      svg.call(zoom);
+
+      /**
+       * Initial zoom.
+       */
+      const defaultTransform = { k: 1 };
+      const initialTransform = defaultTransform?.k != null
+        ? new ZoomTransform(
+          defaultTransform.k ?? 1,
+          defaultTransform.x ?? 0,
+          defaultTransform.y ?? 0
+        )
+        : d3.zoomIdentity;
+      svg.call(zoom.transform, initialTransform);
 
       const xMin = d3.min(data, (d) => d.x);
       const xMax = d3.max(data, (d) => d.x);
@@ -245,9 +281,16 @@ function MapView() {
           </div>
           <div className="text-container" ref={textContainerRef}>
             {selectedDocument ? (
-              <div className="text-content">
-                <p>{selectedDocument.content}</p>
-              </div>
+              <>
+                <Box marginBottom={2}>
+                  <Button component="label" variant="outlined" startIcon={<RepeatIcon />} onClick={setSelectedDocument(null)}>
+                    Upload another CSV file
+                  </Button>
+                </Box>
+                <div className="text-content">
+                  <p>{selectedDocument.content}</p>
+                </div>
+              </>
             ) : <QueryView />}
           </div>
         </div>

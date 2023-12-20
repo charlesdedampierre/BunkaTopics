@@ -1,4 +1,4 @@
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import {
   Backdrop, // Import Backdrop component
   Box,
@@ -169,8 +169,8 @@ function QueryView() {
   return (
     <Container component="form">
       <Box marginBottom={2}>
-        <Button component="label" variant="outlined" startIcon={<CloudUploadIcon />}>
-          Upload a CSV with maximum 10 000 lines
+        <Button component="label" variant="outlined" endIcon={<ScheduleSendIcon />}>
+          Upload a CSV (max 10 000 lines) and queue processing
           <VisuallyHiddenInput type="file" onChange={handleFileChange} required />
         </Button>
       </Box>

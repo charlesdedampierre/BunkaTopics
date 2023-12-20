@@ -239,10 +239,10 @@ function QueryView() {
                 <FormControlLabel value={true} label="Yes" control={<Radio />} disabled/>
                 <FormControlLabel value={false} label="No" control={<Radio />} disabled/>
               </RadioGroup>
-              <RadioGroup required name="language-radio-group" defaultValue={language} onChange={e => setLanguage(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} disabled>
+              <RadioGroup required name="language-radio-group" defaultValue={language} onChange={e => setLanguage(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }}>
                 <FormLabel id="language-group-label">Language</FormLabel>
-                <FormControlLabel value="french" label="fr" control={<Radio />} disabled/>
-                <FormControlLabel value="english" label="en" control={<Radio />} disabled/>
+                <FormControlLabel value="french" label="fr" control={<Radio />}/>
+                <FormControlLabel value="english" label="en" control={<Radio />}/>
               </RadioGroup>
             </FormControl>
           </Box>

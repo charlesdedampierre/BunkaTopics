@@ -1,6 +1,8 @@
-import { Backdrop, CircularProgress, Box, Button } from "@mui/material";
+import { Backdrop, CircularProgress, Button, Box } from "@mui/material";
 import HelpIcon from '@mui/icons-material/Help';
 import Tooltip from '@mui/material/Tooltip';
+import RepeatIcon from '@mui/icons-material/Repeat';
+
 import * as d3 from "d3";
 import { ZoomTransform } from 'd3'
 import * as d3Contour from "d3-contour";
@@ -20,16 +22,7 @@ function MapView() {
   const { data: apiData, isLoading } = useContext(TopicsContext);
 
   const svgRef = useRef(null);
-  const textContainerRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
-
-  // const handleSearch = () => {
-  //   const results = jsonData.filter((doc) =>
-  //     doc.content.toLowerCase().includes(searchQuery.toLowerCase()),
-  //   );
-  //   setSearchResults(results);
-  // };
-
   const createScatterPlot = useCallback(
     (data) => {
       const margin = {
@@ -224,17 +217,8 @@ function MapView() {
 
         // Display the topic name and content from top_doc_content with a scroll system
         if (d.top_doc_content) {
-          const topicName = d.name;
-          const topicSize = d.size;
-          const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
-          const sizeFraction = Math.round((topicSize / totalSize) * 100);
-
-          const content = d.top_doc_content;
-
           // Render the TextContainer component with topic details
-          ReactDOM.render(<TextContainer topicName={topicName} sizeFraction={sizeFraction} content={content} />, textContainerRef.current);
-        } else {
-          textContainerRef.current.innerHTML = "No content available for this topic.";
+          setSelectedDocument(d);
         }
       });
     },
@@ -289,18 +273,19 @@ function MapView() {
             </Tooltip>
             <svg ref={svgRef} />
           </div>
-          <div className="text-container" ref={textContainerRef}>
-            {selectedDocument ? (
-              <>
-                <Box marginBottom={2}>
-                  <Button component="label" variant="outlined" startIcon={<RepeatIcon />} onClick={setSelectedDocument(null)}>
-                    Upload another CSV file
-                  </Button>
-                </Box>
-                <div className="text-content">
-                  <p>{selectedDocument.content}</p>
-                </div>
-              </>
+          <div className="text-container" >
+            {selectedDocument !== null ? (
+            <>
+              <Box sx={{ marginBottom: "1em" }}>
+                <Button sx={{ width: "100%" }} component="label" variant="outlined" startIcon={<RepeatIcon />} onClick={() => setSelectedDocument(null)}>
+                  Upload another CSV file
+                </Button>
+              </Box>
+              <TextContainer topicName={selectedDocument.name} sizeFraction={() => {
+                const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
+                return Math.round((topicSize / totalSize) * 100);
+              }} content={selectedDocument.top_doc_content} />
+            </>
             ) : <QueryView />}
           </div>
         </div>

@@ -10,10 +10,8 @@ import typing as t
 import os
 import asyncio
 from celery.result import AsyncResult
-from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, StreamingResponse
-from fastapi import FastAPI, UploadFile, Form, Request, status, Response
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import UploadFile, Form, status
 import pandas as pd
 
 # Import the necessary modules and classes
@@ -24,9 +22,21 @@ from api.bunka_api.datamodel import (
 )
 from api.bunka_api.jobs import process_topics_task, bourdieu_api_task
 
+def limit_docs(full_docs):
+    if len(full_docs) > 10000:
+        content = {"status_code": 10422, "message": "CSV must contain less than 10 000 lines", "data": None}
+        return JSONResponse(
+            content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
+    else:
+        return None
+
 
 @app.post("/topics/")
 def post_process_topics(full_docs: t.List[str], topics_param: TopicParameterApi):
+    limit = limit_docs(full_docs)
+    if limit is not None:
+        return limit
     task = process_topics_task.delay(full_docs, topics_param.to_dict())
     return {"task_id": task.id}
 
@@ -44,6 +54,10 @@ async def upload_process_topics_csv(
     # Read the CSV file
     df = pd.read_csv(file.file)
     full_docs = df[selected_column].tolist()
+    limit = limit_docs(full_docs)
+    if limit is not None:
+        return limit
+
     topics_param = TopicParameterApi(
         n_clusters=n_clusters,
         language=language,
@@ -61,6 +75,10 @@ def post_process_bourdieu_query(
     query: BourdieuQueryApi,
     topics_param: TopicParameterApi
 ):
+    limit = limit_docs(full_docs)
+    if limit is not None:
+        return limit
+
     task = bourdieu_api_task.delay(full_docs, query.to_dict(), topics_param.to_dict())
     return {"task_id": task.id}
 
@@ -83,6 +101,10 @@ async def upload_process_bourdieu_csv(
     # Read the CSV file
     df = pd.read_csv(file.file)
     full_docs = df[selected_column].tolist()
+    limit = limit_docs(full_docs)
+    if limit is not None:
+        return limit
+
     topics_param = TopicParameterApi(
         n_clusters=n_clusters,
         language=language,

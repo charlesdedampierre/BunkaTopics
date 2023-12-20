@@ -21,6 +21,7 @@ import {
   Radio,
   FormControlLabel,
   FormLabel,
+  Alert
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Papa from "papaparse";
@@ -56,7 +57,12 @@ function QueryView() {
   const [cleanTopics, setCleanTopics] = useState(false);
   const [language, setLanguage] = useState("english");
   const { uploadFile, isLoading, selectedView } = useContext(TopicsContext);
-
+  const [fileDataTooLong, setFileDataTooLong] = useState(false);
+  const [fileDataError, setFileDataError] = useState(null);
+  
+  /**
+   * Column name selector handler
+   */
   const handleClose = () => {
     setOpenSelector(false);
   };
@@ -65,7 +71,13 @@ function QueryView() {
     setOpenSelector(true);
   };
 
-  const parseCSVFile = (file, sampleSize = 500) =>
+  /**
+   * PArse the CSV and take a sample to display the preview
+   * @param {*} file 
+   * @param {*} sampleSize 
+   * @returns 
+   */
+  const parseCSVFile = (file, sampleSize = 100) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -73,7 +85,8 @@ function QueryView() {
         const csvData = e.target.result;
         const lines = csvData.split("\n");
 
-        // Take a sample of the first 500 lines
+        setFileDataTooLong(lines.length > 10000);
+        // Take a sample of the first 500 lines to display preview
         const sampleLines = lines.slice(0, sampleSize).join("\n");
 
         Papa.parse(sampleLines, {
@@ -88,6 +101,11 @@ function QueryView() {
       reader.readAsText(file);
     });
 
+    /**
+     * Handler the file selection ui workflow
+     * @param {Event} e 
+     * @returns 
+     */
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
@@ -98,8 +116,14 @@ function QueryView() {
       const parsedData = await parseCSVFile(file);
       setFileData(parsedData);
       setSelectedColumn(""); // Clear the selected column when a new file is uploaded
-      handleOpen();
+      if (fileDataTooLong === false) {
+        handleOpen();
+      }
+      else {
+        handleClose();
+      }
     } catch (exc) {
+      setFileDataError("Error parsing the CSV file, please check your file before uploading");
       console.error("Error parsing CSV:", exc);
     }
   };
@@ -115,7 +139,11 @@ function QueryView() {
     setSelectedColumnData(columnData);
   };
 
+  /**
+   * Launch the upload and processing
+   */
   const handleProcessTopics = async () => {
+    // Return if no column selected
     if (selectedColumnData.length === 0) return;
 
     if (selectedFile) {
@@ -135,12 +163,14 @@ function QueryView() {
       });
     }
   };
+  
+  const openTableContainer = selectedColumnData.length > 0 && fileData.length > 0 && fileData.length <= 10000 && fileDataTooLong === false && fileDataError == null;
 
   return (
     <Container component="form">
       <Box marginBottom={2}>
         <Button component="label" variant="outlined" startIcon={<CloudUploadIcon />}>
-          Upload a CSV with at least one text column
+          Upload a CSV with maximum 10 000 lines
           <VisuallyHiddenInput type="file" onChange={handleFileChange} required />
         </Button>
       </Box>
@@ -163,7 +193,7 @@ function QueryView() {
       ) : (
         // Content when not loading
         <div>
-          {selectedColumnData.length > 0 && (
+          {openTableContainer && (
             <TableContainer component={Paper} style={{ maxHeight: "400px", overflowY: "auto" }}>
               <Table>
                 <TableHead>
@@ -173,7 +203,7 @@ function QueryView() {
                 </TableHead>
                 <TableBody>
                   {selectedColumnData.map((cell, index) => (
-                    <TableRow key={`${cell}`}>
+                    <TableRow key={`table-${index}`}>
                       <TableCell>{cell}</TableCell>
                     </TableRow>
                   ))}
@@ -181,8 +211,14 @@ function QueryView() {
               </Table>
             </TableContainer>
           )}
+          {fileDataTooLong && (
+            <Alert severity="error">CSV must have less than 10 000 lines (this is a demo)</Alert>
+          )}
+          {fileDataError && (
+            <Alert severity="error">CSV must have less than 10 000 lines (this is a demo)</Alert>
+          )}
           <Box marginTop={2} display="flex" alignItems="center" flexDirection="column">
-            <Button variant="contained" color="primary" onClick={handleProcessTopics} disabled={selectedColumnData.length === 0 || isLoading}>
+            <Button variant="contained" color="primary" onClick={handleProcessTopics} disabled={selectedColumnData.length === 0 || isLoading || fileDataTooLong === true || fileDataError !== null}>
               {isLoading ? "Processing..." : "Process Topics"}
             </Button>
             {selectedView === "bourdieu" && (
@@ -198,15 +234,15 @@ function QueryView() {
               <TextField required id="input-map-nclusters" sx={{ marginBottom: "1em" }} label="N° Clusters" variant="outlined" onChange={e => setNClusters(e.target.value)} value={nClusters} />
               <TextField required id="input-map-namelength" sx={{ marginBottom: "1em" }} label="Name length" variant="outlined" onChange={e => setNameLength(e.target.value)} value={nameLength} />
               <TextField required id="input-map-mincountterms" sx={{ marginBottom: "1em" }} label="Min Count Terms" variant="outlined" onChange={e => setMinCountTerms(e.target.value)} value={minCountTerms} />
-              <RadioGroup required name="cleantopics-radio-group" defaultValue={cleanTopics} onChange={e => setCleanTopics(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }}>
+              <RadioGroup required name="cleantopics-radio-group" defaultValue={cleanTopics} onChange={e => setCleanTopics(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} disabled>
                 <FormLabel id="clean-topics-group-label">Clean Topics</FormLabel>
-                <FormControlLabel value={true} label="Yes" control={<Radio />} />
-                <FormControlLabel value={false} label="No" control={<Radio />} />
+                <FormControlLabel value={true} label="Yes" control={<Radio />} disabled/>
+                <FormControlLabel value={false} label="No" control={<Radio />} disabled/>
               </RadioGroup>
-              <RadioGroup required name="language-radio-group" defaultValue={language} onChange={e => setLanguage(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} >
+              <RadioGroup required name="language-radio-group" defaultValue={language} onChange={e => setLanguage(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} disabled>
                 <FormLabel id="language-group-label">Language</FormLabel>
-                <FormControlLabel value="french" label="fr" control={<Radio />} />
-                <FormControlLabel value="english" label="en" control={<Radio />} />
+                <FormControlLabel value="french" label="fr" control={<Radio />} disabled/>
+                <FormControlLabel value="english" label="en" control={<Radio />} disabled/>
               </RadioGroup>
             </FormControl>
           </Box>

@@ -1,3 +1,11 @@
+SHELL := /bin/bash
+.PHONY : all
+
+default: 
+	docker_build
+	docker_build_worker
+	docker_create_network
+
 jupyter:
 	python -m jupyterlab
 
@@ -17,7 +25,7 @@ poetry_export:
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 install_nginx_config:
-	cp nginx-configuration.conf /etc/nginx/sites-enabled/ && systemctl reload nginx
+	cp api/deployment/nginx-configuration-dev.conf /etc/nginx/sites-enabled/ && systemctl reload nginx
 
 #############
 # Streamlit  #

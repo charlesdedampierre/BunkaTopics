@@ -7,19 +7,6 @@ import React, { createContext, useCallback, useEffect, useMemo, useState } from 
 // Create the Context
 export const TopicsContext = createContext();
 
-/*
-const saveDataToFile = (fileName, data) => {
-  const blob = new Blob([data], { type: "application/json" });
-
-  // Create a link element
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = fileName;
-
-  // Trigger a click event to download the file
-  a.click();
-};
-*/
 const { REACT_APP_API_ENDPOINT } = process.env;
 
 const TOPICS_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/topics/csv/`;

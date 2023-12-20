@@ -73,9 +73,6 @@ docker_push:
 # Docker CELERY WORKER #
 #############
 
-run_worker: 
-	python -m celery worker -l INFO
-
 docker_create_network:
 	docker network create bunkatopics_network
 

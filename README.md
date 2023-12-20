@@ -266,3 +266,7 @@ You can access several attributes
 |------------------------|---------------------------------------------------------------------------------------------|
 | `.docs`               | The documents stores as a Document pydantic model |
 | `.topics` | The Topics stored as a Topic pydantic model. |
+
+## API, Async Queue and server deployment documentation
+
+- [Read the API README.md](./api/README.md)

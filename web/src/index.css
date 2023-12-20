@@ -69,7 +69,7 @@ body {
   width: 100%;
 }
 
-svg {
+.scatter-plot-container svg {
   background-color: #f7f7f7;
   border: 1px solid #ddd;
 }

@@ -1,7 +1,9 @@
 import { Backdrop, CircularProgress, Button, Box } from "@mui/material";
 import HelpIcon from '@mui/icons-material/Help';
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import RepeatIcon from '@mui/icons-material/Repeat';
+import { styled } from '@mui/material/styles';
 
 import * as d3 from "d3";
 import { ZoomTransform } from 'd3'
@@ -16,6 +18,20 @@ import QueryView from "./QueryView";
 const bunkaDocs = "bunka_docs.json";
 const bunkaTopics = "bunka_topics.json";
 const { REACT_APP_API_ENDPOINT } = process.env;
+
+/**
+ * Generic tooltip
+ */
+export const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.popper}`]: {
+    backgroundColor: '#fff',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: 220,
+    fontSize: theme.typography.pxToRem(12),
+  },
+}));
 
 function MapView() {
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -262,7 +278,7 @@ function MapView() {
     }
   }, [apiData, createScatterPlot]);
 
-  const mapDescription = "This map is created by embedding documents in a two-dimensional space. Two documents are close to each other if they share similar semantic features, such as vocabulary, expressions, and language. The documents are not directly represented on the map; instead, they are grouped into clusters. A cluster is a set of documents that share similarities. This topic is automatically described by a few words.";
+  const mapDescription = "This map is created by embedding documents in a two-dimensional space. Two documents are close to each other if they share similar semantic features, such as vocabulary, expressions, and language. The documents are not directly represented on the map; instead, they are grouped into clusters. A cluster is a set of documents that share similarities. A cluster  is automatically described by a few words that best describes it.";
 
   return (
     <div className="json-display">
@@ -273,12 +289,21 @@ function MapView() {
       ) : (
         <div className="scatter-plot-and-text-container">
           <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
-            <Tooltip
-              style={{ position: "relative", top: 10, left: 40 }}
-              title={mapDescription}
+          <HtmlTooltip
+            title={
+              <React.Fragment>
+                <Typography color="inherit">{mapDescription}</Typography>
+              </React.Fragment>
+            }
+            followCursor
             >
-              <HelpIcon />
-            </Tooltip>
+              <HelpIcon style={{
+                position: "relative",
+                top: 10,
+                left: 40,
+                border: "none"
+              }}/>
+            </HtmlTooltip>
             <svg ref={svgRef} />
           </div>
           <div className="text-container" >

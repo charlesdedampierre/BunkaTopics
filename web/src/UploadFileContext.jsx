@@ -1,4 +1,4 @@
-import { Alert, Box, LinearProgress, Typography, CircularProgress } from "@mui/material";
+import { Alert, Box, LinearProgress, Typography, Backdrop } from "@mui/material";
 import axios from "axios";
 import PropTypes from "prop-types";
 import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
@@ -139,15 +139,22 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
         {isLoading && <div className="loader" />}
         {/* Display a progress bar based on task progress */}
         {taskID && (
-          <Box display="flex" alignItems="center">
-            <Box width="100%" mr={1}>
-              <CircularProgress variant="indeterminate" value={normalisePercentage(taskProgress)} />
-              <LinearProgress variant="determinate" value={normalisePercentage(taskProgress)} />
+          <Backdrop
+            sx={{ zIndex: 99999 }}
+            open={taskID !== undefined}
+          >
+            <Box display={"flex"} alignItems={"center"} flexDirection={"column"} sx={{ backgrounColor: "#FFF", fontSize: 20, fontWeight: 'medium'}}>
+              <Box minWidth={200}>
+                <Typography variant="h4">Bunka is cooking your data, please wait few minutes</Typography>
+              </Box>
+              <Box width="50%" mr={1}>
+                <LinearProgress variant="determinate" value={normalisePercentage(taskProgress)} />
+                <Box minWidth={35}>
+                  <Typography variant="subtitle">{`${Math.min(100, Math.round(taskProgress))}%`}</Typography>
+                </Box>
+              </Box>
             </Box>
-            <Box minWidth={35}>
-              <Typography variant="body2" color="textSecondary">{`${Math.min(100, Math.round(taskProgress))}%`}</Typography>
-            </Box>
-          </Box>
+          </Backdrop>
         )}
 
         {errorText && (

@@ -19,6 +19,7 @@ This README provides an overview of the internals of this API using FastAPI, Cel
   - [FastAPI Application Schema](#fastapi-application-schema)
   - [FastAPI, Celery, and Redis Flow](#fastapi-celery-and-redis-flow)
   - [Running the Application](#running-the-application)
+  - [Updating the application](#updating-the-application)
   - [Endpoints and Task Management](#endpoints-and-task-management)
   - [Monitoring and Scaling](#monitoring-and-scaling)
   - [Best Practices](#best-practices)
@@ -110,6 +111,18 @@ Run both API and Celery worker with Docker using the Makefile at the root of thi
 
 Type hostname in your *NIX terminal to print your hostname
 Go to http://[$hostname] or http://localhost
+
+## Updating the application
+
+- Via git:
+
+```bash
+git clone https://github.com/charlesdedampierre/BunkaTopics.git
+cd BunkaTopics
+git pull # only for an existing clone
+```
+
+- Then repeat the process for running the application described above
 
 ## Endpoints and Task Management
 

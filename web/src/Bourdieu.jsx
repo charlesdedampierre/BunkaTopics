@@ -2,14 +2,14 @@ import * as d3 from "d3";
 import { ZoomTransform } from "d3";
 import * as d3Contour from "d3-contour";
 import { Backdrop, CircularProgress, Box, Button } from "@mui/material";
+import Typography from '@mui/material/Typography';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import React, { useCallback, useEffect, useRef, useState, useContext } from "react";
-import ReactDOM from "react-dom";
 import TextContainer from "./TextContainer";
 import { TopicsContext } from "./UploadFileContext";
 import QueryView from "./QueryView";
 import HelpIcon from '@mui/icons-material/Help';
-import Tooltip from '@mui/material/Tooltip';
+import { HtmlTooltip } from "./Map";
 
 const bunkaDocs = "bunka_bourdieu_docs.json";
 const bunkaTopics = "bunka_bourdieu_topics.json";
@@ -407,12 +407,21 @@ function Bourdieu() {
       ) : (
         <div className="scatter-plot-and-text-container">
           <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
-            <Tooltip
-              style={{ position: "relative", top: 10, left: 40 }}
-              title={mapDescription}
+          <HtmlTooltip
+            title={
+              <React.Fragment>
+                <Typography color="inherit">{mapDescription}</Typography>
+              </React.Fragment>
+            }
+            followCursor
             >
-              <HelpIcon />
-            </Tooltip>
+              <HelpIcon style={{
+                position: "relative",
+                top: 10,
+                left: 40,
+                border: "none"
+              }}/>
+            </HtmlTooltip>
             <svg ref={svgRef} />
           </div>
           

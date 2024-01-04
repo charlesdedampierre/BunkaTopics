@@ -338,7 +338,7 @@ class Bunka:
                 json.dump(self.bourdieu_query.dict(), json_file)
 
             subprocess.Popen(["npm", "start"], cwd="../web")
-            print("NPM server started.")
+            print("NPM server started. Please Switch to Bourdieu View to see the results")
         except Exception as e:
             print(f"Error starting NPM server: {e}")
 

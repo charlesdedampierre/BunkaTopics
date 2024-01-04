@@ -75,13 +75,16 @@ function DocsView() {
   return (
     <Container fixed>
       <div className="docs-view">
-        <h2>Documents View</h2>
+        <h2>Data</h2>
         {isLoading ? (
           <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
             <CircularProgress color="primary" />
           </Backdrop>
         ) : (
           <div>
+            <Button variant="contained" color="primary" onClick={downloadCSV} sx={{ marginBottom: "1em" }}>
+              Download CSV
+            </Button>
             <Box
               sx={{
                 height: "1000px", // Set the height of the table
@@ -122,9 +125,6 @@ function DocsView() {
                 </Table>
               </TableContainer>
             </Box>
-            <Button variant="contained" color="primary" onClick={downloadCSV}>
-              Download CSV
-            </Button>
           </div>
         )}
       </div>

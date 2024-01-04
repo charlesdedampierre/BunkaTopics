@@ -18,7 +18,8 @@ const { REACT_APP_API_ENDPOINT } = process.env;
 
 function Bourdieu() {
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const { bourdieuData: apiData, isLoading } = useContext(TopicsContext);
+  const [mapLoading, setMapLoading] = useState(false);
+  const { bourdieuData: apiData, isLoading: isFileProcessing } = useContext(TopicsContext);
 
   const svgRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
@@ -353,6 +354,7 @@ function Bourdieu() {
 
   useEffect(() => {
     if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
+      setMapLoading(true);
       // Fetch the JSON data locally
       fetch(`/${bunkaDocs}`)
         .then((response) => response.json())
@@ -369,14 +371,23 @@ function Bourdieu() {
                 })
                 .catch((error) => {
                   console.error("Error fetching bourdieu query data:", error);
+                })
+                .finally(() => {
+                  setMapLoading(false);  
                 });
             })
             .catch((error) => {
               console.error("Error fetching topics data:", error);
+            })
+            .finally(() => {
+              setMapLoading(false);  
             });
         })
         .catch((error) => {
           console.error("Error fetching documents data:", error);
+        })
+        .finally(() => {
+          setMapLoading(false);  
         });
     } else {
       console.log(apiData);
@@ -389,8 +400,8 @@ function Bourdieu() {
    
   return (
     <div className="json-display">
-      {isLoading ? (
-        <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
+      {(isFileProcessing || mapLoading) ? (
+        <Backdrop open={isFileProcessing || mapLoading} style={{ zIndex: 9999 }}>
           <CircularProgress color="primary" />
         </Backdrop>
       ) : (

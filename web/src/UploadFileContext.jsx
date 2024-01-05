@@ -1,4 +1,5 @@
-import { Alert, Box, LinearProgress, Typography, Backdrop } from "@mui/material";
+import { Alert, Box, Typography, Backdrop } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from "axios";
 import PropTypes from "prop-types";
 import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
@@ -131,7 +132,7 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
     [data, uploadFile, isLoading, error, selectedView],
   );
 
-  const normalisePercentage = (value) => (value * 100) / 100;
+  const normalisePercentage = (value) => Math.ceil((value * 100) / 100);
 
   return (
     <TopicsContext.Provider value={providerValue}>
@@ -145,12 +146,12 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
           >
             <Box display={"flex"} alignItems={"center"} flexDirection={"column"} sx={{ backgrounColor: "#FFF", fontSize: 20, fontWeight: 'medium'}}>
               <Box minWidth={200}>
-                <Typography variant="h4">Bunka is cooking your data, please wait few minutes</Typography>
+                <Typography variant="h4">Bunka is cooking your data, please wait few seconds</Typography>
               </Box>
               <Box width="50%" mr={1}>
-                <LinearProgress variant="determinate" value={normalisePercentage(taskProgress)} />
+                <CircularProgress />
                 <Box minWidth={35}>
-                  <Typography variant="subtitle">{`${Math.min(100, Math.round(taskProgress))}%`}</Typography>
+                  <Typography variant="subtitle">{`${normalisePercentage(taskProgress)}%`}</Typography>
                 </Box>
               </Box>
             </Box>

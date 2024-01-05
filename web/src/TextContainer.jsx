@@ -9,7 +9,12 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import DescriptionIcon from '@mui/icons-material/Description';
 
-function TextContainer({ topicName, sizeFraction, content }) {
+export const topicsSizeFraction = (topicsCentroids, topicSize) => {
+  const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
+  return Math.round((topicSize / totalSize) * 100);
+}
+
+function TextContainer({ topicName, topicSizeFraction, content }) {
   const [selectedDocument, setSelectedDocument] = useState(null);
 
   const handleDocumentClick = (docIndex) => {
@@ -49,7 +54,7 @@ function TextContainer({ topicName, sizeFraction, content }) {
             textAlign: "center",
           }}
         >
-          {sizeFraction}% of the Territory
+          {topicSizeFraction}% of the Territory
         </Typography>
         <Paper elevation={3} style={{ maxHeight: "70vh", overflowY: "auto" }}>
           <List>
@@ -70,7 +75,7 @@ function TextContainer({ topicName, sizeFraction, content }) {
 
 TextContainer.propTypes = {
   topicName: PropTypes.string.isRequired,
-  sizeFraction: PropTypes.string.isRequired,
+  topicSizeFraction: PropTypes.number.isRequired,
   content: PropTypes.array.isRequired,
 };
 

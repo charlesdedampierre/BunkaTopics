@@ -11,7 +11,7 @@ import * as d3Contour from "d3-contour";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom"; // Import ReactDOM
 
-import TextContainer from "./TextContainer";
+import TextContainer, { topicsSizeFraction } from "./TextContainer";
 import { TopicsContext } from "./UploadFileContext";
 import QueryView from "./QueryView";
 
@@ -36,6 +36,8 @@ export const HtmlTooltip = styled(({ className, ...props }) => (
 function MapView() {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [mapLoading, setMapLoading] = useState(false);
+  const [topicsCentroids, setTopicsCentroids] = useState([])
+
   const { data: apiData, isLoading: isFileProcessing } = useContext(TopicsContext);
 
   const svgRef = useRef(null);
@@ -62,7 +64,7 @@ function MapView() {
         .classed("canvas", true)
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
       /**
-      * Zoom.
+      * TODO Zoom.
       */
       const zoom = d3.zoom()
         .scaleExtent([1, 3])
@@ -137,27 +139,28 @@ function MapView() {
         .style("stroke-width", 1);
 
       /*
-            const circles = svg.selectAll('circle')
-            .data(data)
-            .enter()
-            .append('circle')
-            .attr('cx', (d) => xScale(d.x))
-            .attr('cy', (d) => yScale(d.y))
-            .attr('r', 5)
-            .style('fill', 'lightblue')
-            .on('click', (event, d) => {
-                // Show the content and topic name of the clicked point in the text container
-                setSelectedDocument(d);
-                // Change the color to pink on click
-                circles.style('fill', (pointData) => (pointData === d) ? 'pink' : 'lightblue');
-            });
-            */
+      const circles = svg.selectAll('circle')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr('cx', (d) => xScale(d.x))
+      .attr('cy', (d) => yScale(d.y))
+      .attr('r', 5)
+      .style('fill', 'lightblue')
+      .on('click', (event, d) => {
+          // Show the content and topic name of the clicked point in the text container
+          setSelectedDocument(d);
+          // Change the color to pink on click
+          circles.style('fill', (pointData) => (pointData === d) ? 'pink' : 'lightblue');
+      });
+      */
 
-      const topicsCentroids = data.filter((d) => d.x_centroid && d.y_centroid);
+      const centroids = data.filter((d) => d.x_centroid && d.y_centroid);
+      setTopicsCentroids(centroids);
 
       svg
         .selectAll("circle.topic-centroid")
-        .data(topicsCentroids)
+        .data(centroids)
         .enter()
         .append("circle")
         .attr("class", "topic-centroid")
@@ -175,7 +178,7 @@ function MapView() {
       // Add text labels for topic names
       svg
         .selectAll("text.topic-label")
-        .data(topicsCentroids)
+        .data(centroids)
         .enter()
         .append("text")
         .attr("class", "topic-label")
@@ -203,7 +206,7 @@ function MapView() {
       // Add polygons for topics. Delete if no clicking on polygons
       const topicsPolygons = svg
         .selectAll("polygon.topic-polygon")
-        .data(topicsCentroids)
+        .data(centroids)
         .enter()
         .append("polygon")
         .attr("class", "topic-polygon")
@@ -314,10 +317,7 @@ function MapView() {
                   Upload another CSV file
                 </Button>
               </Box>
-              <TextContainer topicName={selectedDocument.name} sizeFraction={() => {
-                const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
-                return Math.round((topicSize / totalSize) * 100);
-              }} content={selectedDocument.top_doc_content} />
+              <TextContainer topicName={selectedDocument.name} topicSizeFraction={topicsSizeFraction(topicsCentroids, selectedDocument.size)} content={selectedDocument.top_doc_content} />
             </>
             ) : <QueryView />}
           </div>

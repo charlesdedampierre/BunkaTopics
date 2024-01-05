@@ -5,7 +5,7 @@ import { Backdrop, CircularProgress, Box, Button } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import React, { useCallback, useEffect, useRef, useState, useContext } from "react";
-import TextContainer from "./TextContainer";
+import TextContainer, { topicsSizeFraction }  from "./TextContainer";
 import { TopicsContext } from "./UploadFileContext";
 import QueryView from "./QueryView";
 import HelpIcon from '@mui/icons-material/Help';
@@ -19,6 +19,8 @@ const { REACT_APP_API_ENDPOINT } = process.env;
 function Bourdieu() {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [mapLoading, setMapLoading] = useState(false);
+  const [topicsCentroids, setTopicsCentroids] = useState([])
+
   const { bourdieuData: apiData, isLoading: isFileProcessing } = useContext(TopicsContext);
 
   const svgRef = useRef(null);
@@ -191,11 +193,12 @@ function Bourdieu() {
         .style("stroke", contourLineColor)
         .style("stroke-width", 1);
 
-      const topicsCentroids = topicsData.filter((d) => d.x_centroid && d.y_centroid);
+      const centroids = topicsData.filter((d) => d.x_centroid && d.y_centroid);
+      setTopicsCentroids(centroids);
 
       svg
         .selectAll("circle.topic-centroid")
-        .data(topicsCentroids)
+        .data(centroids)
         .enter()
         .append("circle")
         .attr("class", "topic-centroid")
@@ -211,7 +214,7 @@ function Bourdieu() {
 
       svg
         .selectAll("text.topic-label")
-        .data(topicsCentroids)
+        .data(centroids)
         .enter()
         .append("text")
         .attr("class", "topic-label")
@@ -312,7 +315,7 @@ function Bourdieu() {
 
       const topicsPolygons = svg
         .selectAll("polygon.topic-polygon")
-        .data(topicsCentroids)
+        .data(centroids)
         .enter()
         .append("polygon")
         .attr("class", "topic-polygon")
@@ -433,10 +436,7 @@ function Bourdieu() {
                   Upload another CSV file
                 </Button>
               </Box>
-              <TextContainer topicName={selectedDocument.name} sizeFraction={() => {
-                const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
-                return Math.round((topicSize / totalSize) * 100);
-              }} content={selectedDocument.top_doc_content} />
+              <TextContainer topicName={selectedDocument.name} topicSizeFraction={topicsSizeFraction(topicsCentroids, selectedDocument.size)} content={selectedDocument.top_doc_content} />
             </>
             ) : <QueryView />}
           </div>

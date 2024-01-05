@@ -32,7 +32,7 @@ function App() {
           ) : selectedView === "bourdieu" ? (
             <Bourdieu />
           ) : (
-            <Map />
+            <MapView />
           )}
         </TopicsProvider>
       </div>

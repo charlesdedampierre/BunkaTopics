@@ -100,7 +100,6 @@ function Bourdieu() {
     var yScale = d3.scaleLinear()
       .domain([-maxDomainValue, maxDomainValue])
       .range([ svgHeight, 0 ]);
-    const roundmaxDomainValue = Math.round(maxDomainValue * 100) / 100;
 
     const axes = d3.create("svg:g").classed("axes", true);
     svg
@@ -203,8 +202,11 @@ function Bourdieu() {
       });
     // Show only first and last ticks
     axes.selectAll(".xAxis .tick text")
+      .style('text-anchor', "middle")
+      .attr('transform', (d, i, nodes) => (i === 0 || i === nodes.length - 1) ? "rotate(-90)" : "")
       .attr("visibility", (d, i, nodes) => (i === 0 || i === nodes.length - 1) ? "visible" : "hidden");
     axes.selectAll(".yAxis .tick text")
+      .style('text-anchor', "start")
       .attr("visibility", (d, i, nodes) => (i === 0 || i === nodes.length - 1) ? "visible" : "hidden");
     axes.selectAll(".xAxis .tick text")
       .text((d, i, nodes) => {

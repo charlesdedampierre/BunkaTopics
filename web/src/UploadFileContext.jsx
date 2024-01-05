@@ -144,15 +144,13 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
             sx={{ zIndex: 99999 }}
             open={taskID !== undefined}
           >
-            <Box display={"flex"} alignItems={"center"} flexDirection={"column"} sx={{ backgrounColor: "#FFF", fontSize: 20, fontWeight: 'medium'}}>
+            <Box display={"flex"} width="30%" alignItems={"center"} flexDirection={"column"} sx={{ backgrounColor: "#FFF", fontSize: 20, fontWeight: 'medium'}}>
               <Box minWidth={200}>
                 <Typography variant="h4">Bunka is cooking your data, please wait few seconds</Typography>
               </Box>
-              <Box width="50%" mr={1}>
-                <CircularProgress />
-                <Box minWidth={35}>
-                  <Typography variant="subtitle">{`${normalisePercentage(taskProgress)}%`}</Typography>
-                </Box>
+              <CircularProgress />
+              <Box minWidth={35}>
+                <Typography variant="subtitle">{`${normalisePercentage(taskProgress)}%`}</Typography>
               </Box>
             </Box>
           </Backdrop>

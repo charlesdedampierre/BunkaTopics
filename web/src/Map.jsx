@@ -52,6 +52,8 @@ function MapView() {
     const plotWidth = window.innerWidth * 0.6;
     const plotHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50; // Adjust the height as desired
 
+    d3.select(svgRef.current).selectAll("*").remove();
+    
     const svg = d3
       .select(svgRef.current)
       .attr("width", "100%")
@@ -85,15 +87,15 @@ function MapView() {
     /**
      * Initial zoom.
      */
-    const defaultTransform = { k: 1 };
-    const initialTransform = defaultTransform?.k != null
-      ? new ZoomTransform(
-        defaultTransform.k ?? 1,
-        defaultTransform.x ?? 0,
-        defaultTransform.y ?? 0
-      )
-      : d3.zoomIdentity;
-    svg.call(zoom.transform, initialTransform);
+    // const defaultTransform = { k: 1 };
+    // const initialTransform = defaultTransform?.k != null
+    //   ? new ZoomTransform(
+    //     defaultTransform.k ?? 1,
+    //     defaultTransform.x ?? 0,
+    //     defaultTransform.y ?? 0
+    //   )
+    //   : d3.zoomIdentity;
+    // svg.call(zoom.transform, initialTransform);
 
     const xMin = d3.min(data, (d) => d.x);
     const xMax = d3.max(data, (d) => d.x);
@@ -126,7 +128,7 @@ function MapView() {
     const contourLineColor = "rgb(94, 163, 252)";
 
     // Append the contour path to the SVG with a custom color
-    svg
+    g
       .selectAll("path.contour")
       .data(contourData)
       .enter()
@@ -157,7 +159,7 @@ function MapView() {
     const centroids = data.filter((d) => d.x_centroid && d.y_centroid);
     setTopicsCentroids(centroids);
 
-    svg
+    g
       .selectAll("circle.topic-centroid")
       .data(centroids)
       .enter()
@@ -175,7 +177,7 @@ function MapView() {
       });
 
     // Add text labels for topic names
-    svg
+    g
       .selectAll("text.topic-label")
       .data(centroids)
       .enter()
@@ -192,7 +194,7 @@ function MapView() {
       const hull = d.convex_hull;
       const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
 
-      svg
+      g
         .append("path")
         .datum(d3.polygonHull(hullPoints))
         .attr("class", "convex-hull-polygon")
@@ -203,7 +205,7 @@ function MapView() {
     }
 
     // Add polygons for topics. Delete if no clicking on polygons
-    const topicsPolygons = svg
+    const topicsPolygons = g
       .selectAll("polygon.topic-polygon")
       .data(centroids)
       .enter()

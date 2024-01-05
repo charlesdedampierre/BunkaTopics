@@ -76,6 +76,11 @@ svg {
 .scatter-plot-container svg {
   background-color: #f7f7f7;
   border: 1px solid #ddd;
+  cursor: grab;
+}
+
+.scatter-plot-container svg .tick text {
+  font-size: 1.4em;
 }
 
 .text-container {

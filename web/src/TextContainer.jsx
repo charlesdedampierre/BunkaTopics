@@ -59,11 +59,11 @@ function TextContainer({ topicName, topicSizeFraction, content }) {
         <Paper elevation={3} style={{ maxHeight: "70vh", overflowY: "auto" }}>
           <List>
             {content.map((doc, index) => (
-              <ListItem button key={doc.id} onClick={() => handleDocumentClick(index)} selected={selectedDocument === index}>
+              <ListItem button key={`textcontainerdoc-${index}`} onClick={() => handleDocumentClick(index)} selected={selectedDocument === index}>
                 <ListItemIcon>
                   <DescriptionIcon /> {/* Display a document icon */}
                 </ListItemIcon>
-                <ListItemText primary={<span style={{ fontSize: "16px" }}>{doc}</span>} />
+                <ListItemText primary={<span style={{ fontSize: "14px" }}>{doc}</span>} />
               </ListItem>
             ))}
           </List>

@@ -132,7 +132,7 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
     [data, uploadFile, isLoading, error, selectedView],
   );
 
-  const normalisePercentage = (value) => Math.ceil((value * 100) / 100);
+  // const normalisePercentage = (value) => Math.ceil((value * 100) / 100);
 
   return (
     <TopicsContext.Provider value={providerValue}>
@@ -149,9 +149,9 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
                 <Typography variant="h4">Bunka is cooking your data, please wait few seconds</Typography>
               </Box>
               <CircularProgress />
-              <Box minWidth={35}>
+              {/* <Box minWidth={35}>
                 <Typography variant="subtitle">{`${normalisePercentage(taskProgress)}%`}</Typography>
-              </Box>
+              </Box> */}
             </Box>
           </Backdrop>
         )}

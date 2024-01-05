@@ -100,6 +100,7 @@ function Bourdieu() {
     var yScale = d3.scaleLinear()
       .domain([-maxDomainValue, maxDomainValue])
       .range([ svgHeight, 0 ]);
+    const roundmaxDomainValue = Math.round(maxDomainValue * 100) / 100;
 
     const axes = d3.create("svg:g").classed("axes", true);
     svg
@@ -162,7 +163,6 @@ function Bourdieu() {
           .tickSizeInner(0)
           .tickSizeOuter(0)
           .tickPadding(10)
-          .tickFormat(d => d)
       )
         .attr("class", "axis xAxis")
         .datum({ dimension: dimensionX })
@@ -177,19 +177,56 @@ function Bourdieu() {
           .tickSizeInner(0)
           .tickSizeOuter(0)
           .tickPadding(10)
-          .tickFormat(d => d === -maxDomainValue
-            ? (dimensionY?.idLeft ?? dimensionY?.label ?? '')
-            : d === maxDomainValue
-              ? (dimensionY?.idRight ?? dimensionY?.label ?? '')
-              : ''
-          )
       )
         .attr("class", "axis yAxis")
         .datum({ dimension: dimensionY })
         .select('path.domain')
           .attr("marker-end", "url(#arrowhead-top)")
           .attr("marker-start", "url(#arrowhead-bottom)");
+    // Style the tick texts
+    axes.selectAll(".tick text")
+      .style("fill", "blue") // Color of the text
+      .style("font-weight", "bold");
 
+    axes.selectAll(".tick")
+      .each(function() {
+        const tick = d3.select(this);
+        const text = tick.select("text");
+        const bbox = text.node().getBBox();
+        // Insert a rectangle behind each text
+        // tick.insert("rect", "text")
+        //   .attr("x", bbox.x - 2) // Slightly larger to create padding
+        //   .attr("y", bbox.y - 2)
+        //   .attr("width", bbox.width + 4)
+        //   .attr("height", bbox.height + 4)
+        //   .style("fill", "yellow"); // Background color
+      });
+    // Show only first and last ticks
+    axes.selectAll(".xAxis .tick text")
+      .attr("visibility", (d, i, nodes) => (i === 0 || i === nodes.length - 1) ? "visible" : "hidden");
+    axes.selectAll(".yAxis .tick text")
+      .attr("visibility", (d, i, nodes) => (i === 0 || i === nodes.length - 1) ? "visible" : "hidden");
+    axes.selectAll(".xAxis .tick text")
+      .text((d, i, nodes) => {
+        if (i === 0) {
+          return dimensionX.idLeft; // Custom text for the first tick
+        } else if (i === nodes.length - 1) {
+          return dimensionX.idRight;;  // Custom text for the last tick
+        }
+        return d; // Default text for all other ticks
+      });
+    axes.selectAll(".yAxis .tick text")
+      .text((d, i, nodes) => {
+        if (i === 0) {
+          return dimensionY.idLeft; // Custom text for the first tick
+        } else if (i === nodes.length - 1) {
+          return dimensionY.idRight;;  // Custom text for the last tick
+        }
+        return d; // Default text for all other ticks
+      });
+    /**
+     * Draw Bourdieu map contents
+     */
     const contourData = d3Contour
       .contourDensity()
       .x((d) => xScale(d.x))

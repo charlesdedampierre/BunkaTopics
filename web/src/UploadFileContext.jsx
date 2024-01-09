@@ -11,13 +11,23 @@ const { REACT_APP_API_ENDPOINT } = process.env;
 
 const TOPICS_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/topics/csv/`;
 const BOURDIEU_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/bourdieu/csv/`;
+const REFRESH_BOURDIEU_ENDPOINT_PATH = `${REACT_APP_API_ENDPOINT}/bourdieu/refresh/`;
 
-// Fetcher function
-const fetcher = (url, data) =>
+// Fetcher functions
+const postForm = (url, data) =>
   axios
     .post(url, data, {
       headers: {
         "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => res.data);
+
+const postJson = (url, data) =>
+  axios
+    .post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
       },
     })
     .then((res) => res.data);
@@ -29,20 +39,22 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
   const [bourdieuData, setBourdieuData] = useState();
   const [error, setError] = useState();
   const [errorText, setErrorText] = useState("");
-  const [taskProgress, setTaskProgress] = useState(0); // Add state for task progress
+  const [taskProgress, setTaskProgress] = useState(0); // TODO Add state for task progress when the backend is ready
   const [taskID, setTaskID] = useState(null); // Add state for task ID
+  const [currentDatasetId, setCurrentDatasetId] = useState(null); // Current Dataset Id equals Task Id for the moment
 
   const monitorTaskProgress = async (selectedView, taskId) => {
     const evtSource = new EventSource(`${REACT_APP_API_ENDPOINT}/tasks/${selectedView === "map" ? "topics" : "bourdieu"}/${taskId}/progress`);
     evtSource.onmessage = function (event) {
       try {
         const data = JSON.parse(event.data);
-        console.log("Task Progress:", data);
         const progress = !isNaN(Math.ceil(data.progress)) ? Math.ceil(data.progress) : 0;
+        console.log("Task Progress:", progress);
         setTaskProgress(progress); // Update progress in state
         if (data.state === "SUCCESS") {
           if (selectedView === "map") {
             setData(data.result);
+            setBourdieuData(data.result.bourdieu_response);
           } else if (selectedView === "bourdieu") {
             setBourdieuData(data.result);
           }
@@ -86,24 +98,51 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
         formData.append("language", language);
         formData.append("clean_topics", cleanTopics);
         formData.append("min_count_terms", minCountTerms);
-        // Append additional parameters to formData
-        if (selectedView === "bourdieu") {
-          formData.append("x_left_words", xLeftWord);
-          formData.append("x_right_words", xRightWord);
-          formData.append("y_top_words", yTopWord);
-          formData.append("y_bottom_words", yBottomWord);
-          formData.append("radius_size", radiusSize);
-        }
+        // Append bourdieu parameters, processing activated by defaut
+        formData.append("process_bourdieu", true);
+        formData.append("x_left_words", xLeftWord);
+        formData.append("x_right_words", xRightWord);
+        formData.append("y_top_words", yTopWord);
+        formData.append("y_bottom_words", yBottomWord);
+        formData.append("radius_size", radiusSize);
+
         const apiURI = `${selectedView === "map" ? TOPICS_ENDPOINT_PATH : BOURDIEU_ENDPOINT_PATH}`;
         // Perform the POST request
-        const response = await fetcher(apiURI, formData);
+        const response = await postForm(apiURI, formData);
         setTaskID(response.task_id);
+        setCurrentDatasetId(response.task_id);
         await monitorTaskProgress(selectedView, response.task_id); // Start monitoring task progress
       } catch (errorExc) {
         // Handle error
         setError(errorExc);
+        setTaskID(null);
+        setCurrentDatasetId(null);
       } finally {
         setIsLoading(false);
+      }
+    },
+    [monitorTaskProgress],
+  );
+
+  const refreshBourdieuQuery = useCallback(
+    async (params) => {
+      setIsLoading(true);
+      setErrorText("");
+      if (currentDatasetId !== null) {
+        try {
+          const apiURI = `${REFRESH_BOURDIEU_ENDPOINT_PATH}${currentDatasetId}`;
+          // Perform the POST request
+          const response = await postJson(apiURI, params);
+          setBourdieuData(response);
+        } catch (errorExc) {
+          // Handle error
+          setError(errorExc);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+        setError("Please import a CSV from the Map view before querying");
       }
     },
     [monitorTaskProgress],
@@ -127,9 +166,10 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
       uploadFile,
       isLoading,
       error,
-      selectedView
+      selectedView,
+      refreshBourdieuQuery
     }),
-    [data, uploadFile, isLoading, error, selectedView],
+    [data, uploadFile, isLoading, error, selectedView, refreshBourdieuQuery],
   );
 
   // const normalisePercentage = (value) => Math.ceil((value * 100) / 100);

@@ -37,7 +37,7 @@ def bourdieu_api(
     generative_ai_name=False,
     topic_gen_param: TopicGenParam = TopicGenParam(),
     min_count_terms: int = 2,
-) -> (t.List[Document], t.List[Topic]):
+) -> t.Tuple[t.List[Document], t.List[Topic]]:
     # Reset
     for doc in docs:
         doc.bourdieu_dimensions = []

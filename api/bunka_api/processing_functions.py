@@ -4,11 +4,11 @@ import typing as t
 from langchain.llms import OpenAI
 from langchain.embeddings import HuggingFaceEmbeddings
 
-from api.bunka_api.datamodel import TopicsResponse, TopicParameterApi, BourdieuQueryApi
+from api.bunka_api.datamodel import BourdieuResponse, TopicsResponse, TopicParameterApi, BourdieuQueryApi, BourdieuQueryDict
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics import Bunka
 from bunkatopics.datamodel import (
-    TopicGenParam,
+    TopicGenParam
 )
 
 open_ai_generative_model = OpenAI(
@@ -26,8 +26,12 @@ french_bunka = Bunka(
 
 
 def process_topics(
-    full_docs: t.List[str], params: TopicParameterApi
+    full_docs: t.List[str],
+    params: TopicParameterApi,
+    process_bourdieu: bool, 
+    bourdieu_query: BourdieuQueryApi | None
 ):
+    """Process topics and bourdieu query if asked for"""
     if params.language == "french":
         bunka = french_bunka
     else:
@@ -46,11 +50,27 @@ def process_topics(
 
     docs = bunka.docs
     topics = bunka.topics
+    bourdieu_response = None
 
-    return TopicsResponse(docs=docs, topics=topics)
+    if process_bourdieu and bourdieu_query is not None:
+        (bourdieu_docs, bourdieu_topics) = bourdieu_api(
+            generative_model=open_ai_generative_model,
+            embedding_model=bunka.embedding_model,
+            docs=docs,
+            terms=bunka.terms,
+            bourdieu_query=bourdieu_query,
+            topic_param=params,
+            generative_ai_name=params.clean_topics,
+            min_count_terms=1, # FIXME use params.min_count_terms ?
+            topic_gen_param=TopicGenParam(),
+        )
+        query=BourdieuQueryDict(bourdieu_query.to_dict())
+        bourdieu_response=BourdieuResponse(docs=bourdieu_docs, topics=bourdieu_topics, query=query)
+    
+    return TopicsResponse(docs=docs, topics=topics, bourdieu_response=bourdieu_response)
 
 
-def process_bourdieu(
+def process_full_topics_and_bourdieu(
     full_docs: t.List[str],
     bourdieu_query: BourdieuQueryApi,
     topic_param: TopicParameterApi
@@ -70,6 +90,24 @@ def process_bourdieu(
         bunka.get_clean_topic_name(
             generative_model=open_ai_generative_model,
             language=topic_param.language)
+
+    return bourdieu_api(
+        generative_model=open_ai_generative_model,
+        embedding_model=bunka.embedding_model,
+        docs=bunka.docs,
+        terms=bunka.terms,
+        bourdieu_query=bourdieu_query,
+        topic_param=topic_param,
+        generative_ai_name=topic_param.clean_topics,
+        min_count_terms=1,
+        topic_gen_param=TopicGenParam(),
+    )
+
+def process_bourdieu(
+    full_docs: t.List[str],
+    bourdieu_query: BourdieuQueryApi,
+    topic_param: TopicParameterApi
+):
 
     return bourdieu_api(
         generative_model=open_ai_generative_model,

@@ -22,15 +22,16 @@ class BourdieuQueryApi(BourdieuQuery):
             "radius_size": self.radius_size,
         }
 
+class BourdieuResponse(BaseModel):
+    docs: t.List[Document]
+    topics: t.List[Topic]
+    query: BourdieuQueryDict
+
 
 class TopicsResponse(BaseModel):
     docs: t.List[Document]
     topics: t.List[Topic]
-
-
-class BourdieuResponse(TopicsResponse):
-    query: BourdieuQueryDict
-
+    bourdieu_response: BourdieuResponse | None
 
 class TopicParameterApi(TopicParam):
     """API specific Topics parameters"""

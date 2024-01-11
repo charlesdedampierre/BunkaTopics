@@ -1,6 +1,7 @@
 import sys
 from dotenv import load_dotenv
-from pprint import pr
+from pprint import pprint
+
 load_dotenv()
 sys.path.append("../")
 
@@ -13,13 +14,19 @@ from fastapi import UploadFile, Form, status
 import pandas as pd
 
 # Import the necessary modules and classes
+from bunkatopics import Bunka
+from api.bunka_api.processing_functions import process_partial_bourdieu
 from api.bunka_api.app import app
 from api.bunka_api.datamodel import (
+    BourdieuResponse,
     TopicParameterApi,
     BourdieuQueryApi,
+    Document,
+    Term,
+    BourdieuQueryDict,
+    BourdieuResponse
 )
 from api.bunka_api.jobs import process_topics_task, bourdieu_api_task
-from api.bunka_api.processing_functions import process_bourdieu
 
 def limit_docs(full_docs):
     if len(full_docs) > 10000:
@@ -213,15 +220,28 @@ def post_refresh_bourdieu_query(
 ):
     task = process_topics_task.AsyncResult(task_id)
     if task.state == "SUCCESS":
-        result = task.result;
-        pprint(task);
-        limit = limit_docs(result.docs)
+        result = task.result
+        docs = result["docs"]
+        limit = limit_docs(docs)
         if limit is not None:
             return limit
-        return process_bourdieu(
-            full_docs=result.docs,
+        terms = result["terms"]
+
+        res = process_partial_bourdieu(
+            docs=[Document(**doc) for doc in docs],
+            terms=[Term(**term) for term in terms],
             bourdieu_query=bourdieu_query,
             topic_param=topic_param
+        )
+
+        # Extract the results
+        bourdieu_docs = res[0]
+        bourdieu_topics = res[1]
+
+        return BourdieuResponse(
+            docs=bourdieu_docs,
+            topics=bourdieu_topics,
+            query=BourdieuQueryDict(**bourdieu_query.to_dict()),
         )
     else:
         return JSONResponse(

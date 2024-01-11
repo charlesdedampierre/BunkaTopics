@@ -20,9 +20,6 @@ from bunkatopics.datamodel import (
 from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topics_modeling import get_topics
-from langchain.llms import OpenAI
-import os
-from dotenv import load_dotenv
 
 pd.options.mode.chained_assignment = None
 

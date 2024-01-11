@@ -115,7 +115,7 @@ def bourdieu_api_task(
         response = BourdieuResponse(
             docs=bourdieu_docs,
             topics=bourdieu_topics,
-            query=BourdieuQueryDict(bourdieu_query_ins.to_dict()),
+            query=BourdieuQueryDict(**bourdieu_query_ins.to_dict()),
         )
         return jsonable_encoder(response)
 

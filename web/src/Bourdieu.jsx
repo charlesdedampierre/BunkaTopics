@@ -83,8 +83,7 @@ function Bourdieu() {
     // svg.call(zoom.transform, initialTransform);
 
     // Axes
-    // FIXME dimensionX seem inversed
-    const dimensionX = { idRight: queryData.x_left_words[0], idLeft: queryData.x_right_words[0] };
+    const dimensionX = { idLeft: queryData.x_left_words[0], idRight: queryData.x_right_words[0] };
     const dimensionY = { idLeft: queryData.y_bottom_words[0], idRight: queryData.y_top_words[0] };
 
     const xMin = d3.min(docsData, (d) => d.x);
@@ -199,7 +198,7 @@ function Bourdieu() {
         if (i === 0) {
           return dimensionX.idLeft; // Custom text for the first tick
         } else if (i === nodes.length - 1) {
-          return dimensionX.idRight;;  // Custom text for the last tick
+          return dimensionX.idRight;  // Custom text for the last tick
         }
         return d; // Default text for all other ticks
       });

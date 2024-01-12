@@ -159,6 +159,9 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
     }
   }, [error]);
 
+  /**
+   * Shared functions and variables of this TopicsContext and TopicsProvider
+   */
   const providerValue = useMemo(
     () => ({
       data,

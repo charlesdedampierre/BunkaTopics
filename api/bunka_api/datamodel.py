@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 import typing as t
 
-from bunkatopics.datamodel import Document, Topic, TopicParam, BourdieuQuery
+from bunkatopics.datamodel import Document, Topic, TopicParam, BourdieuQuery, Term
 
 
 class BourdieuQueryDict(t.TypedDict):
@@ -22,15 +22,17 @@ class BourdieuQueryApi(BourdieuQuery):
             "radius_size": self.radius_size,
         }
 
+class BourdieuResponse(BaseModel):
+    docs: t.List[Document]
+    topics: t.List[Topic]
+    query: BourdieuQueryDict
+
 
 class TopicsResponse(BaseModel):
     docs: t.List[Document]
     topics: t.List[Topic]
-
-
-class BourdieuResponse(TopicsResponse):
-    query: BourdieuQueryDict
-
+    bourdieu_response: BourdieuResponse | None
+    terms: t.List[Term]
 
 class TopicParameterApi(TopicParam):
     """API specific Topics parameters"""

@@ -51,12 +51,10 @@ from bunkatopics.serveur.utils import is_server_running, kill_server
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
-
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 class Bunka:
-    def __init__(self, embedding_model=None, language: str = "en_core_web_sm"):
-        if embedding_model is None:
-            embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    def __init__(self, embedding_model=None, language: str = "en_core_web_sm"): 
         self.embedding_model = embedding_model
         self.language = language
 

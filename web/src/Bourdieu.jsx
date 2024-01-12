@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import { ZoomTransform } from "d3";
 import * as d3Contour from "d3-contour";
 import { Backdrop, CircularProgress, Box, Button } from "@mui/material";
 import Typography from '@mui/material/Typography';
@@ -50,7 +49,6 @@ function Bourdieu() {
      * SVG canvas group on which transforms apply.
      */
     const g = svg.append("g").classed("canvas", true);
-    //.attr("transform", `translate(${margin.left}, ${margin.top})`);
     
     /**
      * Setup Zoom.
@@ -96,10 +94,10 @@ function Bourdieu() {
 
     var xScale = d3.scaleLinear()
       .domain([-maxDomainValue, maxDomainValue])
-      .range([ 0, svgWidth ]);
+      .range([ 0, plotWidth ]);
     var yScale = d3.scaleLinear()
       .domain([-maxDomainValue, maxDomainValue])
-      .range([ svgHeight, 0 ]);
+      .range([ plotHeight, 0 ]);
 
     const axes = d3.create("svg:g").classed("axes", true);
     svg
@@ -156,7 +154,7 @@ function Bourdieu() {
       .attr('fill', 'none');
     // X axis
     axes.append("g")
-      .attr("transform", `translate(0,${svgHeight / 2})`)
+      .attr("transform", `translate(0,${plotHeight / 2})`)
       .call(
         d3.axisBottom(xScale)
           .tickSizeInner(0)
@@ -170,7 +168,7 @@ function Bourdieu() {
           .attr("marker-end", "url(#arrowhead-right)");
     // Y axis
     axes.append("g")
-      .attr("transform", `translate(${svgWidth / 2},0)`)
+      .attr("transform", `translate(${plotWidth / 2},0)`)
       .call(
         d3.axisRight(yScale)
           .tickSizeInner(0)
@@ -187,19 +185,6 @@ function Bourdieu() {
       .style("fill", "blue") // Color of the text
       .style("font-weight", "bold");
 
-    axes.selectAll(".tick")
-      .each(function() {
-        const tick = d3.select(this);
-        const text = tick.select("text");
-        const bbox = text.node().getBBox();
-        // Insert a rectangle behind each text
-        // tick.insert("rect", "text")
-        //   .attr("x", bbox.x - 2) // Slightly larger to create padding
-        //   .attr("y", bbox.y - 2)
-        //   .attr("width", bbox.width + 4)
-        //   .attr("height", bbox.height + 4)
-        //   .style("fill", "yellow"); // Background color
-      });
     // Show only first and last ticks
     axes.selectAll(".xAxis .tick text")
       .style('text-anchor', "middle")
@@ -213,7 +198,7 @@ function Bourdieu() {
         if (i === 0) {
           return dimensionX.idLeft; // Custom text for the first tick
         } else if (i === nodes.length - 1) {
-          return dimensionX.idRight;;  // Custom text for the last tick
+          return dimensionX.idRight;  // Custom text for the last tick
         }
         return d; // Default text for all other ticks
       });
@@ -258,7 +243,7 @@ function Bourdieu() {
       .enter()
       .append("circle")
       .attr("class", "topic-centroid")
-      .attr("cx", (d) => xScale(d.x_centroid))
+      .attr("cx", (d) => xScale(-d.x_centroid))
       .attr("cy", (d) => yScale(d.y_centroid))
       .attr("r", 8)
       .style("fill", "red")
@@ -274,7 +259,7 @@ function Bourdieu() {
       .enter()
       .append("text")
       .attr("class", "topic-label")
-      .attr("x", (d) => xScale(d.x_centroid))
+      .attr("x", (d) => xScale(-d.x_centroid))
       .attr("y", (d) => yScale(d.y_centroid) - 12)
       .text((d) => d.name)
       .style("text-anchor", "middle");
@@ -401,7 +386,6 @@ function Bourdieu() {
       clickedPolygon.style("stroke", "red");
 
       currentlyClickedPolygon = clickedPolygon;
-
       if (d.top_doc_content) {
         // Render the TextContainer component with topic details
         setSelectedDocument(d);

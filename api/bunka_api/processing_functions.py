@@ -1,37 +1,42 @@
 import os
 import typing as t
-
+import copy 
 from langchain.llms import OpenAI
 from langchain.embeddings import HuggingFaceEmbeddings
 
-from api.bunka_api.datamodel import TopicsResponse, TopicParameterApi, BourdieuQueryApi
+from api.bunka_api.datamodel import BourdieuResponse, TopicsResponse, TopicParameterApi, BourdieuQueryApi, BourdieuQueryDict
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics import Bunka
 from bunkatopics.datamodel import (
     TopicGenParam,
+    Document,
+    Topic,
+    Term
 )
 
 open_ai_generative_model = OpenAI(
     openai_api_key=os.getenv("OPEN_AI_KEY"),
-    openai_organization=os.getenv("OPEN_AI_ORG_ID"),
+    openai_organization=os.getenv("OPEN_AI_ORG_ID")
+#    model=
+#    client=
 )
-english_bunka = Bunka(
-    embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
-    language = 'en_core_web_sm'
-)
-french_bunka = Bunka(
-    embedding_model=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
-    language = 'fr_core_news_lg'
-)
+
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+english_bunka_language = 'en_core_web_sm'
+french_bunka_language = 'fr_core_news_lg'
 
 
 def process_topics(
-    full_docs: t.List[str], params: TopicParameterApi
-):
+    full_docs: t.List[str],
+    params: TopicParameterApi,
+    process_bourdieu: bool, 
+    bourdieu_query: BourdieuQueryApi | None
+) -> TopicsResponse:
+    """Process topics and bourdieu query if asked for"""
     if params.language == "french":
-        bunka = french_bunka
+        bunka = Bunka(embedding_model=embedding_model, language=french_bunka_language)
     else:
-        bunka = english_bunka
+        bunka = Bunka(embedding_model=embedding_model, language=english_bunka_language)
 
     bunka.fit(full_docs)
     bunka.get_topics(
@@ -44,21 +49,39 @@ def process_topics(
             generative_model=open_ai_generative_model,
             language=params.language)
 
-    docs = bunka.docs
-    topics = bunka.topics
+    bourdieu_response = None
 
-    return TopicsResponse(docs=docs, topics=topics)
+    if process_bourdieu and bourdieu_query is not None:
+        (bourdieu_docs, bourdieu_topics) = process_partial_bourdieu(
+            docs=bunka.docs,
+            terms=bunka.terms,
+            bourdieu_query=bourdieu_query,
+            topic_param=params
+        )
+        query_dict = BourdieuQueryDict(**bourdieu_query.to_dict())
+        bourdieu_response = BourdieuResponse(docs=bourdieu_docs, topics=bourdieu_topics, query=query_dict)
+
+    return TopicsResponse(
+        docs=bunka.docs, 
+        topics=bunka.topics, 
+        bourdieu_response=bourdieu_response,
+        # Store terms to reprocess bourdieu later
+        terms=bunka.terms)
 
 
-def process_bourdieu(
+def process_full_topics_and_bourdieu(
     full_docs: t.List[str],
     bourdieu_query: BourdieuQueryApi,
     topic_param: TopicParameterApi
 ):
+    """
+    Deprecated
+    Full process of topics then the Bourdieu view
+    """
     if topic_param.language == "french":
-        bunka = french_bunka
+        bunka = Bunka(embedding_model=embedding_model, language=french_bunka_language)
     else:
-        bunka = english_bunka
+        bunka = Bunka(embedding_model=embedding_model, language=english_bunka_language)
 
     bunka.fit(full_docs)
     bunka.get_topics(
@@ -81,4 +104,24 @@ def process_bourdieu(
         generative_ai_name=topic_param.clean_topics,
         min_count_terms=1,
         topic_gen_param=TopicGenParam(),
+    )
+
+def process_partial_bourdieu(
+    docs: t.List[Document],
+    terms: t.List[Term],
+    bourdieu_query: BourdieuQueryApi,
+    topic_param: TopicParameterApi
+) -> t.Tuple[t.List[Document], t.List[Topic]]:
+    """Process a bourdieu view with topics already processed into the bunka instance"""
+
+    return bourdieu_api(
+        generative_model=open_ai_generative_model,
+        embedding_model=embedding_model,
+        docs=copy.deepcopy(docs),  # Make a copy of the variable
+        terms=copy.deepcopy(terms),
+        bourdieu_query=bourdieu_query,
+        topic_param=topic_param,
+        generative_ai_name=topic_param.clean_topics,
+        min_count_terms=1,  # TODO parametrize ?
+        topic_gen_param=TopicGenParam(language=topic_param.language),
     )

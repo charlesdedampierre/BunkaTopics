@@ -1,4 +1,3 @@
-import random
 import typing as t
 
 import numpy as np
@@ -20,9 +19,6 @@ from bunkatopics.datamodel import (
 from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topics_modeling import get_topics
-from langchain.llms import OpenAI
-import os
-from dotenv import load_dotenv
 
 pd.options.mode.chained_assignment = None
 
@@ -37,7 +33,7 @@ def bourdieu_api(
     generative_ai_name=False,
     topic_gen_param: TopicGenParam = TopicGenParam(),
     min_count_terms: int = 2,
-) -> (t.List[Document], t.List[Topic]):
+) -> t.Tuple[t.List[Document], t.List[Topic]]:
     # Reset
     for doc in docs:
         doc.bourdieu_dimensions = []

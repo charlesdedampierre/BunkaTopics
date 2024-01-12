@@ -6,10 +6,8 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import { styled } from '@mui/material/styles';
 
 import * as d3 from "d3";
-import { ZoomTransform } from 'd3'
 import * as d3Contour from "d3-contour";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom"; // Import ReactDOM
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import TextContainer, { topicsSizeFraction } from "./TextContainer";
 import { TopicsContext } from "./UploadFileContext";

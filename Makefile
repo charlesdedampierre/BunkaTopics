@@ -100,4 +100,4 @@ docker_push_worker:
 	docker push $$CONTAINER_REGISTRY_URL/$$WORKER_IMAGE_NAME:latest
 
 docker_run_redis:
-	docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name bunkaredis redis
+	docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name redis redis

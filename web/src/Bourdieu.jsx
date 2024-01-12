@@ -216,7 +216,7 @@ function Bourdieu() {
      */
     const contourData = d3Contour
       .contourDensity()
-      .x((d) => xScale(d.x))
+      .x((d) => xScale(-d.x))
       .y((d) => yScale(d.y))
       .size([plotWidth, plotHeight])
       .bandwidth(30)(docsData);
@@ -268,7 +268,7 @@ function Bourdieu() {
     for (const d of convexHullData) {
       const hull = d.convex_hull;
       if (hull) {
-        const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
+        const hullPoints = hull.x_coordinates.map((x, i) => [xScale(-x), yScale(hull.y_coordinates[i])]);
 
         g
           .append("path")
@@ -302,7 +302,7 @@ function Bourdieu() {
     // Calculate the maximum X and Y coordinates
 
     // Calculate the midpoints for the squares
-    const xMid = d3.max(docsData, (d) => d.x) / 2;
+    const xMid = -d3.max(docsData, (d) => d.x) / 2;
     const yMid = d3.max(docsData, (d) => d.y) / 2;
 
     // Labels for X > 0 and Y > 0 square
@@ -358,7 +358,7 @@ function Bourdieu() {
       .attr("points", (d) => {
         const hull = d.convex_hull;
         if (hull) {
-          const hullPoints = hull.x_coordinates.map((x, i) => [xScale(x), yScale(hull.y_coordinates[i])]);
+          const hullPoints = hull.x_coordinates.map((x, i) => [xScale(-x), yScale(hull.y_coordinates[i])]);
           return hullPoints.map((point) => point.join(",")).join(" ");
         }
       })

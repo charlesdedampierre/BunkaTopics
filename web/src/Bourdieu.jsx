@@ -243,7 +243,7 @@ function Bourdieu() {
       .enter()
       .append("circle")
       .attr("class", "topic-centroid")
-      .attr("cx", (d) => xScale(d.x_centroid))
+      .attr("cx", (d) => xScale(-d.x_centroid))
       .attr("cy", (d) => yScale(d.y_centroid))
       .attr("r", 8)
       .style("fill", "red")
@@ -259,7 +259,7 @@ function Bourdieu() {
       .enter()
       .append("text")
       .attr("class", "topic-label")
-      .attr("x", (d) => xScale(d.x_centroid))
+      .attr("x", (d) => xScale(-d.x_centroid))
       .attr("y", (d) => yScale(d.y_centroid) - 12)
       .text((d) => d.name)
       .style("text-anchor", "middle");

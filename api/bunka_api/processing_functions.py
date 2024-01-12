@@ -1,6 +1,6 @@
 import os
 import typing as t
-
+import copy 
 from langchain.llms import OpenAI
 from langchain.embeddings import HuggingFaceEmbeddings
 
@@ -117,8 +117,8 @@ def process_partial_bourdieu(
     return bourdieu_api(
         generative_model=open_ai_generative_model,
         embedding_model=embedding_model,
-        docs=docs,
-        terms=terms,
+        docs=copy.deepcopy(docs),  # Make a copy of the variable
+        terms=copy.deepcopy(terms),
         bourdieu_query=bourdieu_query,
         topic_param=topic_param,
         generative_ai_name=topic_param.clean_topics,

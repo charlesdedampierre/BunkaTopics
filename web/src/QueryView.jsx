@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Papa from "papaparse";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useCallback } from "react";
 import { TopicsContext } from "./UploadFileContext";
 
 const VisuallyHiddenInput = styled("input")({
@@ -164,9 +164,9 @@ function QueryView() {
     }
   };
   
-  const handleRefreshQuery = async () => {
+  const handleRefreshQuery = useCallback(async () => {
     if (!isLoading) {
-      refreshBourdieuQuery({
+      await refreshBourdieuQuery({
         topic_param : {
           n_clusters: nClusters,
           name_lenght: nameLength,
@@ -183,7 +183,7 @@ function QueryView() {
         }
       });
     }
-  };
+  });
 
   const openTableContainer = selectedColumnData.length > 0 && fileData.length > 0 && fileData.length <= 10000 && fileDataTooLong === false && fileDataError == null;
 

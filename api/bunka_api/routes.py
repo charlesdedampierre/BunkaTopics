@@ -14,7 +14,6 @@ from fastapi import UploadFile, Form, status
 import pandas as pd
 
 # Import the necessary modules and classes
-from bunkatopics import Bunka
 from api.bunka_api.processing_functions import process_partial_bourdieu
 from api.bunka_api.app import app
 from api.bunka_api.datamodel import (

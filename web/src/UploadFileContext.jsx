@@ -53,7 +53,10 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
         setTaskProgress(progress); // Update progress in state
         if (data.state === "SUCCESS") {
           if (selectedView === "map") {
-            setData(data.result);
+            setData({
+              docs: data.result.docs,
+              topics: data.result.topics
+            });
             setBourdieuData(data.result.bourdieu_response);
           } else if (selectedView === "bourdieu") {
             setBourdieuData(data.result);

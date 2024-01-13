@@ -1,0 +1,20 @@
+language: python
+python:
+  - "3.10"  # Specify the Python version you want to use
+
+install:
+  - pip install poetry  # Install Poetry for managing dependencies
+  - poetry install      # Install project dependencies using Poetry
+
+script:
+  - black bunkatopics  
+             # Run your tests using pytest (adjust the command as needed)
+
+branches:
+  only:
+    - refacto
+
+notifications:
+  email:
+    recipients:
+      - charlesdedampierre@gmail.com  # Add your email for build notifications

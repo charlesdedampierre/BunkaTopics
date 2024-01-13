@@ -61,6 +61,11 @@ class Bunka:
         self.language = language
 
     def fit(
+        # Fits the Bunka model on a list of document strings.
+        #
+        # Extracts terms, generates embeddings, and reduces to 2D
+        # for visualization. Populates the docs, terms, and
+        # vectorstore attributes.
         self,
         docs: t.List[str],
         ids: t.List[DOC_ID] = None,
@@ -169,6 +174,16 @@ class Bunka:
         return df_topics
 
     def get_topics(
+        # Generates topics from the documents by clustering using DBSCAN
+        # and assigns topic names using a generative model.
+        # Parameters:
+        #   n_clusters: The number of clusters to generate. Default 5.
+        #   ngrams: The ngrams to use for clustering. Default [1, 2].
+        #   name_length: The max length of the generated topic names. Default 15.
+        #   top_terms_overall: The number of top terms to use overall for clustering. Default 2000.
+        #   min_count_terms: The minimum document count for terms to be included. Default 20.
+        # Returns:
+        #   A dataframe containing the topic info including name, terms, document counts etc.
         self,
         n_clusters=5,
         ngrams=[1, 2],

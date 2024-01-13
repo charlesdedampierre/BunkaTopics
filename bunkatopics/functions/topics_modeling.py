@@ -1,37 +1,40 @@
-import sys
-
-sys.path.append("../")
-import typing as t
-
+from typing import List
 import pandas as pd
 from sklearn.cluster import KMeans
-
-from bunkatopics.datamodel import (
-    DOC_ID,
-    TERM_ID,
-    TOPIC_ID,
-    ConvexHullModel,
-    Document,
-    Term,
-    Topic,
-)
+from bunkatopics.datamodel import Document, Term, Topic, ConvexHullModel
 from bunkatopics.functions.topic_representation import remove_overlapping_terms
 from bunkatopics.functions.utils import specificity
 from bunkatopics.visualisation.convex_hull import get_convex_hull_coord
 
 
 def get_topics(
-    docs: t.List[Document],
-    terms: t.List[Term],
+    docs: List[Document],
+    terms: List[Term],
     n_clusters: int = 10,
-    ngrams: list = [1, 2],
-    name_lenght: int = 15,
+    ngrams: List[int] = [1, 2],
+    name_length: int = 15,
     top_terms_overall: int = 1000,
     min_count_terms: int = 20,
-    x_column="x",
-    y_column="y",
-) -> t.List[Topic]:
-    """Create Topics from an embeddings and give names with the top terms"""
+    x_column: str = "x",
+    y_column: str = "y",
+) -> List[Topic]:
+    """
+    Create topics from embeddings and assign names with the top terms.
+
+    Args:
+        docs (List[Document]): List of documents.
+        terms (List[Term]): List of terms.
+        n_clusters (int, optional): The number of clusters to generate. Default is 10.
+        ngrams (List[int], optional): The ngrams to use for clustering. Default is [1, 2].
+        name_length (int, optional): The maximum length of the generated topic names. Default is 15.
+        top_terms_overall (int, optional): The number of top terms to use overall for clustering. Default is 1000.
+        min_count_terms (int, optional): The minimum document count for terms to be included. Default is 20.
+        x_column (str, optional): Name of the x-coordinate column. Default is "x".
+        y_column (str, optional): Name of the y-coordinate column. Default is "y".
+
+    Returns:
+        List[Topic]: List of generated topics.
+    """
     clustering_model = KMeans(n_clusters=n_clusters)
 
     x_values = [getattr(doc, x_column) for doc in docs]
@@ -52,7 +55,7 @@ def get_topics(
 
     df_embeddings_2D["topic_id"] = "bt" + "-" + df_embeddings_2D["topic_number"]
 
-    # insert into the documents
+    # Insert into the documents
     topic_doc_dict = df_embeddings_2D["topic_id"].to_dict()
     for doc in docs:
         doc.topic_id = topic_doc_dict.get(doc.doc_id, [])
@@ -81,7 +84,7 @@ def get_topics(
         lambda x: remove_overlapping_terms(x)
     )
 
-    df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: x[:name_lenght])
+    df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: x[:name_length])
     df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: " | ".join(x))
 
     topics = [Topic(**x) for x in df_topics_rep.to_dict(orient="records")]
@@ -102,8 +105,8 @@ def get_topics(
 
     # Compute Convex Hull
     try:
-        for x in topics:
-            topic_id = x.topic_id
+        for topic in topics:
+            topic_id = topic.topic_id
             x_points = [doc.x for doc in docs if doc.topic_id == topic_id]
             y_points = [doc.y for doc in docs if doc.topic_id == topic_id]
 
@@ -114,8 +117,8 @@ def get_topics(
             y_ch = list(y_ch)
 
             res = ConvexHullModel(x_coordinates=x_ch, y_coordinates=y_ch)
-            x.convex_hull = res
-    except:
+            topic.convex_hull = res
+    except Exception:
         pass
-    # df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
+
     return topics

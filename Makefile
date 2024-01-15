@@ -12,6 +12,9 @@ jupyter:
 test:
 	python tests/test_bunka.py
 
+check:
+	python -m unittest discover -s tests
+
 test_fig:
 	python tests/run_bunka.py
 
@@ -19,9 +22,12 @@ format:
 	black bunkatopics
 	isort bunkatopics
 
-poetry_export:
+poetry_export_full:
 	poetry shell
 	poetry self add poetry-plugin-export
+	poetry export --without-hashes --format=requirements.txt > requirements.txt	
+
+poetry_export:
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 install_nginx_config:

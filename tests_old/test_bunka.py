@@ -13,38 +13,45 @@ import os
 from dotenv import load_dotenv
 from langchain.llms import OpenAI
 
-from langchain.embeddings import HuggingFaceEmbeddings
-
-
-# open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
+open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 
 load_dotenv()
 
 random.seed(42)
 
 
-class Test(unittest.TestCase):
+"""
+generative_model = LlamaCpp(
+    model_path=os.getenv("MODEL_PATH"),
+    n_ctx=2048,
+    temperature=0.75,
+    max_tokens=2000,
+    top_p=1,
+    verbose=False,
+)
+generative_model.client.verbose = False
+"""
+
+
+class BunkaTestCase(unittest.TestCase):
     def setUp(self):
         docs = load_dataset("rguo123/trump_tweets")["train"]["content"]
-        docs = random.sample(docs, 100)
-        embedding_model = HuggingFaceEmbeddings(
-            model_name="all-MiniLM-L6-v2"
-        )  # We use a small model
-        self.bunka = Bunka(embedding_model=embedding_model)
+        docs = random.sample(docs, 500)
+        self.bunka = Bunka()
         self.bunka.fit(docs)
 
     def test_pipeline(self):
         # test Topic Modeling
-        n_clusters = 2
+        n_clusters = 3
         df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
-        print(df_topics)
+
         self.assertEqual(len(df_topics), n_clusters)
         self.assertIsInstance(df_topics, pd.DataFrame)
 
         topic_fig = self.bunka.visualize_topics(width=800, height=800)
         self.assertIsInstance(topic_fig, go.Figure)
 
-    """ # test Bourdieu Map
+        # test Bourdieu Map
         bourdieu_fig = self.bunka.visualize_bourdieu(
             generative_model=open_ai_generative_model,
             x_left_words=["past"],
@@ -82,7 +89,7 @@ class Test(unittest.TestCase):
         self.assertIsInstance(result, str)
 
         document_sources = res["source_documents"]
-        self.assertEqual(len(document_sources), top_doc_len)"""
+        self.assertEqual(len(document_sources), top_doc_len)
 
 
 if __name__ == "__main__":

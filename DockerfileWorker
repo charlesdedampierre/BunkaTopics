@@ -1,7 +1,8 @@
 # How to
 # copy .env.model to .env and write your own OPEN_AI_KEY
-# docker build -t bunkatopicsworker .
-# docker run --gpus all --env-file .env -p 8000:8000 bunkatopicsworker
+# Run the following commands :
+# make docker_build_worker
+# make docker_run_worker
 FROM tensorflow/tensorflow:latest-gpu as bunkatopicsbasedocker
 
 RUN apt update
@@ -21,13 +22,13 @@ RUN pip3 install --upgrade pip
 
 COPY requirements.txt requirements.txt
 RUN pip3 install --no-cache-dir --upgrade --ignore-installed blinker -r requirements.txt
-RUN pip3 install async_timeout pymongo
 ######################################
 # changing user & downloading models #
 ######################################
 FROM bunkatopicsbasedocker
 # Models
 RUN python3 -m spacy download en_core_web_sm
+RUN python3 -m spacy download fr_core_news_lg
 # reducing privilege
 RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app

@@ -31,7 +31,7 @@ llama-cpp-python = "^0.2.11"
 celery = {extras = ["redis"], version = "^5.3.6"}
 pycparser = "^2.21"
 python-multipart = "^0.0.6"
-pymongo = "^4.6.1"
+sseclient-py = "^1.8.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.11.0"

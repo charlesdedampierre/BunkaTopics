@@ -1,7 +1,8 @@
 # How to
 # copy .env.model to .env and write your own OPEN_AI_KEY
-# docker build -t bunkatopicsapi .
-# docker run --env-file .env -p 8000:8000 bunkatopicsapi
+# Run the following commands :
+# make docker_build
+# make docker_run
 FROM python:3.10 as bunkatopicsbasedocker
 
 ARG DEBIAN_FRONTEND=noninteractive

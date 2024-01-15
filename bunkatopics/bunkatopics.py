@@ -19,14 +19,8 @@ from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bunka_logger import logger
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics.functions.coherence import get_coherence
 from bunkatopics.functions.extract_terms import TextacyTermsExtractor
@@ -35,7 +29,8 @@ from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topic_utils import get_topic_repartition
 from bunkatopics.functions.topics_modeling import get_topics
 from bunkatopics.serveur.utils import is_server_running, kill_server
-from bunkatopics.visualisation.bourdieu_visu import visualize_bourdieu_one_dimension
+from bunkatopics.visualisation.bourdieu_visu import \
+    visualize_bourdieu_one_dimension
 from bunkatopics.visualisation.new_bourdieu_visu import visualize_bourdieu
 from bunkatopics.visualisation.query_visualisation import plot_query
 from bunkatopics.visualisation.topic_visualization import visualize_topics
@@ -57,6 +52,17 @@ class Bunka:
         docs: t.List[str],
         ids: t.List[DOC_ID] = None,
     ) -> None:
+        """
+        Fit the BunkaTopics model to a list of documents and optionally associated document IDs.
+
+        Args:
+            docs (List[str]): List of document contents.
+            ids (List[DOC_ID], optional): List of document IDs. If not provided, random IDs are generated.
+                                          Defaults to None.
+
+        Returns:
+            None
+        """
         df = pd.DataFrame(docs, columns=["content"])
 
         # Transform into a Document model
@@ -119,7 +125,17 @@ class Bunka:
             doc.x = xy_dict[doc.doc_id]["x"]
             doc.y = xy_dict[doc.doc_id]["y"]
 
-    def fit_transform(self, docs: t.List[Document], n_clusters=40) -> pd.DataFrame:
+    def fit_transform(self, docs: t.List[Document], n_clusters=3) -> pd.DataFrame:
+        """
+        Fit and transform the BunkaTopics model with a list of Document objects into a DataFrame of topics.
+
+        Args:
+            docs (List[Document]): List of Document objects representing the documents to be clustered.
+            n_clusters (int, optional): Number of clusters/topics to be generated. Defaults to 40.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing information about the generated topics.
+        """
         self.fit(docs)
         df_topics = self.get_topics(n_clusters=n_clusters)
         return df_topics
@@ -128,7 +144,7 @@ class Bunka:
         self,
         n_clusters: int = 5,
         ngrams: t.List[int] = [1, 2],
-        name_length: int = 15,
+        name_length: int = 10,
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
     ) -> pd.DataFrame:
@@ -145,6 +161,8 @@ class Bunka:
         Returns:
             pd.DataFrame: DataFrame containing the extracted topics.
         """
+
+        logger.info("Computing the topics")
         self.topics: t.List[Topic] = get_topics(
             docs=self.docs,
             terms=self.terms,
@@ -197,6 +215,37 @@ class Bunka:
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
 
         return df_topics
+
+    def visualize_topics(
+        self,
+        show_text: bool = True,
+        label_size_ratio: int = 100,
+        width: int = 1000,
+        height: int = 1000,
+    ) -> go.Figure:
+        """
+        Visualize topics and documents in a 2D scatter plot with contour density representation.
+
+        Args:
+            show_text (bool, optional): Flag to display text labels on the plot. Defaults to False.
+            label_size_ratio (int, optional): Size ratio for label text. Defaults to 100.
+            width (int, optional): Width of the plot. Defaults to 1000.
+            height (int, optional): Height of the plot. Defaults to 1000.
+
+        Returns:
+            go.Figure: Plotly figure object representing the visualization.
+        """
+
+        logger.info("Creating the Bunka Map")
+        fig = visualize_topics(
+            self.docs,
+            self.topics,
+            width=width,
+            height=height,
+            show_text=show_text,
+            label_size_ratio=label_size_ratio,
+        )
+        return fig
 
     def search(self, user_input: str, top_doc: int = 3) -> pd.DataFrame:
         res = self.vectorstore.similarity_search_with_score(user_input, k=top_doc)
@@ -333,19 +382,6 @@ class Bunka:
             print("NPM server started.")
         except Exception as e:
             print(f"Error starting NPM server: {e}")
-
-    def visualize_topics(
-        self, add_scatter=False, label_size_ratio=100, width=1000, height=1000
-    ) -> go.Figure:
-        fig = visualize_topics(
-            self.docs,
-            self.topics,
-            width=width,
-            height=height,
-            add_scatter=add_scatter,
-            label_size_ratio=label_size_ratio,
-        )
-        return fig
 
     def visu_query(
         self, query="What is firearm?", min_score=0.8, width=600, height=300

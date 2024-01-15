@@ -25,7 +25,7 @@ class TestBunka(unittest.TestCase):
         self.bunka = Bunka()
         self.bunka.fit(docs)
 
-    def test_pipeline(self):
+    def test_topic_modeling(self):
         # Test Topic Modeling
         n_clusters = 3
         df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
@@ -37,22 +37,23 @@ class TestBunka(unittest.TestCase):
         topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
         self.assertIsInstance(topic_fig, go.Figure)
 
-    """ # test Bourdieu Map
+    def test_bourdieu_modeling(self):
         bourdieu_fig = self.bunka.visualize_bourdieu(
-            generative_model=open_ai_generative_model,
             x_left_words=["past"],
-            x_right_words=["future", "futuristic"],
-            y_top_words=["politics", "Government"],
-            y_bottom_words=["cultural phenomenons"],
-            height=2000,
-            width=2000,
-            clustering=True,
-            topic_gen_name=True,
-            topic_n_clusters=2,
+            x_right_words=["future"],
+            y_top_words=["men"],
+            y_bottom_words=["women"],
+            height=800,
+            width=800,
+            clustering=False,
+            topic_gen_name=False,
+            topic_n_clusters=3,
         )
 
+        # bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
+        """
         # test Undimentional Map
         fig_solo = self.bunka.visualize_bourdieu_one_dimension(
             left=["negative", "bad"],

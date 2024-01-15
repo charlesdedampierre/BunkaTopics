@@ -13,16 +13,35 @@ pd.options.mode.chained_assignment = None
 def visualize_bourdieu(
     bourdieu_docs: t.List[Document],
     bourdieu_topics: t.List[Document],
-    display_percent=True,
-    convex_hull=True,
-    clustering=True,
-    width=800,
-    height=800,
-    label_size_ratio_clusters=100,
-    label_size_ratio_label=50,
-    label_size_ratio_percent=20,
-    manual_axis_name: dict = None,
-):
+    display_percent: bool = True,
+    convex_hull: bool = True,
+    clustering: bool = True,
+    width: int = 800,
+    height: int = 800,
+    label_size_ratio_clusters: int = 100,
+    label_size_ratio_label: int = 50,
+    label_size_ratio_percent: int = 20,
+    manual_axis_name: t.Optional[dict] = None,
+) -> go.Figure:
+    """
+    Visualize Bourdieu data using Plotly.
+
+    Args:
+        bourdieu_docs (List[Document]): List of Bourdieu documents.
+        bourdieu_topics (List[Document]): List of Bourdieu topics.
+        display_percent (bool): Whether to display percentages.
+        convex_hull (bool): Whether to display convex hulls.
+        clustering (bool): Whether to display clustering.
+        width (int): Width of the visualization.
+        height (int): Height of the visualization.
+        label_size_ratio_clusters (int): Size ratio for cluster labels.
+        label_size_ratio_label (int): Size ratio for document labels.
+        label_size_ratio_percent (int): Size ratio for percentage labels.
+        manual_axis_name (Optional[dict]): Manual axis labels (optional).
+
+    Returns:
+        go.Figure: Plotly figure containing the visualization.
+    """
     df_fig = pd.DataFrame(
         {
             "doc_id": [x.doc_id for x in bourdieu_docs],
@@ -40,6 +59,7 @@ def visualize_bourdieu(
             y=df_fig["y"],
             colorscale="delta",
             showscale=False,
+            hoverinfo="none",
         ),
     )
 
@@ -49,7 +69,8 @@ def visualize_bourdieu(
         y="y",
         # color="outside",
         # color_discrete_map={"1": "white", "0": "grey"},
-        hover_data=["Text"],
+        # hover_data=["Text"],
+        hover_data={"x": False, "y": False, "Text": True},
         template="simple_white",
         opacity=0.3,
     )
@@ -202,6 +223,7 @@ def visualize_bourdieu(
                         name="Convex Hull",
                         line=dict(color="grey"),
                         showlegend=False,
+                        hoverinfo="none",
                     )
 
                     fig.add_trace(trace)

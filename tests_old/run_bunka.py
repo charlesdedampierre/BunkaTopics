@@ -2,14 +2,16 @@ import sys
 
 sys.path.append("../")
 
-from bunkatopics import Bunka
-from bunkatopics.functions.clean_text import clean_tweet
+import os
+import random
+
+from datasets import load_dataset
+from dotenv import load_dotenv
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import LlamaCpp
-import random
-from datasets import load_dataset
-import os
-from dotenv import load_dotenv
+
+from bunkatopics import Bunka
+from bunkatopics.functions.clean_text import clean_tweet
 
 load_dotenv()
 

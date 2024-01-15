@@ -1,20 +1,9 @@
-import sys
-
-sys.path.append("../")
 import typing as t
 
 import pandas as pd
 from sklearn.cluster import KMeans
 
-from bunkatopics.datamodel import (
-    DOC_ID,
-    TERM_ID,
-    TOPIC_ID,
-    ConvexHullModel,
-    Document,
-    Term,
-    Topic,
-)
+from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
 from bunkatopics.functions.topic_representation import remove_overlapping_terms
 from bunkatopics.functions.utils import specificity
 from bunkatopics.visualisation.convex_hull import get_convex_hull_coord
@@ -25,17 +14,42 @@ def get_topics(
     terms: t.List[Term],
     n_clusters: int = 10,
     ngrams: list = [1, 2],
-    name_lenght: int = 15,
+    name_length: int = 15,
     top_terms_overall: int = 1000,
     min_count_terms: int = 2,
-    x_column="x",
-    y_column="y",
+    x_column: str = "x",
+    y_column: str = "y",
+    custom_clustering_model=None,  # Accept a custom clustering model
 ) -> t.List[Topic]:
-    """Create Topics from an embeddings and give names with the top terms"""
-    clustering_model = KMeans(n_clusters=n_clusters)
+    """
+    Create topics from embeddings and assign names with the top terms.
+
+    Args:
+        docs (List[Document]): List of documents with embeddings.
+        terms (List[Term]): List of terms.
+        n_clusters (int): Number of clusters for K-Means.
+        ngrams (list): List of n-gram lengths to consider.
+        name_length (int): Maximum length of topic names.
+        top_terms_overall (int): Number of top terms to consider overall.
+        min_count_terms (int): Minimum count of terms to consider.
+        x_column (str): Column name for x-coordinate in the DataFrame.
+        y_column (str): Column name for y-coordinate in the DataFrame.
+        custom_clustering_model: Custom clustering model (e.g., KMeans instance).
+
+    Returns:
+        List[Topic]: List of topics with assigned names.
+    """
+    if custom_clustering_model is None:
+        clustering_model = KMeans(n_clusters=n_clusters, n_init="auto")
+    else:
+        clustering_model = custom_clustering_model
+
+    # Rest of the function remains the same...
 
     x_values = [getattr(doc, x_column) for doc in docs]
     y_values = [getattr(doc, y_column) for doc in docs]
+
+    # Rest of the function remains unchanged...
 
     df_embeddings_2D = pd.DataFrame(
         {
@@ -52,7 +66,6 @@ def get_topics(
 
     df_embeddings_2D["topic_id"] = "bt" + "-" + df_embeddings_2D["topic_number"]
 
-    # insert into the documents
     topic_doc_dict = df_embeddings_2D["topic_id"].to_dict()
     for doc in docs:
         doc.topic_id = topic_doc_dict.get(doc.doc_id, [])
@@ -67,11 +80,10 @@ def get_topics(
     df_terms_indexed = df_terms_indexed[["doc_id", "term_id", "topic_id"]]
     df_terms_indexed = df_terms_indexed.explode("term_id").reset_index(drop=True)
 
-    df_terms_topics = pd.merge(df_terms, df_terms_indexed, on="term_id")
+    df_terms_topics = pd.merge(df_terms_indexed, df_terms, on="term_id")
 
-    terms_type = "term_id"
     df_topics_rep = specificity(
-        df_terms_topics, X="topic_id", Y=terms_type, Z=None, top_n=500
+        df_terms_topics, X="topic_id", Y="term_id", Z=None, top_n=500
     )
     df_topics_rep = (
         df_topics_rep.groupby("topic_id")["term_id"].apply(list).reset_index()
@@ -81,7 +93,7 @@ def get_topics(
         lambda x: remove_overlapping_terms(x)
     )
 
-    df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: x[:name_lenght])
+    df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: x[:name_length])
     df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: " | ".join(x))
 
     topics = [Topic(**x) for x in df_topics_rep.to_dict(orient="records")]
@@ -94,13 +106,11 @@ def get_topics(
 
     topic_dict = df_topics_docs[["size", "x_centroid", "y_centroid"]].to_dict("index")
 
-    # Update the documents with the x and y values from the DataFrame
     for topic in topics:
         topic.size = topic_dict[topic.topic_id]["size"]
         topic.x_centroid = topic_dict[topic.topic_id]["x_centroid"]
         topic.y_centroid = topic_dict[topic.topic_id]["y_centroid"]
 
-    # Compute Convex Hull
     try:
         for x in topics:
             topic_id = x.topic_id
@@ -115,7 +125,7 @@ def get_topics(
 
             res = ConvexHullModel(x_coordinates=x_ch, y_coordinates=y_ch)
             x.convex_hull = res
-    except:
-        pass
-    # df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
+    except Exception as e:
+        print(e)
+
     return topics

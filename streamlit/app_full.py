@@ -2,14 +2,15 @@ import sys
 
 sys.path.append("../")
 
-from bunkatopics import Bunka
-import pandas as pd
-import streamlit as st
-from langchain.embeddings import HuggingFaceEmbeddings
+import os
 import random
 
-import os
+import pandas as pd
 from dotenv import load_dotenv
+from langchain.embeddings import HuggingFaceEmbeddings
+
+import streamlit as st
+from bunkatopics import Bunka
 
 load_dotenv()
 # Define a Streamlit app

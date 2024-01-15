@@ -1,6 +1,16 @@
 SHELL := /bin/bash
 .PHONY : all
 
+docs:
+	mkdocs serve
+
+
+pypi:
+	python setup.py sdist
+	python setup.py bdist_wheel --universal
+	twine upload dist/*
+
+
 default: 
 	docker_build
 	docker_build_worker
@@ -8,6 +18,17 @@ default:
 
 jupyter:
 	python -m jupyterlab
+
+clean:
+	rm -rf **/.ipynb_checkpoints **/.pytest_cache **/__pycache__ **/**/__pycache__ .ipynb_checkpoints .pytest_cache
+
+delete_checkpoints:
+	find . -type d -name ".ipynb_checkpoints" -exec rm -r {} +
+
+format_code: clean
+	black .
+	isort .
+	flake8 bunkatopics
 
 test:
 	python tests/test_bunka.py
@@ -18,17 +39,15 @@ check:
 test_fig:
 	python tests/run_bunka.py
 
-format:
-	black bunkatopics
-	isort bunkatopics
+poetry_export:
+	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
 poetry_export_full:
 	poetry shell
 	poetry self add poetry-plugin-export
 	poetry export --without-hashes --format=requirements.txt > requirements.txt	
 
-poetry_export:
-	poetry export --without-hashes --format=requirements.txt > requirements.txt
+pre_push: format_code poetry_export check
 
 install_nginx_config:
 	cp api/deployment/nginx-configuration-dev.conf /etc/nginx/sites-enabled/ && systemctl reload nginx

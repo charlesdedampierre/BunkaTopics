@@ -1,7 +1,9 @@
-from pydantic import BaseModel
 import typing as t
 
-from bunkatopics.datamodel import Document, Topic, TopicParam, BourdieuQuery, Term
+from pydantic import BaseModel
+
+from bunkatopics.datamodel import (BourdieuQuery, Document, Term, Topic,
+                                   TopicParam)
 
 
 class BourdieuQueryDict(t.TypedDict):
@@ -22,6 +24,7 @@ class BourdieuQueryApi(BourdieuQuery):
             "radius_size": self.radius_size,
         }
 
+
 class BourdieuResponse(BaseModel):
     docs: t.List[Document]
     topics: t.List[Topic]
@@ -34,14 +37,15 @@ class TopicsResponse(BaseModel):
     bourdieu_response: BourdieuResponse | None
     terms: t.List[Term]
 
+
 class TopicParameterApi(TopicParam):
     """API specific Topics parameters"""
 
     n_clusters: int = 10
-    language : str = "english"
+    language: str = "english"
     clean_topics = True
     min_count_terms: int = 1
-    
+
     def to_dict(self):
         return {
             # Convert all attributes to a serializable format
@@ -51,5 +55,5 @@ class TopicParameterApi(TopicParam):
             "top_terms_overall": self.top_terms_overall,
             "language": self.language,
             "clean_topics": self.clean_topics,
-            "min_count_terms": self.min_count_terms
+            "min_count_terms": self.min_count_terms,
         }

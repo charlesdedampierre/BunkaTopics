@@ -29,13 +29,13 @@ class TestBunka(unittest.TestCase):
         # Test Topic Modeling
         n_clusters = 3
         df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
+        print(df_topics.name)
         self.assertIsInstance(df_topics, pd.DataFrame)
         self.assertEqual(len(df_topics), n_clusters)
 
         # Visualize Topics
         topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
         self.assertIsInstance(topic_fig, go.Figure)
-        topic_fig.show()
 
     """ # test Bourdieu Map
         bourdieu_fig = self.bunka.visualize_bourdieu(

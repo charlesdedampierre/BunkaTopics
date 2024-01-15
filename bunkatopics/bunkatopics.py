@@ -19,14 +19,8 @@ from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bunka_logger import logger
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics.functions.coherence import get_coherence
 from bunkatopics.functions.extract_terms import TextacyTermsExtractor
@@ -35,7 +29,8 @@ from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topic_utils import get_topic_repartition
 from bunkatopics.functions.topics_modeling import get_topics
 from bunkatopics.serveur.utils import is_server_running, kill_server
-from bunkatopics.visualisation.bourdieu_visu import visualize_bourdieu_one_dimension
+from bunkatopics.visualisation.bourdieu_visu import \
+    visualize_bourdieu_one_dimension
 from bunkatopics.visualisation.new_bourdieu_visu import visualize_bourdieu
 from bunkatopics.visualisation.query_visualisation import plot_query
 from bunkatopics.visualisation.topic_visualization import visualize_topics

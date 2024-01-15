@@ -34,7 +34,7 @@ class TestBunka(unittest.TestCase):
         self.assertEqual(len(df_topics), n_clusters)
 
         # Visualize Topics
-        topic_fig = self.bunka.visualize_topics(width=800, height=800)
+        topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
         self.assertIsInstance(topic_fig, go.Figure)
 
     """ # test Bourdieu Map

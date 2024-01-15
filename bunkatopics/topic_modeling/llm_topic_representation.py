@@ -6,8 +6,8 @@ from langchain.prompts import ChatPromptTemplate
 from tqdm import tqdm
 
 from bunkatopics.datamodel import Document, Topic
-from bunkatopics.functions.prompts import (promp_template_topics_terms,
-                                           promp_template_topics_terms_no_docs)
+from bunkatopics.topic_modeling.prompt_generator import (
+    promp_template_topics_terms, promp_template_topics_terms_no_docs)
 
 TERM_ID = str
 

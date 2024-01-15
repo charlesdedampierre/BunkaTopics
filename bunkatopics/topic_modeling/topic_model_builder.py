@@ -4,9 +4,10 @@ import pandas as pd
 from sklearn.cluster import KMeans
 
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
-from bunkatopics.functions.topic_representation import remove_overlapping_terms
-from bunkatopics.functions.utils import specificity
-from bunkatopics.visualisation.convex_hull import get_convex_hull_coord
+from bunkatopics.topic_modeling.topic_name_cleaner import \
+    remove_overlapping_terms
+from bunkatopics.topic_modeling.utils import specificity
+from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
 
 
 def get_topics(

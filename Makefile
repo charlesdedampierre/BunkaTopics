@@ -1,3 +1,11 @@
+SHELL := /bin/bash
+.PHONY : all
+
+default: 
+	docker_build
+	docker_build_worker
+	docker_create_network
+
 jupyter:
 	python -m jupyterlab
 
@@ -16,6 +24,8 @@ poetry_export:
 	poetry self add poetry-plugin-export
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
 
+install_nginx_config:
+	cp api/deployment/nginx-configuration-dev.conf /etc/nginx/sites-enabled/ && systemctl reload nginx
 
 #############
 # Streamlit  #
@@ -55,10 +65,10 @@ docker_build:
 	docker build -t $$API_IMAGE_NAME .
 
 docker_run:
-	docker run --restart=always --network bunkatopics_network --env-file .env -d --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
+	docker run --restart=always --network bunkatopics_network --env-file .env -d --gpus all -p 8001:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_run_attach:
-	docker run --network bunkatopics_network --env-file .env --gpus all -p 8000:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
+	docker run --network bunkatopics_network --env-file .env --gpus all -p 8001:8000 --name $$API_CONTAINER_NAME $$API_IMAGE_NAME
 
 docker_tag:
 	docker tag $$API_IMAGE_NAME $$CONTAINER_REGISTRY_URL/$$API_IMAGE_NAME:latest
@@ -70,9 +80,6 @@ docker_push:
 #############
 # Docker CELERY WORKER #
 #############
-
-run_worker: 
-	python -m celery worker -l INFO
 
 docker_create_network:
 	docker network create bunkatopics_network
@@ -94,5 +101,3 @@ docker_push_worker:
 
 docker_run_redis:
 	docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name redis redis
-docker_run_mongodb:
-	docker run --restart=always --network bunkatopics_network -d --name mongodb -v /root/mongo/data:/data/db -p 27017:27017 mongo:latest

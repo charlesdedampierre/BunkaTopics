@@ -19,8 +19,14 @@ from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bunka_logger import logger
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics.functions.coherence import get_coherence
 from bunkatopics.functions.extract_terms import TextacyTermsExtractor
@@ -29,11 +35,10 @@ from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topic_utils import get_topic_repartition
 from bunkatopics.functions.topics_modeling import get_topics
 from bunkatopics.serveur.utils import is_server_running, kill_server
-from bunkatopics.visualisation.bourdieu_visu import \
-    visualize_bourdieu_one_dimension
-from bunkatopics.visualisation.new_bourdieu_visu import visualize_bourdieu
+from bunkatopics.visualisation.bourdieu import visualize_bourdieu
+from bunkatopics.visualisation.old_bourdieu_visu import visualize_bourdieu_one_dimension
 from bunkatopics.visualisation.query_visualisation import plot_query
-from bunkatopics.visualisation.topic_visualization import visualize_topics
+from bunkatopics.visualisation.topic import visualize_topics
 
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 
@@ -263,26 +268,27 @@ class Bunka:
 
     def visualize_bourdieu(
         self,
-        generative_model=None,
-        x_left_words=["war"],
-        x_right_words=["peace"],
-        y_top_words=["men"],
-        y_bottom_words=["women"],
-        height=1500,
-        width=1500,
-        display_percent=True,
-        clustering=False,
-        topic_n_clusters=10,
-        topic_terms=2,
-        topic_ngrams=[1, 2],
-        topic_top_terms_overall=500,
-        gen_topic_language="english",
-        topic_gen_name=False,
-        manual_axis_name=None,
-        use_doc_gen_topic=False,
+        generative_model: t.Optional[str] = None,
+        x_left_words: t.List[str] = ["war"],
+        x_right_words: t.List[str] = ["peace"],
+        y_top_words: t.List[str] = ["men"],
+        y_bottom_words: t.List[str] = ["women"],
+        height: int = 1500,
+        width: int = 1500,
+        display_percent: bool = True,
+        clustering: bool = False,
+        topic_n_clusters: int = 10,
+        topic_terms: int = 2,
+        topic_ngrams: t.List[int] = [1, 2],
+        topic_top_terms_overall: int = 1000,
+        gen_topic_language: str = "english",
+        topic_gen_name: bool = False,
+        manual_axis_name: t.Optional[dict] = None,
+        use_doc_gen_topic: bool = False,
         radius_size: float = 0.3,
-        convex_hull=True,
+        convex_hull: bool = True,
     ) -> go.Figure:
+        logger.info("Creating the Bourdieu Map")
         topic_gen_param = TopicGenParam(
             language=gen_topic_language,
             top_doc=3,

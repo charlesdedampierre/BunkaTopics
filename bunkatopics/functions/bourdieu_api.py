@@ -22,11 +22,28 @@ def bourdieu_api(
     terms: t.List[Term],
     bourdieu_query: BourdieuQuery = BourdieuQuery(),
     topic_param: TopicParam = TopicParam(),
-    generative_ai_name=False,
+    generative_ai_name: bool = False,
     topic_gen_param: TopicGenParam = TopicGenParam(),
     min_count_terms: int = 2,
 ) -> t.Tuple[t.List[Document], t.List[Topic]]:
-    # Reset
+    """
+    Compute Bourdieu dimensions and topics for a list of documents.
+
+    Args:
+        generative_model: The generative AI model.
+        embedding_model: The embedding model.
+        docs: List of documents.
+        terms: List of terms.
+        bourdieu_query: BourdieuQuery object.
+        topic_param: TopicParam object.
+        generative_ai_name: Whether to generate AI-generated topic names.
+        topic_gen_param: TopicGenParam object.
+        min_count_terms: Minimum term count.
+
+    Returns:
+        Tuple of lists containing processed documents and topics.
+    """
+    # Reset Bourdieu dimensions for all documents
     for doc in docs:
         doc.bourdieu_dimensions = []
 
@@ -46,7 +63,7 @@ def bourdieu_api(
         right_words=bourdieu_query.y_bottom_words,
     )
 
-    # There are two coordinates
+    # Process and transform data
     df_bourdieu = pd.DataFrame(
         [
             {
@@ -57,7 +74,6 @@ def bourdieu_api(
             for x in bourdieu_docs
         ]
     )
-
     df_bourdieu = df_bourdieu.explode(["coordinates", "names"])
 
     df_bourdieu_pivot = df_bourdieu[["doc_id", "coordinates", "names"]]
@@ -66,11 +82,8 @@ def bourdieu_api(
     )
 
     # Add to the bourdieu_docs
-
     df_outsides = df_bourdieu_pivot.reset_index()
-    df_outsides["cont1"] = df_outsides["cont1"].astype(
-        float
-    )  # Cont1 is the default name
+    df_outsides["cont1"] = df_outsides["cont1"].astype(float)
     df_outsides["cont2"] = df_outsides["cont2"].astype(float)
 
     x_values = df_outsides["cont1"].values
@@ -81,10 +94,9 @@ def bourdieu_api(
 
     df_outsides["distances"] = distances
     df_outsides["outside"] = "0"
-    df_outsides["outside"][df_outsides["distances"] >= circle_radius] = "1"
+    df_outsides.loc[df_outsides["distances"] >= circle_radius, "outside"] = "1"
 
     outside_ids = list(df_outsides["doc_id"][df_outsides["outside"] == "1"])
-
     bourdieu_docs = [x for x in bourdieu_docs if x.doc_id in outside_ids]
     bourdieu_dict = df_bourdieu_pivot.to_dict(orient="index")
 
@@ -92,12 +104,13 @@ def bourdieu_api(
         doc.x = bourdieu_dict.get(doc.doc_id)["cont1"]
         doc.y = bourdieu_dict.get(doc.doc_id)["cont2"]
 
+    # Compute Bourdieu topics
     bourdieu_topics = get_topics(
         docs=bourdieu_docs,
         terms=terms,
         n_clusters=topic_param.n_clusters,
         ngrams=topic_param.ngrams,
-        name_lenght=topic_param.name_lenght,
+        name_length=topic_param.name_length,
         top_terms_overall=topic_param.top_terms_overall,
         min_count_terms=min_count_terms,
     )
@@ -107,7 +120,7 @@ def bourdieu_api(
     )
 
     if generative_ai_name:
-        bourdieu_topics: t.List[Topic] = get_clean_topic_all(
+        bourdieu_topics = get_clean_topic_all(
             generative_model,
             bourdieu_topics,
             bourdieu_docs,
@@ -116,17 +129,32 @@ def bourdieu_api(
             use_doc=topic_gen_param.use_doc,
         )
 
-    return (bourdieu_docs, bourdieu_topics)
+    return bourdieu_docs, bourdieu_topics
 
 
 def get_continuum(
     embedding_model,
     docs: t.List[Document],
     cont_name: str = "emotion",
-    left_words: list = ["hate", "pain"],
-    right_words: list = ["love", "good"],
+    left_words: list = ["hate"],
+    right_words: list = ["love"],
     scale: bool = False,
 ) -> t.List[Document]:
+    """
+    Compute the Bourdieu continuum dimensions for a list of documents.
+
+    Args:
+        embedding_model: The embedding model.
+        docs: List of documents.
+        cont_name: Name of the continuum dimension.
+        left_words: List of words representing the left side of the continuum.
+        right_words: List of words representing the right side of the continuum.
+        scale: Whether to scale the continuum distances.
+
+    Returns:
+        List of documents with Bourdieu dimensions.
+    """
+    # Create a DataFrame from the input documents
     df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
     df_emb = df_docs[["doc_id", "embedding"]]
     df_emb = df_emb.set_index("doc_id")
@@ -144,7 +172,7 @@ def get_continuum(
     left_embedding = pd.DataFrame(left_embedding).mean().values.reshape(1, -1)
     right_embedding = pd.DataFrame(right_embedding).mean().values.reshape(1, -1)
 
-    # Make the difference to get the continnum
+    # Compute the continuum embedding
     continuum_embedding = left_embedding - right_embedding
     df_continuum = pd.DataFrame(continuum_embedding)
     df_continuum.index = ["distance"]

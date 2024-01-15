@@ -1,17 +1,17 @@
 import sys
 
 sys.path.append("../")
+import os
+import random
 import unittest
-from bunkatopics import Bunka
+
 import pandas as pd
 import plotly.graph_objects as go
-import random
 from datasets import load_dataset
-from langchain.llms import LlamaCpp
-
-import os
 from dotenv import load_dotenv
-from langchain.llms import OpenAI
+from langchain.llms import LlamaCpp, OpenAI
+
+from bunkatopics import Bunka
 
 open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
 

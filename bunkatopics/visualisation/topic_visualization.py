@@ -61,9 +61,11 @@ def visualize_topics(
                 # marker=dict(size=sizes, color=colors),
                 # marker=dict(color="#000000"),
                 customdata=nk,
-                hovertemplate="<br><b>TOPIC</b>: %{customdata[0]}<br>"
-                + "<br><b>TEXT</b>: %{customdata[1]}<br>"
-                + "<br><b>SCORE</b>: %{customdata[2]}<br>",
+                hovertemplate=(
+                    "<br><b>TOPIC</b>: %{customdata[0]}<br>"
+                    + "<br><b>TEXT</b>: %{customdata[1]}<br>"
+                    + "<br><b>SCORE</b>: %{customdata[2]}<br>"
+                ),
             )
         )
 
@@ -102,8 +104,8 @@ def visualize_topics(
             )
 
             fig_density.add_trace(trace)
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     fig_density.update_layout(showlegend=False)
     fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)

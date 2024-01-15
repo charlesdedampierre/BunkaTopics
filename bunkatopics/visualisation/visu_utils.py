@@ -5,7 +5,6 @@ def wrap_by_word(string, n_words):
         ret = ""
         for i in range(0, len(a), n_words):
             ret += " ".join(a[i : i + n_words]) + "<br>"
-    except:
-        pass
-
+    except Exception as e:
+        print(e)
     return ret

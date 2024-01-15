@@ -1,11 +1,11 @@
-import sys
-
-sys.path.append("../")
-
 import os
+import sys
 
 from dotenv import load_dotenv
 from llama_cpp import Llama
+
+sys.path.append("../")
+
 
 load_dotenv()
 model_path = os.getenv("MODEL_PATH")

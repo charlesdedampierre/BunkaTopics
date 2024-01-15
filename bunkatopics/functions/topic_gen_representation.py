@@ -1,14 +1,14 @@
 import typing as t
 
-import openai
 import pandas as pd
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from tqdm import tqdm
 
 from bunkatopics.datamodel import Document, Topic
-from langchain.llms import OpenAI
-from .prompts import promp_template_topics_terms, promp_template_topics_terms_no_docs
+
+from .prompts import (promp_template_topics_terms,
+                      promp_template_topics_terms_no_docs)
 
 # Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
 

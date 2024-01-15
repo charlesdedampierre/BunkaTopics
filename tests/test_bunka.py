@@ -1,46 +1,39 @@
 import sys
 
 sys.path.append("../")
+import random
 import unittest
-from bunkatopics import Bunka
+
 import pandas as pd
 import plotly.graph_objects as go
-import random
 from datasets import load_dataset
-from langchain.llms import LlamaCpp
-
-import os
 from dotenv import load_dotenv
-from langchain.llms import OpenAI
 
-from langchain.embeddings import HuggingFaceEmbeddings
-
-
-# open_ai_generative_model = OpenAI(openai_api_key=os.getenv("OPEN_AI_KEY"))
+from bunkatopics import Bunka
 
 load_dotenv()
 
 random.seed(42)
 
 
-class Test(unittest.TestCase):
+class TestBunka(unittest.TestCase):
     def setUp(self):
-        docs = load_dataset("rguo123/trump_tweets")["train"]["content"]
+        # Load a sample dataset
+        dataset = load_dataset("rguo123/trump_tweets")
+        docs = dataset["train"]["content"]
         docs = random.sample(docs, 100)
-        embedding_model = HuggingFaceEmbeddings(
-            model_name="all-MiniLM-L6-v2"
-        )  # We use a small model
-        self.bunka = Bunka(embedding_model=embedding_model)
+        self.bunka = Bunka()
         self.bunka.fit(docs)
 
     def test_pipeline(self):
-        # test Topic Modeling
-        n_clusters = 2
+        # Test Topic Modeling
+        n_clusters = 3
         df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
-        print(df_topics)
-        self.assertEqual(len(df_topics), n_clusters)
+        print(df_topics.name)
         self.assertIsInstance(df_topics, pd.DataFrame)
+        self.assertEqual(len(df_topics), n_clusters)
 
+        # Visualize Topics
         topic_fig = self.bunka.visualize_topics(width=800, height=800)
         self.assertIsInstance(topic_fig, go.Figure)
 

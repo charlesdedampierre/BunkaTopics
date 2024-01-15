@@ -1,17 +1,15 @@
-import random
-import unittest
 import os
+import random
+import sys
+import unittest
 
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
-
-from bunkatopics import Bunka
 from langchain.llms import HuggingFaceHub
 
-
-import sys
+from bunkatopics import Bunka
 
 sys.path.append("../")
 
@@ -67,7 +65,6 @@ class TestBunka(unittest.TestCase):
 
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
-        df_topics_clean.to_csv("test.csv")
         print(df_topics_clean.name)
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
         self.assertEqual(len(df_topics_clean), n_clusters)

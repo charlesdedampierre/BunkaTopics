@@ -3,9 +3,8 @@ import typing as t
 import pandas as pd
 import plotly.express as px
 
-from bunkatopics.visualisation.visu_utils import wrap_by_word
-
-from ..datamodel import Topic
+from bunkatopics.datamodel import Topic
+from bunkatopics.visualization.visualization_utils import wrap_by_word
 
 
 def get_topic_repartition(topics: t.List[Topic], width=1200, height=800):

@@ -202,15 +202,28 @@ class Bunka:
         return response
 
     def get_clean_topic_name(
-        self, generative_model, language="english", use_doc=False, context="everything"
+        self,
+        llm,
+        language: str = "english",
+        use_doc: bool = False,
+        context: str = "everything",
     ) -> pd.DataFrame:
         """
+        Get cleaned topic names using Generative AI.
 
-        Get the topic name using Generative AI
+        Args:
+            llm: The generative model to use for topic name generation.
+            language: The language for generating clean labels (default: "english").
+            use_doc: Whether to use documents in label generation (default: False).
+            context: The context for label generation (default: "everything").
 
+        Returns:
+            pd.DataFrame: A DataFrame containing cleaned topic names.
         """
+
+        logger.info("Using LLM to make topic names cleaner")
         self.topics: t.List[Topic] = get_clean_topic_all(
-            generative_model,
+            llm,
             self.topics,
             self.docs,
             language=language,
@@ -250,20 +263,6 @@ class Bunka:
             show_text=show_text,
             label_size_ratio=label_size_ratio,
         )
-        return fig
-
-    def search(self, user_input: str, top_doc: int = 3) -> pd.DataFrame:
-        res = self.vectorstore.similarity_search_with_score(user_input, k=top_doc)
-        # res = vector_search(self.docs, self.embedding_model, user_input=user_input)
-        return res
-
-    def get_topic_coherence(self, topic_terms_n=10):
-        texts = [doc.term_id for doc in self.docs]
-        res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
-        return res
-
-    def get_topic_repartition(self, width=1200, height=800) -> go.Figure:
-        fig = get_topic_repartition(self.topics, width=width, height=height)
         return fig
 
     def visualize_bourdieu(
@@ -339,6 +338,59 @@ class Bunka:
             manual_axis_name=manual_axis_name,
         )
 
+        return fig
+
+    def search(self, user_input: str, top_doc: int = 3) -> pd.DataFrame:
+        res = self.vectorstore.similarity_search_with_score(user_input, k=top_doc)
+        # res = vector_search(self.docs, self.embedding_model, user_input=user_input)
+        return res
+
+    def get_topic_coherence(self, topic_terms_n=10):
+        texts = [doc.term_id for doc in self.docs]
+        res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
+        return res
+
+    def get_topic_repartition(self, width=1200, height=800) -> go.Figure:
+        fig = get_topic_repartition(self.topics, width=width, height=height)
+        return fig
+
+    def get_dimensions(
+        self, dimensions: t.List[str], width=500, height=500, template="plotly_dark"
+    ) -> go.Figure:
+        final_df = []
+        logger.info("Computing Similarities")
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        for dim in tqdm(dimensions):
+            df_search = self.search(dim)
+            df_search["score"] = scaler.fit_transform(
+                df_search[["cosine_similarity_score"]]
+            )
+            df_search["source"] = dim
+            final_df.append(df_search)
+        final_df = pd.concat([x for x in final_df])
+
+        final_df_mean = (
+            final_df.groupby("source")["score"]
+            .mean()
+            .rename("mean_score")
+            .reset_index()
+        )
+        final_df_mean = final_df_mean.sort_values(
+            "mean_score", ascending=True
+        ).reset_index(drop=True)
+        final_df_mean["rank"] = final_df_mean.index + 1
+
+        self.df_dimensions = final_df_mean
+
+        fig = px.line_polar(
+            final_df_mean,
+            r="mean_score",
+            theta="source",
+            line_close=True,
+            template=template,
+            width=width,
+            height=height,
+        )
         return fig
 
     def start_server_bourdieu(self):
@@ -420,43 +472,4 @@ class Bunka:
             explainer=explainer,
         )
 
-        return fig
-
-    def get_dimensions(
-        self, dimensions: t.List[str], width=500, height=500, template="plotly_dark"
-    ) -> go.Figure:
-        final_df = []
-        logger.info("Computing Similarities")
-        scaler = MinMaxScaler(feature_range=(0, 1))
-        for dim in tqdm(dimensions):
-            df_search = self.search(dim)
-            df_search["score"] = scaler.fit_transform(
-                df_search[["cosine_similarity_score"]]
-            )
-            df_search["source"] = dim
-            final_df.append(df_search)
-        final_df = pd.concat([x for x in final_df])
-
-        final_df_mean = (
-            final_df.groupby("source")["score"]
-            .mean()
-            .rename("mean_score")
-            .reset_index()
-        )
-        final_df_mean = final_df_mean.sort_values(
-            "mean_score", ascending=True
-        ).reset_index(drop=True)
-        final_df_mean["rank"] = final_df_mean.index + 1
-
-        self.df_dimensions = final_df_mean
-
-        fig = px.line_polar(
-            final_df_mean,
-            r="mean_score",
-            theta="source",
-            line_close=True,
-            template=template,
-            width=width,
-            height=height,
-        )
         return fig

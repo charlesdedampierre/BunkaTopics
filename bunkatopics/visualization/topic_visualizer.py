@@ -4,7 +4,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 from bunkatopics.datamodel import Document, Topic
-from bunkatopics.visualisation.visu_utils import wrap_by_word
+from bunkatopics.visualization.visualization_utils import wrap_by_word
 
 
 def visualize_topics(

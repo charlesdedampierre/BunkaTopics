@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from bunkatopics.datamodel import Document
-from bunkatopics.functions.utils import specificity
+from bunkatopics.topic_modeling.utils import specificity
 
 
 def plot_specific_terms(

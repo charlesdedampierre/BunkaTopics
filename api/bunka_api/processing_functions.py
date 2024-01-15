@@ -10,7 +10,7 @@ from api.bunka_api.datamodel import (BourdieuQueryApi, BourdieuQueryDict,
                                      TopicsResponse)
 from bunkatopics import Bunka
 from bunkatopics.datamodel import Document, Term, Topic, TopicGenParam
-from bunkatopics.functions.bourdieu_api import bourdieu_api
+from bunkatopics.topic_modeling.bourdieu_api import bourdieu_api
 
 open_ai_generative_model = OpenAI(
     openai_api_key=os.getenv("OPEN_AI_KEY"),

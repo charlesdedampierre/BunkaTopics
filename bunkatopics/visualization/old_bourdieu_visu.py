@@ -10,11 +10,13 @@ from sklearn.preprocessing import MinMaxScaler
 
 from bunkatopics.datamodel import (BourdieuDimension, ContinuumDimension,
                                    Document, Term)
-from bunkatopics.functions.topic_document import get_top_documents
-from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
-from bunkatopics.functions.topics_modeling import get_topics
-from bunkatopics.visualisation.explainer import plot_specific_terms
-from bunkatopics.visualisation.visu_utils import wrap_by_word
+from bunkatopics.topic_modeling.document_topic_analyzer import \
+    get_top_documents
+from bunkatopics.topic_modeling.llm_topic_representation import \
+    get_clean_topic_all
+from bunkatopics.topic_modeling.topic_model_builder import get_topics
+from bunkatopics.visualization.topic_explainer import plot_specific_terms
+from bunkatopics.visualization.visualization_utils import wrap_by_word
 
 pd.options.mode.chained_assignment = None
 

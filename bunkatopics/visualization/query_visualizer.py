@@ -7,8 +7,7 @@ import plotly.graph_objects as go
 from sklearn.metrics.pairwise import cosine_similarity
 
 from bunkatopics.datamodel import Document
-
-from .visu_utils import wrap_by_word
+from bunkatopics.visualization.visualization_utils import wrap_by_word
 
 
 def plot_query(

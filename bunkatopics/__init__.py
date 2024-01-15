@@ -1,3 +1,3 @@
-from bunkatopics.bunkatopics import Bunka
+from bunkatopics._bunkatopics import Bunka
 
 __all__ = ["Bunka"]

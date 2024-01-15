@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from bunkatopics.datamodel import Document
-from bunkatopics.visualisation.visu_utils import wrap_by_word
+from bunkatopics.visualization.visualization_utils import wrap_by_word
 
 pd.options.mode.chained_assignment = None
 

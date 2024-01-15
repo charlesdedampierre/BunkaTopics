@@ -14,6 +14,7 @@ default:
 	docker_build_worker
 	docker_create_network
 
+
 jupyter:
 	python -m jupyterlab
 
@@ -45,7 +46,7 @@ poetry_export_full:
 	poetry self add poetry-plugin-export
 	poetry export --without-hashes --format=requirements.txt > requirements.txt	
 
-pre_push: format_code poetry_export check
+pre_push: format_code poetry_export clean check
 
 install_nginx_config:
 	cp api/deployment/nginx-configuration-dev.conf /etc/nginx/sites-enabled/ && systemctl reload nginx

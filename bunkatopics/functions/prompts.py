@@ -10,7 +10,7 @@ Within the data I have a topic that is described by the following keywords:
 Here are some examples of documents in the topic:
 {documents}:
 
-Based on the keywords documents in the topic, create a label in 4 or 5 words that summarizes best the topic.
+Based on the keywords documents in the topic, create a short label (3 words maximum))that summarizes best the topic.
 The topics is a large topic, the keywords may not be directly connected to each other. Create a topic large enought to keywords all the words it contains.
 
 Only give the name of the topic and nothing else in {language}:[/INST]
@@ -27,7 +27,7 @@ I have data about {context}
 I have a topic that is described the following keywords:
 {terms}
 
-Based on the keywrods about the topic, create a short label that summarizes best the topic.
+Based on the keywrods about the topic, create a Short label (3 words maximum) that summarizes best the topic.
 The topics is a large topic, the keywords may not be directly connected to each other. Create a topic large enought to keywords all the words it contains.
 
 Only give the name of the topic and nothing else in {language}:[/INST]

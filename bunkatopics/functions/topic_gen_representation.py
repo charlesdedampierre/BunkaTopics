@@ -6,71 +6,39 @@ from langchain.prompts import ChatPromptTemplate
 from tqdm import tqdm
 
 from bunkatopics.datamodel import Document, Topic
-
-from .prompts import (promp_template_topics_terms,
-                      promp_template_topics_terms_no_docs)
-
-# Our main prompt with documents ([DOCUMENTS]) and keywords ([KEYWORDS]) tags
-
+from bunkatopics.functions.prompts import (promp_template_topics_terms,
+                                           promp_template_topics_terms_no_docs)
 
 TERM_ID = str
 
 
-def get_clean_topic(
-    generative_model,
-    specific_terms: t.List[str],
-    specific_documents: t.List[str],
-    language="english",
-    top_doc: int = 3,
-    top_terms: int = 10,
-    use_doc=True,
-    context: str = "different things",
-):
-    specific_terms = specific_terms[:top_terms]
-    specific_documents = specific_documents[:top_doc]
-
-    if use_doc:
-        PROMPT_TOPICS = ChatPromptTemplate.from_template(promp_template_topics_terms)
-
-        topic_chain = LLMChain(llm=generative_model, prompt=PROMPT_TOPICS)
-        clean_topic_name = topic_chain(
-            {
-                "terms": ", ".join(specific_terms),
-                "documents": " \n".join(specific_documents),
-                "context": context,
-                "language": language,
-            }
-        )
-    else:
-        PROMPT_TOPICS_NO_DOCS = ChatPromptTemplate.from_template(
-            promp_template_topics_terms_no_docs
-        )
-
-        topic_chain = LLMChain(llm=generative_model, prompt=PROMPT_TOPICS_NO_DOCS)
-        clean_topic_name = topic_chain(
-            {
-                "terms": ", ".join(specific_terms),
-                "context": context,
-                "language": language,
-            }
-        )
-
-    clean_topic_name = clean_topic_name["text"]
-
-    return clean_topic_name
-
-
 def get_clean_topic_all(
-    generative_model,
+    llm,
     topics: t.List[Topic],
     docs: t.List[Document],
     language: str = "english",
     top_doc: int = 3,
     top_terms: int = 10,
-    use_doc=False,
+    use_doc: bool = False,
     context: str = "everything",
 ) -> t.List[Topic]:
-    df = get_df_prompt(topics, docs)
+    """
+    Get cleaned topic labels for a list of topics using a generative model.
+
+    Args:
+        llm: The generative model to use.
+        topics: List of topics to clean.
+        docs: List of documents related to the topics.
+        language: Language for generating clean labels.
+        top_doc: Number of top documents to consider.
+        top_terms: Number of top terms to consider.
+        use_doc: Whether to use documents in label generation.
+        context: Context for label generation.
+
+    Returns:
+        List of topics with cleaned labels.
+    """
+    df = _get_df_prompt(topics, docs)
 
     topic_ids = list(df["topic_id"])
     specific_terms = list(df["keywords"])
@@ -79,8 +47,8 @@ def get_clean_topic_all(
     final_dict = {}
     pbar = tqdm(total=len(topic_ids), desc="Creating new labels for clusters")
     for topic_ic, x, y in zip(topic_ids, specific_terms, top_doc_contents):
-        clean_topic_name = get_clean_topic(
-            generative_model=generative_model,
+        clean_topic_name = _get_clean_topic(
+            llm=llm,
             language=language,
             specific_terms=x,
             specific_documents=y,
@@ -98,13 +66,87 @@ def get_clean_topic_all(
     return topics
 
 
-def get_df_prompt(topics: t.List[Topic], docs: t.List[Document]) -> pd.DataFrame:
+def _get_clean_topic(
+    llm,
+    specific_terms: t.List[str],
+    specific_documents: t.List[str],
+    language: str = "english",
+    top_doc: int = 3,
+    top_terms: int = 10,
+    use_doc: bool = False,
+    context: str = "different things",
+) -> str:
     """
-    get a dataframe to input the prompt
+    Get a cleaned topic label using a generative model.
 
+    Args:
+        generative_model: The generative model to use.
+        specific_terms: List of specific terms related to the topic.
+        specific_documents: List of specific documents related to the topic.
+        language: Language for generating clean labels.
+        top_doc: Number of top documents to consider.
+        top_terms: Number of top terms to consider.
+        use_doc: Whether to use documents in label generation.
+        context: Context for label generation.
 
+    Returns:
+        Cleaned topic label.
     """
+    specific_terms = specific_terms[:top_terms]
+    specific_documents = specific_documents[:top_doc]
 
+    if use_doc:
+        PROMPT_TOPICS = ChatPromptTemplate.from_template(promp_template_topics_terms)
+
+        topic_chain = LLMChain(llm=llm, prompt=PROMPT_TOPICS)
+        clean_topic_name = topic_chain(
+            {
+                "terms": ", ".join(specific_terms),
+                "documents": " \n".join(specific_documents),
+                "context": context,
+                "language": language,
+            }
+        )
+    else:
+        PROMPT_TOPICS_NO_DOCS = ChatPromptTemplate.from_template(
+            promp_template_topics_terms_no_docs
+        )
+
+        topic_chain = LLMChain(llm=llm, prompt=PROMPT_TOPICS_NO_DOCS)
+        clean_topic_name = topic_chain(
+            {
+                "terms": ", ".join(specific_terms),
+                "context": context,
+                "language": language,
+            }
+        )
+
+    clean_topic_name = clean_topic_name["text"]
+    clean_topic_name = _clean_final_output(clean_topic_name)
+
+    return clean_topic_name
+
+
+def _clean_final_output(x):
+    res = x.strip().strip('"')
+    res = res.strip()
+
+    if res.endswith("."):
+        res = res[:-1]
+    return res
+
+
+def _get_df_prompt(topics: t.List[Topic], docs: t.List[Document]) -> pd.DataFrame:
+    """
+    Get a dataframe for input to the prompt.
+
+    Args:
+        topics: List of topics.
+        docs: List of documents.
+
+    Returns:
+        DataFrame for prompt input.
+    """
     docs_with_ranks = [x for x in docs if x.topic_ranking is not None]
 
     df_for_prompt = pd.DataFrame(

@@ -1,15 +1,17 @@
-import sys
-
-sys.path.append("../")
+import os
 import random
+import sys
 import unittest
 
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
+from langchain.llms import HuggingFaceHub
 
 from bunkatopics import Bunka
+
+sys.path.append("../")
 
 load_dotenv()
 
@@ -17,13 +19,14 @@ random.seed(42)
 
 
 class TestBunka(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         # Load a sample dataset
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 100)
-        self.bunka = Bunka()
-        self.bunka.fit(docs)
+        docs = random.sample(docs, 200)
+        cls.bunka = Bunka()
+        cls.bunka.fit(docs)
 
     def test_topic_modeling(self):
         # Test Topic Modeling
@@ -49,9 +52,22 @@ class TestBunka(unittest.TestCase):
             topic_gen_name=False,
             topic_n_clusters=3,
         )
-
         # bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
+
+    def test_generative_names(self):
+        n_clusters = 3
+        repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
+        llm = HuggingFaceHub(
+            repo_id=repo_id,
+            huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
+        )
+
+        self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
+        df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
+        print(df_topics_clean.name)
+        self.assertIsInstance(df_topics_clean, pd.DataFrame)
+        self.assertEqual(len(df_topics_clean), n_clusters)
 
         """
         # test Undimentional Map

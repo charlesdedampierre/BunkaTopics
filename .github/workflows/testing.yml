@@ -30,4 +30,6 @@ jobs:
       - name: Install Spacy Model
         run: python -m spacy download en_core_web_sm
       - name: Running code testing
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: make check

@@ -1,35 +1,36 @@
 import sys
-from dotenv import load_dotenv
 from pprint import pprint
+
+from dotenv import load_dotenv
 
 load_dotenv()
 sys.path.append("../")
 
+import asyncio
 import json
 import typing as t
-import asyncio
-from celery.result import AsyncResult
-from fastapi.responses import JSONResponse, StreamingResponse
-from fastapi import UploadFile, Form, status
-import pandas as pd
 
+import pandas as pd
+from celery.result import AsyncResult
+from fastapi import Form, UploadFile, status
+from fastapi.responses import JSONResponse, StreamingResponse
+
+from api.bunka_api.app import app
+from api.bunka_api.datamodel import (BourdieuQueryApi, BourdieuQueryDict,
+                                     BourdieuResponse, Document, Term,
+                                     TopicParameterApi)
+from api.bunka_api.jobs import bourdieu_api_task, process_topics_task
 # Import the necessary modules and classes
 from api.bunka_api.processing_functions import process_partial_bourdieu
-from api.bunka_api.app import app
-from api.bunka_api.datamodel import (
-    BourdieuResponse,
-    TopicParameterApi,
-    BourdieuQueryApi,
-    Document,
-    Term,
-    BourdieuQueryDict,
-    BourdieuResponse
-)
-from api.bunka_api.jobs import process_topics_task, bourdieu_api_task
+
 
 def limit_docs(full_docs):
     if len(full_docs) > 10000:
-        content = {"status_code": 10422, "message": "CSV must contain less than 10 000 lines", "data": None}
+        content = {
+            "status_code": 10422,
+            "message": "CSV must contain less than 10 000 lines",
+            "data": None,
+        }
         return JSONResponse(
             content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
         )
@@ -74,7 +75,7 @@ async def upload_process_topics_csv(
         language=language,
         name_lenght=name_length,
         clean_topics=clean_topics,
-        min_count_terms=min_count_terms
+        min_count_terms=min_count_terms,
     )
     query = {}
     if process_bourdieu:
@@ -86,19 +87,18 @@ async def upload_process_topics_csv(
             radius_size=radius_size,
         )
     task = process_topics_task.delay(
-        full_docs, 
-        topic_param.to_dict(), 
-        process_bourdieu=process_bourdieu, 
-        bourdieu_query=query.to_dict())
+        full_docs,
+        topic_param.to_dict(),
+        process_bourdieu=process_bourdieu,
+        bourdieu_query=query.to_dict(),
+    )
 
     return {"task_id": task.id}
 
 
 @app.post("/bourdieu/")
 def post_process_bourdieu_query(
-    full_docs: t.List[str],
-    query: BourdieuQueryApi,
-    topic_param: TopicParameterApi
+    full_docs: t.List[str], query: BourdieuQueryApi, topic_param: TopicParameterApi
 ):
     limit = limit_docs(full_docs)
     if limit is not None:
@@ -135,7 +135,7 @@ async def upload_process_bourdieu_csv(
         language=language,
         name_lenght=name_length,
         clean_topics=clean_topics,
-        min_count_terms=min_count_terms
+        min_count_terms=min_count_terms,
     )
     query = BourdieuQueryApi(
         x_left_words=[x.strip() for x in x_left_words.split(",")],
@@ -211,6 +211,7 @@ async def get_task_result(task_name: str, task_id: str):
             content={"message": "No result available or task not in success state."},
         )
 
+
 @app.post("/bourdieu/refresh/{task_id}")
 def post_refresh_bourdieu_query(
     bourdieu_query: BourdieuQueryApi,
@@ -230,7 +231,7 @@ def post_refresh_bourdieu_query(
             docs=[Document(**doc) for doc in docs],
             terms=[Term(**term) for term in terms],
             bourdieu_query=bourdieu_query,
-            topic_param=topic_param
+            topic_param=topic_param,
         )
 
         # Extract the results

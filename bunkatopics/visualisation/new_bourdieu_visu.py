@@ -205,8 +205,8 @@ def visualize_bourdieu(
                     )
 
                     fig.add_trace(trace)
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
     if display_percent:
         # Calculate the percentage for every box

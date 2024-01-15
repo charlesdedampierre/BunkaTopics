@@ -1,61 +1,54 @@
-import warnings
-
-from numba.core.errors import NumbaDeprecationWarning
-
-warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
+import json
 import os
 import random
 import string
+import subprocess
 import typing as t
 import uuid
 import warnings
-import subprocess
-import json
 
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
 from langchain.chains import RetrievalQA
-from langchain.document_loaders import DataFrameLoader
 from langchain.embeddings import HuggingFaceEmbeddings
-
 from langchain.vectorstores import Chroma
+from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bunka_logger import logger
 from bunkatopics.datamodel import (
     DOC_ID,
-    TERM_ID,
-    TOPIC_ID,
     BourdieuQuery,
     Document,
-    Term,
     Topic,
     TopicGenParam,
     TopicParam,
 )
 from bunkatopics.functions.bourdieu_api import bourdieu_api
 from bunkatopics.functions.coherence import get_coherence
-from bunkatopics.functions.extract_terms import extract_terms_df
+from bunkatopics.functions.extract_terms import TextacyTermsExtractor
 from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topic_utils import get_topic_repartition
 from bunkatopics.functions.topics_modeling import get_topics
+from bunkatopics.serveur.utils import is_server_running, kill_server
 from bunkatopics.visualisation.bourdieu_visu import visualize_bourdieu_one_dimension
 from bunkatopics.visualisation.new_bourdieu_visu import visualize_bourdieu
 from bunkatopics.visualisation.query_visualisation import plot_query
 from bunkatopics.visualisation.topic_visualization import visualize_topics
-from bunkatopics.serveur.utils import is_server_running, kill_server
 
+warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
-embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
 class Bunka:
-    def __init__(self, embedding_model=None, language: str = "en_core_web_sm"):
+    def __init__(self, embedding_model=None, language: str = "english"):
+        if embedding_model is None:
+            embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         self.embedding_model = embedding_model
         self.language = language
 
@@ -65,79 +58,40 @@ class Bunka:
         ids: t.List[DOC_ID] = None,
     ) -> None:
         df = pd.DataFrame(docs, columns=["content"])
+
+        # Transform into a Document model
         if ids is not None:
             df["doc_id"] = ids
         else:
             df["doc_id"] = [str(uuid.uuid4())[:8] for _ in range(len(df))]
         df = df[~df["content"].isna()]
         df = df.reset_index(drop=True)
-
         self.docs = [Document(**row) for row in df.to_dict(orient="records")]
-
         sentences = [doc.content for doc in self.docs]
         ids = [doc.doc_id for doc in self.docs]
 
-        df = pd.DataFrame.from_records([doc.dict() for doc in self.docs])
-
-        logger.info("Extracting Terms")
-        df_terms, df_terms_indexed = extract_terms_df(
-            df,
-            text_var="content",
-            index_var="doc_id",
-            ngs=True,
-            ents=True,
-            ncs=True,
-            sample_size=100000,
-            drop_emoji=True,
-            ngrams=(1, 2, 3),
-            remove_punctuation=True,
-            include_pos=["NOUN"],
-            include_types=["PERSON", "ORG"],
-            language=self.language,
-        )
-
-        df_terms = df_terms.reset_index()
-        df_terms = df_terms.rename(columns={"terms_indexed": "term_id"})
-
-        terms = [Term(**row) for row in df_terms.to_dict(orient="records")]
-        self.terms: t.List[Term] = terms
-
-        df_terms_indexed = df_terms_indexed.reset_index()
-        df_terms_indexed.columns = ["doc_id", "indexed_terms"]
-        indexed_terms_dict = df_terms_indexed.set_index("doc_id")[
-            "indexed_terms"
-        ].to_dict()
+        logger.info("Extracting terms from documents")
+        terms_extractor = TextacyTermsExtractor(language=self.language)
+        self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
 
         # add to the docs object
         for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
-        # Embed sentences
-
-        logger.info("Embedding Documents, this may take few minutes")
-
-        # Using FAISS to index and embed the documents
-
-        df_temporary = pd.DataFrame(sentences)
-        loader = DataFrameLoader(df_temporary, page_content_column=0)
-        documents_langchain = loader.load()
+        logger.info("Embedding Documents, this may time depending on the size")
 
         characters = string.ascii_letters + string.digits
         random_string = "".join(random.choice(characters) for _ in range(20))
 
+        # using Chroma as a vectorstore
         self.vectorstore = Chroma(
             embedding_function=self.embedding_model, collection_name=random_string
         )
 
         self.vectorstore.add_texts(texts=sentences, ids=ids)
-        # self.vectorstore.add_documents(documents_langchain)
-
-        # Get all embeddings
-
         embeddings = self.vectorstore._collection.get(include=["embeddings"])[
             "embeddings"
         ]
-        # final_ids = vectorstore._collection.get(include=["embeddings"])["ids"]
 
         df_embeddings = pd.DataFrame(embeddings)
         df_embeddings.index = ids
@@ -148,9 +102,12 @@ class Bunka:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
         logger.info("Reducing Dimensions")
-        reducer = umap.UMAP(n_components=2, random_state=42)
-        embeddings_2D = reducer.fit_transform(embeddings)
 
+        reducer = umap.UMAP(
+            n_components=2,
+            random_state=None,
+        )  # Not random state to go quicker
+        embeddings_2D = reducer.fit_transform(embeddings)
         df_embeddings_2D = pd.DataFrame(embeddings_2D)
         df_embeddings_2D.columns = ["x", "y"]
         df_embeddings_2D["doc_id"] = ids
@@ -169,18 +126,31 @@ class Bunka:
 
     def get_topics(
         self,
-        n_clusters=5,
-        ngrams=[1, 2],
-        name_lenght=15,
-        top_terms_overall=2000,
-        min_count_terms=2,
+        n_clusters: int = 5,
+        ngrams: t.List[int] = [1, 2],
+        name_length: int = 15,
+        top_terms_overall: int = 2000,
+        min_count_terms: int = 2,
     ) -> pd.DataFrame:
+        """
+        Get topics based on the provided parameters.
+
+        Args:
+            n_clusters (int): Number of clusters for topic extraction.
+            ngrams (list): List of n-gram sizes to consider.
+            name_length (int): Maximum length of topic names.
+            top_terms_overall (int): Number of top terms to consider.
+            min_count_terms (int): Minimum count of terms to include.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the extracted topics.
+        """
         self.topics: t.List[Topic] = get_topics(
             docs=self.docs,
             terms=self.terms,
             n_clusters=n_clusters,
             ngrams=ngrams,
-            name_lenght=name_lenght,
+            name_length=name_length,
             x_column="x",
             y_column="y",
             top_terms_overall=top_terms_overall,

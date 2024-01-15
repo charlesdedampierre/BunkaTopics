@@ -1,6 +1,6 @@
 import warnings
 from functools import partial
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 
 import pandas as pd
 import textacy
@@ -23,6 +23,8 @@ preproc = textacy.preprocessing.make_pipeline(
     textacy.preprocessing.replace.currency_symbols,
     textacy.preprocessing.remove.html_tags,
 )
+
+load_lang = None
 
 
 def from_dict_to_frame(indexed_dict):
@@ -48,83 +50,8 @@ def extract_terms_df(
     include_types=["PERSON", "ORG"],
     language="en_core_web_sm",
 ):
-    load_lang = textacy.load_spacy_lang(language, disable=())
-
-    def extract_terms(
-        tuple,  # (index, text)
-        ngs=True,
-        ents=True,
-        ncs=False,
-        ngrams=(2, 2),
-        drop_emoji=True,
-        remove_punctuation=False,
-        include_pos=["NOUN", "PROPN", "ADJ"],
-        include_types=["PERSON", "ORG"],
-    ):
-        index = tuple[0]
-        text = tuple[1]
-
-        prepro_text = preproc(str(text))
-        if drop_emoji == True:
-            prepro_text = textacy.preprocessing.replace.emojis(prepro_text, repl="")
-
-        if remove_punctuation == True:
-            prepro_text = textacy.preprocessing.remove.punctuation(prepro_text)
-
-        doc = textacy.make_spacy_doc(prepro_text, lang=load_lang)
-
-        terms = []
-
-        if ngs:
-            ngrams_terms = list(
-                textacy.extract.terms(
-                    doc,
-                    ngs=partial(
-                        textacy.extract.ngrams,
-                        n=ngrams,
-                        filter_punct=True,
-                        filter_stops=True,
-                        include_pos=include_pos,
-                    ),
-                    dedupe=False,
-                )
-            )
-
-            terms.append(ngrams_terms)
-
-        if ents:
-            ents_terms = list(
-                textacy.extract.terms(
-                    doc,
-                    ents=partial(textacy.extract.entities, include_types=include_types),
-                    dedupe=False,
-                )
-            )
-            terms.append(ents_terms)
-
-        if ncs:
-            ncs_terms = list(
-                textacy.extract.terms(
-                    doc,
-                    ncs=partial(textacy.extract.noun_chunks, drop_determiners=True),
-                    dedupe=False,
-                )
-            )
-
-            noun_chunks = [x for x in ncs_terms if len(x) >= 3]
-            terms.append(noun_chunks)
-
-        final = [item for sublist in terms for item in sublist]
-        final = list(set(final))
-
-        df = [
-            (term.text, term.lemma_.lower(), term.label_, term.__len__())
-            for term in final
-        ]
-        df = pd.DataFrame(df, columns=["text", "lemma", "ent", "ngrams"])
-        df["text_index"] = index
-
-        return df
+    global load_lang  # Access the global variable
+    load_lang = textacy.load_spacy_lang(language, disable=())  # Assign the value
 
     """
     This function extracts terms from a column in a DataFrame. It can extract in a multiprocessing way
@@ -138,26 +65,29 @@ def extract_terms_df(
     indexes = data[index_var].to_list()
     inputs = [(x, y) for x, y in zip(indexes, sentences)]
 
+    multiprocessing_pools = max(cpu_count() - 2, 1)
+
     # else:
-    res = list(
-        tqdm(
-            map(
-                partial(
-                    extract_terms,
-                    ngs=ngs,
-                    ents=ents,
-                    ncs=ncs,
-                    drop_emoji=drop_emoji,
-                    remove_punctuation=remove_punctuation,
-                    ngrams=ngrams,
-                    include_pos=include_pos,
-                    include_types=include_types,
+    with Pool(multiprocessing_pools) as p:
+        res = list(
+            tqdm(
+                p.imap(
+                    partial(
+                        extract_terms,
+                        ngs=ngs,
+                        ents=ents,
+                        ncs=ncs,
+                        drop_emoji=drop_emoji,
+                        remove_punctuation=remove_punctuation,
+                        ngrams=ngrams,
+                        include_pos=include_pos,
+                        include_types=include_types,
+                    ),
+                    inputs,
                 ),
-                inputs,
-            ),
-            total=len(inputs),
+                total=len(inputs),
+            )
         )
-    )
 
     final_res = pd.concat([x for x in res])
 
@@ -182,3 +112,79 @@ def extract_terms_df(
     terms_indexed = terms_indexed.set_index(index_var)
 
     return terms, terms_indexed
+
+
+def extract_terms(
+    tuple,  # (index, text),
+    ngs=True,
+    ents=True,
+    ncs=False,
+    ngrams=(2, 2),
+    drop_emoji=True,
+    remove_punctuation=False,
+    include_pos=["NOUN", "PROPN", "ADJ"],
+    include_types=["PERSON", "ORG"],
+):
+    index = tuple[0]
+    text = tuple[1]
+
+    prepro_text = preproc(str(text))
+    if drop_emoji == True:
+        prepro_text = textacy.preprocessing.replace.emojis(prepro_text, repl="")
+
+    if remove_punctuation == True:
+        prepro_text = textacy.preprocessing.remove.punctuation(prepro_text)
+
+    doc = textacy.make_spacy_doc(prepro_text, lang=load_lang)
+
+    terms = []
+
+    if ngs:
+        ngrams_terms = list(
+            textacy.extract.terms(
+                doc,
+                ngs=partial(
+                    textacy.extract.ngrams,
+                    n=ngrams,
+                    filter_punct=True,
+                    filter_stops=True,
+                    include_pos=include_pos,
+                ),
+                dedupe=False,
+            )
+        )
+
+        terms.append(ngrams_terms)
+
+    if ents:
+        ents_terms = list(
+            textacy.extract.terms(
+                doc,
+                ents=partial(textacy.extract.entities, include_types=include_types),
+                dedupe=False,
+            )
+        )
+        terms.append(ents_terms)
+
+    if ncs:
+        ncs_terms = list(
+            textacy.extract.terms(
+                doc,
+                ncs=partial(textacy.extract.noun_chunks, drop_determiners=True),
+                dedupe=False,
+            )
+        )
+
+        noun_chunks = [x for x in ncs_terms if len(x) >= 3]
+        terms.append(noun_chunks)
+
+    final = [item for sublist in terms for item in sublist]
+    final = list(set(final))
+
+    df = [
+        (term.text, term.lemma_.lower(), term.label_, term.__len__()) for term in final
+    ]
+    df = pd.DataFrame(df, columns=["text", "lemma", "ent", "ngrams"])
+    df["text_index"] = index
+
+    return df

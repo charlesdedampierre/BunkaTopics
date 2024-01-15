@@ -1,4 +1,5 @@
 import sys
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,7 +12,7 @@ broker_url = "redis://redis:6379/0"
 imports = ("api.bunka_api.jobs",)
 
 ## Using the database to store task state and results.
-result_backend = 'redis://redis:6379/1'
+result_backend = "redis://redis:6379/1"
 # result_backend = "db+sqlite:///results.db"
 
 ## General task settings

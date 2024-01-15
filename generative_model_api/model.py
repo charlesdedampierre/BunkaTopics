@@ -1,17 +1,10 @@
-from langchain.llms import HuggingFacePipeline
+import torch
 from langchain import HuggingFacePipeline
 from langchain.chains import LLMChain
-from langchain.prompts import ChatPromptTemplate
-from langchain.prompts import PromptTemplate
-
-
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    BitsAndBytesConfig,
-    pipeline,
-)
-import torch
+from langchain.llms import HuggingFacePipeline
+from langchain.prompts import ChatPromptTemplate, PromptTemplate
+from transformers import (AutoModelForCausalLM, AutoTokenizer,
+                          BitsAndBytesConfig, pipeline)
 
 
 # function for loading 4-bit quantized model

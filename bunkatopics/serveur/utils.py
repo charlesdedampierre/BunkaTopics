@@ -1,6 +1,4 @@
 import psutil
-import subprocess
-import time
 
 
 def is_server_running():

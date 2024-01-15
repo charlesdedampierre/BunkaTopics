@@ -166,6 +166,8 @@ class Bunka:
         Returns:
             pd.DataFrame: DataFrame containing the extracted topics.
         """
+
+        logger.info("Computing the topics")
         self.topics: t.List[Topic] = get_topics(
             docs=self.docs,
             terms=self.terms,
@@ -221,7 +223,7 @@ class Bunka:
 
     def visualize_topics(
         self,
-        show_text: bool = False,
+        show_text: bool = True,
         label_size_ratio: int = 100,
         width: int = 1000,
         height: int = 1000,
@@ -238,6 +240,8 @@ class Bunka:
         Returns:
             go.Figure: Plotly figure object representing the visualization.
         """
+
+        logger.info("Creating the Bunka Map")
         fig = visualize_topics(
             self.docs,
             self.topics,

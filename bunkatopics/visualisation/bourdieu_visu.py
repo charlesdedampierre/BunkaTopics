@@ -55,9 +55,7 @@ def get_continuum(
 
     df_bert.index = full_emb.index
     df_bert.columns = full_emb.index
-    df_bert = df_bert.iloc[
-        -1:,
-    ].T
+    df_bert = df_bert.iloc[-1:,].T
     df_bert = df_bert.sort_values("distance", ascending=False).reset_index()
     df_bert = df_bert[1:]
     df_bert = df_bert.rename(columns={"index": "doc_id"})
@@ -324,13 +322,13 @@ def visualize_bourdieu(
         fig.add_trace(trace)
 
     # Set the axis to the max value to get a square
-    max_val = max(
+    """ max_val = max(
         abs(min(df_fig[y_axis_name])),
         abs(max(df_fig[y_axis_name])),
         abs(max(df_fig[x_axis_name])),
         abs(min(df_fig[x_axis_name])),
     )
-
+    """
     # Add axis lines for x=0 and y=0
     fig.add_shape(
         type="line",
@@ -559,8 +557,8 @@ def visualize_bourdieu(
                     )
 
                     fig.add_trace(trace)
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
     if display_percent:
         # Calculate the percentage for every box

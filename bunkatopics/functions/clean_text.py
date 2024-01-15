@@ -13,7 +13,8 @@ def clean_tweet(tweet):
     temp = re.sub(r"www.\S+", "", temp)
 
     temp = re.sub("[()!?]", " ", temp)
-    temp = re.sub("\[.*?\]", " ", temp)
+    # temp = re.sub("\[.*?\]", " ", temp)
+    temp = re.sub("[.*?]", " ", temp)
 
     temp = re.sub("[^a-z0-9]", " ", temp)
 

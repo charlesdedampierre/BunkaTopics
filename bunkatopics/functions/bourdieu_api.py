@@ -2,20 +2,12 @@ import typing as t
 
 import numpy as np
 import pandas as pd
-
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (
-    BourdieuDimension,
-    BourdieuQuery,
-    ContinuumDimension,
-    Document,
-    Term,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
+                                   ContinuumDimension, Document, Term, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.functions.topic_document import get_top_documents
 from bunkatopics.functions.topic_gen_representation import get_clean_topic_all
 from bunkatopics.functions.topics_modeling import get_topics

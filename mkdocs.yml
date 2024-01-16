@@ -54,6 +54,7 @@ nav:
       - bunkatopics: bunka-api/bunkatopics.md
       - Topic Modeling: bunka-api/topic_modeling/topic_model_builder.md
       - Term Extractor: bunka-api/topic_modeling/terms_extractor.md
+      - Bourdieu API: bunka-api/topic_modeling/bourdieu-api.md
 
   - Use Cases: use-cases.md
 

@@ -7,7 +7,6 @@ import typing as t
 import uuid
 import warnings
 
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
@@ -20,27 +19,20 @@ from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling.bourdieu_api import bourdieu_api
+from bunkatopics.topic_modeling import BourdieuAPI, BunkaTopicModeling
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
-from bunkatopics.topic_modeling.llm_topic_representation import get_clean_topic_all
+from bunkatopics.topic_modeling.document_topic_analyzer import \
+    get_top_documents
+from bunkatopics.topic_modeling.llm_topic_representation import \
+    get_clean_topic_all
 from bunkatopics.topic_modeling.term_extractor import TextacyTermsExtractor
-from bunkatopics.topic_modeling.topic_model_builder import BunkaTopicModeling
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization.bourdieu_visualizer import (
-    visualize_bourdieu,
-    visualize_bourdieu_one_dimension,
-)
+    visualize_bourdieu, visualize_bourdieu_one_dimension)
 from bunkatopics.visualization.query_visualizer import plot_query
 from bunkatopics.visualization.topic_visualizer import visualize_topics
 
@@ -82,7 +74,7 @@ class Bunka:
                Default: "english"
         """
         if embedding_model is None:
-            if language is "english":
+            if language == "english":
                 embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
             else:
                 embedding_model = HuggingFaceEmbeddings(
@@ -279,15 +271,19 @@ class Bunka:
         )
 
         # Request Bourdieu API
-        res = bourdieu_api(
+
+        bourdieu_api = BourdieuAPI(
             generative_model=generative_model,
             embedding_model=self.embedding_model,
-            docs=self.docs,
-            terms=self.terms,
             bourdieu_query=self.bourdieu_query,
             generative_ai_name=topic_gen_name,
             topic_param=topic_param,
             topic_gen_param=topic_gen_param,
+        )
+
+        res = bourdieu_api.fit_transform(
+            docs=self.docs,
+            terms=self.terms,
         )
 
         self.bourdieu_docs = res[0]

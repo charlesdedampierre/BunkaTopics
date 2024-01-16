@@ -5,144 +5,176 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (
-    BourdieuDimension,
-    BourdieuQuery,
-    ContinuumDimension,
-    Document,
-    Term,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
-from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
-from bunkatopics.topic_modeling.llm_topic_representation import get_clean_topic_all
+from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
+                                   ContinuumDimension, Document, Term, Topic,
+                                   TopicGenParam, TopicParam)
+from bunkatopics.topic_modeling.document_topic_analyzer import \
+    get_top_documents
+from bunkatopics.topic_modeling.llm_topic_representation import \
+    get_clean_topic_all
 from bunkatopics.topic_modeling.topic_model_builder import BunkaTopicModeling
 
 pd.options.mode.chained_assignment = None
 
 
-def bourdieu_api(
-    generative_model,
-    embedding_model,
-    docs: t.List[Document],
-    terms: t.List[Term],
-    bourdieu_query: BourdieuQuery = BourdieuQuery(),
-    topic_param: TopicParam = TopicParam(),
-    generative_ai_name: bool = False,
-    topic_gen_param: TopicGenParam = TopicGenParam(),
-    min_count_terms: int = 2,
-) -> t.Tuple[t.List[Document], t.List[Topic]]:
+class BourdieuAPI:
     """
-    Compute Bourdieu dimensions and topics for a list of documents.
+    A class for performing Bourdieu analysis on a collection of documents.
 
-    Args:
-        generative_model: The generative AI model.
-        embedding_model: The embedding model.
-        docs: List of documents.
-        terms: List of terms.
-        bourdieu_query: BourdieuQuery object.
-        topic_param: TopicParam object.
-        generative_ai_name: Whether to generate AI-generated topic names.
-        topic_gen_param: TopicGenParam object.
-        min_count_terms: Minimum term count.
+    This class leverages an embedding model to compute Bourdieu dimensions and topics
+    for the given documents. It supports customization of the analysis through various parameters
+    and the use of generative AI for topic naming.
 
-    Returns:
-        Tuple of lists containing processed documents and topics.
     """
-    # Reset Bourdieu dimensions for all documents
-    for doc in docs:
-        doc.bourdieu_dimensions = []
 
-    # Compute Continuums
-    new_docs = get_continuum(
+    def __init__(
+        self,
+        generative_model,
         embedding_model,
-        docs,
-        cont_name="cont1",
-        left_words=bourdieu_query.x_left_words,
-        right_words=bourdieu_query.x_right_words,
-    )
-    bourdieu_docs = get_continuum(
-        embedding_model,
-        new_docs,
-        cont_name="cont2",
-        left_words=bourdieu_query.y_top_words,
-        right_words=bourdieu_query.y_bottom_words,
-    )
+        bourdieu_query: BourdieuQuery = BourdieuQuery(),
+        topic_param: TopicParam = TopicParam(),
+        generative_ai_name: bool = False,
+        topic_gen_param: TopicGenParam = TopicGenParam(),
+        min_count_terms: int = 2,
+    ) -> None:
+        """
+        Initializes the BourdieuAPI with the provided models, parameters, and configurations.
 
-    # Process and transform data
-    df_bourdieu = pd.DataFrame(
-        [
-            {
-                "doc_id": x.doc_id,
-                "coordinates": [y.distance for y in x.bourdieu_dimensions],
-                "names": [y.continuum.id for y in x.bourdieu_dimensions],
-            }
-            for x in bourdieu_docs
-        ]
-    )
-    df_bourdieu = df_bourdieu.explode(["coordinates", "names"])
+        Arguments
+            generative_model: The generative AI model for topic naming.
+            embedding_model: The model used for embedding documents.
+            bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.
+                                                       Defaults to BourdieuQuery().
+            topic_param (TopicParam, optional): Parameters for topic modeling. Defaults to TopicParam().
+            generative_ai_name (bool, optional): Flag to use AI for generating topic names. Defaults to False.
+            topic_gen_param (TopicGenParam, optional): Parameters for the generative AI in topic naming.
+                                                       Defaults to TopicGenParam().
+            min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.
+        """
 
-    df_bourdieu_pivot = df_bourdieu[["doc_id", "coordinates", "names"]]
-    df_bourdieu_pivot = df_bourdieu_pivot.pivot(
-        index="doc_id", columns="names", values="coordinates"
-    )
+        self.generative_model = generative_model
+        self.embedding_model = embedding_model
+        self.bourdieu_query = bourdieu_query
+        self.topic_param = topic_param
+        self.generative_ai_name = generative_ai_name
+        self.topic_gen_param = topic_gen_param
+        self.min_count_terms = min_count_terms
 
-    # Add to the bourdieu_docs
-    df_outsides = df_bourdieu_pivot.reset_index()
-    df_outsides["cont1"] = df_outsides["cont1"].astype(float)
-    df_outsides["cont2"] = df_outsides["cont2"].astype(float)
+    def fit_transform(
+        self, docs: t.List[Document], terms: t.List[Term]
+    ) -> t.Tuple[t.List[Document], t.List[Topic]]:
+        """
+        Processes the documents and terms to compute Bourdieu dimensions and topics.
 
-    x_values = df_outsides["cont1"].values
-    y_values = df_outsides["cont2"].values
+        This method applies the embedding model to compute Bourdieu dimensions for each document
+        based on provided queries. It also performs topic modeling on the documents and, if enabled,
+        uses a generative AI model for naming the topics.
 
-    distances = np.sqrt(x_values**2 + y_values**2)
-    circle_radius = max(df_outsides.cont1) * bourdieu_query.radius_size
+        Arguments:
+            docs (List[Document]): List of Document objects representing the documents to be analyzed.
+            terms (List[Term]): List of Term objects representing the terms to be used in topic modeling.
 
-    df_outsides["distances"] = distances
-    df_outsides["outside"] = "0"
-    df_outsides.loc[df_outsides["distances"] >= circle_radius, "outside"] = "1"
+        Notes:
+            - The method first resets Bourdieu dimensions for all documents.
+            - It computes Bourdieu continuums based on the configured left and right words.
+            - Documents are then filtered based on their position relative to a defined radius in the Bourdieu space.
+            - Topic modeling is performed on the filtered set of documents.
+            - If `generative_ai_name` is True, topics are named using the generative AI model.
+        """
 
-    outside_ids = list(df_outsides["doc_id"][df_outsides["outside"] == "1"])
-    bourdieu_docs = [x for x in bourdieu_docs if x.doc_id in outside_ids]
-    bourdieu_dict = df_bourdieu_pivot.to_dict(orient="index")
+        # Reset Bourdieu dimensions for all documents
+        for doc in docs:
+            doc.bourdieu_dimensions = []
 
-    for doc in bourdieu_docs:
-        doc.x = bourdieu_dict.get(doc.doc_id)["cont1"]
-        doc.y = bourdieu_dict.get(doc.doc_id)["cont2"]
-
-    # Compute Bourdieu topics
-    topic_model = BunkaTopicModeling(
-        n_clusters=topic_param.n_clusters,
-        ngrams=topic_param.ngrams,
-        name_length=topic_param.name_length,
-        top_terms_overall=topic_param.top_terms_overall,
-        min_count_terms=min_count_terms,
-    )
-
-    bourdieu_topics: t.List[Topic] = topic_model.fit_transform(
-        docs=bourdieu_docs,
-        terms=terms,
-    )
-
-    bourdieu_docs, bourdieu_topics = get_top_documents(
-        bourdieu_docs, bourdieu_topics, ranking_terms=20
-    )
-
-    if generative_ai_name:
-        bourdieu_topics = get_clean_topic_all(
-            generative_model,
-            bourdieu_topics,
-            bourdieu_docs,
-            language=topic_gen_param.language,
-            context=topic_gen_param.context,
-            use_doc=topic_gen_param.use_doc,
+        # Compute Continuums
+        new_docs = _get_continuum(
+            self.embedding_model,
+            docs,
+            cont_name="cont1",
+            left_words=self.bourdieu_query.x_left_words,
+            right_words=self.bourdieu_query.x_right_words,
+        )
+        bourdieu_docs = _get_continuum(
+            self.embedding_model,
+            new_docs,
+            cont_name="cont2",
+            left_words=self.bourdieu_query.y_top_words,
+            right_words=self.bourdieu_query.y_bottom_words,
         )
 
-    return bourdieu_docs, bourdieu_topics
+        # Process and transform data
+        df_bourdieu = pd.DataFrame(
+            [
+                {
+                    "doc_id": x.doc_id,
+                    "coordinates": [y.distance for y in x.bourdieu_dimensions],
+                    "names": [y.continuum.id for y in x.bourdieu_dimensions],
+                }
+                for x in bourdieu_docs
+            ]
+        )
+        df_bourdieu = df_bourdieu.explode(["coordinates", "names"])
+
+        df_bourdieu_pivot = df_bourdieu[["doc_id", "coordinates", "names"]]
+        df_bourdieu_pivot = df_bourdieu_pivot.pivot(
+            index="doc_id", columns="names", values="coordinates"
+        )
+
+        # Add to the bourdieu_docs
+        df_outsides = df_bourdieu_pivot.reset_index()
+        df_outsides["cont1"] = df_outsides["cont1"].astype(float)
+        df_outsides["cont2"] = df_outsides["cont2"].astype(float)
+
+        x_values = df_outsides["cont1"].values
+        y_values = df_outsides["cont2"].values
+
+        distances = np.sqrt(x_values**2 + y_values**2)
+        circle_radius = max(df_outsides.cont1) * self.bourdieu_query.radius_size
+
+        df_outsides["distances"] = distances
+        df_outsides["outside"] = "0"
+        df_outsides.loc[df_outsides["distances"] >= circle_radius, "outside"] = "1"
+
+        outside_ids = list(df_outsides["doc_id"][df_outsides["outside"] == "1"])
+        bourdieu_docs = [x for x in bourdieu_docs if x.doc_id in outside_ids]
+        bourdieu_dict = df_bourdieu_pivot.to_dict(orient="index")
+
+        for doc in bourdieu_docs:
+            doc.x = bourdieu_dict.get(doc.doc_id)["cont1"]
+            doc.y = bourdieu_dict.get(doc.doc_id)["cont2"]
+
+        # Compute Bourdieu topics
+        topic_model = BunkaTopicModeling(
+            n_clusters=self.topic_param.n_clusters,
+            ngrams=self.topic_param.ngrams,
+            name_length=self.topic_param.name_length,
+            top_terms_overall=self.topic_param.top_terms_overall,
+            min_count_terms=self.min_count_terms,
+        )
+
+        bourdieu_topics: t.List[Topic] = topic_model.fit_transform(
+            docs=bourdieu_docs,
+            terms=terms,
+        )
+
+        bourdieu_docs, bourdieu_topics = get_top_documents(
+            bourdieu_docs, bourdieu_topics, ranking_terms=20
+        )
+
+        if self.generative_ai_name:
+            bourdieu_topics = get_clean_topic_all(
+                self.generative_model,
+                bourdieu_topics,
+                bourdieu_docs,
+                language=self.topic_gen_param.language,
+                context=self.topic_gen_param.context,
+                use_doc=self.topic_gen_param.use_doc,
+            )
+
+        return bourdieu_docs, bourdieu_topics
 
 
-def get_continuum(
+def _get_continuum(
     embedding_model,
     docs: t.List[Document],
     cont_name: str = "emotion",

@@ -7,6 +7,7 @@ import typing as t
 import uuid
 import warnings
 
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
@@ -34,7 +35,7 @@ from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.llm_topic_representation import get_clean_topic_all
 from bunkatopics.topic_modeling.term_extractor import TextacyTermsExtractor
-from bunkatopics.topic_modeling.topic_model_builder import get_topics
+from bunkatopics.topic_modeling.topic_model_builder import BunkaTopicModeling
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization.bourdieu_visualizer import (
     visualize_bourdieu,
@@ -44,6 +45,8 @@ from bunkatopics.visualization.query_visualizer import plot_query
 from bunkatopics.visualization.topic_visualizer import visualize_topics
 
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -51,30 +54,40 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"
 class Bunka:
     """The Bunka class for managing and analyzing textual data using various NLP techniques.
 
-    Attributes:
-        embedding_model: The embedding model used for vector representations of text.
-        language (str): The language of the documents, default is "english".
+    Examples:
+    ```python
+    from bunkatopics import Bunka
+    from datasets import load_dataset
+    import random
 
-    Methods:
-        fit(docs, ids): Fit the Bunka model to a list of documents with optional document IDs.
-        fit_transform(docs, n_clusters): Fit and transform documents into a DataFrame of topics.
-        get_topics(n_clusters, ngrams, name_length, top_terms_overall, min_count_terms): Generate topics based on specified parameters.
-        get_clean_topic_name(llm, language, use_doc, context): Clean topic names using Generative AI.
-        visualize_topics(show_text, label_size_ratio, width, height): Visualize topics in a 2D scatter plot.
-        visualize_bourdieu(generative_model, x_left_words, x_right_words, y_top_words, y_bottom_words, height, width, display_percent, clustering, topic_n_clusters, topic_terms, topic_ngrams, topic_top_terms_overall, gen_topic_language, topic_gen_name, manual_axis_name, use_doc_gen_topic, radius_size, convex_hull): Visualize Bourdieu's space with optional clustering and labeling.
-        rag_query(query, llm, top_doc): Perform a RetrievalQA query with the specified language model.
-        visualize_bourdieu_one_dimension(left, right, width, height, explainer): Visualize Bourdieu's one-dimensional space.
-        visualize_query(query, min_score, width, height): Visualize the top similar answer to a query.
-        visualize_dimensions(dimensions, width, height, template): Visualize semantic dimensions in a radar chart.
-        get_topic_repartition(width, height): Visualize the distribution of topics by size in a bar plot.
-        get_topic_coherence(topic_terms_n): Calculate the coherence of topics.
-        start_server_bourdieu(): Start a web server for Bourdieu visualization.
-        start_server(): Start a web server for Bunka visualization.
+    # Extract Data
+    dataset = load_dataset("rguo123/trump_tweets")["train"]["content"]
+    docs = random.sample(dataset, 1000)
+
+    bunka = Bunka()
+    topics = bunka.fit_transform(docs)
+    bunka.visualize_topics(width=800, height=800)
+    ```
     """
 
     def __init__(self, embedding_model=None, language: str = "english"):
+        """Initialize a BunkaTopics instance.
+
+        Arguments:
+           embedding_model : An optional embedding model for generating document embeddings.
+               If not provided, a default model will be used based on the specified language.
+               Default: None
+           language : The language to be used for text processing and modeling.
+               Options: "english" (default), or specify another language as needed.
+               Default: "english"
+        """
         if embedding_model is None:
-            embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+            if language is "english":
+                embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+            else:
+                embedding_model = HuggingFaceEmbeddings(
+                    model_name="paraphrase-multilingual-MiniLM-L12-v2"
+                )
         self.embedding_model = embedding_model
         self.language = language
 
@@ -159,9 +172,8 @@ class Bunka:
         min_count_terms: int = 2,
     ) -> pd.DataFrame:
         logger.info("Computing the topics")
-        self.topics: t.List[Topic] = get_topics(
-            docs=self.docs,
-            terms=self.terms,
+
+        topic_model = BunkaTopicModeling(
             n_clusters=n_clusters,
             ngrams=ngrams,
             name_length=name_length,
@@ -169,6 +181,11 @@ class Bunka:
             y_column="y",
             top_terms_overall=top_terms_overall,
             min_count_terms=min_count_terms,
+        )
+
+        self.topics: t.List[Topic] = topic_model.fit_transform(
+            docs=self.docs,
+            terms=self.terms,
         )
 
         self.docs, self.topics = get_top_documents(

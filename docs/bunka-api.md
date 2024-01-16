@@ -25,13 +25,8 @@ Compute Bourdieu dimensions and topics for a list of documents.
 ```python
 from bunkatopics import Bunka
 from langchain.embeddings import HuggingFaceEmbeddings
-import random
 from datasets import load_dataset
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
+import random
 # Extract Data
 dataset = load_dataset("rguo123/trump_tweets")["train"]["content"]
 docs = random.sample(dataset, 1000)

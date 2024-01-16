@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 .PHONY : all
 
-docs:
+docs_serve:
 	mkdocs serve
 
 pypi:
@@ -13,7 +13,6 @@ default:
 	docker_build
 	docker_build_worker
 	docker_create_network
-
 
 jupyter:
 	python -m jupyterlab
@@ -50,6 +49,11 @@ pre_push: format_code poetry_export clean check
 
 install_nginx_config:
 	cp api/deployment/nginx-configuration-dev.conf /etc/nginx/sites-enabled/ && systemctl reload nginx
+
+
+tree_wihtout_pycache:
+	tree bunkatopics -I '__pycache__'
+
 
 #############
 # Streamlit  #

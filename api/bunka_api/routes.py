@@ -16,16 +16,10 @@ from fastapi import Form, UploadFile, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from api.bunka_api.app import app
-from api.bunka_api.datamodel import (
-    BourdieuQueryApi,
-    BourdieuQueryDict,
-    BourdieuResponse,
-    Document,
-    Term,
-    TopicParameterApi,
-)
+from api.bunka_api.datamodel import (BourdieuQueryApi, BourdieuQueryDict,
+                                     BourdieuResponse, Document, Term,
+                                     TopicParameterApi)
 from api.bunka_api.jobs import bourdieu_api_task, process_topics_task
-
 # Import the necessary modules and classes
 from api.bunka_api.processing_functions import process_partial_bourdieu
 

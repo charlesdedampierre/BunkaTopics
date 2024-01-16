@@ -3,6 +3,7 @@ import warnings
 from functools import partial
 
 import pandas as pd
+import spacy
 import textacy
 import textacy.preprocessing
 from tqdm import tqdm
@@ -42,6 +43,21 @@ class TextacyTermsExtractor:
             "spanish": "es_core_news_sm",
             "french": "fr_core_news_sm",
             "german": "de_core_news_sm",
+            "arabic": "ar_core_news_sm",
+            "chinese": "zh_core_web_sm",
+            "danish": "da_core_news_sm",
+            "dutch": "nl_core_news_sm",
+            "greek": "el_core_news_sm",
+            "italian": "it_core_news_sm",
+            "japanese": "ja_core_news_sm",
+            "norwegian": "nb_core_news_sm",
+            "polish": "pl_core_news_sm",
+            "portuguese": "pt_core_news_sm",
+            "romanian": "ro_core_news_sm",
+            "russian": "ru_core_news_sm",
+            "swedish": "sv_core_news_sm",
+            "turkish": "tr_core_news_sm",
+            "multilingual": "xx_ent_wiki_sm",  # Multilingual model
             # Additional languages can be added here
         }
 
@@ -50,6 +66,12 @@ class TextacyTermsExtractor:
             self.language_model = self.supported_languages[language]
         else:
             raise ValueError(f"The language '{language}' is not supported.")
+
+        try:
+            spacy.load(self.language_model)
+        except OSError:
+            # The model is not installed, so download it
+            spacy.cli.download(self.language_model)
 
         self.ngrams = ngrams
 

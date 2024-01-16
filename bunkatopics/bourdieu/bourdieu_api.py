@@ -5,14 +5,19 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
-                                   ContinuumDimension, Document, Term, Topic,
-                                   TopicGenParam, TopicParam)
-from bunkatopics.topic_modeling.document_topic_analyzer import \
-    get_top_documents
-from bunkatopics.topic_modeling.llm_topic_representation import \
-    get_clean_topic_all
-from bunkatopics.topic_modeling.topic_model_builder import BunkaTopicModeling
+from bunkatopics.datamodel import (
+    BourdieuDimension,
+    BourdieuQuery,
+    ContinuumDimension,
+    Document,
+    Term,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
+
+from bunkatopics.topic_modeling import BunkaTopicModeling, LLMCleaningTopic
+from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 
 pd.options.mode.chained_assignment = None
 
@@ -29,7 +34,7 @@ class BourdieuAPI:
 
     def __init__(
         self,
-        generative_model,
+        llm,
         embedding_model,
         bourdieu_query: BourdieuQuery = BourdieuQuery(),
         topic_param: TopicParam = TopicParam(),
@@ -41,7 +46,7 @@ class BourdieuAPI:
         Initializes the BourdieuAPI with the provided models, parameters, and configurations.
 
         Arguments
-            generative_model: The generative AI model for topic naming.
+            llm: The generative AI model for topic naming.
             embedding_model: The model used for embedding documents.
             bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.
                                                        Defaults to BourdieuQuery().
@@ -52,7 +57,7 @@ class BourdieuAPI:
             min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.
         """
 
-        self.generative_model = generative_model
+        self.llm = llm
         self.embedding_model = embedding_model
         self.bourdieu_query = bourdieu_query
         self.topic_param = topic_param
@@ -162,14 +167,25 @@ class BourdieuAPI:
         )
 
         if self.generative_ai_name:
-            bourdieu_topics = get_clean_topic_all(
+            model_cleaning = LLMCleaningTopic(
+                self.llm,
+                language=self.topic_gen_param.language,
+                use_doc=self.topic_gen_param.use_doc,
+                context=self.topic_gen_param.context,
+            )
+            bourdieu_topics: t.List[Topic] = model_cleaning.fit_transform(
+                bourdieu_topics,
+                bourdieu_docs,
+            )
+
+            """ bourdieu_topics = get_clean_topic_all(
                 self.generative_model,
                 bourdieu_topics,
                 bourdieu_docs,
                 language=self.topic_gen_param.language,
                 context=self.topic_gen_param.context,
                 use_doc=self.topic_gen_param.use_doc,
-            )
+            )"""
 
         return bourdieu_docs, bourdieu_topics
 

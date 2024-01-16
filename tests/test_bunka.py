@@ -17,6 +17,12 @@ load_dotenv()
 
 random.seed(42)
 
+repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
+llm = HuggingFaceHub(
+    repo_id=repo_id,
+    huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
+)
+
 
 class TestBunka(unittest.TestCase):
     @classmethod
@@ -57,11 +63,6 @@ class TestBunka(unittest.TestCase):
 
     def test_generative_names(self):
         n_clusters = 3
-        repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
-        llm = HuggingFaceHub(
-            repo_id=repo_id,
-            huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
-        )
 
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
@@ -69,30 +70,37 @@ class TestBunka(unittest.TestCase):
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
         self.assertEqual(len(df_topics_clean), n_clusters)
 
-        """
-        # test Undimentional Map
-        fig_solo = self.bunka.visualize_bourdieu_one_dimension(
-            left=["negative", "bad"],
-            right=["positive"],
-            width=600,
-            height=600,
-            explainer=False,
-        )
-        self.assertIsInstance(fig_solo, go.Figure)
-
-        # test RAG
+    def test_rag(self):
         top_doc_len = 3
         res = self.bunka.rag_query(
-            query="What are the main fight of Donald Trump ?",
-            generative_model=open_ai_generative_model,
+            query="What is great?",
+            llm=llm,
             top_doc=top_doc_len,
         )
 
         result = res["result"]
+        print(result)
         self.assertIsInstance(result, str)
-
         document_sources = res["source_documents"]
-        self.assertEqual(len(document_sources), top_doc_len)"""
+        self.assertEqual(len(document_sources), top_doc_len)
+
+    def test_plot_query(self):
+        query = "What is great?"
+        fig_query, percent = self.bunka.visualize_query(
+            query=query, width=800, height=800
+        )
+        self.assertIsInstance(fig_query, go.Figure)
+
+    def test_boudieu_unique_dimension(self):
+        fig_one_dimension, _ = self.bunka.visualize_bourdieu_one_dimension(
+            left=["negative"], right=["positive"], explainer=False
+        )
+        self.assertIsInstance(fig_one_dimension, go.Figure)
+
+    def test_topic_distribution(self):
+        self.bunka.get_topics(n_clusters=3, min_count_terms=1)
+        fig_distribution = self.bunka.get_topic_repartition()
+        self.assertIsInstance(fig_distribution, go.Figure)
 
 
 if __name__ == "__main__":

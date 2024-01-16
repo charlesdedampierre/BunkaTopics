@@ -7,6 +7,7 @@ import typing as t
 import uuid
 import warnings
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -31,9 +32,8 @@ from bunkatopics.topic_modeling.llm_topic_representation import \
 from bunkatopics.topic_modeling.term_extractor import TextacyTermsExtractor
 from bunkatopics.topic_modeling.topic_model_builder import get_topics
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.visualization.bourdieu_visualizer import visualize_bourdieu
-from bunkatopics.visualization.old_bourdieu_visu import \
-    visualize_bourdieu_one_dimension
+from bunkatopics.visualization.bourdieu_visualizer import (
+    visualize_bourdieu, visualize_bourdieu_one_dimension)
 from bunkatopics.visualization.query_visualizer import plot_query
 from bunkatopics.visualization.topic_visualizer import visualize_topics
 
@@ -183,21 +183,6 @@ class Bunka:
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
         return df_topics
 
-    def rag_query(self, query: str, generative_model, top_doc: int = 2):
-        logger.info("Answering your query, please wait a few seconds")
-
-        # this is the entire retrieval system
-        qa_with_sources_chain = RetrievalQA.from_chain_type(
-            llm=generative_model,
-            retriever=self.vectorstore.as_retriever(search_kwargs={"k": top_doc}),
-            # chain_type_kwargs=chain_type_kwargs,
-            return_source_documents=True,
-        )
-
-        response = qa_with_sources_chain({"query": query})
-
-        return response
-
     def get_clean_topic_name(
         self,
         llm,
@@ -337,28 +322,118 @@ class Bunka:
 
         return fig
 
-    def search(self, user_input: str, top_doc: int = 3) -> pd.DataFrame:
-        res = self.vectorstore.similarity_search_with_score(user_input, k=top_doc)
-        # res = vector_search(self.docs, self.embedding_model, user_input=user_input)
-        return res
+    def rag_query(self, query: str, llm, top_doc: int = 2):
+        """
+        Answer a query using the RetrievalQA system.
 
-    def get_topic_coherence(self, topic_terms_n=10):
-        texts = [doc.term_id for doc in self.docs]
-        res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
-        return res
+        Args:
+            query (str): The user's query.
+            llm: An instance of Language Model.
+            top_doc (int): Number of top documents to retrieve (default is 2).
 
-    def get_topic_repartition(self, width=1200, height=800) -> go.Figure:
-        fig = get_topic_repartition(self.topics, width=width, height=height)
-        return fig
+        Returns:
+            dict: A response containing the answer and source documents.
+                The 'answer' key in the response is a string.
+        """
 
-    def get_dimensions(
-        self, dimensions: t.List[str], width=500, height=500, template="plotly_dark"
+        # Log a message indicating the query is being processed
+        logger.info("Answering your query, please wait a few seconds")
+
+        # Create a RetrievalQA instance with the specified llm and retriever
+        qa_with_sources_chain = RetrievalQA.from_chain_type(
+            llm=llm,
+            retriever=self.vectorstore.as_retriever(search_kwargs={"k": top_doc}),
+            return_source_documents=True,  # Include source documents in the response
+        )
+
+        # Provide the query to the RetrievalQA instance for answering
+        response = qa_with_sources_chain({"query": query})
+
+        return response
+
+    def visualize_bourdieu_one_dimension(
+        self,
+        left: t.List[str] = ["negative"],
+        right: t.List[str] = ["positive"],
+        width: int = 800,
+        height: int = 800,
+        explainer: bool = False,
+    ) -> t.Tuple[go.Figure, t.Union[plt.Figure, None]]:
+        """
+        Visualize Bourdieu's one-dimensional space with optional specificity terms plot.
+
+        Args:
+            left (List[str]): Keywords indicating one end of the continuum (default is ["negative"]).
+            right (List[str]): Keywords indicating the other end of the continuum (default is ["positive"]).
+            width (int): Width of the visualization plot (default is 800).
+            height (int): Height of the visualization plot (default is 800).
+            explainer (bool): Whether to include a plot of specific terms (default is False).
+
+        Returns:
+            Tuple[go.Figure, Union[plt.Figure, None]]: A tuple containing two figures.
+            The first figure is a Plotly figure displaying Bourdieu's one-dimensional space,
+            and the second figure is a Matplotlib figure displaying specific terms if explainer is True;
+            otherwise, it is None.
+        """
+        fig, fig_specific_terms = visualize_bourdieu_one_dimension(
+            docs=self.docs,
+            embedding_model=self.embedding_model,
+            left=left,
+            right=right,
+            width=width,
+            height=height,
+            explainer=explainer,
+        )
+
+        return fig, fig_specific_terms
+
+    def visualize_query(
+        self,
+        query="What is America?",
+        min_score: float = 0.2,
+        width: int = 600,
+        height: int = 300,
+    ):
+        """
+        Visualize the top similar answer to a query with a minimum similarity score.
+
+        Args:
+            query (str): The query for which you want to find similar answers (default is "What is firearm?").
+            min_score (float): The minimum similarity score for including a similar answer (default is 0.2).
+            width (int): Width of the visualization plot (default is 600).
+            height (int): Height of the visualization plot (default is 300).
+
+        Returns:
+            matplotlib.figure.Figure: The visualization figure.
+            float: The percentage of similar answers above the minimum score.
+        """
+
+        # Create a visualization plot using plot_query function
+        fig, percent = plot_query(
+            embedding_model=self.embedding_model,
+            docs=self.docs,
+            query=query,
+            min_score=min_score,
+            width=width,
+            height=height,
+        )
+
+        # Return the visualization figure and percentage
+        return fig, percent
+
+    def visualize_dimensions(
+        self,
+        dimensions: t.List[str] = ["positive", "negative", "fear", "love"],
+        width=500,
+        height=500,
+        template="plotly_dark",
     ) -> go.Figure:
         final_df = []
         logger.info("Computing Similarities")
         scaler = MinMaxScaler(feature_range=(0, 1))
         for dim in tqdm(dimensions):
             df_search = self.search(dim)
+            df_search = self.vectorstore.similarity_search_with_score(dim, k=3)
             df_search["score"] = scaler.fit_transform(
                 df_search[["cosine_similarity_score"]]
             )
@@ -389,6 +464,25 @@ class Bunka:
             height=height,
         )
         return fig
+
+    def get_topic_repartition(self, width: int = 1200, height: int = 800) -> go.Figure:
+        """
+        Create a bar plot to visualize the distribution of topics by size.
+
+        Args:
+            width (int): Width of the visualization plot (default is 1200).
+            height (int): Height of the visualization plot (default is 800).
+
+        Returns:
+            go.Figure: A Plotly figure displaying the distribution of topics by size in a bar plot.
+        """
+        fig = get_topic_repartition(self.topics, width=width, height=height)
+        return fig
+
+    def get_topic_coherence(self, topic_terms_n=10):
+        texts = [doc.term_id for doc in self.docs]
+        res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
+        return res
 
     def start_server_bourdieu(self):
         if is_server_running():
@@ -437,36 +531,3 @@ class Bunka:
             print("NPM server started.")
         except Exception as e:
             print(f"Error starting NPM server: {e}")
-
-    def visu_query(
-        self, query="What is firearm?", min_score=0.8, width=600, height=300
-    ):
-        fig, percent = plot_query(
-            embedding_model=self.embedding_model,
-            docs=self.docs,
-            query=query,
-            min_score=min_score,
-            width=width,
-            height=height,
-        )
-        return fig, percent
-
-    def visualize_bourdieu_one_dimension(
-        self,
-        left=["negative", "bad"],
-        right=["positive"],
-        width=1200,
-        height=1200,
-        explainer=False,
-    ):
-        fig = visualize_bourdieu_one_dimension(
-            docs=self.docs,
-            embedding_model=self.embedding_model,
-            left=left,
-            right=right,
-            width=width,
-            height=height,
-            explainer=explainer,
-        )
-
-        return fig

@@ -3,7 +3,7 @@
 # Run the following commands :
 # make docker_build_worker
 # make docker_run_worker
-FROM tensorflow/tensorflow:latest-gpu as bunkatopicsbasedocker
+FROM tensorflow/tensorflow:2.15.0.post1-gpu as bunkatopicsbasedocker
 
 RUN apt update
 RUN apt install -y python3-dev
@@ -18,22 +18,21 @@ ENV OPEN_AI_KEY=${OPEN_AI_KEY}
 WORKDIR /app/api
 
 # Python requirements (poetry has issues with fasttext: pybind11)
-RUN pip3 install --upgrade pip
+# RUN pip install --upgrade pip
 
 COPY requirements.txt requirements.txt
-RUN pip3 install --no-cache-dir --upgrade --ignore-installed blinker -r requirements.txt
+RUN pip install --no-cache-dir --upgrade --ignore-installed blinker -r requirements.txt
 ######################################
 # changing user & downloading models #
 ######################################
-FROM bunkatopicsbasedocker
+FROM bunkatopicsbasedocker as bunkatopicsworker
 # Models
-RUN python3 -m spacy download en_core_web_sm
-RUN python3 -m spacy download fr_core_news_lg
+RUN python -m spacy download en_core_web_sm
+RUN python -m spacy download fr_core_news_lg
 # reducing privilege
 RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app
 USER runuser
-
 
 # code
 COPY --chown=runuser:rungroup api/run_worker.sh run_worker.sh

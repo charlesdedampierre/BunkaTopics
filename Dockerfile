@@ -12,7 +12,6 @@ ENV PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
     python3-dev \
-    python3 \
     python3-pip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 # copying dependency
@@ -25,15 +24,15 @@ ENV OPEN_AI_KEY=${OPEN_AI_KEY}
 WORKDIR /app/api
 
 # Python requirements (poetry has issues with fasttext: pybind11)
-RUN pip install --upgrade pip
+# RUN pip install --upgrade pip
 
 # Bunka libraries
 COPY requirements.txt requirements.txt
-RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
+RUN pip3.10 install --no-cache-dir --upgrade -r requirements.txt
 ######################################
 # changing user & downloading models #
 ######################################
-FROM bunkatopicsbasedocker
+FROM bunkatopicsbasedocker as bunkatopicsapidocker
 # Models
 # RUN python -m spacy download en_core_web_sm
 # reducing privilege

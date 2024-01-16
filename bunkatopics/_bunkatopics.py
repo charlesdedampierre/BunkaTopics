@@ -19,20 +19,30 @@ from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import BourdieuAPI, BunkaTopicModeling
+from bunkatopics.topic_modeling import (
+    BourdieuAPI,
+    BunkaTopicModeling,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import \
-    get_top_documents
-from bunkatopics.topic_modeling.llm_topic_representation import \
-    get_clean_topic_all
+from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
+from bunkatopics.topic_modeling.llm_topic_representation import get_clean_topic_all
 from bunkatopics.topic_modeling.term_extractor import TextacyTermsExtractor
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization.bourdieu_visualizer import (
-    visualize_bourdieu, visualize_bourdieu_one_dimension)
+    visualize_bourdieu,
+    visualize_bourdieu_one_dimension,
+)
 from bunkatopics.visualization.query_visualizer import plot_query
 from bunkatopics.visualization.topic_visualizer import visualize_topics
 

@@ -718,7 +718,12 @@ and the use of generative AI for topic naming.</p>
 
             <details class="quote">
               <summary>Source code in <code>bunkatopics/topic_modeling/bourdieu_api.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 25</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
 <span class="normal"> 26</span>
 <span class="normal"> 27</span>
 <span class="normal"> 28</span>
@@ -867,15 +872,7 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
+<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for performing Bourdieu analysis on a collection of documents.</span>
 
@@ -931,10 +928,7 @@ and the use of generative AI for topic naming.</p>
 <span class="sd">        Arguments:</span>
 <span class="sd">            docs (List[Document]): List of Document objects representing the documents to be analyzed.</span>
 <span class="sd">            terms (List[Term]): List of Term objects representing the terms to be used in topic modeling.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            Tuple[List[Document], List[Topic]]: A tuple containing two lists:</span>
-<span class="sd">                - A list of Document objects with updated Bourdieu dimensions.</span>
-<span class="sd">                - A list of Topic objects representing the identified topics.</span>
+
 <span class="sd">        Notes:</span>
 <span class="sd">            - The method first resets Bourdieu dimensions for all documents.</span>
 <span class="sd">            - It computes Bourdieu continuums based on the configured left and right words.</span>
@@ -1075,7 +1069,12 @@ and the use of generative AI for topic naming.</p>
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/topic_modeling/bourdieu_api.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
@@ -1101,12 +1100,7 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">generative_model</span><span class="p">,</span>
     <span class="n">embedding_model</span><span class="p">,</span>
@@ -1205,20 +1199,25 @@ uses a generative AI model for naming the topics.</p>
         </tr>
     </tbody>
   </table>
-      <p>Returns:
-    Tuple[List[Document], List[Topic]]: A tuple containing two lists:
-        - A list of Document objects with updated Bourdieu dimensions.
-        - A list of Topic objects representing the identified topics.
-Notes:
-    - The method first resets Bourdieu dimensions for all documents.
-    - It computes Bourdieu continuums based on the configured left and right words.
-    - Documents are then filtered based on their position relative to a defined radius in the Bourdieu space.
-    - Topic modeling is performed on the filtered set of documents.
-    - If <code>generative_ai_name</code> is True, topics are named using the generative AI model.</p>
 
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>The method first resets Bourdieu dimensions for all documents.</li>
+<li>It computes Bourdieu continuums based on the configured left and right words.</li>
+<li>Documents are then filtered based on their position relative to a defined radius in the Bourdieu space.</li>
+<li>Topic modeling is performed on the filtered set of documents.</li>
+<li>If <code>generative_ai_name</code> is True, topics are named using the generative AI model.</li>
+</ul>
+</details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/topic_modeling/bourdieu_api.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
 <span class="normal"> 69</span>
 <span class="normal"> 70</span>
 <span class="normal"> 71</span>
@@ -1324,15 +1323,7 @@ Notes:
 <span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
+<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">terms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Term</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1345,10 +1336,7 @@ Notes:
 <span class="sd">    Arguments:</span>
 <span class="sd">        docs (List[Document]): List of Document objects representing the documents to be analyzed.</span>
 <span class="sd">        terms (List[Term]): List of Term objects representing the terms to be used in topic modeling.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        Tuple[List[Document], List[Topic]]: A tuple containing two lists:</span>
-<span class="sd">            - A list of Document objects with updated Bourdieu dimensions.</span>
-<span class="sd">            - A list of Topic objects representing the identified topics.</span>
+
 <span class="sd">    Notes:</span>
 <span class="sd">        - The method first resets Bourdieu dimensions for all documents.</span>
 <span class="sd">        - It computes Bourdieu continuums based on the configured left and right words.</span>

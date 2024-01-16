@@ -5,8 +5,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+from bunkatopics.bourdieu.bourdieu_api import _get_continuum
 from bunkatopics.datamodel import Document
-from bunkatopics.topic_modeling.bourdieu_api import get_continuum
 from bunkatopics.visualization.topic_explainer import plot_specific_terms
 from bunkatopics.visualization.visualization_utils import wrap_by_word
 
@@ -410,7 +410,7 @@ def visualize_bourdieu_one_dimension(
     """
     id = str(random.randint(0, 10000))
 
-    new_docs = get_continuum(
+    new_docs = _get_continuum(
         embedding_model=embedding_model,
         docs=docs,
         cont_name=id,

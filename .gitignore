@@ -14,6 +14,7 @@ notebooks_test/
 json_examples/
 generative_model_api/
 test.ipynb
+bash.sh
 
 # Distribution / packaging
 .Python

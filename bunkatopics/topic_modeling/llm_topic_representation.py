@@ -12,58 +12,83 @@ from bunkatopics.topic_modeling.prompt_generator import (
 TERM_ID = str
 
 
-def get_clean_topic_all(
-    llm,
-    topics: t.List[Topic],
-    docs: t.List[Document],
-    language: str = "english",
-    top_doc: int = 3,
-    top_terms: int = 10,
-    use_doc: bool = False,
-    context: str = "everything",
-) -> t.List[Topic]:
+class LLMCleaningTopic:
     """
-    Get cleaned topic labels for a list of topics using a generative model.
+    A class for cleaning topic labels using a generative model.
 
-    Args:
-        llm: The generative model to use.
-        topics: List of topics to clean.
-        docs: List of documents related to the topics.
-        language: Language for generating clean labels.
-        top_doc: Number of top documents to consider.
-        top_terms: Number of top terms to consider.
-        use_doc: Whether to use documents in label generation.
-        context: Context for label generation.
+    This class utilizes a language model to generate cleaned and more coherent labels for a given list of topics.
+    The cleaning process considers the top documents and terms associated with each topic and optionally includes
+    the actual content of the top documents for a more context-rich label generation.
 
-    Returns:
-        List of topics with cleaned labels.
     """
-    df = _get_df_prompt(topics, docs)
 
-    topic_ids = list(df["topic_id"])
-    specific_terms = list(df["keywords"])
-    top_doc_contents = list(df["content"])
+    def __init__(
+        self,
+        llm,
+        language: str = "english",
+        top_doc: int = 3,
+        top_terms: int = 10,
+        use_doc: bool = False,
+        context: str = "everything",
+    ) -> None:
+        """
+        Initialize the LLMCleaningTopic instance.
 
-    final_dict = {}
-    pbar = tqdm(total=len(topic_ids), desc="Creating new labels for clusters")
-    for topic_ic, x, y in zip(topic_ids, specific_terms, top_doc_contents):
-        clean_topic_name = _get_clean_topic(
-            llm=llm,
-            language=language,
-            specific_terms=x,
-            specific_documents=y,
-            use_doc=use_doc,
-            top_terms=top_terms,
-            top_doc=top_doc,
-            context=context,
-        )
-        final_dict[topic_ic] = clean_topic_name
-        pbar.update(1)
+        Arguments:
+            llm: The generative model to use for label cleaning.
+            language (str): Language used for generating labels. Defaults to "english".
+            top_doc (int): Number of top documents to consider for each topic. Defaults to 3.
+            top_terms (int): Number of top terms to consider for each topic. Defaults to 10.
+            use_doc (bool): Whether to include document contents in label generation. Defaults to False.
+            context (str): Context for label generation. Defaults to "everything".
+        """
+        self.llm = llm
+        self.language = language
+        self.top_doc = top_doc
+        self.top_terms = top_terms
+        self.use_doc = use_doc
+        self.context = context
 
-    for topic in topics:
-        topic.name = final_dict.get(topic.topic_id)
+    def fit_transform(
+        self, topics: t.List[Topic], docs: t.List[Document]
+    ) -> t.List[Topic]:
+        """
+        Clean topic labels for a list of topics using the generative model.
 
-    return topics
+        This method processes each topic by generating a new, cleaned label based on the top terms and documents
+        associated with the topic. The cleaned labels are then assigned back to the topics.
+
+        Args:
+            topics (List[Topic]): List of topics to clean.
+            docs (List[Document]): List of documents related to the topics.
+
+        """
+        df = _get_df_prompt(topics, docs)
+
+        topic_ids = list(df["topic_id"])
+        specific_terms = list(df["keywords"])
+        top_doc_contents = list(df["content"])
+
+        final_dict = {}
+        pbar = tqdm(total=len(topic_ids), desc="Creating new labels for clusters")
+        for topic_ic, x, y in zip(topic_ids, specific_terms, top_doc_contents):
+            clean_topic_name = _get_clean_topic(
+                llm=self.llm,
+                language=self.language,
+                specific_terms=x,
+                specific_documents=y,
+                use_doc=self.use_doc,
+                top_terms=self.top_terms,
+                top_doc=self.top_doc,
+                context=self.context,
+            )
+            final_dict[topic_ic] = clean_topic_name
+            pbar.update(1)
+
+        for topic in topics:
+            topic.name = final_dict.get(topic.topic_id)
+
+        return topics
 
 
 def _get_clean_topic(

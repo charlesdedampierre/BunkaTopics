@@ -20,7 +20,7 @@ function Bourdieu() {
   const [mapLoading, setMapLoading] = useState(false);
   const [topicsCentroids, setTopicsCentroids] = useState([])
 
-  const { bourdieuData: apiData, isLoading: isFileProcessing } = useContext(TopicsContext);
+  const { bourdieuData: apiData, setBourdieuData: setApiData, isLoading: isFileProcessing } = useContext(TopicsContext);
 
   const svgRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
@@ -407,6 +407,11 @@ function Bourdieu() {
               fetch(`/${bunkaQuery}`)
                 .then((response) => response.json())
                 .then((queryData) => {
+                  setApiData({
+                    docs: docsData,
+                    topics: topicsData,
+                    query: queryData
+                  });
                   // Call the function to create the scatter plot after data is loaded
                   createScatterPlot(docsData, topicsData, queryData);
                 })
@@ -470,12 +475,21 @@ function Bourdieu() {
             <>
               <Box sx={{ marginBottom: "1em" }}>
                 <Button sx={{ width: "100%" }} component="label" variant="outlined" startIcon={<RepeatIcon />} onClick={() => setSelectedDocument(null)}>
-                  Upload another CSV file
+                  Change the axes
                 </Button>
               </Box>
               <TextContainer topicName={selectedDocument.name} topicSizeFraction={topicsSizeFraction(topicsCentroids, selectedDocument.size)} content={selectedDocument.top_doc_content} />
             </>
-            ) : <QueryView />}
+            ) : apiData ? <QueryView 
+                  xLeftWordDefault={apiData?.query.x_left_words?.join(",")}
+                  xRightWordDefault={apiData?.query.x_right_words?.join(",")}
+                  yTopWordDefault={apiData?.query.y_top_words?.join(",")}
+                  yBottomWordDefault={apiData?.query.y_bottom_words?.join(",")}
+                  radiusSizeDefault={0.3} 
+                  nClustersDefault={7} 
+                  nameLengthDefault={3} 
+                  minCountTermsDefault={1} /> : <></>
+            }
           </div>
         </div>
       )}

@@ -5,7 +5,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 export const LABELS = {
   map: "Map View",
   bourdieu: "Bourdieu View",
-  docs: "Data"
+  docs: "Map View Data"
 };
 
 function DropdownMenu({ onSelectView, selectedView }) {

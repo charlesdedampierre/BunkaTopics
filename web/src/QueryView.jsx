@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Papa from "papaparse";
+import PropTypes from "prop-types";
 import React, { useContext, useState, useCallback } from "react";
 import { TopicsContext } from "./UploadFileContext";
 
@@ -40,20 +41,30 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-function QueryView() {
+
+function QueryView({
+  xLeftWordDefault,
+  xRightWordDefault,
+  yTopWordDefault,
+  yBottomWordDefault,
+  radiusSizeDefault,
+  nClustersDefault,
+  minCountTermsDefault,
+  nameLengthDefault,
+}) {
   const [fileData, setFileData] = useState([]);
   const [selectedColumn, setSelectedColumn] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedColumnData, setSelectedColumnData] = useState([]);
   const [openSelector, setOpenSelector] = React.useState(false);
-  const [xLeftWord, setXLeftWord] = useState("past");
-  const [xRightWord, setXRightWord] = useState("future");
-  const [yTopWord, setYTopWord] = useState("positive");
-  const [yBottomWord, setYBottomWord] = useState("negative");
-  const [radiusSize, setRadiusSize] = useState(0.5);
-  const [nClusters, setNClusters] = useState(15);
-  const [minCountTerms, setMinCountTerms] = useState(1);
-  const [nameLength, setNameLength] = useState(3);
+  const [xLeftWord, setXLeftWord] = useState(xLeftWordDefault || "this is about the past");
+  const [xRightWord, setXRightWord] = useState(xRightWordDefault || "this is about the future");
+  const [yTopWord, setYTopWord] = useState(yTopWordDefault || "this is positive");
+  const [yBottomWord, setYBottomWord] = useState(yBottomWordDefault || "this is negative");
+  const [radiusSize, setRadiusSize] = useState(radiusSizeDefault || 0.5);
+  const [nClusters, setNClusters] = useState(nClustersDefault || 15);
+  const [nameLength, setNameLength] = useState(nameLengthDefault || 3);
+  const [minCountTerms, setMinCountTerms] = useState(minCountTermsDefault || 1);
   const [cleanTopics, setCleanTopics] = useState(false);
   const [language, setLanguage] = useState("english");
   const { uploadFile, isLoading, selectedView, refreshBourdieuQuery } = useContext(TopicsContext);
@@ -250,7 +261,10 @@ function QueryView() {
                 <TextField required id="input-bourdieu-yt" sx={{ marginBottom: "1em" }} label="Y top words (comma separated)" variant="outlined" onChange={e => setYTopWord(e.target.value)} value={yTopWord} />
                 <TextField required id="input-bourdieu-yb" sx={{ marginBottom: "1em" }} label="Y bottom words (comma separated)" variant="outlined" onChange={e => setYBottomWord(e.target.value)} value={yBottomWord} />
                 <TextField required id="input-bourdieu-radius" sx={{ marginBottom: "1em" }} label="Radius Size" variant="outlined" onChange={e => setRadiusSize(e.target.value)} value={radiusSize} />
-                <TextField required id="input-map-nclusters" sx={{ marginBottom: "1em" }} label="N° Clusters" variant="outlined" onChange={e => setNClusters(e.target.value)} value={nClusters} />
+                <TextField required id="input-map-nclusters" sx={{ marginBottom: "1em" }} label="N° Clusters" variant="outlined" onChange={e => {
+                  if (e.target.value <=20) setNClusters(e.target.value);
+                  else setNClusters(20);
+                }} value={nClusters} />
                 <TextField required id="input-map-namelength" sx={{ marginBottom: "1em" }} label="Name length" variant="outlined" onChange={e => setNameLength(e.target.value)} value={nameLength} />
                 <TextField required id="input-map-mincountterms" sx={{ marginBottom: "1em" }} label="Min Count Terms" variant="outlined" onChange={e => setMinCountTerms(e.target.value)} value={minCountTerms} />
                 <RadioGroup required name="cleantopics-radio-group" defaultValue={cleanTopics} onChange={e => setCleanTopics(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} disabled>
@@ -283,6 +297,7 @@ function QueryView() {
                   <FormControlLabel value="french" label="fr" control={<Radio />}/>
                   <FormControlLabel value="english" label="en" control={<Radio />}/>
                 </RadioGroup>
+                <TextField label="Modèle" variant="outlined" disabled value={"all-MiniLM-L6-v2"} />
               </FormControl>
             </Box>
           )}
@@ -291,5 +306,17 @@ function QueryView() {
     </Container>
   );
 }
+
+QueryView.propTypes = {
+  xLeftWordDefault: PropTypes.string.isOptional,
+  xRightWordDefault: PropTypes.string.isOptional,
+  yTopWordDefault: PropTypes.string.isOptional,
+  yBottomWordDefault: PropTypes.string.isOptional,
+  radiusSizeDefault: PropTypes.number.isOptional,
+  nClustersDefault: PropTypes.number.isOptional,
+  minCountTermsDefault: PropTypes.number.isOptional,
+  nameLengthDefault: PropTypes.number.isOptional
+};
+
 
 export default QueryView;

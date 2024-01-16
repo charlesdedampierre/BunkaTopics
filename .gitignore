@@ -13,6 +13,7 @@ __pycache__/
 notebooks_test/
 json_examples/
 generative_model_api/
+test.ipynb
 
 # Distribution / packaging
 .Python

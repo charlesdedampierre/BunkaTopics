@@ -1,14 +1,13 @@
 import os
 import random
+import sys
 
 import pandas as pd
 from dotenv import load_dotenv
+from langchain.llms import HuggingFaceHub
 
 import streamlit as st
 from bunkatopics import Bunka
-
-from langchain.llms import HuggingFaceHub
-import sys
 
 sys.path.append("../")
 

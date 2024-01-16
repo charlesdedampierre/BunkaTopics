@@ -1,3 +1,3 @@
-from .bourdieu_api import BourdieuAPI
 from .topic_model_builder import BunkaTopicModeling
 from .term_extractor import TextacyTermsExtractor
+from .llm_topic_representation import LLMCleaningTopic

@@ -4,6 +4,8 @@ site_url: https://charlesdedampierre.github.io/BunkaTopics/
 site_description: using LLM to create and Explore topics in an innovative way
 site_author: Charles de Dampierre
 use_directory_urls: false
+extra_css:
+  - extra.css
 
 theme:
   name: material
@@ -12,6 +14,12 @@ theme:
     code: Roboto Mono
   logo: img/logo.png
   features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.instant
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
     - content.code.copy
   palette:
     - media: "(prefers-color-scheme: dark)"
@@ -44,9 +52,8 @@ nav:
   - Technology: technology.md
   - API:
       - bunkatopics: bunka-api/bunkatopics.md
-      - topic_modeling:
-          - topic_model_builder: bunka-api/topic_modeling/topic_model_builder.md
-          - Term Extractor: bunka-api/topic_modeling/terms_extractor.md
+      - Topic Modeling: bunka-api/topic_modeling/topic_model_builder.md
+      - Term Extractor: bunka-api/topic_modeling/terms_extractor.md
 
   - Use Cases: use-cases.md
 

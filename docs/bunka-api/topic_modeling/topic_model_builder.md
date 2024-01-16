@@ -1,3 +1,3 @@
-# topic_model_builder
+# BunkaTopicModeling
 
-::: bunkatopics.topic_modeling.topic_model_builder.get_topics
+::: bunkatopics.topic_modeling.topic_model_builder.BunkaTopicModeling

@@ -579,7 +579,28 @@
   
   
     <li class="md-nav__item">
-      <a href="topic_modeling/bourdieu-api.html" class="md-nav__link">
+      <a href="topic_modeling/topic_llm_cleaning.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topic LLM Cleaner
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bourdieu/bourdieu-api.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -710,11 +731,7 @@
 
             <details class="quote">
               <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 60</span>
 <span class="normal"> 61</span>
 <span class="normal"> 62</span>
 <span class="normal"> 63</span>
@@ -1125,7 +1142,15 @@
 <span class="normal">468</span>
 <span class="normal">469</span>
 <span class="normal">470</span>
-<span class="normal">471</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bunka class for managing and analyzing textual data using various NLP techniques.</span>
 
 <span class="sd">    Examples:</span>
@@ -1276,14 +1301,18 @@
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;everything&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using LLM to make topic names cleaner&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_clean_topic_all</span><span class="p">(</span>
+
+        <span class="n">model_cleaning</span> <span class="o">=</span> <span class="n">LLMCleaningTopic</span><span class="p">(</span>
             <span class="n">llm</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
             <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span>
             <span class="n">use_doc</span><span class="o">=</span><span class="n">use_doc</span><span class="p">,</span>
             <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_cleaning</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="n">df_topics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">([</span><span class="n">topic</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">topic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">df_topics</span>
@@ -1355,7 +1384,7 @@
         <span class="c1"># Request Bourdieu API</span>
 
         <span class="n">bourdieu_api</span> <span class="o">=</span> <span class="n">BourdieuAPI</span><span class="p">(</span>
-            <span class="n">generative_model</span><span class="o">=</span><span class="n">generative_model</span><span class="p">,</span>
+            <span class="n">llm</span><span class="o">=</span><span class="n">generative_model</span><span class="p">,</span>
             <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
             <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
             <span class="n">generative_ai_name</span><span class="o">=</span><span class="n">topic_gen_name</span><span class="p">,</span>
@@ -1619,11 +1648,7 @@
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">79</span>
 <span class="normal">80</span>
 <span class="normal">81</span>
 <span class="normal">82</span>
@@ -1638,7 +1663,11 @@
 <span class="normal">91</span>
 <span class="normal">92</span>
 <span class="normal">93</span>
-<span class="normal">94</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a BunkaTopics instance.</span>
 
 <span class="sd">    Arguments:</span>

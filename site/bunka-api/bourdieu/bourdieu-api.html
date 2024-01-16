@@ -12,10 +12,10 @@
         <meta name="author" content="Charles de Dampierre">
       
       
-        <link rel="canonical" href="https://charlesdedampierre.github.io/BunkaTopics/bunka-api/topic_modeling/bourdieu-api.html">
+        <link rel="canonical" href="https://charlesdedampierre.github.io/BunkaTopics/bunka-api/bourdieu/bourdieu-api.html">
       
       
-        <link rel="prev" href="terms_extractor.html">
+        <link rel="prev" href="../topic_modeling/topic_llm_cleaning.html">
       
       
         <link rel="next" href="../../use-cases.html">
@@ -479,7 +479,7 @@
   
   
     <li class="md-nav__item">
-      <a href="topic_model_builder.html" class="md-nav__link">
+      <a href="../topic_modeling/topic_model_builder.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -500,11 +500,32 @@
   
   
     <li class="md-nav__item">
-      <a href="terms_extractor.html" class="md-nav__link">
+      <a href="../topic_modeling/terms_extractor.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Term Extractor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topic_modeling/topic_llm_cleaning.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topic LLM Cleaner
   </span>
   
 
@@ -567,7 +588,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI" class="md-nav__link">
     <span class="md-ellipsis">
       BourdieuAPI
     </span>
@@ -576,7 +597,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.__init__" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__
     </span>
@@ -585,7 +606,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.fit_transform" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.fit_transform" class="md-nav__link">
     <span class="md-ellipsis">
       fit_transform
     </span>
@@ -656,7 +677,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI" class="md-nav__link">
     <span class="md-ellipsis">
       BourdieuAPI
     </span>
@@ -665,7 +686,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.__init__" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__
     </span>
@@ -674,7 +695,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.fit_transform" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.fit_transform" class="md-nav__link">
     <span class="md-ellipsis">
       fit_transform
     </span>
@@ -707,7 +728,7 @@
 
 
 
-<a id="bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI"></a>
+<a id="bunkatopics.bourdieu.bourdieu_api.BourdieuAPI"></a>
   <div class="doc doc-contents first">
 
   
@@ -717,13 +738,8 @@ for the given documents. It supports customization of the analysis through vario
 and the use of generative AI for topic naming.</p>
 
             <details class="quote">
-              <summary>Source code in <code>bunkatopics/topic_modeling/bourdieu_api.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 20</span>
-<span class="normal"> 21</span>
-<span class="normal"> 22</span>
-<span class="normal"> 23</span>
-<span class="normal"> 24</span>
-<span class="normal"> 25</span>
+              <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_api.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 25</span>
 <span class="normal"> 26</span>
 <span class="normal"> 27</span>
 <span class="normal"> 28</span>
@@ -872,7 +888,23 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
-<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for performing Bourdieu analysis on a collection of documents.</span>
 
@@ -884,7 +916,7 @@ and the use of generative AI for topic naming.</p>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">generative_model</span><span class="p">,</span>
+        <span class="n">llm</span><span class="p">,</span>
         <span class="n">embedding_model</span><span class="p">,</span>
         <span class="n">bourdieu_query</span><span class="p">:</span> <span class="n">BourdieuQuery</span> <span class="o">=</span> <span class="n">BourdieuQuery</span><span class="p">(),</span>
         <span class="n">topic_param</span><span class="p">:</span> <span class="n">TopicParam</span> <span class="o">=</span> <span class="n">TopicParam</span><span class="p">(),</span>
@@ -896,7 +928,7 @@ and the use of generative AI for topic naming.</p>
 <span class="sd">        Initializes the BourdieuAPI with the provided models, parameters, and configurations.</span>
 
 <span class="sd">        Arguments</span>
-<span class="sd">            generative_model: The generative AI model for topic naming.</span>
+<span class="sd">            llm: The generative AI model for topic naming.</span>
 <span class="sd">            embedding_model: The model used for embedding documents.</span>
 <span class="sd">            bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.</span>
 <span class="sd">                                                       Defaults to BourdieuQuery().</span>
@@ -907,7 +939,7 @@ and the use of generative AI for topic naming.</p>
 <span class="sd">            min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">generative_model</span> <span class="o">=</span> <span class="n">generative_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">llm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span> <span class="o">=</span> <span class="n">embedding_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span> <span class="o">=</span> <span class="n">bourdieu_query</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">topic_param</span> <span class="o">=</span> <span class="n">topic_param</span>
@@ -1017,14 +1049,25 @@ and the use of generative AI for topic naming.</p>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">generative_ai_name</span><span class="p">:</span>
-            <span class="n">bourdieu_topics</span> <span class="o">=</span> <span class="n">get_clean_topic_all</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">generative_model</span><span class="p">,</span>
+            <span class="n">model_cleaning</span> <span class="o">=</span> <span class="n">LLMCleaningTopic</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">,</span>
+                <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
+                <span class="n">use_doc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">use_doc</span><span class="p">,</span>
+                <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">bourdieu_topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_cleaning</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
                 <span class="n">bourdieu_topics</span><span class="p">,</span>
                 <span class="n">bourdieu_docs</span><span class="p">,</span>
-                <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
-                <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
-                <span class="n">use_doc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">use_doc</span><span class="p">,</span>
             <span class="p">)</span>
+
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; bourdieu_topics = get_clean_topic_all(</span>
+<span class="sd">                self.generative_model,</span>
+<span class="sd">                bourdieu_topics,</span>
+<span class="sd">                bourdieu_docs,</span>
+<span class="sd">                language=self.topic_gen_param.language,</span>
+<span class="sd">                context=self.topic_gen_param.context,</span>
+<span class="sd">                use_doc=self.topic_gen_param.use_doc,</span>
+<span class="sd">            )&quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="n">bourdieu_docs</span><span class="p">,</span> <span class="n">bourdieu_topics</span>
 </code></pre></div></td></tr></table></div>
@@ -1047,17 +1090,17 @@ and the use of generative AI for topic naming.</p>
 
 
 
-<h2 id="bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">generative_model</span><span class="p">,</span> <span class="n">embedding_model</span><span class="p">,</span> <span class="n">bourdieu_query</span><span class="o">=</span><span class="n">BourdieuQuery</span><span class="p">(),</span> <span class="n">topic_param</span><span class="o">=</span><span class="n">TopicParam</span><span class="p">(),</span> <span class="n">generative_ai_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">TopicGenParam</span><span class="p">(),</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></code>
+<h2 id="bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.__init__" class="doc doc-heading">
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">embedding_model</span><span class="p">,</span> <span class="n">bourdieu_query</span><span class="o">=</span><span class="n">BourdieuQuery</span><span class="p">(),</span> <span class="n">topic_param</span><span class="o">=</span><span class="n">TopicParam</span><span class="p">(),</span> <span class="n">generative_ai_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">TopicGenParam</span><span class="p">(),</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></code>
 
-<a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.__init__" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.__init__" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
   
       <p>Initializes the BourdieuAPI with the provided models, parameters, and configurations.</p>
 <p>Arguments
-    generative_model: The generative AI model for topic naming.
+    llm: The generative AI model for topic naming.
     embedding_model: The model used for embedding documents.
     bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.
                                                Defaults to BourdieuQuery().
@@ -1068,13 +1111,8 @@ and the use of generative AI for topic naming.</p>
     min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.</p>
 
           <details class="quote">
-            <summary>Source code in <code>bunkatopics/topic_modeling/bourdieu_api.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
+            <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_api.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
@@ -1100,9 +1138,14 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
-<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">generative_model</span><span class="p">,</span>
+    <span class="n">llm</span><span class="p">,</span>
     <span class="n">embedding_model</span><span class="p">,</span>
     <span class="n">bourdieu_query</span><span class="p">:</span> <span class="n">BourdieuQuery</span> <span class="o">=</span> <span class="n">BourdieuQuery</span><span class="p">(),</span>
     <span class="n">topic_param</span><span class="p">:</span> <span class="n">TopicParam</span> <span class="o">=</span> <span class="n">TopicParam</span><span class="p">(),</span>
@@ -1114,7 +1157,7 @@ and the use of generative AI for topic naming.</p>
 <span class="sd">    Initializes the BourdieuAPI with the provided models, parameters, and configurations.</span>
 
 <span class="sd">    Arguments</span>
-<span class="sd">        generative_model: The generative AI model for topic naming.</span>
+<span class="sd">        llm: The generative AI model for topic naming.</span>
 <span class="sd">        embedding_model: The model used for embedding documents.</span>
 <span class="sd">        bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.</span>
 <span class="sd">                                                   Defaults to BourdieuQuery().</span>
@@ -1125,7 +1168,7 @@ and the use of generative AI for topic naming.</p>
 <span class="sd">        min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">generative_model</span> <span class="o">=</span> <span class="n">generative_model</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">llm</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span> <span class="o">=</span> <span class="n">embedding_model</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span> <span class="o">=</span> <span class="n">bourdieu_query</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">topic_param</span> <span class="o">=</span> <span class="n">topic_param</span>
@@ -1143,10 +1186,10 @@ and the use of generative AI for topic naming.</p>
 
 
 
-<h2 id="bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.fit_transform" class="doc doc-heading">
+<h2 id="bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.fit_transform" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">fit_transform</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">terms</span><span class="p">)</span></code>
 
-<a href="#bunkatopics.topic_modeling.bourdieu_api.BourdieuAPI.fit_transform" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.fit_transform" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1211,13 +1254,8 @@ uses a generative AI model for naming the topics.</p>
 </ul>
 </details>
           <details class="quote">
-            <summary>Source code in <code>bunkatopics/topic_modeling/bourdieu_api.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
+            <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_api.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
 <span class="normal"> 69</span>
 <span class="normal"> 70</span>
 <span class="normal"> 71</span>
@@ -1323,7 +1361,23 @@ uses a generative AI model for naming the topics.</p>
 <span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
-<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">terms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Term</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1425,14 +1479,25 @@ uses a generative AI model for naming the topics.</p>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">generative_ai_name</span><span class="p">:</span>
-        <span class="n">bourdieu_topics</span> <span class="o">=</span> <span class="n">get_clean_topic_all</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">generative_model</span><span class="p">,</span>
+        <span class="n">model_cleaning</span> <span class="o">=</span> <span class="n">LLMCleaningTopic</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">,</span>
+            <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
+            <span class="n">use_doc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">use_doc</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">bourdieu_topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_cleaning</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
             <span class="n">bourdieu_topics</span><span class="p">,</span>
             <span class="n">bourdieu_docs</span><span class="p">,</span>
-            <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
-            <span class="n">use_doc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span><span class="o">.</span><span class="n">use_doc</span><span class="p">,</span>
         <span class="p">)</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; bourdieu_topics = get_clean_topic_all(</span>
+<span class="sd">            self.generative_model,</span>
+<span class="sd">            bourdieu_topics,</span>
+<span class="sd">            bourdieu_docs,</span>
+<span class="sd">            language=self.topic_gen_param.language,</span>
+<span class="sd">            context=self.topic_gen_param.context,</span>
+<span class="sd">            use_doc=self.topic_gen_param.use_doc,</span>
+<span class="sd">        )&quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">bourdieu_docs</span><span class="p">,</span> <span class="n">bourdieu_topics</span>
 </code></pre></div></td></tr></table></div>

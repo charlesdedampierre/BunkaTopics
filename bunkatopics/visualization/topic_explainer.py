@@ -10,13 +10,29 @@ from bunkatopics.topic_modeling.utils import specificity
 
 def plot_specific_terms(
     docs: t.List[Document],
-    left_words=["hate", "pain"],
-    right_words=["love", "good"],
+    left_words=["hate"],
+    right_words=["love"],
     id="emotion",
     ngrams=[2],
     quantile=0.80,
     top_n=20,
 ):
+    """
+    Visualize the specificity scores of terms associated with two groups along a continuum.
+
+    Args:
+        docs (List[Document]): A list of Document objects to analyze.
+        left_words (List[str]): Keywords indicating one end of the continuum (default is ["hate", "pain"]).
+        right_words (List[str]): Keywords indicating the other end of the continuum (default is ["love", "good"]).
+        id (str): Identifier for the continuum (default is "emotion").
+        ngrams (List[int]): List of n-grams to consider (default is [2]).
+        quantile (float): Quantile threshold for grouping terms (default is 0.80).
+        top_n (int): Number of top specific terms to visualize (default is 20).
+
+    Returns:
+        None: Displays a plot of specificity scores for terms.
+    """
+
     distances = [
         x.distance
         for doc in docs
@@ -114,4 +130,4 @@ def plot_specific_terms(
     ax.set_title(title)
 
     plt.tight_layout()
-    plt.show()
+    return fig

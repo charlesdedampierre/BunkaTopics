@@ -5,9 +5,13 @@ import typing as t
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import OpenAI
 
-from api.bunka_api.datamodel import (BourdieuQueryApi, BourdieuQueryDict,
-                                     BourdieuResponse, TopicParameterApi,
-                                     TopicsResponse)
+from api.bunka_api.datamodel import (
+    BourdieuQueryApi,
+    BourdieuQueryDict,
+    BourdieuResponse,
+    TopicParameterApi,
+    TopicsResponse,
+)
 from bunkatopics import Bunka
 from bunkatopics.datamodel import Document, Term, Topic, TopicGenParam
 from bunkatopics.topic_modeling.bourdieu_api import bourdieu_api

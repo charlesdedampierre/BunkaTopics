@@ -2,7 +2,8 @@ import typing as t
 
 from pydantic import BaseModel
 
-from bunkatopics.datamodel import BourdieuQuery, Document, Term, Topic, TopicParam
+from bunkatopics.datamodel import (BourdieuQuery, Document, Term, Topic,
+                                   TopicParam)
 
 
 class BourdieuQueryDict(t.TypedDict):

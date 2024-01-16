@@ -5,18 +5,13 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (
-    BourdieuDimension,
-    BourdieuQuery,
-    ContinuumDimension,
-    Document,
-    Term,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
-from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
-from bunkatopics.topic_modeling.llm_topic_representation import get_clean_topic_all
+from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
+                                   ContinuumDimension, Document, Term, Topic,
+                                   TopicGenParam, TopicParam)
+from bunkatopics.topic_modeling.document_topic_analyzer import \
+    get_top_documents
+from bunkatopics.topic_modeling.llm_topic_representation import \
+    get_clean_topic_all
 from bunkatopics.topic_modeling.topic_model_builder import get_topics
 
 pd.options.mode.chained_assignment = None

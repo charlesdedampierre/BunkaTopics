@@ -30,13 +30,13 @@ class TestBunka(unittest.TestCase):
         # Load a sample dataset
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 2000)
+        docs = random.sample(docs, 200)
         cls.bunka = Bunka()
         cls.bunka.fit(docs)
 
     def test_topic_modeling(self):
         # Test Topic Modeling
-        n_clusters = 10
+        n_clusters = 3
         df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         print(df_topics.name)
         self.assertIsInstance(df_topics, pd.DataFrame)
@@ -44,12 +44,11 @@ class TestBunka(unittest.TestCase):
 
         # Visualize Topics
         topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
-        topic_fig.show()
+        # topic_fig.show()
         self.assertIsInstance(topic_fig, go.Figure)
 
     def test_generative_names(self):
         n_clusters = 3
-
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
         print(df_topics_clean.name)

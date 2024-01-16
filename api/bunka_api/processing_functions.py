@@ -9,8 +9,8 @@ from api.bunka_api.datamodel import (BourdieuQueryApi, BourdieuQueryDict,
                                      BourdieuResponse, TopicParameterApi,
                                      TopicsResponse)
 from bunkatopics import Bunka
+from bunkatopics.bourdieu import BourdieuAPI
 from bunkatopics.datamodel import Document, Term, Topic, TopicGenParam
-from bunkatopics.topic_modeling.bourdieu_api import bourdieu_api
 
 open_ai_generative_model = OpenAI(
     openai_api_key=os.getenv("OPEN_AI_KEY"),
@@ -28,7 +28,7 @@ def process_topics(
     full_docs: t.List[str],
     params: TopicParameterApi,
     process_bourdieu: bool,
-    bourdieu_query: BourdieuQueryApi | None,
+    bourdieu_query: BourdieuQueryApi or None,
 ) -> TopicsResponse:
     """Process topics and bourdieu query if asked for"""
     if params.language == "french":
@@ -92,20 +92,24 @@ def process_full_topics_and_bourdieu(
     )
     if topic_param.clean_topics:
         bunka.get_clean_topic_name(
-            generative_model=open_ai_generative_model, language=topic_param.language
+            llm=open_ai_generative_model, language=topic_param.language
         )
 
-    return bourdieu_api(
-        generative_model=open_ai_generative_model,
+    model_bourdieu = BourdieuAPI(
+        llm=open_ai_generative_model,
         embedding_model=bunka.embedding_model,
-        docs=bunka.docs,
-        terms=bunka.terms,
         bourdieu_query=bourdieu_query,
         topic_param=topic_param,
         generative_ai_name=topic_param.clean_topics,
         min_count_terms=1,
         topic_gen_param=TopicGenParam(),
     )
+    res = model_bourdieu.fit_transform(
+        docs=bunka.docs,
+        terms=bunka.terms,
+    )
+
+    return res
 
 
 def process_partial_bourdieu(
@@ -116,14 +120,18 @@ def process_partial_bourdieu(
 ) -> t.Tuple[t.List[Document], t.List[Topic]]:
     """Process a bourdieu view with topics already processed into the bunka instance"""
 
-    return bourdieu_api(
-        generative_model=open_ai_generative_model,
+    model_bourdieu = BourdieuAPI(
+        llm=open_ai_generative_model,
         embedding_model=embedding_model,
-        docs=copy.deepcopy(docs),  # Make a copy of the variable
-        terms=copy.deepcopy(terms),
         bourdieu_query=bourdieu_query,
         topic_param=topic_param,
         generative_ai_name=topic_param.clean_topics,
         min_count_terms=1,  # TODO parametrize ?
         topic_gen_param=TopicGenParam(language=topic_param.language),
     )
+    res = model_bourdieu.fit_transform(
+        docs=copy.deepcopy(docs),  # Make a copy of the variable
+        terms=copy.deepcopy(terms),
+    )
+
+    return res

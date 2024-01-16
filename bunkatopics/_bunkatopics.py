@@ -19,33 +19,76 @@ from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.bourdieu import BourdieuAPI
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling.bourdieu_api import bourdieu_api
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    LLMCleaningTopic,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import \
-    get_top_documents
-from bunkatopics.topic_modeling.llm_topic_representation import \
-    get_clean_topic_all
-from bunkatopics.topic_modeling.term_extractor import TextacyTermsExtractor
-from bunkatopics.topic_modeling.topic_model_builder import get_topics
+from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization.bourdieu_visualizer import (
-    visualize_bourdieu, visualize_bourdieu_one_dimension)
+    visualize_bourdieu,
+    visualize_bourdieu_one_dimension,
+)
 from bunkatopics.visualization.query_visualizer import plot_query
 from bunkatopics.visualization.topic_visualizer import visualize_topics
 
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 
 class Bunka:
+    """The Bunka class for managing and analyzing textual data using various NLP techniques.
+
+    Examples:
+    ```python
+    from bunkatopics import Bunka
+    from datasets import load_dataset
+    import random
+
+    # Extract Data
+    dataset = load_dataset("rguo123/trump_tweets")["train"]["content"]
+    docs = random.sample(dataset, 1000)
+
+    bunka = Bunka()
+    topics = bunka.fit_transform(docs)
+    bunka.visualize_topics(width=800, height=800)
+    ```
+    """
+
     def __init__(self, embedding_model=None, language: str = "english"):
+        """Initialize a BunkaTopics instance.
+
+        Arguments:
+           embedding_model : An optional embedding model for generating document embeddings.
+               If not provided, a default model will be used based on the specified language.
+               Default: None
+           language : The language to be used for text processing and modeling.
+               Options: "english" (default), or specify another language as needed.
+               Default: "english"
+        """
         if embedding_model is None:
-            embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+            if language == "english":
+                embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+            else:
+                embedding_model = HuggingFaceEmbeddings(
+                    model_name="paraphrase-multilingual-MiniLM-L12-v2"
+                )
         self.embedding_model = embedding_model
         self.language = language
 
@@ -55,16 +98,16 @@ class Bunka:
         ids: t.List[DOC_ID] = None,
     ) -> None:
         """
-        Fit the BunkaTopics model to a list of documents and optionally associated document IDs.
+        Fits the Bunka model to the provided list of documents.
+
+        This method processes the documents, extracts terms, generates embeddings, and
+        applies dimensionality reduction to prepare the data for topic modeling.
 
         Args:
-            docs (List[str]): List of document contents.
-            ids (List[DOC_ID], optional): List of document IDs. If not provided, random IDs are generated.
-                                          Defaults to None.
-
-        Returns:
-            None
+            docs (t.List[str]): A list of document strings.
+            ids (t.Optional[t.List[DOC_ID]]): Optional. A list of identifiers for the documents. If not provided, UUIDs are generated.
         """
+
         df = pd.DataFrame(docs, columns=["content"])
 
         # Transform into a Document model
@@ -128,16 +171,6 @@ class Bunka:
             doc.y = xy_dict[doc.doc_id]["y"]
 
     def fit_transform(self, docs: t.List[Document], n_clusters=3) -> pd.DataFrame:
-        """
-        Fit and transform the BunkaTopics model with a list of Document objects into a DataFrame of topics.
-
-        Args:
-            docs (List[Document]): List of Document objects representing the documents to be clustered.
-            n_clusters (int, optional): Number of clusters/topics to be generated. Defaults to 40.
-
-        Returns:
-            pd.DataFrame: A DataFrame containing information about the generated topics.
-        """
         self.fit(docs)
         df_topics = self.get_topics(n_clusters=n_clusters)
         return df_topics
@@ -151,23 +184,28 @@ class Bunka:
         min_count_terms: int = 2,
     ) -> pd.DataFrame:
         """
-        Get topics based on the provided parameters.
+        Computes and organizes topics from the documents using specified parameters.
+
+        This method uses a topic modeling process to identify and characterize topics within the data.
 
         Args:
-            n_clusters (int): Number of clusters for topic extraction.
-            ngrams (list): List of n-gram sizes to consider.
-            name_length (int): Maximum length of topic names.
-            top_terms_overall (int): Number of top terms to consider.
-            min_count_terms (int): Minimum count of terms to include.
+            n_clusters (int): The number of clusters to form. Default is 5.
+            ngrams (t.List[int]): The n-gram range to consider for topic extraction. Default is [1, 2].
+            name_length (int): The length of the name for topics. Default is 10.
+            top_terms_overall (int): The number of top terms to consider overall. Default is 2000.
+            min_count_terms (int): The minimum count of terms to be considered. Default is 2.
 
         Returns:
-            pd.DataFrame: DataFrame containing the extracted topics.
+            pd.DataFrame: A DataFrame containing the topics and their associated data.
+
+        Note:
+            The method applies topic modeling using the specified parameters and updates the internal state
+            with the resulting topics. It also associates the identified topics with the documents.
         """
 
         logger.info("Computing the topics")
-        self.topics: t.List[Topic] = get_topics(
-            docs=self.docs,
-            terms=self.terms,
+
+        topic_model = BunkaTopicModeling(
             n_clusters=n_clusters,
             ngrams=ngrams,
             name_length=name_length,
@@ -175,6 +213,11 @@ class Bunka:
             y_column="y",
             top_terms_overall=top_terms_overall,
             min_count_terms=min_count_terms,
+        )
+
+        self.topics: t.List[Topic] = topic_model.fit_transform(
+            docs=self.docs,
+            terms=self.terms,
         )
 
         self.docs, self.topics = get_top_documents(
@@ -191,27 +234,35 @@ class Bunka:
         context: str = "everything",
     ) -> pd.DataFrame:
         """
-        Get cleaned topic names using Generative AI.
+        Enhances topic names using a language model for cleaner and more meaningful representations.
 
         Args:
-            llm: The generative model to use for topic name generation.
-            language: The language for generating clean labels (default: "english").
-            use_doc: Whether to use documents in label generation (default: False).
-            context: The context for label generation (default: "everything").
+            llm: The language model used for cleaning topic names.
+            language (str): The language context for the language model. Default is "english".
+            use_doc (bool): Flag to determine whether to use document context in the cleaning process. Default is False.
+            context (str): The broader context within which the topics are related Default is "everything". For instance, if you are looking at Computer Science, then update context = 'Computer Science'
 
         Returns:
-            pd.DataFrame: A DataFrame containing cleaned topic names.
+            pd.DataFrame: A DataFrame containing the topics with cleaned names.
+
+        Note:
+            This method leverages a language model to refine the names of the topics generated by the model,
+            aiming for more understandable and relevant topic descriptors.
         """
 
         logger.info("Using LLM to make topic names cleaner")
-        self.topics: t.List[Topic] = get_clean_topic_all(
+
+        model_cleaning = LLMCleaningTopic(
             llm,
-            self.topics,
-            self.docs,
             language=language,
             use_doc=use_doc,
             context=context,
         )
+        self.topics: t.List[Topic] = model_cleaning.fit_transform(
+            self.topics,
+            self.docs,
+        )
+
         df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
 
         return df_topics
@@ -224,18 +275,22 @@ class Bunka:
         height: int = 1000,
     ) -> go.Figure:
         """
-        Visualize topics and documents in a 2D scatter plot with contour density representation.
+        Generates a visualization of the identified topics in the document set.
 
         Args:
-            show_text (bool, optional): Flag to display text labels on the plot. Defaults to False.
-            label_size_ratio (int, optional): Size ratio for label text. Defaults to 100.
-            width (int, optional): Width of the plot. Defaults to 1000.
-            height (int, optional): Height of the plot. Defaults to 1000.
+            show_text (bool): Whether to display text labels on the visualization. Default is True.
+            label_size_ratio (int): The size ratio of the labels in the visualization. Default is 100.
+            width (int): The width of the visualization figure. Default is 1000.
+            height (int): The height of the visualization figure. Default is 1000.
 
         Returns:
-            go.Figure: Plotly figure object representing the visualization.
-        """
+            go.Figure: A Plotly graph object figure representing the topic visualization.
 
+        Note:
+            This method creates a 'Bunka Map', a graphical representation of the topics,
+            using Plotly for interactive visualization. It displays how documents are grouped
+            into topics and can include text labels for clarity.
+        """
         logger.info("Creating the Bunka Map")
         fig = visualize_topics(
             self.docs,
@@ -269,6 +324,36 @@ class Bunka:
         radius_size: float = 0.3,
         convex_hull: bool = True,
     ) -> go.Figure:
+        """
+        Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
+
+        Args:
+            generative_model (t.Optional[str]): The generative model to be used. Default is None.
+            x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.
+            y_top_words, y_bottom_words (t.List[str]): Words defining the top and bottom axes.
+            height, width (int): Dimensions of the visualization. Both default to 1500.
+            display_percent (bool): Flag to display percentages on the map. Default is True.
+            clustering (bool): Whether to apply clustering on the map. Default is False.
+            topic_n_clusters (int): Number of clusters for topic modeling. Default is 10.
+            topic_terms (int): Length of topic names. Default is 2.
+            topic_ngrams (t.List[int]): N-gram range for topic modeling. Default is [1, 2].
+            topic_top_terms_overall (int): Top terms to consider overall. Default is 1000.
+            gen_topic_language (str): Language for topic generation. Default is "english".
+            topic_gen_name (bool): Flag to generate topic names. Default is False.
+            manual_axis_name (t.Optional[dict]): Custom axis names for the map. Default is None.
+            use_doc_gen_topic (bool): Flag to use document context in topic generation. Default is False.
+            radius_size (float): Radius size for the map isualization. Default is 0.3.
+            convex_hull (bool): Whether to include a convex hull in the visualization. Default is True.
+            Returns:
+                go.Figure: A Plotly graph object figure representing the Bourdieu Map.
+
+        Note:
+            The Bourdieu Map is a sophisticated visualization that plots documents and topics
+            based on specified word axes, using a generative model for dynamic analysis.
+            This method handles the complex process of generating and plotting this map,
+            offering a range of customization options for detailed analysis.
+        """
+
         logger.info("Creating the Bourdieu Map")
         topic_gen_param = TopicGenParam(
             language=gen_topic_language,
@@ -294,15 +379,19 @@ class Bunka:
         )
 
         # Request Bourdieu API
-        res = bourdieu_api(
-            generative_model=generative_model,
+
+        bourdieu_api = BourdieuAPI(
+            llm=generative_model,
             embedding_model=self.embedding_model,
-            docs=self.docs,
-            terms=self.terms,
             bourdieu_query=self.bourdieu_query,
             generative_ai_name=topic_gen_name,
             topic_param=topic_param,
             topic_gen_param=topic_gen_param,
+        )
+
+        res = bourdieu_api.fit_transform(
+            docs=self.docs,
+            terms=self.terms,
         )
 
         self.bourdieu_docs = res[0]
@@ -324,18 +413,21 @@ class Bunka:
 
     def rag_query(self, query: str, llm, top_doc: int = 2):
         """
-        Answer a query using the RetrievalQA system.
+        Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.
 
         Args:
-            query (str): The user's query.
-            llm: An instance of Language Model.
-            top_doc (int): Number of top documents to retrieve (default is 2).
+            query (str): The query string to be processed.
+            llm: The language model used for generating answers.
+            top_doc (int): The number of top documents to retrieve for the query. Default is 2.
 
         Returns:
-            dict: A response containing the answer and source documents.
-                The 'answer' key in the response is a string.
-        """
+            The response from the RAG query, including the answer and source documents.
 
+        Note:
+            This method utilizes a RetrievalQA chain to answer queries. It retrieves relevant documents
+            based on the query and uses the language model to generate a response. The method is designed
+            to work with complex queries and provide informative answers using the document set.
+        """
         # Log a message indicating the query is being processed
         logger.info("Answering your query, please wait a few seconds")
 
@@ -360,20 +452,24 @@ class Bunka:
         explainer: bool = False,
     ) -> t.Tuple[go.Figure, t.Union[plt.Figure, None]]:
         """
-        Visualize Bourdieu's one-dimensional space with optional specificity terms plot.
+        Visualizes the document set on a one-dimensional Bourdieu axis.
 
         Args:
-            left (List[str]): Keywords indicating one end of the continuum (default is ["negative"]).
-            right (List[str]): Keywords indicating the other end of the continuum (default is ["positive"]).
-            width (int): Width of the visualization plot (default is 800).
-            height (int): Height of the visualization plot (default is 800).
-            explainer (bool): Whether to include a plot of specific terms (default is False).
+            left (t.List[str]): List of words representing the left side of the axis.
+            right (t.List[str]): List of words representing the right side of the axis.
+            width (int): Width of the generated visualization. Default is 800.
+            height (int): Height of the generated visualization. Default is 800.
+            explainer (bool): Flag to include an explainer figure. Default is False.
 
         Returns:
-            Tuple[go.Figure, Union[plt.Figure, None]]: A tuple containing two figures.
-            The first figure is a Plotly figure displaying Bourdieu's one-dimensional space,
-            and the second figure is a Matplotlib figure displaying specific terms if explainer is True;
-            otherwise, it is None.
+            t.Tuple[go.Figure, t.Union[plt.Figure, None]]: A tuple containing the main visualization figure
+            and an optional explainer figure (if explainer is True).
+
+        Note:
+            This method creates a one-dimensional Bourdieu-style visualization, plotting documents along an
+            axis defined by contrasting word sets. It helps in understanding the distribution of documents
+            in terms of these contrasting word concepts. An optional explainer figure can provide additional
+            insight into specific terms used in the visualization.
         """
         fig, fig_specific_terms = visualize_bourdieu_one_dimension(
             docs=self.docs,
@@ -394,20 +490,6 @@ class Bunka:
         width: int = 600,
         height: int = 300,
     ):
-        """
-        Visualize the top similar answer to a query with a minimum similarity score.
-
-        Args:
-            query (str): The query for which you want to find similar answers (default is "What is firearm?").
-            min_score (float): The minimum similarity score for including a similar answer (default is 0.2).
-            width (int): Width of the visualization plot (default is 600).
-            height (int): Height of the visualization plot (default is 300).
-
-        Returns:
-            matplotlib.figure.Figure: The visualization figure.
-            float: The percentage of similar answers above the minimum score.
-        """
-
         # Create a visualization plot using plot_query function
         fig, percent = plot_query(
             embedding_model=self.embedding_model,
@@ -428,6 +510,24 @@ class Bunka:
         height=500,
         template="plotly_dark",
     ) -> go.Figure:
+        """
+        Visualizes the similarity scores between a given query and the document set.
+
+        Args:
+            query (str): The query to be visualized against the documents. Default is "What is America?".
+            min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.
+            width (int): Width of the visualization. Default is 600.
+            height (int): Height of the visualization. Default is 300.
+
+        Returns:
+            A tuple (fig, percent) where 'fig' is a Plotly graph object figure representing the
+            visualization and 'percent' is the percentage of documents above the similarity threshold.
+
+        Note:
+            This method creates a visualization showing how closely documents in the set relate to
+            the specified query. Documents with similarity scores above the threshold are highlighted,
+            providing a visual representation of their relevance to the query.
+        """
         final_df = []
         logger.info("Computing Similarities")
         scaler = MinMaxScaler(feature_range=(0, 1))
@@ -467,15 +567,22 @@ class Bunka:
 
     def get_topic_repartition(self, width: int = 1200, height: int = 800) -> go.Figure:
         """
-        Create a bar plot to visualize the distribution of topics by size.
+        Creates a bar plot to visualize the distribution of topics by size.
 
         Args:
-            width (int): Width of the visualization plot (default is 1200).
-            height (int): Height of the visualization plot (default is 800).
+            width (int): The width of the bar plot. Default is 1200.
+            height (int): The height of the bar plot. Default is 800.
 
         Returns:
-            go.Figure: A Plotly figure displaying the distribution of topics by size in a bar plot.
+            go.Figure: A Plotly graph object figure representing the topic distribution bar plot.
+
+        Note:
+            This method generates a visualization that illustrates the number of documents
+            associated with each topic, helping to understand the prevalence and distribution
+            of topics within the document set. It provides a clear and concise bar plot for
+            easy interpretation of the topic sizes.
         """
+
         fig = get_topic_repartition(self.topics, width=width, height=height)
         return fig
 

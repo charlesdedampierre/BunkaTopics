@@ -4,8 +4,6 @@ site_url: https://charlesdedampierre.github.io/BunkaTopics/
 site_description: using LLM to create and Explore topics in an innovative way
 site_author: Charles de Dampierre
 use_directory_urls: false
-# extra_css:
-#   - stylesheets/extra.css
 
 theme:
   name: material
@@ -44,147 +42,15 @@ nav:
   - Getting Started: getting-started.md
   - Framing Analsyis: bourdieu.md
   - Technology: technology.md
-  - Bunka API: bunka-api.md
+  - API:
+      - bunkatopics: bunka-api/bunkatopics.md
+      - topic_modeling:
+          - topic_model_builder: bunka-api/topic_modeling/topic_model_builder.md
+          - Term Extractor: bunka-api/topic_modeling/terms_extractor.md
+
   - Use Cases: use-cases.md
 
 plugins:
   - mkdocstrings:
       watch:
         - bunkatopics
-# nav:
-#   - Home: index.md
-#   - The Algorithm: algorithm/algorithm.md
-#   - Getting Started:
-#       - Quick Start: getting_started/quickstart/quickstart.md
-#       - Serialization: getting_started/serialization/serialization.md
-#       - Search Topics: getting_started/search/search.md
-#       - Best Practices: getting_started/best_practices/best_practices.md
-#       - In-depth:
-#           - Visualizations:
-#               - Topics: getting_started/visualization/visualize_topics.md
-#               - Documents: getting_started/visualization/visualize_documents.md
-#               - Terms: getting_started/visualization/visualize_terms.md
-#               - Hierarchy: getting_started/visualization/visualize_hierarchy.md
-#           - Update Topics:
-#               - Topic Reduction: getting_started/topicreduction/topicreduction.md
-#               - Update Topic Representations: getting_started/topicrepresentation/topicrepresentation.md
-#               - Outlier reduction: getting_started/outlier_reduction/outlier_reduction.md
-#           - Parameter tuning: getting_started/parameter tuning/parametertuning.md
-#           - Tips & Tricks: getting_started/tips_and_tricks/tips_and_tricks.md
-#       - Sub-models:
-#           - 1. Embeddings: getting_started/embeddings/embeddings.md
-#           - 2. Dimensionality Reduction: getting_started/dim_reduction/dim_reduction.md
-#           - 3. Clustering: getting_started/clustering/clustering.md
-#           - 4. Vectorizers: getting_started/vectorizers/vectorizers.md
-#           - 5. c-TF-IDF: getting_started/ctfidf/ctfidf.md
-#           - 6. Fine-tune Topics:
-#               - 6A. Representation Models: getting_started/representation/representation.md
-#               - 6B. LLM & Generative AI: getting_started/representation/llm.md
-#               - 6C. Multiple Representations: getting_started/multiaspect/multiaspect.md
-#       - Variations:
-#           - Dynamic Topic Modeling: getting_started/topicsovertime/topicsovertime.md
-#           - Hierarchical Topic Modeling: getting_started/hierarchicaltopics/hierarchicaltopics.md
-#           - Multimodal Topic Modeling: getting_started/multimodal/multimodal.md
-#           - Online Topic Modeling: getting_started/online/online.md
-#           - Merge Multiple Models: getting_started/merge/merge.md
-#           - (semi)-supervised:
-#               - Semi-supervised Topic Modeling: getting_started/semisupervised/semisupervised.md
-#               - Supervised Topic Modeling: getting_started/supervised/supervised.md
-#               - Manual Topic Modeling: getting_started/manual/manual.md
-#               - Guided Topic Modeling: getting_started/guided/guided.md
-#               - Zero-shot Topic Modeling: getting_started/zeroshot/zeroshot.md
-#           - Topic Distributions: getting_started/distribution/distribution.md
-#           - Topics per Class: getting_started/topicsperclass/topicsperclass.md
-#           - Seed Words: getting_started/seed_words/seed_words.md
-#   - FAQ: faq.md
-#   - Use Cases: usecases.md
-#   - API:
-#       - BERTopic: api/bertopic.md
-#       - Sub-models:
-#           - Backends:
-#               - Base: api/backends/base.md
-#               - Word Doc: api/backends/word_doc.md
-#               - OpenAI: api/backends/openai.md
-#               - Cohere: api/backends/cohere.md
-#           - Dimensionality Reduction:
-#               - Base: api/dimensionality/base.md
-#           - Clustering:
-#               - Base: api/cluster/base.md
-#           - Vectorizers:
-#               - cTFIDF: api/ctfidf.md
-#               - OnlineCountVectorizer: api/onlinecv.md
-#           - Topic Representation:
-#               - Base: api/representation/base.md
-#               - MaximalMarginalRelevance: api/representation/mmr.md
-#               - KeyBERT: api/representation/keybert.md
-#               - PartOfSpeech: api/representation/pos.md
-#               - Text Generation:
-#                   - 🤗 Transformers: api/representation/generation.md
-#                   - LangChain: api/representation/langchain.md
-#                   - Cohere: api/representation/cohere.md
-#                   - OpenAI: api/representation/openai.md
-#               - Zero-shot Classification: api/representation/zeroshot.md
-#       - Plotting:
-#           - Barchart: api/plotting/barchart.md
-#           - Documents: api/plotting/documents.md
-#           - DTM: api/plotting/dtm.md
-#           - Hierarchical documents: api/plotting/hierarchical_documents.md
-#           - Hierarchical topics: api/plotting/hierarchy.md
-#           - Distribution: api/plotting/distribution.md
-#           - Heatmap: api/plotting/heatmap.md
-#           - Term Scores: api/plotting/term.md
-#           - Topics: api/plotting/topics.md
-#           - Topics per Class: api/plotting/topics_per_class.md
-#   - Changelog: changelog.md
-
-# plugins:
-#   - mkdocstrings:
-#       watch:
-#         - bertopic
-#   - search
-#   - social
-# copyright: Copyright &copy; 2023 Maintained by <a href="https://github.com/MaartenGr">Maarten</a>.
-
-# theme:
-#   custom_dir: images/
-#   name: material
-#   icon:
-#     logo: material/library
-#   font:
-#     text: Ubuntu
-#     code: Ubuntu Mono
-#   favicon: icon.png
-#   logo: img/icon.png
-#   feature:
-#     tabs: true
-#   features:
-#     - navigation.tabs
-#     - navigation.sections
-#     - navigation.instant
-#     - navigation.top
-#     - navigation.tracking
-#     - toc.follow
-#     - content.code.copy
-#   palette:
-#     - media: "(prefers-color-scheme: light)"
-#       primary: custom
-#       scheme: black
-#       toggle:
-#         icon: material/weather-sunny
-#         name: Switch to dark mode
-#     - media: "(prefers-color-scheme: dark)"
-#       scheme: slate
-#       primary: black
-#       toggle:
-#         icon: material/weather-night
-#         name: Switch to light mode
-
-# markdown_extensions:
-#   - admonition
-#   - md_in_html
-#   - pymdownx.details
-#   - pymdownx.highlight
-#   - pymdownx.superfences
-#   - pymdownx.snippets
-#   - toc:
-#       permalink: true

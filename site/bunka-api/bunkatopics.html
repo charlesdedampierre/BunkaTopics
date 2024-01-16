@@ -536,46 +536,6 @@
   
   
   
-    
-    
-    
-    
-    
-      
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="">
-            
-  
-  <span class="md-ellipsis">
-    topic_modeling
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_2">
-            <span class="md-nav__icon md-icon"></span>
-            topic_modeling
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="topic_modeling/topic_model_builder.html" class="md-nav__link">
         
@@ -612,9 +572,22 @@
 
               
             
-          </ul>
-        </nav>
-      
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="topic_modeling/bourdieu-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bourdieu API
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1148,7 +1121,11 @@
 <span class="normal">462</span>
 <span class="normal">463</span>
 <span class="normal">464</span>
-<span class="normal">465</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bunka class for managing and analyzing textual data using various NLP techniques.</span>
 
 <span class="sd">    Examples:</span>
@@ -1179,7 +1156,7 @@
 <span class="sd">               Default: &quot;english&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">embedding_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">language</span> <span class="ow">is</span> <span class="s2">&quot;english&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;english&quot;</span><span class="p">:</span>
                 <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span>
@@ -1376,15 +1353,19 @@
         <span class="p">)</span>
 
         <span class="c1"># Request Bourdieu API</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">bourdieu_api</span><span class="p">(</span>
+
+        <span class="n">bourdieu_api</span> <span class="o">=</span> <span class="n">BourdieuAPI</span><span class="p">(</span>
             <span class="n">generative_model</span><span class="o">=</span><span class="n">generative_model</span><span class="p">,</span>
             <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
-            <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
-            <span class="n">terms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">,</span>
             <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
             <span class="n">generative_ai_name</span><span class="o">=</span><span class="n">topic_gen_name</span><span class="p">,</span>
             <span class="n">topic_param</span><span class="o">=</span><span class="n">topic_param</span><span class="p">,</span>
             <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">topic_gen_param</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">bourdieu_api</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+            <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+            <span class="n">terms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_docs</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1669,7 +1650,7 @@
 <span class="sd">           Default: &quot;english&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">embedding_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">language</span> <span class="ow">is</span> <span class="s2">&quot;english&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;english&quot;</span><span class="p">:</span>
             <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span>

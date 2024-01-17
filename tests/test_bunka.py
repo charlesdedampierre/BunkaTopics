@@ -1,17 +1,14 @@
 import os
 import random
-import sys
 import unittest
 
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
-from langchain.llms import HuggingFaceHub
+from langchain_community.llms import HuggingFaceHub
 
 from bunkatopics import Bunka
-
-sys.path.append("../")
 
 load_dotenv()
 

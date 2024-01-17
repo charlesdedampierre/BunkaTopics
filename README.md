@@ -85,6 +85,22 @@ bunka.visualize_topics( width=800, height=800)
 
 <img src="images/newsmap.png" width="70%" height="70%" align="center" />
 
+### Troubleshooting
+
+If you have an error on sqlite3 like:
+```
+RuntimeError: Your system has an unsupported version of sqlite3. Chroma requires sqlite3 >= 3.35.0.
+Please visit https://docs.trychroma.com/troubleshooting#sqlite to learn how to upgrade.
+```
+
+Use the following code snippet (from https://stackoverflow.com/a/77245450)
+```py
+>>> import pysqlite3
+>>> import sys
+>>> sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+>>> import chromadb
+```
+
 ## Topic Modeling with GenAI Summarization of Topics
 
 You can get the topics summarized by Generative AI.

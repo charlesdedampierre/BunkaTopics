@@ -31,6 +31,7 @@ streamlit = "^1.26.0"
 chromadb = "^0.4.13"
 pytest = "^7.4.2"
 llama-cpp-python = "^0.2.11"
+pysqlite3-binary = "^0.5.2.post2"  # https://stackoverflow.com/a/77245450
 
 [build-system]
 requires = ["poetry-core"]

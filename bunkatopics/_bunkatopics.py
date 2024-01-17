@@ -14,26 +14,39 @@ import plotly.express as px
 import plotly.graph_objects as go
 import umap
 from langchain.chains import RetrievalQA
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (BunkaTopicModeling, LLMCleaningTopic,
-                                        TextacyTermsExtractor)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    LLMCleaningTopic,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import \
-    get_top_documents
+from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
+
+import warnings
+
+# Filter ResourceWarning
+warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -212,7 +225,9 @@ class Bunka:
         self.docs, self.topics = get_top_documents(
             self.docs, self.topics, ranking_terms=20
         )
-        df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
+        df_topics = pd.DataFrame.from_records(
+            [topic.model_dump() for topic in self.topics]
+        )
         return df_topics
 
     def get_clean_topic_name(
@@ -252,7 +267,9 @@ class Bunka:
             self.docs,
         )
 
-        df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
+        df_topics = pd.DataFrame.from_records(
+            [topic.model_dump() for topic in self.topics]
+        )
 
         return df_topics
 
@@ -595,19 +612,19 @@ class Bunka:
             kill_server()
         try:
             file_path = "../web/public" + "/bunka_bourdieu_docs.json"
-            docs_json = [x.dict() for x in self.bourdieu_docs]
+            docs_json = [x.model_dump() for x in self.bourdieu_docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
             file_path = "../web/public" + "/bunka_bourdieu_topics.json"
-            topics_json = [x.dict() for x in self.bourdieu_topics]
+            topics_json = [x.model_dump() for x in self.bourdieu_topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 
             file_path = "../web/public" + "/bunka_bourdieu_query.json"
             with open(file_path, "w") as json_file:
-                json.dump(self.bourdieu_query.dict(), json_file)
+                json.dump(self.bourdieu_query.model_dump(), json_file)
 
             subprocess.Popen(["npm", "start"], cwd="../web")
             print(
@@ -622,13 +639,13 @@ class Bunka:
             kill_server()
         try:
             file_path = "../web/public" + "/bunka_docs.json"
-            docs_json = [x.dict() for x in self.docs]
+            docs_json = [x.model_dump() for x in self.docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
             file_path = "../web/public" + "/bunka_topics.json"
-            topics_json = [x.dict() for x in self.topics]
+            topics_json = [x.model_dump() for x in self.topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 

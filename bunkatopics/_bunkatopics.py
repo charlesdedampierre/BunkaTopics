@@ -120,7 +120,7 @@ class Bunka:
         sentences = [doc.content for doc in self.docs]
         ids = [doc.doc_id for doc in self.docs]
 
-        logger.info("Extracting terms from documents")
+        logger.info("Extracting meaningful terms from documents...")
         terms_extractor = TextacyTermsExtractor(language=self.language)
         self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
 
@@ -128,7 +128,9 @@ class Bunka:
         for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
-        logger.info("Embedding Documents, this may time depending on the size")
+        logger.info(
+            "Embedding documents... (can take varying amounts of time depending on their size)"
+        )
 
         characters = string.ascii_letters + string.digits
         random_string = "".join(random.choice(characters) for _ in range(20))
@@ -151,7 +153,7 @@ class Bunka:
         for doc in self.docs:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
-        logger.info("Reducing Dimensions")
+        logger.info("Reducing the dimensions of embeddings...")
 
         reducer = umap.UMAP(
             n_components=2,

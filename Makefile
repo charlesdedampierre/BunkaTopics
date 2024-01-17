@@ -7,13 +7,15 @@ docs_serve:
 build_poetry:
 	python -m build --sdist --wheel
 
-pypi_publish:
-	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
-
 pypi:
 	python setup.py sdist
 	python setup.py bdist_wheel --universal
-	twine upload dist/*
+
+pypi_publish_test:
+	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
+
+pypi_publish:
+	twine upload dist/* -u __token__ -p $(PYPY_TOKEN)
 
 default: 
 	docker_build

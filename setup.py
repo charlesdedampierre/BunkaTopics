@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 
-
 dependencies = [
     "pandas>=2.0.2",
     "umap-learn>=0.5.3",
@@ -18,7 +17,6 @@ dependencies = [
     "chromadb==0.4.13",
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
-    # python-dotenv
 ]
 
 dev = [
@@ -46,10 +44,13 @@ check = [
     "ruff",
 ]
 
+
+front = ["streamlit"]
+
 setup(
     name="bunkatopics",
     packages=find_packages(exclude=["notebooks", "docs"]),
-    version="0.46",
+    version="0.43.1",
     author="Charles de Dampierre",
     author_email="charlesdedampierre@gmail.com",
     description="Bunkatopics is great",

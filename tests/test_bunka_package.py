@@ -1,13 +1,11 @@
 from bunkatopics import Bunka
 
 import random
-import sys
 import unittest
 
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
-from bunkatopics import Bunka
 
 random.seed(42)
 

@@ -15,6 +15,7 @@ json_examples/
 generative_model_api/
 test.ipynb
 bash.sh
+hide/
 
 # remove poetry files
 poetry.lock

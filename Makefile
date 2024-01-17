@@ -38,8 +38,7 @@ test:
 	python tests/test_bunka.py
 
 check:
-	python -m unittest discover -s tests
-
+	python -m unittest tests/test_bunka.py
 test_fig:
 	python tests/run_bunka.py
 

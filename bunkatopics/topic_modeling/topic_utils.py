@@ -22,7 +22,7 @@ def get_topic_repartition(
     Returns:
         Figure: A Plotly figure displaying the distribution of topics by size in a bar plot.
     """
-    df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
+    df_topics = pd.DataFrame.from_records([topic.model_dump() for topic in topics])
     df_topics["name"] = df_topics["name"].apply(lambda x: wrap_by_word(x, 8))
     df_topics = df_topics.sort_values("size")
 

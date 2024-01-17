@@ -16,6 +16,12 @@ generative_model_api/
 test.ipynb
 bash.sh
 
+# remove poetry files
+
+poetry.lock
+pyproject.toml
+requirements.text
+
 # Distribution / packaging
 .Python
 build/

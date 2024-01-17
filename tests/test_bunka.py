@@ -58,14 +58,15 @@ class TestBunka(unittest.TestCase):
 
     def test_bourdieu_modeling(self):
         bourdieu_fig = self.bunka.visualize_bourdieu(
+            llm=llm,
             x_left_words=["past"],
             x_right_words=["future"],
             y_top_words=["men"],
             y_bottom_words=["women"],
             height=800,
             width=800,
-            clustering=False,
-            topic_gen_name=False,
+            clustering=True,
+            topic_gen_name=True,
             topic_n_clusters=3,
         )
         # bourdieu_fig.show()

@@ -17,6 +17,7 @@ dependencies = [
     "chromadb>=0.4.13",
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
+    "nbformat>=4.2.0",
 ]
 
 dev = [
@@ -44,8 +45,10 @@ check = [
     "ruff",
 ]
 
-
 front = ["streamlit"]
+
+with open("README.md", "r") as doc:
+    long_description = doc.read()
 
 setup(
     name="bunkatopics",
@@ -53,8 +56,16 @@ setup(
     version="0.43.1",
     author="Charles de Dampierre",
     author_email="charlesdedampierre@gmail.com",
-    description="Bunkatopics is great",
+    description="Bunkatopics is a Topic Modeling package and Exploration Module",
+    long_description=long_description,
     long_description_content_type="text/markdown",
+    url="https://github.com/MaartenGr/BERTopic",
+    project_urls={
+        "Source code": "https://github.com/charlesdedampierre/BunkaTopics",
+        "Documentation": "https://charlesdedampierre.github.io/BunkaTopics/",
+        "Issue Tracker": "https://github.com/charlesdedampierre/BunkaTopics/issues",
+    },
+    keywords="AI Topic Modeling Visualization Exploration Fine-tuning",
     classifiers=[
         "Programming Language :: Python",
         "Intended Audience :: Science/Research",

@@ -64,7 +64,12 @@ dev = [
     "wheel",
 ]
 
-docs = ["mkdocs>=1.1.2", "mkdocs-material>=8.1.4", "mkdocstrings>=0.24.0"]
+docs = [
+    "mkdocs>=1.1.2",
+    "mkdocs-material>=8.1.4",
+    "mkdocstrings>=0.24.0",
+    "mkdocstrings-python>=1.8.0",
+]
 
 check = [
     "black ~= 23.0",

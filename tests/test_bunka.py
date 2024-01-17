@@ -44,7 +44,7 @@ class TestBunka(unittest.TestCase):
 
         # Visualize Topics
         topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
-        topic_fig.show()
+        # topic_fig.show()
         self.assertIsInstance(topic_fig, go.Figure)
 
     def test_generative_names(self):
@@ -69,7 +69,7 @@ class TestBunka(unittest.TestCase):
             topic_gen_name=True,
             topic_n_clusters=3,
         )
-        bourdieu_fig.show()
+        # bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
     def test_rag(self):
@@ -97,6 +97,7 @@ class TestBunka(unittest.TestCase):
         fig_one_dimension, _ = self.bunka.visualize_bourdieu_one_dimension(
             left=["negative"], right=["positive"], explainer=False
         )
+        # fig_one_dimension.show()
         self.assertIsInstance(fig_one_dimension, go.Figure)
 
     def test_topic_distribution(self):

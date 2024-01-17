@@ -59,6 +59,7 @@ nav:
       - Visualization:
           - Topic Modeling Visualization: bunka-api/visualization/topic-visualization.md
           - Bourdieu Visualization: bunka-api/bourdieu/bourdieu-visualization.md
+          - Bourdieu Visualization One Dimension: bunka-api/bourdieu/bourdieu-visualization-one-dimension.md
 
   - Use Cases: use-cases.md
 

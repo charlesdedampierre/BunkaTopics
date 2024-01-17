@@ -15,6 +15,13 @@ json_examples/
 generative_model_api/
 test.ipynb
 bash.sh
+hide/
+bunka_env/
+
+# remove poetry files
+poetry.lock
+#pyproject.toml
+requirements.txt
 
 # Distribution / packaging
 .Python
@@ -62,6 +69,8 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+env_*
+
 
 # Sphinx documentation
 docs/_build/

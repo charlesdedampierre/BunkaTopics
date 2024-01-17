@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import random
@@ -6,20 +7,18 @@ import subprocess
 import typing as t
 import uuid
 import warnings
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
 from langchain.chains import RetrievalQA
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
-
-from bunkatopics.bourdieu import BourdieuAPI
+from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
 from bunkatopics.datamodel import (
     DOC_ID,
     BourdieuQuery,
@@ -38,13 +37,13 @@ from bunkatopics.topic_modeling import (
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.visualization.bourdieu_visualizer import (
-    visualize_bourdieu,
-    visualize_bourdieu_one_dimension,
-)
+from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
-from bunkatopics.visualization.topic_visualizer import visualize_topics
 
+import warnings
+
+# Filter ResourceWarning
+warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -223,7 +222,9 @@ class Bunka:
         self.docs, self.topics = get_top_documents(
             self.docs, self.topics, ranking_terms=20
         )
-        df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
+        df_topics = pd.DataFrame.from_records(
+            [topic.model_dump() for topic in self.topics]
+        )
         return df_topics
 
     def get_clean_topic_name(
@@ -263,7 +264,9 @@ class Bunka:
             self.docs,
         )
 
-        df_topics = pd.DataFrame.from_records([topic.dict() for topic in self.topics])
+        df_topics = pd.DataFrame.from_records(
+            [topic.model_dump() for topic in self.topics]
+        )
 
         return df_topics
 
@@ -292,19 +295,23 @@ class Bunka:
             into topics and can include text labels for clarity.
         """
         logger.info("Creating the Bunka Map")
-        fig = visualize_topics(
-            self.docs,
-            self.topics,
+
+        model_visualizer = TopicVisualizer(
             width=width,
             height=height,
             show_text=show_text,
             label_size_ratio=label_size_ratio,
         )
+        fig = model_visualizer.fit_transform(
+            self.docs,
+            self.topics,
+        )
+
         return fig
 
     def visualize_bourdieu(
         self,
-        generative_model: t.Optional[str] = None,
+        llm: t.Optional[str] = None,
         x_left_words: t.List[str] = ["war"],
         x_right_words: t.List[str] = ["peace"],
         y_top_words: t.List[str] = ["men"],
@@ -381,7 +388,7 @@ class Bunka:
         # Request Bourdieu API
 
         bourdieu_api = BourdieuAPI(
-            llm=generative_model,
+            llm=llm,
             embedding_model=self.embedding_model,
             bourdieu_query=self.bourdieu_query,
             generative_ai_name=topic_gen_name,
@@ -389,18 +396,17 @@ class Bunka:
             topic_gen_param=topic_gen_param,
         )
 
+        new_docs = copy.deepcopy(self.docs)
+        new_terms = copy.deepcopy(self.terms)
         res = bourdieu_api.fit_transform(
-            docs=self.docs,
-            terms=self.terms,
+            docs=new_docs,
+            terms=new_terms,
         )
 
         self.bourdieu_docs = res[0]
         self.bourdieu_topics = res[1]
 
-        # Visualize The results from the API
-        fig = visualize_bourdieu(
-            self.bourdieu_docs,
-            self.bourdieu_topics,
+        visualizer = BourdieuVisualizer(
             height=height,
             width=width,
             display_percent=display_percent,
@@ -408,6 +414,8 @@ class Bunka:
             clustering=clustering,
             manual_axis_name=manual_axis_name,
         )
+
+        fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
 
         return fig
 
@@ -471,14 +479,18 @@ class Bunka:
             in terms of these contrasting word concepts. An optional explainer figure can provide additional
             insight into specific terms used in the visualization.
         """
-        fig, fig_specific_terms = visualize_bourdieu_one_dimension(
-            docs=self.docs,
+
+        model_bourdieu = BourdieuOneDimensionVisualizer(
             embedding_model=self.embedding_model,
             left=left,
             right=right,
             width=width,
             height=height,
             explainer=explainer,
+        )
+
+        fig, fig_specific_terms = model_bourdieu.fit_transform(
+            docs=self.docs,
         )
 
         return fig, fig_specific_terms
@@ -597,19 +609,19 @@ class Bunka:
             kill_server()
         try:
             file_path = "../web/public" + "/bunka_bourdieu_docs.json"
-            docs_json = [x.dict() for x in self.bourdieu_docs]
+            docs_json = [x.model_dump() for x in self.bourdieu_docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
             file_path = "../web/public" + "/bunka_bourdieu_topics.json"
-            topics_json = [x.dict() for x in self.bourdieu_topics]
+            topics_json = [x.model_dump() for x in self.bourdieu_topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 
             file_path = "../web/public" + "/bunka_bourdieu_query.json"
             with open(file_path, "w") as json_file:
-                json.dump(self.bourdieu_query.dict(), json_file)
+                json.dump(self.bourdieu_query.model_dump(), json_file)
 
             subprocess.Popen(["npm", "start"], cwd="../web")
             print(
@@ -624,13 +636,13 @@ class Bunka:
             kill_server()
         try:
             file_path = "../web/public" + "/bunka_docs.json"
-            docs_json = [x.dict() for x in self.docs]
+            docs_json = [x.model_dump() for x in self.docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
             file_path = "../web/public" + "/bunka_topics.json"
-            topics_json = [x.dict() for x in self.topics]
+            topics_json = [x.model_dump() for x in self.topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 

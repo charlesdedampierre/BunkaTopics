@@ -4,8 +4,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
-from bunkatopics.topic_modeling.topic_name_cleaner import \
-    remove_overlapping_terms
+from bunkatopics.topic_modeling.topic_name_cleaner import remove_overlapping_terms
 from bunkatopics.topic_modeling.utils import specificity
 from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
 
@@ -108,12 +107,12 @@ class BunkaTopicModeling:
             doc.topic_id = topic_doc_dict.get(doc.doc_id, [])
 
         terms = [x for x in terms if x.count_terms >= self.min_count_terms]
-        df_terms = pd.DataFrame.from_records([term.dict() for term in terms])
+        df_terms = pd.DataFrame.from_records([term.model_dump() for term in terms])
         df_terms = df_terms.sort_values("count_terms", ascending=False)
         df_terms = df_terms.head(self.top_terms_overall)
         df_terms = df_terms[df_terms["ngrams"].isin(self.ngrams)]
 
-        df_terms_indexed = pd.DataFrame.from_records([doc.dict() for doc in docs])
+        df_terms_indexed = pd.DataFrame.from_records([doc.model_dump() for doc in docs])
         df_terms_indexed = df_terms_indexed[["doc_id", "term_id", "topic_id"]]
         df_terms_indexed = df_terms_indexed.explode("term_id").reset_index(drop=True)
 
@@ -137,7 +136,7 @@ class BunkaTopicModeling:
 
         topics = [Topic(**x) for x in df_topics_rep.to_dict(orient="records")]
 
-        df_topics_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
+        df_topics_docs = pd.DataFrame.from_records([doc.model_dump() for doc in docs])
         df_topics_docs = df_topics_docs[["doc_id", "x", "y", "topic_id"]]
         df_topics_docs = df_topics_docs.groupby("topic_id").agg(
             size=("doc_id", "count"), x_centroid=("x", "mean"), y_centroid=("y", "mean")

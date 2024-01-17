@@ -1,13 +1,37 @@
 SHELL := /bin/bash
 .PHONY : all
 
+#############
+# DEV #
+#############
+
+# python3 -m venv bunka_env
+# source bunka_env/bin/activate
+# rm -r bunka_env (delete the environment)
+
+
+install_packages:
+	pip install -e .
+	pip install -e '.['dev']'
+	pip install -e '.['check']'
+
 docs_serve:
 	mkdocs serve
 
+build_poetry:
+	python -m build --sdist --wheel
+
+### TO PUBLISH THIS WORKS AFTER MOVING THE POETRY FILE
 pypi:
 	python setup.py sdist
 	python setup.py bdist_wheel --universal
-	twine upload dist/*
+
+pypi_publish:
+	twine upload dist/* -u __token__ -p $(PYPY_TOKEN)
+### TO PUBLISH THIS WORKS
+
+pypi_publish_test:
+	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
 
 default: 
 	docker_build
@@ -32,7 +56,7 @@ test:
 	python tests/test_bunka.py
 
 check:
-	python -m unittest discover -s tests
+	python -m unittest tests/test_bunka.py
 
 test_fig:
 	python tests/run_bunka.py
@@ -46,6 +70,11 @@ poetry_export_full:
 	poetry export --without-hashes --format=requirements.txt > requirements.txt	
 
 pre_push: format_code poetry_export clean check
+
+#############
+# DEV #
+#############
+
 
 install_nginx_config:
 	cp api/deployment/nginx-configuration-dev.conf /etc/nginx/sites-enabled/ && systemctl reload nginx

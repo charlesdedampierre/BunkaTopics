@@ -45,17 +45,17 @@ class Document(BaseModel):
 
 
 class TopicParam(BaseModel):
-    n_clusters = 5
-    ngrams = [1, 2]
-    name_length = 4
-    top_terms_overall = 1000
+    n_clusters: int = 5
+    ngrams: t.List[int] = [1, 2]
+    name_length: int = 4
+    top_terms_overall: int = 1000
 
 
 class TopicGenParam(BaseModel):
     language: str = "english"
     top_doc: int = 3
     top_terms: int = 10
-    use_doc = False
+    use_doc: bool = False
     context: str = "everything"
 
 

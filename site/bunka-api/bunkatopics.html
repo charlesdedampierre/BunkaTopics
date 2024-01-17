@@ -26,7 +26,7 @@
     
     
       
-        <title>bunkatopics - BunkaTopics</title>
+        <title>Bunka - BunkaTopics</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#bunkatopics" class="md-skip">
+        <a href="#bunka" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              bunkatopics
+              Bunka
             
           </span>
         </div>
@@ -471,7 +471,7 @@
           
   
   <span class="md-ellipsis">
-    bunkatopics
+    Bunka
   </span>
   
 
@@ -482,7 +482,7 @@
         
   
   <span class="md-ellipsis">
-    bunkatopics
+    Bunka
   </span>
   
 
@@ -695,6 +695,96 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Visualization
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            Visualization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="visualization/topic-visualization.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topic Modeling Visualization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bourdieu/bourdieu-visualization.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bourdieu Visualization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -865,7 +955,7 @@
   
 
 
-<h1 id="bunkatopics">Bunkatopics<a class="headerlink" href="#bunkatopics" title="Permanent link">&para;</a></h1>
+<h1 id="bunka">Bunka<a class="headerlink" href="#bunka" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-class">
@@ -893,7 +983,14 @@
 
             <details class="quote">
               <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 60</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
 <span class="normal"> 61</span>
 <span class="normal"> 62</span>
 <span class="normal"> 63</span>
@@ -1478,7 +1575,9 @@
 <span class="normal">642</span>
 <span class="normal">643</span>
 <span class="normal">644</span>
-<span class="normal">645</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
+<span class="normal">645</span>
+<span class="normal">646</span>
+<span class="normal">647</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bunka class for managing and analyzing textual data using various NLP techniques.</span>
 
 <span class="sd">    Examples:</span>
@@ -1718,19 +1817,23 @@
 <span class="sd">            into topics and can include text labels for clarity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating the Bunka Map&quot;</span><span class="p">)</span>
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_topics</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
+
+        <span class="n">model_visualizer</span> <span class="o">=</span> <span class="n">TopicVisualizer</span><span class="p">(</span>
             <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
             <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
             <span class="n">show_text</span><span class="o">=</span><span class="n">show_text</span><span class="p">,</span>
             <span class="n">label_size_ratio</span><span class="o">=</span><span class="n">label_size_ratio</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">model_visualizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="k">return</span> <span class="n">fig</span>
 
     <span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">generative_model</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">x_left_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;war&quot;</span><span class="p">],</span>
         <span class="n">x_right_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;peace&quot;</span><span class="p">],</span>
         <span class="n">y_top_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;men&quot;</span><span class="p">],</span>
@@ -1807,7 +1910,7 @@
         <span class="c1"># Request Bourdieu API</span>
 
         <span class="n">bourdieu_api</span> <span class="o">=</span> <span class="n">BourdieuAPI</span><span class="p">(</span>
-            <span class="n">llm</span><span class="o">=</span><span class="n">generative_model</span><span class="p">,</span>
+            <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
             <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
             <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
             <span class="n">generative_ai_name</span><span class="o">=</span><span class="n">topic_gen_name</span><span class="p">,</span>
@@ -1815,18 +1918,17 @@
             <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">topic_gen_param</span><span class="p">,</span>
         <span class="p">)</span>
 
+        <span class="n">new_docs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
+        <span class="n">new_terms</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">bourdieu_api</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
-            <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
-            <span class="n">terms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">,</span>
+            <span class="n">docs</span><span class="o">=</span><span class="n">new_docs</span><span class="p">,</span>
+            <span class="n">terms</span><span class="o">=</span><span class="n">new_terms</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_docs</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_topics</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="c1"># Visualize The results from the API</span>
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_bourdieu</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_docs</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_topics</span><span class="p">,</span>
+        <span class="n">visualizer</span> <span class="o">=</span> <span class="n">BourdieuVisualizer</span><span class="p">(</span>
             <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
             <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
             <span class="n">display_percent</span><span class="o">=</span><span class="n">display_percent</span><span class="p">,</span>
@@ -1834,6 +1936,8 @@
             <span class="n">clustering</span><span class="o">=</span><span class="n">clustering</span><span class="p">,</span>
             <span class="n">manual_axis_name</span><span class="o">=</span><span class="n">manual_axis_name</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">visualizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_topics</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fig</span>
 
@@ -1897,14 +2001,18 @@
 <span class="sd">            in terms of these contrasting word concepts. An optional explainer figure can provide additional</span>
 <span class="sd">            insight into specific terms used in the visualization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fig</span><span class="p">,</span> <span class="n">fig_specific_terms</span> <span class="o">=</span> <span class="n">visualize_bourdieu_one_dimension</span><span class="p">(</span>
-            <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+
+        <span class="n">model_bourdieu</span> <span class="o">=</span> <span class="n">BourdieuOneDimensionVisualizer</span><span class="p">(</span>
             <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
             <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span>
             <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">,</span>
             <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
             <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
             <span class="n">explainer</span><span class="o">=</span><span class="n">explainer</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="n">fig_specific_terms</span> <span class="o">=</span> <span class="n">model_bourdieu</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+            <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">fig_specific_terms</span>
@@ -2142,7 +2250,14 @@
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">79</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
 <span class="normal">80</span>
 <span class="normal">81</span>
 <span class="normal">82</span>
@@ -2154,14 +2269,7 @@
 <span class="normal">88</span>
 <span class="normal">89</span>
 <span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
+<span class="normal">91</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a BunkaTopics instance.</span>
 
 <span class="sd">    Arguments:</span>
@@ -2250,7 +2358,14 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
@@ -2319,14 +2434,7 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
 <span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">DOC_ID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2526,7 +2634,14 @@ aiming for more understandable and relevant topic descriptors.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">234</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
 <span class="normal">235</span>
 <span class="normal">236</span>
 <span class="normal">237</span>
@@ -2558,14 +2673,7 @@ aiming for more understandable and relevant topic descriptors.</p>
 <span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_clean_topic_name</span><span class="p">(</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_clean_topic_name</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">llm</span><span class="p">,</span>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span>
@@ -2703,9 +2811,7 @@ easy interpretation of the topic sizes.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">575</span>
 <span class="normal">576</span>
 <span class="normal">577</span>
 <span class="normal">578</span>
@@ -2722,7 +2828,9 @@ easy interpretation of the topic sizes.</p>
 <span class="normal">589</span>
 <span class="normal">590</span>
 <span class="normal">591</span>
-<span class="normal">592</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="normal">592</span>
+<span class="normal">593</span>
+<span class="normal">594</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a bar plot to visualize the distribution of topics by size.</span>
 
@@ -2881,7 +2989,14 @@ with the resulting topics. It also associates the identified topics with the doc
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">183</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
@@ -2923,14 +3038,7 @@ with the resulting topics. It also associates the identified topics with the doc
 <span class="normal">222</span>
 <span class="normal">223</span>
 <span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">n_clusters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="n">ngrams</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
@@ -3089,7 +3197,9 @@ to work with complex queries and provide informative answers using the document 
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">419</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
 <span class="normal">420</span>
 <span class="normal">421</span>
 <span class="normal">422</span>
@@ -3117,9 +3227,7 @@ to work with complex queries and provide informative answers using the document 
 <span class="normal">444</span>
 <span class="normal">445</span>
 <span class="normal">446</span>
-<span class="normal">447</span>
-<span class="normal">448</span>
-<span class="normal">449</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+<span class="normal">447</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.</span>
 
@@ -3162,7 +3270,7 @@ to work with complex queries and provide informative answers using the document 
 
 
 <h2 id="bunkatopics._bunkatopics.Bunka.visualize_bourdieu" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">visualize_bourdieu</span><span class="p">(</span><span class="n">generative_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;war&#39;</span><span class="p">],</span> <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peace&#39;</span><span class="p">],</span> <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;men&#39;</span><span class="p">],</span> <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;women&#39;</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">display_percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clustering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">topic_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topic_ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">topic_top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">gen_topic_language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">topic_gen_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">manual_axis_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_doc_gen_topic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">visualize_bourdieu</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;war&#39;</span><span class="p">],</span> <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peace&#39;</span><span class="p">],</span> <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;men&#39;</span><span class="p">],</span> <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;women&#39;</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">display_percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clustering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">topic_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topic_ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">topic_top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">gen_topic_language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">topic_gen_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">manual_axis_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_doc_gen_topic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 <a href="#bunkatopics._bunkatopics.Bunka.visualize_bourdieu" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -3195,7 +3303,7 @@ to work with complex queries and provide informative answers using the document 
             </div>
           </td>
           <td>
-                <code>None</code>
+              <em>required</em>
           </td>
         </tr>
         <tr>
@@ -3433,7 +3541,10 @@ offering a range of customization options for detailed analysis.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">310</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
 <span class="normal">311</span>
 <span class="normal">312</span>
 <span class="normal">313</span>
@@ -3538,11 +3649,9 @@ offering a range of customization options for detailed analysis.</p>
 <span class="normal">412</span>
 <span class="normal">413</span>
 <span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
+<span class="normal">415</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">generative_model</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">x_left_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;war&quot;</span><span class="p">],</span>
     <span class="n">x_right_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;peace&quot;</span><span class="p">],</span>
     <span class="n">y_top_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;men&quot;</span><span class="p">],</span>
@@ -3619,7 +3728,7 @@ offering a range of customization options for detailed analysis.</p>
     <span class="c1"># Request Bourdieu API</span>
 
     <span class="n">bourdieu_api</span> <span class="o">=</span> <span class="n">BourdieuAPI</span><span class="p">(</span>
-        <span class="n">llm</span><span class="o">=</span><span class="n">generative_model</span><span class="p">,</span>
+        <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
         <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
         <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
         <span class="n">generative_ai_name</span><span class="o">=</span><span class="n">topic_gen_name</span><span class="p">,</span>
@@ -3627,18 +3736,17 @@ offering a range of customization options for detailed analysis.</p>
         <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">topic_gen_param</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="n">new_docs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
+    <span class="n">new_terms</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">bourdieu_api</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
-        <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
-        <span class="n">terms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">,</span>
+        <span class="n">docs</span><span class="o">=</span><span class="n">new_docs</span><span class="p">,</span>
+        <span class="n">terms</span><span class="o">=</span><span class="n">new_terms</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_docs</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_topics</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="c1"># Visualize The results from the API</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_bourdieu</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_docs</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_topics</span><span class="p">,</span>
+    <span class="n">visualizer</span> <span class="o">=</span> <span class="n">BourdieuVisualizer</span><span class="p">(</span>
         <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
         <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
         <span class="n">display_percent</span><span class="o">=</span><span class="n">display_percent</span><span class="p">,</span>
@@ -3646,6 +3754,8 @@ offering a range of customization options for detailed analysis.</p>
         <span class="n">clustering</span><span class="o">=</span><span class="n">clustering</span><span class="p">,</span>
         <span class="n">manual_axis_name</span><span class="o">=</span><span class="n">manual_axis_name</span><span class="p">,</span>
     <span class="p">)</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">visualizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_topics</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fig</span>
 </code></pre></div></td></tr></table></div>
@@ -3798,7 +3908,9 @@ insight into specific terms used in the visualization.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">451</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
 <span class="normal">452</span>
 <span class="normal">453</span>
 <span class="normal">454</span>
@@ -3836,7 +3948,9 @@ insight into specific terms used in the visualization.</p>
 <span class="normal">486</span>
 <span class="normal">487</span>
 <span class="normal">488</span>
-<span class="normal">489</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu_one_dimension</span><span class="p">(</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu_one_dimension</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">left</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;negative&quot;</span><span class="p">],</span>
     <span class="n">right</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">],</span>
@@ -3864,14 +3978,18 @@ insight into specific terms used in the visualization.</p>
 <span class="sd">        in terms of these contrasting word concepts. An optional explainer figure can provide additional</span>
 <span class="sd">        insight into specific terms used in the visualization.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fig</span><span class="p">,</span> <span class="n">fig_specific_terms</span> <span class="o">=</span> <span class="n">visualize_bourdieu_one_dimension</span><span class="p">(</span>
-        <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+
+    <span class="n">model_bourdieu</span> <span class="o">=</span> <span class="n">BourdieuOneDimensionVisualizer</span><span class="p">(</span>
         <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
         <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span>
         <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">,</span>
         <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
         <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
         <span class="n">explainer</span><span class="o">=</span><span class="n">explainer</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">fig_specific_terms</span> <span class="o">=</span> <span class="n">model_bourdieu</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+        <span class="n">docs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">fig_specific_terms</span>
@@ -4010,9 +4128,7 @@ providing a visual representation of their relevance to the query.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">511</span>
-<span class="normal">512</span>
-<span class="normal">513</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">513</span>
 <span class="normal">514</span>
 <span class="normal">515</span>
 <span class="normal">516</span>
@@ -4070,7 +4186,9 @@ providing a visual representation of their relevance to the query.</p>
 <span class="normal">568</span>
 <span class="normal">569</span>
 <span class="normal">570</span>
-<span class="normal">571</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">,</span> <span class="s2">&quot;fear&quot;</span><span class="p">,</span> <span class="s2">&quot;love&quot;</span><span class="p">],</span>
     <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -4256,7 +4374,14 @@ into topics and can include text labels for clarity.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">275</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
 <span class="normal">276</span>
 <span class="normal">277</span>
 <span class="normal">278</span>
@@ -4286,10 +4411,7 @@ into topics and can include text labels for clarity.</p>
 <span class="normal">302</span>
 <span class="normal">303</span>
 <span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_topics</span><span class="p">(</span>
+<span class="normal">305</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_topics</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">show_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">label_size_ratio</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
@@ -4314,14 +4436,18 @@ into topics and can include text labels for clarity.</p>
 <span class="sd">        into topics and can include text labels for clarity.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating the Bunka Map&quot;</span><span class="p">)</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">visualize_topics</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
+
+    <span class="n">model_visualizer</span> <span class="o">=</span> <span class="n">TopicVisualizer</span><span class="p">(</span>
         <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
         <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
         <span class="n">show_text</span><span class="o">=</span><span class="n">show_text</span><span class="p">,</span>
         <span class="n">label_size_ratio</span><span class="o">=</span><span class="n">label_size_ratio</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">model_visualizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
+    <span class="p">)</span>
+
     <span class="k">return</span> <span class="n">fig</span>
 </code></pre></div></td></tr></table></div>
           </details>

@@ -5,12 +5,18 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
-                                   ContinuumDimension, Document, Term, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.datamodel import (
+    BourdieuDimension,
+    BourdieuQuery,
+    ContinuumDimension,
+    Document,
+    Term,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.topic_modeling import BunkaTopicModeling, LLMCleaningTopic
-from bunkatopics.topic_modeling.document_topic_analyzer import \
-    get_top_documents
+from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 
 pd.options.mode.chained_assignment = None
 
@@ -206,7 +212,7 @@ def _get_continuum(
         List of documents with Bourdieu dimensions.
     """
     # Create a DataFrame from the input documents
-    df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
+    df_docs = pd.DataFrame.from_records([doc.model_dump() for doc in docs])
     df_emb = df_docs[["doc_id", "embedding"]]
     df_emb = df_emb.set_index("doc_id")
     df_emb = pd.DataFrame(list(df_emb["embedding"]))

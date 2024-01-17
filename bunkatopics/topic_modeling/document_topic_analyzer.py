@@ -22,14 +22,14 @@ def get_top_documents(
         Tuple[List[Document], List[Topic]]: Updated lists of documents and topics.
     """
     # Create a DataFrame from the list of documents
-    df_docs = pd.DataFrame.from_records([doc.dict() for doc in docs])
+    df_docs = pd.DataFrame.from_records([doc.model_dump() for doc in docs])
 
     # Explode the term_id column to have one row per term
     df_docs = df_docs[["doc_id", "topic_id", "term_id"]]
     df_docs = df_docs.explode("term_id").reset_index(drop=True)
 
     # Create a DataFrame from the list of topics and truncate term_id
-    df_topics = pd.DataFrame.from_records([topic.dict() for topic in topics])
+    df_topics = pd.DataFrame.from_records([topic.model_dump() for topic in topics])
     df_topics["term_id"] = df_topics["term_id"].apply(lambda x: x[:ranking_terms])
     df_topics = df_topics[["topic_id", "term_id"]]
     df_topics = df_topics.explode("term_id").reset_index(drop=True)
@@ -64,7 +64,7 @@ def get_top_documents(
         doc.topic_ranking = final_dict.get(doc.doc_id)
 
     # Create a DataFrame for document content
-    df_content = pd.DataFrame.from_records([doc.dict() for doc in docs])
+    df_content = pd.DataFrame.from_records([doc.model_dump() for doc in docs])
     df_content = df_content[["doc_id", "content"]]
 
     # Merge document content with topic information

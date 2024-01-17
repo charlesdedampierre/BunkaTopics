@@ -17,10 +17,9 @@ test.ipynb
 bash.sh
 
 # remove poetry files
-
 poetry.lock
-pyproject.toml
-requirements.text
+#pyproject.toml
+requirements.txt
 
 # Distribution / packaging
 .Python

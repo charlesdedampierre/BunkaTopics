@@ -7,7 +7,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
-from langchain.llms import HuggingFaceHub
+from langchain_community.llms import HuggingFaceHub
 
 from bunkatopics import Bunka
 
@@ -44,7 +44,7 @@ class TestBunka(unittest.TestCase):
 
         # Visualize Topics
         topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
-        # topic_fig.show()
+        topic_fig.show()
         self.assertIsInstance(topic_fig, go.Figure)
 
     def test_generative_names(self):

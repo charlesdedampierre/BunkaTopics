@@ -56,6 +56,9 @@ nav:
       - Term Extractor: bunka-api/topic_modeling/terms_extractor.md
       - Topic LLM Cleaner: bunka-api/topic_modeling/topic_llm_cleaning.md
       - Bourdieu API: bunka-api/bourdieu/bourdieu-api.md
+      - Visualization:
+          - Topic Modeling Visualization: bunka-api/visualization/topic-visualization.md
+          - Bourdieu Visualization: bunka-api/bourdieu/bourdieu-visualization.md
 
   - Use Cases: use-cases.md
 

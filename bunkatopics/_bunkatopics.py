@@ -20,30 +20,20 @@ from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bourdieu import BourdieuAPI
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.bourdieu.boudieu_one_dimension import \
+    visualize_bourdieu_one_dimension
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (
-    BunkaTopicModeling,
-    LLMCleaningTopic,
-    TextacyTermsExtractor,
-)
+from bunkatopics.topic_modeling import (BunkaTopicModeling, LLMCleaningTopic,
+                                        TextacyTermsExtractor)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
+from bunkatopics.topic_modeling.document_topic_analyzer import \
+    get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.visualization.bourdieu_visualizer import (
-    visualize_bourdieu,
-    visualize_bourdieu_one_dimension,
-)
+from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
-from bunkatopics.visualization.topic_visualizer import visualize_topics
 
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -292,19 +282,23 @@ class Bunka:
             into topics and can include text labels for clarity.
         """
         logger.info("Creating the Bunka Map")
-        fig = visualize_topics(
-            self.docs,
-            self.topics,
+
+        model_visualizer = TopicVisualizer(
             width=width,
             height=height,
             show_text=show_text,
             label_size_ratio=label_size_ratio,
         )
+        fig = model_visualizer.fit_transform(
+            self.docs,
+            self.topics,
+        )
+
         return fig
 
     def visualize_bourdieu(
         self,
-        generative_model: t.Optional[str] = None,
+        llm: t.Optional[str] = None,
         x_left_words: t.List[str] = ["war"],
         x_right_words: t.List[str] = ["peace"],
         y_top_words: t.List[str] = ["men"],
@@ -381,7 +375,7 @@ class Bunka:
         # Request Bourdieu API
 
         bourdieu_api = BourdieuAPI(
-            llm=generative_model,
+            llm=llm,
             embedding_model=self.embedding_model,
             bourdieu_query=self.bourdieu_query,
             generative_ai_name=topic_gen_name,
@@ -397,10 +391,7 @@ class Bunka:
         self.bourdieu_docs = res[0]
         self.bourdieu_topics = res[1]
 
-        # Visualize The results from the API
-        fig = visualize_bourdieu(
-            self.bourdieu_docs,
-            self.bourdieu_topics,
+        visualizer = BourdieuVisualizer(
             height=height,
             width=width,
             display_percent=display_percent,
@@ -408,6 +399,8 @@ class Bunka:
             clustering=clustering,
             manual_axis_name=manual_axis_name,
         )
+
+        fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
 
         return fig
 

@@ -4,6 +4,12 @@ SHELL := /bin/bash
 docs_serve:
 	mkdocs serve
 
+build_poetry:
+	python -m build --sdist --wheel
+
+pypi_publish:
+	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
+
 pypi:
 	python setup.py sdist
 	python setup.py bdist_wheel --universal

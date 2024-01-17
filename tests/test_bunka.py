@@ -1,6 +1,5 @@
 import os
 import random
-import sys
 import unittest
 
 import pandas as pd
@@ -10,8 +9,6 @@ from dotenv import load_dotenv
 from langchain_community.llms import HuggingFaceHub
 
 from bunkatopics import Bunka
-
-sys.path.append("../")
 
 load_dotenv()
 

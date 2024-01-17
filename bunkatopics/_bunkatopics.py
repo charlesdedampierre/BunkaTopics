@@ -7,7 +7,6 @@ import subprocess
 import typing as t
 import uuid
 import warnings
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
@@ -19,7 +18,6 @@ from langchain_community.vectorstores import Chroma
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
-
 from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
 from bunkatopics.datamodel import (
     DOC_ID,

@@ -2,9 +2,9 @@ name: Bunka Code Checking
 
 on:
   push:
-    branches: ["refacto_dev"]
+    branches: ["refacto_sys/pip"]
   pull_request:
-    branches: ["refacto_dev"]
+    branches: ["refacto_sys/pip"]
 permissions:
   contents: read
 
@@ -27,9 +27,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip 
-          pip install -e .
+          pip install -i https://test.pypi.org/simple/ bunkatopics
       - name: Running code testing
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: make check
+        run: python -m unittest tests/test_bunka_package.py

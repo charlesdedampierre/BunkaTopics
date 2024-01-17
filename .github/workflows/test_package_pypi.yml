@@ -2,9 +2,9 @@ name: Bunka Code Checking
 
 on:
   push:
-    branches: ["refacto_sys/pip"]
+    branches: ["main"]
   pull_request:
-    branches: ["refacto_sys/pip"]
+    branches: ["main"]
 permissions:
   contents: read
 

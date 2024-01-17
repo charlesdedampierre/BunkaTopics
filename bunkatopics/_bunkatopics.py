@@ -42,7 +42,6 @@ from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
-
 import warnings
 
 # Filter ResourceWarning

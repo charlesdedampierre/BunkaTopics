@@ -2,57 +2,72 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/index.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/boudieu.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/getting-started.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/technology.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/use-cases.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/bunkatopics.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/bourdieu/bourdieu-api.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/bourdieu/bourdieu-visualization-one-dimension.html</loc>
+         <lastmod>2024-01-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/bourdieu/bourdieu-visualization.html</loc>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/topic_modeling/terms_extractor.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/topic_modeling/topic_llm_cleaning.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/topic_modeling/topic_model_builder.html</loc>
-         <lastmod>2024-01-16</lastmod>
+         <lastmod>2024-01-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api/visualization/topic-visualization.html</loc>
+         <lastmod>2024-01-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import random
@@ -6,7 +7,6 @@ import subprocess
 import typing as t
 import uuid
 import warnings
-import copy
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -20,25 +20,16 @@ from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.bourdieu import BourdieuAPI
-from bunkatopics.bourdieu.boudieu_one_dimension import visualize_bourdieu_one_dimension
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (
-    BunkaTopicModeling,
-    LLMCleaningTopic,
-    TextacyTermsExtractor,
-)
+from bunkatopics.topic_modeling import (BunkaTopicModeling, LLMCleaningTopic,
+                                        TextacyTermsExtractor)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
+from bunkatopics.topic_modeling.document_topic_analyzer import \
+    get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
@@ -474,14 +465,18 @@ class Bunka:
             in terms of these contrasting word concepts. An optional explainer figure can provide additional
             insight into specific terms used in the visualization.
         """
-        fig, fig_specific_terms = visualize_bourdieu_one_dimension(
-            docs=self.docs,
+
+        model_bourdieu = BourdieuOneDimensionVisualizer(
             embedding_model=self.embedding_model,
             left=left,
             right=right,
             width=width,
             height=height,
             explainer=explainer,
+        )
+
+        fig, fig_specific_terms = model_bourdieu.fit_transform(
+            docs=self.docs,
         )
 
         return fig, fig_specific_terms

@@ -1,1 +1,2 @@
 from .bourdieu_api import BourdieuAPI
+from .bourdieu_one_dimension import BourdieuOneDimensionVisualizer

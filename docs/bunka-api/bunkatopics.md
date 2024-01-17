@@ -1,3 +1,3 @@
-# Bunkatopics
+# Bunka
 
 ::: bunkatopics._bunkatopics.Bunka

@@ -2,6 +2,7 @@ import typing as t
 
 import numpy as np
 import plotly.graph_objects as go
+from PIL import Image
 
 from bunkatopics.datamodel import Document, Topic
 from bunkatopics.visualization.visualization_utils import wrap_by_word
@@ -24,6 +25,8 @@ class TopicVisualizer:
         height=1000,
         label_size_ratio=100,
         colorscale="delta",
+        density: bool = False,
+        convex_hull: bool = False,
     ) -> None:
         """
         Initializes the TopicVisualizer with specified parameters.
@@ -34,12 +37,16 @@ class TopicVisualizer:
             height (int): The height of the plot in pixels. Defaults to 1000.
             label_size_ratio (int): The size ratio for label text. Defaults to 100.
             colorscale (str): The color scale for contour density representation. Defaults to "delta".
+            density (bool): Whether to display a density map
+            convex_hull (bool): Whether to display lines around the clusters
         """
         self.show_text = show_text
         self.width = width
         self.height = height
         self.label_size_ratio = label_size_ratio
         self.colorscale = colorscale
+        self.density = density
+        self.convex_hull = convex_hull
 
     def fit_transform(self, docs: t.List[Document], topics: t.List[Topic]) -> go.Figure:
         """
@@ -68,18 +75,24 @@ class TopicVisualizer:
         topics_name = [topic.name for topic in topics]
         topics_name_plotly = [wrap_by_word(x, 6) for x in topics_name]
 
-        # Create a figure with Histogram2dContour
-        fig_density = go.Figure(
-            go.Histogram2dContour(
-                x=docs_x,
-                y=docs_y,
-                colorscale=self.colorscale,
-                showscale=False,
-                hoverinfo="none",
+        if self.density:
+            # Create a figure with Histogram2dContour
+            fig_density = go.Figure(
+                go.Histogram2dContour(
+                    x=docs_x,
+                    y=docs_y,
+                    colorscale=self.colorscale,
+                    showscale=False,
+                    hoverinfo="none",
+                )
             )
-        )
 
-        fig_density.update_traces(contours_coloring="fill", contours_showlabels=False)
+            fig_density.update_traces(
+                contours_coloring="fill", contours_showlabels=False
+            )
+
+        else:
+            fig_density = go.Figure()
 
         # Update layout settings
         fig_density.update_layout(
@@ -133,20 +146,21 @@ class TopicVisualizer:
                 arrowcolor="#ff7f0e",
             )
 
-        try:
-            for topic in topics:
-                # Create a Scatter plot with the convex hull coordinates
-                trace = go.Scatter(
-                    x=topic.convex_hull.x_coordinates,
-                    y=topic.convex_hull.y_coordinates,
-                    mode="lines",
-                    name="Convex Hull",
-                    line=dict(color="grey"),
-                    hoverinfo="none",
-                )
-                fig_density.add_trace(trace)
-        except Exception as e:
-            print(e)
+        if self.convex_hull:
+            try:
+                for topic in topics:
+                    # Create a Scatter plot with the convex hull coordinates
+                    trace = go.Scatter(
+                        x=topic.convex_hull.x_coordinates,
+                        y=topic.convex_hull.y_coordinates,
+                        mode="lines",
+                        name="Convex Hull",
+                        line=dict(color="grey", dash="dot"),
+                        hoverinfo="none",
+                    )
+                    fig_density.add_trace(trace)
+            except Exception as e:
+                print(e)
 
         fig_density.update_layout(showlegend=False)
         fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)

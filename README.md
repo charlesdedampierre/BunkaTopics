@@ -12,10 +12,6 @@ Please read our Documentation: [The Origin of Bunka](https://charlesdedampierre.
 Bunkatopics is a package designed for Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG) tasks, harnessing the power of Large Language Models (LLMs). Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleansing and optimizing LLMs through fine-tuning processes.
 Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.
 
-## Pipeline
-
-<img src="images/pipeline.png" width="70%" height="70%" align="center" />
-
 ## Installation via Pip
 
 ```bash
@@ -47,6 +43,12 @@ from datasets import load_dataset
 docs = load_dataset("bunkalab/medium")["train"]["title"]
 ```
 
+- **Content Overview**: The Medium website offers a wealth of content across various categories such as Data Science, Technology, Programming, Poetry, Cryptocurrency, Machine Learning, Life, and more. While these categories facilitate data searching, they may not provide a granular overview. For instance, within the Technology category, what specific topics does Medium cover?
+
+- **Fine-Tuning**: To achieve precise fine-tuning, it's crucial to exercise control over the data, filtering what is relevant and discarding what isn't. Bunka is a valuable tool for accomplishing this task.
+
+- **Framing Analysis**: Data can be analyzed in countless ways, contingent on your objectives and interests. We've developed a tool that enables you to visualize data by semantically customizing your own axes.
+
 You can the load any embedding model from langchain. Some of them might be large, please check the langchain [documentation](https://python.langchain.com/en/latest/reference/modules/embeddings.html)
 
 ### Choose Your Embedding Model
@@ -67,8 +69,19 @@ bunka = Bunka(embedding_model=embedding_model, language='english') # You can cho
 bunka.fit(full_docs)
 
 # Get a list of topics
-df_topics = bunka.get_topics(n_clusters=15, name_length=3) # Specify the number of terms to describe each topic
 print(df_topics)
+```
+
+```python
+>>> bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
+
+ name                                                size
+0 Stones | Photos | Moon | Photorealism | weeks      28
+1 CoVID | market | height | views | collection       32
+2 Refactor | Methods | Closure | Items | functions   23
+3 Things | legacy | optimization | migration | Care  24
+4 REST | Adventures | times | web | Apps             23
+
 ```
 
 ### Visualize Your Topics

@@ -1,5 +1,4 @@
 import copy
-import copy
 import json
 import os
 import random
@@ -8,23 +7,22 @@ import subprocess
 import typing as t
 import uuid
 import warnings
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
-
 from IPython.display import display
-from ipywidgets import Checkbox, VBox, Button, Layout, Label
-
+from ipywidgets import Button, Checkbox, Label, Layout, VBox
 from langchain.chains import RetrievalQA
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import DataFrameLoader
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
-from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
+
 from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
 from bunkatopics.datamodel import (
     DOC_ID,
@@ -45,13 +43,8 @@ from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
-from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
-import warnings
-
-# Filter ResourceWarning
-warnings.filterwarnings("ignore")
 # Filter ResourceWarning
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
@@ -259,6 +252,15 @@ class Bunka:
         df_topics = pd.DataFrame.from_records(
             [topic.model_dump() for topic in self.topics]
         )
+
+        df_topics["percent"] = df_topics["size"] / df_topics["size"].sum()
+        df_topics["percent"] = round(df_topics["percent"], 2)
+        df_topics = df_topics.rename(columns={"name": "topic_name"})
+
+        df_topics = df_topics[
+            ["topic_id", "topic_name", "size", "percent", "top_doc_content"].copy()
+        ]
+
         return df_topics
 
     def get_clean_topic_name(
@@ -313,6 +315,9 @@ class Bunka:
         label_size_ratio: int = 100,
         width: int = 1000,
         height: int = 1000,
+        colorscale: str = "delta",
+        density: bool = True,
+        convex_hull: bool = True,
     ) -> go.Figure:
         """
         Generates a visualization of the identified topics in the document set.
@@ -322,6 +327,9 @@ class Bunka:
             label_size_ratio (int): The size ratio of the labels in the visualization. Default is 100.
             width (int): The width of the visualization figure. Default is 1000.
             height (int): The height of the visualization figure. Default is 1000.
+            colorscale (str): colorscale for the Density Plot (Default is delta)
+            density (bool): Whether to display a density map
+            convex_hull (bool): Whether to display lines around the clusters
 
         Returns:
             go.Figure: A Plotly graph object figure representing the topic visualization.
@@ -338,12 +346,10 @@ class Bunka:
             height=height,
             show_text=show_text,
             label_size_ratio=label_size_ratio,
+            colorscale=colorscale,
+            density=density,
+            convex_hull=convex_hull,
         )
-        fig = model_visualizer.fit_transform(
-            self.docs,
-            self.topics,
-        )
-
         fig = model_visualizer.fit_transform(
             self.docs,
             self.topics,
@@ -372,6 +378,8 @@ class Bunka:
         use_doc_gen_topic: bool = False,
         radius_size: float = 0.3,
         convex_hull: bool = True,
+        density: bool = True,
+        colorscale: str = "delta",
     ) -> go.Figure:
         """
         Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
@@ -393,6 +401,10 @@ class Bunka:
             use_doc_gen_topic (bool): Flag to use document context in topic generation. Default is False.
             radius_size (float): Radius size for the map isualization. Default is 0.3.
             convex_hull (bool): Whether to include a convex hull in the visualization. Default is True.
+            colorscale (str): colorscale for the Density Plot (Default is delta)
+            density (bool): Whether to display a density map
+
+
             Returns:
                 go.Figure: A Plotly graph object figure representing the Bourdieu Map.
 
@@ -440,6 +452,7 @@ class Bunka:
 
         new_docs = copy.deepcopy(self.docs)
         new_terms = copy.deepcopy(self.terms)
+
         res = bourdieu_api.fit_transform(
             docs=new_docs,
             terms=new_terms,
@@ -455,6 +468,8 @@ class Bunka:
             convex_hull=convex_hull,
             clustering=clustering,
             manual_axis_name=manual_axis_name,
+            density=density,
+            colorscale=colorscale,
         )
 
         fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
@@ -531,15 +546,11 @@ class Bunka:
             explainer=explainer,
         )
 
-        fig, fig_specific_terms = model_bourdieu.fit_transform(
+        fig = model_bourdieu.fit_transform(
             docs=self.docs,
         )
 
-        fig, fig_specific_terms = model_bourdieu.fit_transform(
-            docs=self.docs,
-        )
-
-        return fig, fig_specific_terms
+        return fig
 
     def visualize_query(
         self,
@@ -663,6 +674,7 @@ class Bunka:
             df_topics = pd.DataFrame([topic.model_dump() for topic in topic_filtered])
             df_topics = df_topics[["topic_id", "name"]]
             self.df_cleaned = pd.merge(df_docs_cleaned, df_topics, on="topic_id")
+            self.df_cleaned = self.df_cleaned.rename(columns={"name": "topic_name"})
 
             len_kept = len(docs_filtered)
             len_docs = len(self.docs)

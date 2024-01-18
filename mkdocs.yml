@@ -48,8 +48,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - Framing Analsyis: bourdieu.md
   - Technology: technology.md
+  - Fine-tuning: fine-tuning.md
   - API:
       - Bunka: bunka-api/bunkatopics.md
       - Topic Modeling: bunka-api/topic_modeling/topic_model_builder.md
@@ -62,6 +62,7 @@ nav:
           - Bourdieu Visualization One Dimension: bunka-api/bourdieu/bourdieu-visualization-one-dimension.md
 
   - Use Cases: use-cases.md
+  - Changelog: changelog.md
 
 plugins:
   - mkdocstrings:

@@ -27,7 +27,7 @@ class TestBunka(unittest.TestCase):
         # Load a sample dataset
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 200)
+        docs = random.sample(docs, 500)
         cls.bunka = Bunka()
         cls.bunka.fit(docs)
 

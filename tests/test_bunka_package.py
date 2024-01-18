@@ -30,7 +30,7 @@ class TestBunka(unittest.TestCase):
 
         # Visualize Topics
         topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
-        topic_fig.show()
+        # topic_fig.show()
         self.assertIsInstance(topic_fig, go.Figure)
 
 

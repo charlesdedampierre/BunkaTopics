@@ -14,6 +14,7 @@ import plotly.graph_objects as go
 import umap
 from langchain.chains import RetrievalQA
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.vectorstores import Chroma
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
@@ -135,34 +136,35 @@ class Bunka:
         characters = string.ascii_letters + string.digits
         random_string = "".join(random.choice(characters) for _ in range(20))
 
-        # using Chroma as a vectorstore
-        self.vectorstore = Chroma(
-            embedding_function=self.embedding_model, collection_name=random_string
+        df_loader = pd.DataFrame(sentences, columns=["text"])
+        df_loader["doc_id"] = ids
+
+        loader = DataFrameLoader(df_loader, page_content_column="text")
+        documents_langchain = loader.load()
+        self.vectorstore = Chroma.from_documents(
+            documents_langchain, self.embedding_model, collection_name=random_string
         )
 
-        self.vectorstore.add_texts(texts=sentences, ids=ids)
-        embeddings = self.vectorstore._collection.get(include=["embeddings"])[
+        bunka_ids = [item["doc_id"] for item in self.vectorstore.get()["metadatas"]]
+        bunka_docs = self.vectorstore.get()["documents"]
+        bunka_embeddings = self.vectorstore._collection.get(include=["embeddings"])[
             "embeddings"
         ]
 
-        df_embeddings = pd.DataFrame(embeddings)
-        df_embeddings.index = ids
-
-        emb_doc_dict = {x: y for x, y in zip(ids, embeddings)}
-
+        # Add to the bunka objects
+        emb_doc_dict = {x: y for x, y in zip(bunka_ids, bunka_embeddings)}
         for doc in self.docs:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
         logger.info("Reducing the dimensions of embeddings...")
-
         reducer = umap.UMAP(
             n_components=2,
             random_state=None,
         )  # Not random state to go quicker
-        embeddings_2D = reducer.fit_transform(embeddings)
-        df_embeddings_2D = pd.DataFrame(embeddings_2D)
-        df_embeddings_2D.columns = ["x", "y"]
-        df_embeddings_2D["doc_id"] = ids
+        bunka_embeddings_2D = reducer.fit_transform(bunka_embeddings)
+        df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
+        df_embeddings_2D["doc_id"] = bunka_ids
+        df_embeddings_2D["bunka_docs"] = bunka_docs
 
         xy_dict = df_embeddings_2D.set_index("doc_id")[["x", "y"]].to_dict("index")
 
@@ -170,6 +172,23 @@ class Bunka:
         for doc in self.docs:
             doc.x = xy_dict[doc.doc_id]["x"]
             doc.y = xy_dict[doc.doc_id]["y"]
+
+        self.df_embeddings_2D = df_embeddings_2D
+
+        # Create a scatter plot
+        fig_quick_embedding = px.scatter(
+            self.df_embeddings_2D, x="x", y="y", hover_data=["bunka_docs"]
+        )
+
+        # Update layout for better readability
+        fig_quick_embedding.update_layout(
+            title="Raw Scatter Plot of Bunka Embeddings",
+            xaxis_title="X Embedding",
+            yaxis_title="Y Embedding",
+            hovermode="closest",
+        )
+        # Show the plot
+        self.fig_quick_embedding = fig_quick_embedding
 
     def fit_transform(self, docs: t.List[Document], n_clusters=3) -> pd.DataFrame:
         self.fit(docs)

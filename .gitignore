@@ -70,6 +70,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 env_*
+debug.ipynb
 
 
 # Sphinx documentation

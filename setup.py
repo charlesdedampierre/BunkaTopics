@@ -17,10 +17,9 @@ dependencies = [
     "chromadb>=0.4.13",
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
-    "nbformat>=4.2.0",
-    "ipywidgets",
-    "nbconvert",
 ]
+
+test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter", "ipykernel"]
 
 dev = [
     "black ~= 23.0",

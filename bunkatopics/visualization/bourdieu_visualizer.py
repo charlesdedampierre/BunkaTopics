@@ -29,8 +29,10 @@ class BourdieuVisualizer:
         height: int = 800,
         label_size_ratio_clusters: int = 100,
         label_size_ratio_label: int = 50,
-        label_size_ratio_percent: int = 20,
+        label_size_ratio_percent: int = 10,
         manual_axis_name: t.Optional[dict] = None,
+        density: bool = True,
+        colorscale: str = "delta",
     ) -> None:
         """
         Constructs all the necessary attributes for the BourdieuVisualizer object.
@@ -45,6 +47,8 @@ class BourdieuVisualizer:
             label_size_ratio_label (int): Size ratio for the labels on axes.
             label_size_ratio_percent (int): Size ratio for the percentage labels.
             manual_axis_name (Optional[dict]): Custom names for the axes, if provided.
+            colorscale (str): The color scale for contour density representation. Defaults to "delta".
+            density (bool): Whether to display a density map
         """
         self.display_percent = display_percent
         self.convex_hull = convex_hull
@@ -55,6 +59,8 @@ class BourdieuVisualizer:
         self.label_size_ratio_label = label_size_ratio_label
         self.label_size_ratio_percent = label_size_ratio_percent
         self.manual_axis_name = manual_axis_name
+        self.density = density
+        self.colorscale = colorscale
 
     def fit_transform(
         self, bourdieu_docs: t.List[Document], bourdieu_topics: t.List[Topic]
@@ -83,15 +89,18 @@ class BourdieuVisualizer:
 
         df_fig["Text"] = df_fig["content"].apply(lambda x: wrap_by_word(x, 10))
 
-        fig = go.Figure(
-            go.Histogram2dContour(
-                x=df_fig["x"],
-                y=df_fig["y"],
-                colorscale="delta",
-                showscale=False,
-                hoverinfo="none",
-            ),
-        )
+        if self.density:
+            fig = go.Figure(
+                go.Histogram2dContour(
+                    x=df_fig["x"],
+                    y=df_fig["y"],
+                    colorscale=self.colorscale,
+                    showscale=False,
+                    hoverinfo="none",
+                ),
+            )
+        else:
+            fig = go.Figure()
 
         scatter_fig = px.scatter(
             df_fig,
@@ -108,6 +117,11 @@ class BourdieuVisualizer:
         for trace in scatter_fig.data:
             fig.add_trace(trace)
 
+        if self.density:
+            label_axe_color = "white"
+        else:
+            label_axe_color = "black"
+
         fig.update_xaxes(
             title_text="",
             scaleanchor="y",
@@ -115,8 +129,8 @@ class BourdieuVisualizer:
             showgrid=False,
             showticklabels=False,
             zeroline=True,
-            zerolinecolor="white",
-            zerolinewidth=2,
+            zerolinecolor=label_axe_color,
+            zerolinewidth=3,
         )
         fig.update_yaxes(
             title_text="",
@@ -125,8 +139,8 @@ class BourdieuVisualizer:
             showgrid=False,
             showticklabels=False,
             zeroline=True,
-            zerolinecolor="white",
-            zerolinewidth=2,
+            zerolinecolor=label_axe_color,
+            zerolinewidth=3,
         )
 
         # Add axis lines for x=0 and y=0
@@ -136,7 +150,7 @@ class BourdieuVisualizer:
             x1=0,
             y0=min(df_fig["y"]),
             y1=max(df_fig["y"]),
-            line=dict(color="white", width=3),  # Customize line color and width
+            line=dict(color=label_axe_color, width=3),  # Customize line color and width
         )
 
         fig.add_shape(
@@ -145,7 +159,7 @@ class BourdieuVisualizer:
             x1=max(df_fig["x"]),
             y0=0,
             y1=0,
-            line=dict(color="white", width=3),  # Customize line color and width
+            line=dict(color=label_axe_color, width=3),  # Customize line color and width
         )
 
         x_left_name = bourdieu_docs[0].bourdieu_dimensions[0].continuum.left_words
@@ -179,7 +193,8 @@ class BourdieuVisualizer:
                     xanchor="right",
                     yanchor="top",
                     font=dict(
-                        size=self.width / self.label_size_ratio_label, color="white"
+                        size=self.width / self.label_size_ratio_label,
+                        color=label_axe_color,
                     ),
                 ),
                 dict(
@@ -193,7 +208,8 @@ class BourdieuVisualizer:
                     xanchor="left",
                     yanchor="bottom",
                     font=dict(
-                        size=self.width / self.label_size_ratio_label, color="white"
+                        size=self.width / self.label_size_ratio_label,
+                        color=label_axe_color,
                     ),
                 ),
                 dict(
@@ -207,7 +223,8 @@ class BourdieuVisualizer:
                     xanchor="right",
                     yanchor="top",
                     font=dict(
-                        size=self.width / self.label_size_ratio_label, color="white"
+                        size=self.width / self.label_size_ratio_label,
+                        color=label_axe_color,
                     ),
                 ),
                 dict(
@@ -221,7 +238,8 @@ class BourdieuVisualizer:
                     xanchor="left",
                     yanchor="bottom",
                     font=dict(
-                        size=self.width / self.label_size_ratio_label, color="white"
+                        size=self.width / self.label_size_ratio_label,
+                        color=label_axe_color,
                     ),
                 ),
             ]
@@ -241,7 +259,7 @@ class BourdieuVisualizer:
                     font=dict(
                         family="Courier New, monospace",
                         size=self.width / self.label_size_ratio_clusters,
-                        color="red",
+                        color="blue",
                     ),
                     bordercolor="#c7c7c7",
                     borderwidth=self.width / 1000,
@@ -259,7 +277,7 @@ class BourdieuVisualizer:
                             y=topic.convex_hull.y_coordinates,  # Assuming y=0 for simplicity
                             mode="lines",
                             name="Convex Hull",
-                            line=dict(color="grey"),
+                            line=dict(color="grey", dash="dot"),
                             showlegend=False,
                             hoverinfo="none",
                         )

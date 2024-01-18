@@ -10,11 +10,12 @@ import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
+
+load_dotenv()
 from langchain_community.llms import HuggingFaceHub
 
 from bunkatopics import Bunka
 
-load_dotenv()
 
 random.seed(42)
 
@@ -23,6 +24,8 @@ llm = HuggingFaceHub(
     repo_id=repo_id,
     huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
 )
+
+figure = True
 
 
 class TestBunka(unittest.TestCase):
@@ -39,23 +42,31 @@ class TestBunka(unittest.TestCase):
         # Test Topic Modeling
         n_clusters = 3
         df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
-        print(df_topics.name)
+        print(df_topics["topic_name"])
         self.assertIsInstance(df_topics, pd.DataFrame)
         self.assertEqual(len(df_topics), n_clusters)
 
         # Visualize Topics
-        topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
-        # topic_fig.show()
+        topic_fig = self.bunka.visualize_topics(
+            width=800,
+            height=800,
+            show_text=True,
+            density=False,
+            colorscale="Portland",
+            convex_hull=True,
+        )
+        if figure:
+            topic_fig.show()
+
         self.assertIsInstance(topic_fig, go.Figure)
 
     def test_generative_names(self):
         n_clusters = 3
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
-        print(df_topics_clean.name)
+        print(df_topics_clean["topic_name"])
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
         self.assertEqual(len(df_topics_clean), n_clusters)
-        # Visualize Topics
 
     def test_bourdieu_modeling(self):
         bourdieu_fig = self.bunka.visualize_bourdieu(
@@ -69,8 +80,10 @@ class TestBunka(unittest.TestCase):
             clustering=True,
             topic_gen_name=True,
             topic_n_clusters=3,
+            density=False,
         )
-        # bourdieu_fig.show()
+        if figure:
+            bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
     def test_rag(self):
@@ -95,7 +108,7 @@ class TestBunka(unittest.TestCase):
         self.assertIsInstance(fig_query, go.Figure)
 
     def test_boudieu_unique_dimension(self):
-        fig_one_dimension, _ = self.bunka.visualize_bourdieu_one_dimension(
+        fig_one_dimension = self.bunka.visualize_bourdieu_one_dimension(
             left=["negative"], right=["positive"], explainer=False
         )
         # fig_one_dimension.show()

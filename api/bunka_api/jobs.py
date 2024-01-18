@@ -13,10 +13,16 @@ from celery.exceptions import Ignore
 from fastapi.encoders import jsonable_encoder
 
 from api import celeryconfig
-from api.bunka_api.datamodel import (BourdieuQueryApi, BourdieuQueryDict,
-                                     BourdieuResponse, TopicParameterApi)
+from api.bunka_api.datamodel import (
+    BourdieuQueryApi,
+    BourdieuQueryDict,
+    BourdieuResponse,
+    TopicParameterApi,
+)
 from api.bunka_api.processing_functions import (
-    process_full_topics_and_bourdieu, process_topics)
+    process_full_topics_and_bourdieu,
+    process_topics,
+)
 
 celery = Celery()
 celery.config_from_object(celeryconfig)

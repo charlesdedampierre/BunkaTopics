@@ -52,8 +52,8 @@ delete_checkpoints:
 	find . -type d -name ".ipynb_checkpoints" -exec rm -r {} +
 
 format_code: clean
-	black .
-	isort .
+	black bunkatopics
+	isort bunkatopics
 	flake8 bunkatopics
 
 test:
@@ -73,7 +73,7 @@ poetry_export_full:
 	poetry self add poetry-plugin-export
 	poetry export --without-hashes --format=requirements.txt > requirements.txt	
 
-pre_push: format_code poetry_export clean check
+pre_push: format_code clean check
 
 #############
 # DEV #

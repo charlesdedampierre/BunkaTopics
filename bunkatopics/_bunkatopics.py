@@ -1,4 +1,5 @@
 import copy
+import copy
 import json
 import os
 import random
@@ -14,10 +15,12 @@ import plotly.graph_objects as go
 import umap
 from langchain.chains import RetrievalQA
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.vectorstores import Chroma
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
+from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
 from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
 from bunkatopics.datamodel import (
     DOC_ID,
@@ -38,10 +41,15 @@ from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
+from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
 import warnings
 
+import warnings
+
+# Filter ResourceWarning
+warnings.filterwarnings("ignore")
 # Filter ResourceWarning
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
@@ -120,7 +128,7 @@ class Bunka:
         sentences = [doc.content for doc in self.docs]
         ids = [doc.doc_id for doc in self.docs]
 
-        logger.info("Extracting terms from documents")
+        logger.info("Extracting meaningful terms from documents...")
         terms_extractor = TextacyTermsExtractor(language=self.language)
         self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
 
@@ -128,39 +136,42 @@ class Bunka:
         for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
-        logger.info("Embedding Documents, this may time depending on the size")
+        logger.info(
+            "Embedding documents... (can take varying amounts of time depending on their size)"
+        )
 
         characters = string.ascii_letters + string.digits
         random_string = "".join(random.choice(characters) for _ in range(20))
 
-        # using Chroma as a vectorstore
-        self.vectorstore = Chroma(
-            embedding_function=self.embedding_model, collection_name=random_string
+        df_loader = pd.DataFrame(sentences, columns=["text"])
+        df_loader["doc_id"] = ids
+
+        loader = DataFrameLoader(df_loader, page_content_column="text")
+        documents_langchain = loader.load()
+        self.vectorstore = Chroma.from_documents(
+            documents_langchain, self.embedding_model, collection_name=random_string
         )
 
-        self.vectorstore.add_texts(texts=sentences, ids=ids)
-        embeddings = self.vectorstore._collection.get(include=["embeddings"])[
+        bunka_ids = [item["doc_id"] for item in self.vectorstore.get()["metadatas"]]
+        bunka_docs = self.vectorstore.get()["documents"]
+        bunka_embeddings = self.vectorstore._collection.get(include=["embeddings"])[
             "embeddings"
         ]
 
-        df_embeddings = pd.DataFrame(embeddings)
-        df_embeddings.index = ids
-
-        emb_doc_dict = {x: y for x, y in zip(ids, embeddings)}
-
+        # Add to the bunka objects
+        emb_doc_dict = {x: y for x, y in zip(bunka_ids, bunka_embeddings)}
         for doc in self.docs:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
-        logger.info("Reducing Dimensions")
-
+        logger.info("Reducing the dimensions of embeddings...")
         reducer = umap.UMAP(
             n_components=2,
             random_state=None,
         )  # Not random state to go quicker
-        embeddings_2D = reducer.fit_transform(embeddings)
-        df_embeddings_2D = pd.DataFrame(embeddings_2D)
-        df_embeddings_2D.columns = ["x", "y"]
-        df_embeddings_2D["doc_id"] = ids
+        bunka_embeddings_2D = reducer.fit_transform(bunka_embeddings)
+        df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
+        df_embeddings_2D["doc_id"] = bunka_ids
+        df_embeddings_2D["bunka_docs"] = bunka_docs
 
         xy_dict = df_embeddings_2D.set_index("doc_id")[["x", "y"]].to_dict("index")
 
@@ -168,6 +179,23 @@ class Bunka:
         for doc in self.docs:
             doc.x = xy_dict[doc.doc_id]["x"]
             doc.y = xy_dict[doc.doc_id]["y"]
+
+        self.df_embeddings_2D = df_embeddings_2D
+
+        # Create a scatter plot
+        fig_quick_embedding = px.scatter(
+            self.df_embeddings_2D, x="x", y="y", hover_data=["bunka_docs"]
+        )
+
+        # Update layout for better readability
+        fig_quick_embedding.update_layout(
+            title="Raw Scatter Plot of Bunka Embeddings",
+            xaxis_title="X Embedding",
+            yaxis_title="Y Embedding",
+            hovermode="closest",
+        )
+        # Show the plot
+        self.fig_quick_embedding = fig_quick_embedding
 
     def fit_transform(self, docs: t.List[Document], n_clusters=3) -> pd.DataFrame:
         self.fit(docs)
@@ -225,6 +253,9 @@ class Bunka:
         df_topics = pd.DataFrame.from_records(
             [topic.model_dump() for topic in self.topics]
         )
+        df_topics = pd.DataFrame.from_records(
+            [topic.model_dump() for topic in self.topics]
+        )
         return df_topics
 
     def get_clean_topic_name(
@@ -267,6 +298,9 @@ class Bunka:
         df_topics = pd.DataFrame.from_records(
             [topic.model_dump() for topic in self.topics]
         )
+        df_topics = pd.DataFrame.from_records(
+            [topic.model_dump() for topic in self.topics]
+        )
 
         return df_topics
 
@@ -302,6 +336,11 @@ class Bunka:
             show_text=show_text,
             label_size_ratio=label_size_ratio,
         )
+        fig = model_visualizer.fit_transform(
+            self.docs,
+            self.topics,
+        )
+
         fig = model_visualizer.fit_transform(
             self.docs,
             self.topics,
@@ -493,6 +532,10 @@ class Bunka:
             docs=self.docs,
         )
 
+        fig, fig_specific_terms = model_bourdieu.fit_transform(
+            docs=self.docs,
+        )
+
         return fig, fig_specific_terms
 
     def visualize_query(
@@ -610,17 +653,20 @@ class Bunka:
         try:
             file_path = "../web/public" + "/bunka_bourdieu_docs.json"
             docs_json = [x.model_dump() for x in self.bourdieu_docs]
+            docs_json = [x.model_dump() for x in self.bourdieu_docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
             file_path = "../web/public" + "/bunka_bourdieu_topics.json"
             topics_json = [x.model_dump() for x in self.bourdieu_topics]
+            topics_json = [x.model_dump() for x in self.bourdieu_topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 
             file_path = "../web/public" + "/bunka_bourdieu_query.json"
             with open(file_path, "w") as json_file:
+                json.dump(self.bourdieu_query.model_dump(), json_file)
                 json.dump(self.bourdieu_query.model_dump(), json_file)
 
             subprocess.Popen(["npm", "start"], cwd="../web")
@@ -637,11 +683,13 @@ class Bunka:
         try:
             file_path = "../web/public" + "/bunka_docs.json"
             docs_json = [x.model_dump() for x in self.docs]
+            docs_json = [x.model_dump() for x in self.docs]
 
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
             file_path = "../web/public" + "/bunka_topics.json"
+            topics_json = [x.model_dump() for x in self.topics]
             topics_json = [x.model_dump() for x in self.topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)

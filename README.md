@@ -1,32 +1,33 @@
-[![PyPI - Python](https://img.shields.io/badge/python-v3.10-blue.svg)](https://pypi.org/project/bunkatopics/)
+[![PyPI - Python](https://img.shields.io/badge/python-v3.9-blue.svg)](https://pypi.org/project/bunkatopics/)
 [![PyPI - PyPi](https://img.shields.io/pypi/v/bunkatopics)](https://pypi.org/project/bunkatopics/)
 [![Downloads](https://static.pepy.tech/badge/bunkatopics)](https://pepy.tech/project/bunkatopics)
 [![Downloads](https://static.pepy.tech/badge/bunkatopics/month)](https://pepy.tech/project/bunkatopics)
+
+Please read our Documentation: [The Origin of Bunka](https://charlesdedampierre.github.io/BunkaTopics)
 
 # Bunkatopics
 
 <img src="images/logo.png" width="35%" height="35%" align="right" />
 
-Bunkatopics is a Topic Modeling Visualisation, Frame Analysis & Retrieval Augmented Generation (RAG) package that leverages LLMs. It is built with the same philosophy as [BERTopic](https://github.com/MaartenGr/BERTopic) but goes deeper in the visualization to help users grasp quickly and intuitively the content of thousands of text, as well as giving the opportunity to the user to create its own frames.
-
-Bunkatopics is built on top of [langchain](<https://python.langchain.com/docs/get_started/introduction>).
+Bunkatopics is a package designed for Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG) tasks, harnessing the power of Large Language Models (LLMs). Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleansing and optimizing LLMs through fine-tuning processes.
+Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.
 
 ## Pipeline
 
 <img src="images/pipeline.png" width="70%" height="70%" align="center" />
 
+## Installation via Pip
+
+```bash
+pip install bunkatopics
+```
+
 ## Installation via Git Clone
 
 ```bash
-pip install poetry
 git clone https://github.com/charlesdedampierre/BunkaTopics.git
 cd BunkaTopics
-
-# Create the environment from the .lock file. 
-poetry install # This will install all packages in the .lock file inside a virtual environmnet
-
-# Start the environment
-poetry shell
+pip install -e .
 ```
 
 ## Colab Example
@@ -37,154 +38,130 @@ poetry shell
 
 ## Quick Start
 
-Install the spacy tokenizer model for english:
+### Uploading Sample Data
 
-```bash
-python -m spacy download en_core_web_sm
-```
-
-We start by Loading Trump data from HuggingFace datasets
+To get started, let's upload a sample of Medium Articles into Bunkatopics:
 
 ```python
-
-from bunkatopics.functions.clean_text import clean_tweet
-import random
 from datasets import load_dataset
-
-dataset = load_dataset("rguo123/trump_tweets")["train"]["content"]
-full_docs = random.sample(dataset, 5000)
-full_docs = [clean_tweet(x) for x in full_docs] # Cleaning the tweets
-full_docs = [x for x in full_docs if len(x)>50] # Removing small tweets, they are not informative enough
-
+docs = load_dataset("bunkalab/medium")["train"]["title"]
 ```
 
 You can the load any embedding model from langchain. Some of them might be large, please check the langchain [documentation](https://python.langchain.com/en/latest/reference/modules/embeddings.html)
 
-## Topic Modeling
+### Choose Your Embedding Model
+
+Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.
 
 ```python
 from bunkatopics import Bunka
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We use a small model
-bunka = Bunka(embedding_model=embedding_model)
+# Choose your embedding model
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We recommend starting with a small model
+
+# Initialize Bunka with your chosen model and language preference
+bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+
+# Fit Bunka to your text data
 bunka.fit(full_docs)
 
-# Get the list of topics
-bunka.get_topics(n_clusters = 20, name_lenght=3)
+# Get a list of topics
+df_topics = bunka.get_topics(n_clusters=15, name_length=3) # Specify the number of terms to describe each topic
+print(df_topics)
 ```
 
-Then, we can visualize the topics computed
+### Visualize Your Topics
+
+Finally, let's visualize the topics that Bunka has computed for your text data:
 
 ```python
-bunka.visualize_topics( width=800, height=800)
+bunka.visualize_topics(width=800, height=800)
 ```
 
 <img src="images/newsmap.png" width="70%" height="70%" align="center" />
 
 ## Topic Modeling with GenAI Summarization of Topics
 
-You can get the topics summarized by Generative AI.
-Use any model from Langchain. We use the 7B-instruct model of [Mistral AI](<https://mistral.ai/news/announcing-mistral-7b/>) thought [llama.cpp](<https://github.com/ggerganov/llama.cpp>) and the [langchain integration](<https://python.langchain.com/docs/integrations/llms/llamacpp>).
+Explore the power of Generative AI for summarizing topics!
+We use the 7B-instruct model of [Mistral AI](<https://mistral.ai/news/announcing-mistral-7b/>) from the huggingface hub using the langchain framework.
 
 ```python
-import os
 from langchain.llms import HuggingFaceHub
 
-# Using Mistral AI to Summarize the topics
+# Define the repository ID for Mistral-7B-v0.1
+repo_id = 'mistralai/Mistral-7B-v0.1'
 
-llm = HuggingFaceHub(repo_id = 'mistralai/Mistral-7B-v0.1', huggingfacehub_api_token = os.environ.get("HF_TOKEN")
-)
-df_topics = bunka.get_clean_topic_name(generative_model = llm)
-print(df_topics)
+# Using Mistral AI to Summarize the Topics
+llm = HuggingFaceHub(repo_id='mistralai/Mistral-7B-v0.1', huggingfacehub_api_token="HF_TOKEN")
+
+# Obtain clean topic names using Generative Model
+df_topics_clean = bunka.get_clean_topic_name(generative_model=llm)
+print(df_topics_clean)
+
 bunka.visualize_topics( width=800, height=800)
 ```
 
-<img src="images/newsmap_clean.png" width="70%" height="70%" align="center" />
-
-Start the serveur to visualize the data with a front-end. The map displayed used data from Arxiv.
-
-Make an .env for the front to work
-
-```bash
-cp web/env web/.env
-```
+Finally, let's visualize again the topics
 
 ```python
-bunka.start_server()
-```
-
-<img src="images/front.png" width="70%" height="70%" align="center" />
-
-## Installation via pip
-
-First, create a new virtual environment using pyenv
-
-```bash
-pyenv virtualenv 3.10 bunkatopics_env
-```
-
-Activate the environment
-
-```bash
-pyenv activate bunkatopics_env
-```
-
-Then Install the Bunkatopics package:
-
-```bash
-pip install bunkatopics==0.43
+bunka.visualize_topics(width=800, height=800)
 ```
 
 ## Retrieval Augmented Generation (RAG)
 
-It is possible to to Retrieval Augmented Generation (RAG) thanks to langchain integration with different Generative Models.
+Experience Retrieval Augmented Generation (RAG) with Bunkatopics, enabled by seamless integration with various Generative Models from Langchain.
 
 ```python
-query = 'What is the  main fight of Donald Trump ?'
-res = bunka.rag_query(query = query, generative_model = generative_model, top_doc = 5)
+from langchain.llms import HuggingFaceHub
+# Define the repository ID for Mistral-7B-v0.1
+repo_id = 'mistralai/Mistral-7B-v0.1'
+
+# Define your query
+query = 'What is the main focus of Donald Trump?'
+
+
+# Using Mistral AI to Summarize the Topics
+llm = HuggingFaceHub(repo_id=repo_id, huggingfacehub_api_token="HF_TOKEN")
+
+# Execute RAG with your query and chosen generative model
+res = bunka.rag_query(query=query, llm=generative_model, top_doc=5)
+
+# Print the RAG-generated result
 print(res['result'])
 ```
 
-OUTPUT:
-
-- The main fight of Donald Trump in the presidential elections of 2016 was against Hillary Clinton. He believed he was the best candidate for president and was able to beat many other candidates in the field due to his fame and political opinions.
-
 ```python
+# Display source documents used in the RAG process
 for doc in res['source_documents']:
     text = doc.page_content.strip()
     print(text)
 ```
 
-OUTPUT:
-
-- what do you say donald  run for president
-- why only donald trump can beat hillary/n
-- via    donald trump on who he likes for president  donald trump/n
-- if the 2016  presidential field is so deep  why is donaldtrump beating so many of their  stars
-- donald trump is a respected businessman with insightful political opinions
-
 ## Bourdieu Map
 
-The Bourdieu map display the different texts on a 2-Dimensional unsupervised scale. Every region of the map is a topic described by its most specific terms.
-CLusters are created and the names are also summarized using Generative AI.
+The Bourdieu map provides a 2-Dimensional unsupervised scale to visualize various texts. Each region on the map represents a distinct topic, characterized by its most specific terms. Clusters are formed, and their names are succinctly summarized using Generative AI.
 
-The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
+The significance of this visualization lies in its ability to define axes, thereby creating continuums that reveal data distribution patterns. This concept draws inspiration from the work of the renowned French sociologist Bourdieu, who employed 2-Dimensional maps to project items and gain insights.
 
 ```python
-
 from langchain.llms import HuggingFaceHub
 
-llm = HuggingFaceHub(repo_id = 'mistralai/Mistral-7B-v0.1', huggingfacehub_api_token = os.environ.get("HF_TOKEN")
+# Define the HuggingFaceHub instance with the repository ID and API token
+llm = HuggingFaceHub(
+    repo_id='mistralai/Mistral-7B-v0.1',
+    huggingfacehub_api_token="HF_TOKEN"
 )
 
+# Define custom axis names for the Bourdieu visualization
 manual_axis_name = {
-                    'x_left_name':'positive',
-                    'x_right_name':'negative',
-                    'y_top_name':'women',
-                    'y_bottom_name':'men',
-                    }
+    'x_left_name': 'positive',
+    'x_right_name': 'negative',
+    'y_top_name': 'women',
+    'y_bottom_name': 'men',
+}
 
+# Visualize data on the Bourdieu map
 bourdieu_fig = bunka.visualize_bourdieu(
     generative_model=llm,
     x_left_words=["this is a positive content"],
@@ -199,10 +176,12 @@ bourdieu_fig = bunka.visualize_bourdieu(
     topic_terms=5,
     topic_top_terms_overall=500,
     topic_gen_name=True,
-    convex_hull = True,
-    radius_size = 0.5,
-    manual_axis_name = manual_axis_name
+    convex_hull=True,
+    radius_size=0.5,
+    manual_axis_name=manual_axis_name
 )
+
+# Display the Bourdieu map
 bourdieu_fig.show()
 ```
 
@@ -213,60 +192,12 @@ bourdieu_fig.show()
 Run Streamlit to use BunkaTopics with a nice front-end.
 
 ```bash
+pip install 'bunkatopics['front']' # Install front-related packages
 python -m streamlit run streamlit/app.py 
 ```
 
-## Multilanguage
+## Contribution
 
-The package use Spacy to extract meaningfull terms for the topic represenation.
+If you have any questions, feedback, or would like to contribute, please don't hesitate to reach out!
 
-If you wish to change language to french, first, download the corresponding spacy model:
-
-```bash
-python -m spacy download fr_core_news_lg
-```
-
-```python
-embedding_model = HuggingFaceEmbeddings(model_name="distiluse-base-multilingual-cased-v2")
-
-bunka = Bunka(embedding_model=embedding_model, language = 'fr_core_news_lg')
-
-bunka.fit(full_docs)
-bunka.get_topics(n_clusters = 20)
-
-
-```  
-
-## Functionality
-
-Here are all the things you can do with Bunkatopics
-
-### Common
-
-Below, you will find an overview of common functions in Bunkatopics.
-
-| Method | Code  |
-|-----------------------|---|
-| Fit the model    |  `.fit(docs)` |
-| Fit the model and get the topics  |  `.fit_transform(docs)` |
-| Acces the topics   | `.get_topics(n_clusters=10)`  |
-| RAG   | `.rag_query(query, generative_model)`  |
-| Access the top documents per topic    |  `.get_clean_topic_name()` |
-| Access the distribution of topics   |  `.get_topic_repartition()` |
-| Visualize the topics on a Map |  `.visualize_topics()` |
-| Visualize the topics on Natural Language Supervised axis | `.visualize_bourdieu()` |
-| Access the Coherence of Topics |  `.get_topic_coherence()` |
-| Get the closest documents to your search | `.search('politics')` |
-
-### Attributes
-
-You can access several attributes
-
-| Attribute | Description |
-|------------------------|---------------------------------------------------------------------------------------------|
-| `.docs`               | The documents stores as a Document pydantic model |
-| `.topics` | The Topics stored as a Topic pydantic model. |
-
-## API, Async Queue and server deployment documentation
-
-- [Read the API README.md](./api/README.md)
+Many thanks to Maarten Grootendorst for inspiring us with his groundbreaking work on Bertopics.

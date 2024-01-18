@@ -44,13 +44,13 @@ class TextacyTermsExtractor:
     def __init__(
         self,
         language: str = "english",
-        ngrams: t.Tuple[int, ...] = (1, 2, 3),
-        ngs=True,
-        ents=True,
-        ncs=True,
-        drop_emoji=True,
-        include_pos=["NOUN"],
-        include_types=["PERSON", "ORG"],
+        ngrams: t.List[int] = [1, 2, 3],
+        ngs: bool = True,
+        ents: bool = False,
+        ncs: bool = False,
+        drop_emoji: bool = True,
+        include_pos: t.List[str] = ["NOUN"],
+        include_types: t.List[str] = ["PERSON", "ORG"],
     ):
         """
         Initializes the TextacyTermsExtractor with specified configuration.
@@ -99,6 +99,7 @@ class TextacyTermsExtractor:
         self.drop_emoji = drop_emoji
         self.include_pos = include_pos
         self.include_types = include_types
+        self.ngrams = ngrams
 
         # Set the language model based on the provided language
         if language in self.supported_languages:
@@ -111,8 +112,6 @@ class TextacyTermsExtractor:
         except OSError:
             # The model is not installed, so download it
             spacy.cli.download(self.language_model)
-
-        self.ngrams = ngrams
 
     def fit_transform(
         self,

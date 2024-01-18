@@ -16,6 +16,7 @@ generative_model_api/
 test.ipynb
 bash.sh
 hide/
+bunka_env/
 
 # remove poetry files
 poetry.lock
@@ -68,6 +69,9 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+env_*
+debug.ipynb
+
 
 # Sphinx documentation
 docs/_build/

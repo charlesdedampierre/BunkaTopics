@@ -331,8 +331,6 @@ class Bunka:
         logger.info("Creating the Bunka Map")
 
         model_visualizer = TopicVisualizer(
-
-        model_visualizer = TopicVisualizer(
             width=width,
             height=height,
             show_text=show_text,
@@ -352,7 +350,6 @@ class Bunka:
 
     def visualize_bourdieu(
         self,
-        llm: t.Optional[str] = None,
         llm: t.Optional[str] = None,
         x_left_words: t.List[str] = ["war"],
         x_right_words: t.List[str] = ["peace"],
@@ -431,7 +428,6 @@ class Bunka:
 
         bourdieu_api = BourdieuAPI(
             llm=llm,
-            llm=llm,
             embedding_model=self.embedding_model,
             bourdieu_query=self.bourdieu_query,
             generative_ai_name=topic_gen_name,
@@ -441,11 +437,7 @@ class Bunka:
 
         new_docs = copy.deepcopy(self.docs)
         new_terms = copy.deepcopy(self.terms)
-        new_docs = copy.deepcopy(self.docs)
-        new_terms = copy.deepcopy(self.terms)
         res = bourdieu_api.fit_transform(
-            docs=new_docs,
-            terms=new_terms,
             docs=new_docs,
             terms=new_terms,
         )
@@ -454,7 +446,6 @@ class Bunka:
         self.bourdieu_topics = res[1]
 
         visualizer = BourdieuVisualizer(
-        visualizer = BourdieuVisualizer(
             height=height,
             width=width,
             display_percent=display_percent,
@@ -462,8 +453,6 @@ class Bunka:
             clustering=clustering,
             manual_axis_name=manual_axis_name,
         )
-
-        fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
 
         fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
 
@@ -529,8 +518,6 @@ class Bunka:
             in terms of these contrasting word concepts. An optional explainer figure can provide additional
             insight into specific terms used in the visualization.
         """
-
-        model_bourdieu = BourdieuOneDimensionVisualizer(
 
         model_bourdieu = BourdieuOneDimensionVisualizer(
             embedding_model=self.embedding_model,

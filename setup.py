@@ -84,7 +84,8 @@ setup(
     ],
     install_requires=dependencies,
     extras_require={
-        "test": dev,
+        "dev": dev,
+        "test": test,
         "docs": docs,
         "check": check,
     },

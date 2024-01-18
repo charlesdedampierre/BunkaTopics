@@ -16,7 +16,6 @@ from langchain_community.llms import HuggingFaceHub
 
 from bunkatopics import Bunka
 
-
 random.seed(42)
 
 repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
@@ -64,7 +63,7 @@ class TestBunka(unittest.TestCase):
         n_clusters = 3
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
-        print(df_topics_clean["topic_name"])
+        print(df_topics_clean["topic_name_clean"])
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
         self.assertEqual(len(df_topics_clean), n_clusters)
 

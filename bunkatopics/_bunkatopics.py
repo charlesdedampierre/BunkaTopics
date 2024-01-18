@@ -307,6 +307,20 @@ class Bunka:
             [topic.model_dump() for topic in self.topics]
         )
 
+        df_topics["percent"] = df_topics["size"] / df_topics["size"].sum()
+        df_topics["percent"] = round(df_topics["percent"], 2)
+        df_topics = df_topics.rename(columns={"name": "topic_name_clean"})
+
+        df_topics = df_topics[
+            [
+                "topic_id",
+                "topic_name_clean",
+                "size",
+                "percent",
+                "top_doc_content",
+            ].copy()
+        ]
+
         return df_topics
 
     def visualize_topics(

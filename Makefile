@@ -18,8 +18,6 @@ install_packages:
 docs_serve:
 	mkdocs serve
 
-build_poetry:
-	python -m build --sdist --wheel
 
 ### TO PUBLISH THIS WORKS AFTER MOVING THE POETRY FILE
 build_poetry:
@@ -30,12 +28,7 @@ pypi:
 	python setup.py sdist
 	python setup.py bdist_wheel --universal
 
-pypi_publish:
-	twine upload dist/* -u __token__ -p $(PYPY_TOKEN)
 ### TO PUBLISH THIS WORKS
-
-pypi_publish_test:
-	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
 
 pypi_publish:
 	twine upload dist/* -u __token__ -p $(PYPY_TOKEN)
@@ -59,8 +52,8 @@ delete_checkpoints:
 	find . -type d -name ".ipynb_checkpoints" -exec rm -r {} +
 
 format_code: clean
-	black .
-	isort .
+	black bunkatopics
+	isort bunkatopics
 	flake8 bunkatopics
 
 test:
@@ -80,7 +73,7 @@ poetry_export_full:
 	poetry self add poetry-plugin-export
 	poetry export --without-hashes --format=requirements.txt > requirements.txt	
 
-pre_push: format_code poetry_export clean check
+pre_push: format_code clean check
 
 #############
 # DEV #

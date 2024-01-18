@@ -74,8 +74,8 @@ class BourdieuOneDimensionVisualizer:
             scale=False,
         )
 
-        fig, fig_specific_terms = self.plot_unique_dimension()
-        return fig, fig_specific_terms
+        fig = self.plot_unique_dimension()
+        return fig
 
     def plot_unique_dimension(self) -> go.Figure:
         """
@@ -128,7 +128,7 @@ class BourdieuOneDimensionVisualizer:
             )
         )
 
-        fig_specific_terms = plot_specific_terms(
+        """fig_specific_terms = plot_specific_terms(
             docs=self.new_docs,
             left_words=left,
             right_words=right,
@@ -136,6 +136,6 @@ class BourdieuOneDimensionVisualizer:
             ngrams=self.explainer_ngrams,
             quantile=0.80,
             top_n=20,
-        )
+        )"""
 
-        return (fig, fig_specific_terms)
+        return fig

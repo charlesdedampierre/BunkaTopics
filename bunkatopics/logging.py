@@ -1,4 +1,5 @@
 import logging
+
 import colorlog
 
 # Create a custom logger named "Bunka"

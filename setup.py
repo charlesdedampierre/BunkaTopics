@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 dependencies = [
     "pandas>=2.0.2",
@@ -17,33 +17,28 @@ dependencies = [
     "chromadb>=0.4.13",
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
-    "nbformat>=4.2.0",
+    "langchain_openai",
 ]
 
-dev = [
+test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]
+
+format_dependencies = [
     "black ~= 23.0",
     "isort ~= 5.0",
-    "pytest ~= 7.0",
-    "pytest-cov",
     "twine ~= 4.0",
     "wheel",
+    "kaleido",
+    "flake8",
 ]
 
-docs = [
+docs_dependencies = [
     "mkdocs>=1.1.2",
     "mkdocs-material>=8.1.4",
     "mkdocstrings>=0.24.0",
     "mkdocstrings-python>=1.8.0",
 ]
 
-check = [
-    "black ~= 23.0",
-    "isort ~= 5.0",
-    "mypy ~= 1.0.0",
-    "pytest ~= 7.0",
-    "pytest-cov",
-    "ruff",
-]
+dev = test + format_dependencies + docs_dependencies
 
 front = ["streamlit"]
 
@@ -83,9 +78,10 @@ setup(
     ],
     install_requires=dependencies,
     extras_require={
-        "test": dev,
-        "docs": docs,
-        "check": check,
+        "dev": dev,
+        "test": test,
+        "docs": docs_dependencies,
+        "format": format_dependencies,
     },
     python_requires=">=3.9",
 )

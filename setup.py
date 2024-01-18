@@ -18,6 +18,8 @@ dependencies = [
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
     "nbformat>=4.2.0",
+    "ipywidgets",
+    "nbconvert",
 ]
 
 dev = [

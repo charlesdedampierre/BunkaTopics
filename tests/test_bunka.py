@@ -2,6 +2,10 @@ import os
 import random
 import unittest
 
+import nbformat
+from nbconvert.preprocessors import ExecutePreprocessor
+import traceback
+
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
@@ -41,7 +45,7 @@ class TestBunka(unittest.TestCase):
 
         # Visualize Topics
         topic_fig = self.bunka.visualize_topics(width=800, height=800, show_text=True)
-        topic_fig.show()
+        # topic_fig.show()
         self.assertIsInstance(topic_fig, go.Figure)
 
     def test_generative_names(self):
@@ -66,7 +70,7 @@ class TestBunka(unittest.TestCase):
             topic_gen_name=True,
             topic_n_clusters=3,
         )
-        bourdieu_fig.show()
+        # bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
     def test_rag(self):
@@ -101,6 +105,23 @@ class TestBunka(unittest.TestCase):
         self.bunka.get_topics(n_clusters=3, min_count_terms=1)
         fig_distribution = self.bunka.get_topic_repartition()
         self.assertIsInstance(fig_distribution, go.Figure)
+
+    def test_notebook(self):
+        notebook_filename = (
+            "notebooks/cleaning.ipynb"  # Replace with your notebook file
+        )
+        with open(notebook_filename) as f:
+            nb = nbformat.read(f, as_version=4)
+
+        ep = ExecutePreprocessor(timeout=600, kernel_name="python3")
+
+        try:
+            ep.preprocess(nb)
+        except Exception as e:
+            print(f"Error executing the notebook {notebook_filename}.")
+            print(e)
+            traceback.print_exc()
+            self.fail(f"Notebook {notebook_filename} failed to execute.")
 
 
 if __name__ == "__main__":

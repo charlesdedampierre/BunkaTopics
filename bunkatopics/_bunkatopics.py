@@ -13,6 +13,10 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
+
+from IPython.display import display
+from ipywidgets import Checkbox, VBox, Button, Layout, Label
+
 from langchain.chains import RetrievalQA
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import DataFrameLoader
@@ -43,8 +47,6 @@ from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
-
-import warnings
 
 import warnings
 
@@ -98,6 +100,7 @@ class Bunka:
                 )
         self.embedding_model = embedding_model
         self.language = language
+        self.df_cleaned = None
 
     def fit(
         self,
@@ -645,6 +648,43 @@ class Bunka:
         texts = [doc.term_id for doc in self.docs]
         res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
         return res
+
+    def clean_data_by_topics(self):
+        def on_button_clicked(b):
+            selected_topics = [
+                checkbox.description for checkbox in checkboxes if checkbox.value
+            ]
+            topic_filtered = [x for x in self.topics if x.name in selected_topics]
+            topic_id_filtered = [x.topic_id for x in topic_filtered]
+            docs_filtered = [x for x in self.docs if x.topic_id in topic_id_filtered]
+
+            df_docs_cleaned = pd.DataFrame([doc.model_dump() for doc in docs_filtered])
+            df_docs_cleaned = df_docs_cleaned[["doc_id", "content", "topic_id"]]
+            df_topics = pd.DataFrame([topic.model_dump() for topic in topic_filtered])
+            df_topics = df_topics[["topic_id", "name"]]
+            self.df_cleaned = pd.merge(df_docs_cleaned, df_topics, on="topic_id")
+
+            len_kept = len(docs_filtered)
+            len_docs = len(self.docs)
+            percent_kept = round(len_kept / len_docs, 2) * 100
+            percent_kept = str(percent_kept) + "%"
+
+            logger.info(f"After cleaning, you've kept {percent_kept} of your data")
+
+        # Optionally, return or display df_cleaned
+        topic_names = [x.name for x in self.topics]
+        checkboxes = [
+            Checkbox(description=name, value=True, layout=Layout(width="auto"))
+            for name in topic_names
+        ]
+
+        title_label = Label("Click on the topics you want to remove 🧹✨🧼🧽")
+        checkbox_container = VBox(
+            [title_label] + checkboxes, layout=Layout(overflow="scroll hidden")
+        )
+        button = Button(description="Clean Data")
+        button.on_click(on_button_clicked)
+        display(checkbox_container, button)
 
     def start_server_bourdieu(self):
         if is_server_running():

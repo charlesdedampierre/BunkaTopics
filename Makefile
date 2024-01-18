@@ -18,8 +18,6 @@ install_packages:
 docs_serve:
 	mkdocs serve
 
-build_poetry:
-	python -m build --sdist --wheel
 
 ### TO PUBLISH THIS WORKS AFTER MOVING THE POETRY FILE
 build_poetry:
@@ -30,12 +28,7 @@ pypi:
 	python setup.py sdist
 	python setup.py bdist_wheel --universal
 
-pypi_publish:
-	twine upload dist/* -u __token__ -p $(PYPY_TOKEN)
 ### TO PUBLISH THIS WORKS
-
-pypi_publish_test:
-	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
 
 pypi_publish:
 	twine upload dist/* -u __token__ -p $(PYPY_TOKEN)

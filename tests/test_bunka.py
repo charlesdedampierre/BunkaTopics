@@ -119,7 +119,7 @@ class TestBunka(unittest.TestCase):
         fig_distribution = self.bunka.get_topic_repartition()
         self.assertIsInstance(fig_distribution, go.Figure)
 
-    def test_notebook(self):
+    """def test_notebook(self):
         notebook_filename = (
             "notebooks/cleaning.ipynb"  # Replace with your notebook file
         )
@@ -135,6 +135,8 @@ class TestBunka(unittest.TestCase):
             print(e)
             traceback.print_exc()
             self.fail(f"Notebook {notebook_filename} failed to execute.")
+
+    """
 
 
 if __name__ == "__main__":

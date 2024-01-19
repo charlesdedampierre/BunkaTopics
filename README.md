@@ -129,15 +129,8 @@ Finally, let's visualize again the topics. We can chose from different colorscal
 bunka.visualize_topics(width=800, height=800)
 ```
 
-<div style="display: flex; justify-content: center;">
-  <img src="images/topic_modeling_clean_YlGnBu.png" alt="Image 1" style="max-width: 50%; height: auto;">
-  <img src="images/topic_modeling_clean_Portland.png" alt="Image 2" style="max-width: 50%; height: auto;">
-</div>
-
-<div style="display: flex; justify-content: center;">
-  <img src="images/topic_modeling_clean_delta.png" alt="Image 1" style="max-width: 50%; height: auto;">
-  <img src="images/topic_modeling_clean_Blues.png" alt="Image 2" style="max-width: 50%; height: auto;">
-</div>
+![Image 1](images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](images/topic_modeling_clean_Portland.png)
+![Image 3](images/topic_modeling_clean_delta.png)  |  ![Image 4](images/topic_modeling_clean_Blues.png)
 
 We can now access the newly made topics
 
@@ -237,18 +230,6 @@ bourdieu_fig = bunka.visualize_bourdieu(
 bourdieu_fig.show()
 ```
 
-<div style="display: flex; justify-content: center;">
-  <img src="images/bourdieu_1.png" alt="Image 1" style="max-width: 20%; height: auto;">
-  <img src="images/bourdieu_2.png" alt="Image 1" style="max-width: 20%; height: auto;">
-</div>
-
-<div style="display: flex; justify-content: center;">
-  <img src="images/bourdieu_3.png" alt="Image 1" style="max-width: 20%; height: auto;">
-  <img src="images/bourdieu_4.png" alt="Image 1" style="max-width: 20%; height: auto;">
-</div>
-
-Solarized dark             |  Solarized Ocean
-:-------------------------:|:-------------------------:
 ![Image 1](images/bourdieu_1.png)  |  ![Image 2](images/bourdieu_2.png)
 ![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
 

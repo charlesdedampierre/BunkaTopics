@@ -45,12 +45,16 @@ from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
+from langchain_core._api.deprecation import LangChainDeprecationWarning
+
 
 # Filter ResourceWarning
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", message="omp_set_nested routine deprecated")
+
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -85,6 +89,8 @@ class Bunka:
                Options: "english" (default), or specify another language as needed.
                Default: "english"
         """
+
+        warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
         if embedding_model is None:
             if language == "english":
                 embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -227,6 +233,13 @@ class Bunka:
             The method applies topic modeling using the specified parameters and updates the internal state
             with the resulting topics. It also associates the identified topics with the documents.
         """
+
+        # Add the conditional check for min_count_terms and len(self.docs)
+        if min_count_terms > 1 and len(self.docs) <= 500:
+            logger.info(
+                f"There is not enough data to select terms with a minimum occurrence of {min_count_terms}. Setting min_count_terms to 1"
+            )
+            min_count_terms = 1
 
         logger.info("Computing the topics")
 

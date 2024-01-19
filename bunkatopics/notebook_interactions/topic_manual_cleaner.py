@@ -14,7 +14,7 @@ def change_topic_names(topic_list, id_list):
         text_widgets.append(widgets.HBox([text_widget, original_topic_label]))
 
     # Create a title widget
-    title_widget = widgets.HTML("Manually input the new topic names 📝 📥")
+    title_widget = widgets.HTML("Manually input the new topic names: ")
 
     # Combine the title, Text widgets, and a button in a VBox
     container = widgets.VBox([title_widget] + text_widgets)

@@ -9,6 +9,7 @@ extra_css:
 
 theme:
   name: material
+  favicon: img/favicon.png
   font:
     text: Roboto
     code: Roboto Mono

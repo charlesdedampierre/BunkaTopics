@@ -33,23 +33,28 @@ from bunkatopics.datamodel import (
     TopicParam,
 )
 from bunkatopics.logging import logger
+from bunkatopics.notebook_interactions.topic_manual_cleaner import change_topic_names
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
 from bunkatopics.topic_modeling import (
     BunkaTopicModeling,
+    DocumentRanker,
     LLMCleaningTopic,
     TextacyTermsExtractor,
 )
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
+from langchain_core._api.deprecation import LangChainDeprecationWarning
+
 
 # Filter ResourceWarning
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", message="omp_set_nested routine deprecated")
+
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -84,6 +89,8 @@ class Bunka:
                Options: "english" (default), or specify another language as needed.
                Default: "english"
         """
+
+        warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
         if embedding_model is None:
             if language == "english":
                 embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -123,14 +130,6 @@ class Bunka:
         self.docs = [Document(**row) for row in df.to_dict(orient="records")]
         sentences = [doc.content for doc in self.docs]
         ids = [doc.doc_id for doc in self.docs]
-
-        logger.info("Extracting meaningful terms from documents...")
-        terms_extractor = TextacyTermsExtractor(language=self.language)
-        self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
-
-        # add to the docs object
-        for doc in self.docs:
-            doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
         logger.info(
             "Embedding documents... (can take varying amounts of time depending on their size)"
@@ -193,6 +192,14 @@ class Bunka:
         # Show the plot
         self.fig_quick_embedding = fig_quick_embedding
 
+        logger.info("Extracting meaningful terms from documents...")
+        terms_extractor = TextacyTermsExtractor(language=self.language)
+        self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
+
+        # add to the docs object
+        for doc in self.docs:
+            doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
+
     def fit_transform(self, docs: t.List[Document], n_clusters=3) -> pd.DataFrame:
         self.fit(docs)
         df_topics = self.get_topics(n_clusters=n_clusters)
@@ -205,6 +212,7 @@ class Bunka:
         name_length: int = 10,
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
+        ranking_terms: int = 20,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -226,6 +234,13 @@ class Bunka:
             with the resulting topics. It also associates the identified topics with the documents.
         """
 
+        # Add the conditional check for min_count_terms and len(self.docs)
+        if min_count_terms > 1 and len(self.docs) <= 500:
+            logger.info(
+                f"There is not enough data to select terms with a minimum occurrence of {min_count_terms}. Setting min_count_terms to 1"
+            )
+            min_count_terms = 1
+
         logger.info("Computing the topics")
 
         topic_model = BunkaTopicModeling(
@@ -243,9 +258,9 @@ class Bunka:
             terms=self.terms,
         )
 
-        self.docs, self.topics = get_top_documents(
-            self.docs, self.topics, ranking_terms=20
-        )
+        model_ranker = DocumentRanker(ranking_terms=ranking_terms)
+        self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
+
         df_topics = pd.DataFrame.from_records(
             [topic.model_dump() for topic in self.topics]
         )
@@ -260,6 +275,26 @@ class Bunka:
         df_topics = df_topics[
             ["topic_id", "topic_name", "size", "percent", "top_doc_content"].copy()
         ]
+
+        # extract Dataframe for top documents per topic
+        top_docs_topics = [x for x in self.docs if x.topic_ranking is not None]
+        top_docs_topics = pd.DataFrame([x.model_dump() for x in top_docs_topics])
+        top_docs_topics["ranking_per_topic"] = top_docs_topics["topic_ranking"].apply(
+            lambda x: x.get("rank")
+        )
+        top_docs_topics = top_docs_topics[
+            ["topic_id", "content", "ranking_per_topic", "doc_id"]
+        ]
+        top_docs_topics = top_docs_topics.sort_values(
+            ["topic_id", "ranking_per_topic"], ascending=(True, True)
+        )
+        top_docs_topics = top_docs_topics.reset_index(drop=True)
+        top_docs_topics = pd.merge(
+            top_docs_topics, df_topics[["topic_id", "topic_name"]], on="topic_id"
+        )
+
+        self.df_topics_ = df_topics
+        self.df_top_docs_per_topic_ = top_docs_topics
 
         return df_topics
 
@@ -675,6 +710,31 @@ class Bunka:
         return res
 
     def clean_data_by_topics(self):
+        """
+        Filters and cleans the dataset based on user-selected topics.
+
+        This method presents a UI with checkboxes for each topic in the dataset.
+        The user can select topics to keep, and the data will be filtered accordingly.
+        It merges the filtered documents and topics data, renames columns for clarity,
+        and calculates the percentage of data retained after cleaning.
+
+        Attributes Updated:
+            - self.df_cleaned: DataFrame containing the merged and cleaned documents and topics.
+
+        Logging:
+            - Logs the percentage of data retained after cleaning.
+
+        Side Effects:
+            - Updates `self.df_cleaned` with the cleaned data.
+            - Displays interactive widgets for user input.
+            - Logs information about the data cleaning process.
+
+        Note:
+            - This method uses interactive widgets (checkboxes and a button) for user input.
+            - The cleaning process is triggered by clicking the 'Clean Data' button.
+
+        """
+
         def on_button_clicked(b):
             selected_topics = [
                 checkbox.description for checkbox in checkboxes if checkbox.value
@@ -708,9 +768,44 @@ class Bunka:
         checkbox_container = VBox(
             [title_label] + checkboxes, layout=Layout(overflow="scroll hidden")
         )
-        button = Button(description="Clean Data")
+        button = Button(
+            description="Clean Data",
+            style={"button_color": "#2596be", "color": "#2596be"},
+        )
         button.on_click(on_button_clicked)
         display(checkbox_container, button)
+
+    def manually_clean_topics(self):
+        """
+        Allows manual renaming of topic names in the dataset.
+
+        This method facilitates the manual editing of topic names based on their IDs.
+        If no changes are made, it retains the original topic names.
+
+        The updated topic names are then applied to the `topics` attribute of the class instance.
+
+        Attributes Updated:
+            - self.topics: Each topic in this list gets its name updated based on the changes.
+
+        Note:
+            - This method assumes the presence of a function `change_topic_names`
+              which handles the renaming process.
+
+        Side Effects:
+            - Modifies the `name` attribute of each topic in `self.topics` based on user input or defaults.
+        """
+
+        original_topics = [x.name for x in self.topics]
+        original_topics_id = [x.topic_id for x in self.topics]
+        new_topic_names = change_topic_names(original_topics, original_topics_id)
+
+        if new_topic_names == []:
+            new_topic_names = original_topics
+
+        topic_dict = dict(zip(original_topics_id, new_topic_names))
+
+        for topic in self.topics:
+            topic.name = topic_dict.get(topic.topic_id)
 
     def start_server_bourdieu(self):
         if is_server_running():

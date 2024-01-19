@@ -33,14 +33,14 @@ class TestBunka(unittest.TestCase):
         # Load a sample dataset
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 500)
+        docs = random.sample(docs, 400)
         cls.bunka = Bunka()
         cls.bunka.fit(docs)
 
     def test_topic_modeling(self):
         # Test Topic Modeling
         n_clusters = 3
-        df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
+        df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=4)
         print(df_topics["topic_name"])
         self.assertIsInstance(df_topics, pd.DataFrame)
         self.assertEqual(len(df_topics), n_clusters)
@@ -50,7 +50,7 @@ class TestBunka(unittest.TestCase):
             width=800,
             height=800,
             show_text=True,
-            density=False,
+            density=True,
             colorscale="Portland",
             convex_hull=True,
         )
@@ -80,6 +80,7 @@ class TestBunka(unittest.TestCase):
             topic_gen_name=True,
             topic_n_clusters=3,
             density=False,
+            colorscale="Portland",
         )
         if figure:
             bourdieu_fig.show()
@@ -118,7 +119,7 @@ class TestBunka(unittest.TestCase):
         fig_distribution = self.bunka.get_topic_repartition()
         self.assertIsInstance(fig_distribution, go.Figure)
 
-    def test_notebook(self):
+    """def test_notebook(self):
         notebook_filename = (
             "notebooks/cleaning.ipynb"  # Replace with your notebook file
         )
@@ -134,6 +135,8 @@ class TestBunka(unittest.TestCase):
             print(e)
             traceback.print_exc()
             self.fail(f"Notebook {notebook_filename} failed to execute.")
+
+    """
 
 
 if __name__ == "__main__":

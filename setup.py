@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 dependencies = [
     "pandas>=2.0.2",
     "umap-learn>=0.5.3",
-    "pydantic>=1.10.9",
+    "pydantic>=2.5.3",
     "loguru>=0.7.0",
     "langchain>=0.0.206",
     "plotly>=5.15.0",

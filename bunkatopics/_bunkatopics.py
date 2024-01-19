@@ -27,6 +27,8 @@ from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
 from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
                                    TopicGenParam, TopicParam)
 from bunkatopics.logging import logger
+from bunkatopics.notebook_interactions.topic_manual_cleaner import \
+    change_topic_names
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
 from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
                                         LLMCleaningTopic,
@@ -687,6 +689,31 @@ class Bunka:
         return res
 
     def clean_data_by_topics(self):
+        """
+        Filters and cleans the dataset based on user-selected topics.
+
+        This method presents a UI with checkboxes for each topic in the dataset.
+        The user can select topics to keep, and the data will be filtered accordingly.
+        It merges the filtered documents and topics data, renames columns for clarity,
+        and calculates the percentage of data retained after cleaning.
+
+        Attributes Updated:
+            - self.df_cleaned: DataFrame containing the merged and cleaned documents and topics.
+
+        Logging:
+            - Logs the percentage of data retained after cleaning.
+
+        Side Effects:
+            - Updates `self.df_cleaned` with the cleaned data.
+            - Displays interactive widgets for user input.
+            - Logs information about the data cleaning process.
+
+        Note:
+            - This method uses interactive widgets (checkboxes and a button) for user input.
+            - The cleaning process is triggered by clicking the 'Clean Data' button.
+
+        """
+
         def on_button_clicked(b):
             selected_topics = [
                 checkbox.description for checkbox in checkboxes if checkbox.value
@@ -720,9 +747,44 @@ class Bunka:
         checkbox_container = VBox(
             [title_label] + checkboxes, layout=Layout(overflow="scroll hidden")
         )
-        button = Button(description="Clean Data")
+        button = Button(
+            description="Clean Data",
+            style={"button_color": "#2596be", "color": "#2596be"},
+        )
         button.on_click(on_button_clicked)
         display(checkbox_container, button)
+
+    def manually_clean_topics(self):
+        """
+        Allows manual renaming of topic names in the dataset.
+
+        This method facilitates the manual editing of topic names based on their IDs.
+        If no changes are made, it retains the original topic names.
+
+        The updated topic names are then applied to the `topics` attribute of the class instance.
+
+        Attributes Updated:
+            - self.topics: Each topic in this list gets its name updated based on the changes.
+
+        Note:
+            - This method assumes the presence of a function `change_topic_names`
+              which handles the renaming process.
+
+        Side Effects:
+            - Modifies the `name` attribute of each topic in `self.topics` based on user input or defaults.
+        """
+
+        original_topics = [x.name for x in self.topics]
+        original_topics_id = [x.topic_id for x in self.topics]
+        new_topic_names = change_topic_names(original_topics, original_topics_id)
+
+        if new_topic_names == []:
+            new_topic_names = original_topics
+
+        topic_dict = dict(zip(original_topics_id, new_topic_names))
+
+        for topic in self.topics:
+            topic.name = topic_dict.get(topic.topic_id)
 
     def start_server_bourdieu(self):
         if is_server_running():

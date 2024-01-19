@@ -13,8 +13,8 @@ jobs:
     #runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        #os: [windows-latest]
+        #os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest]
         python-version: ["3.9", "3.10"]
 
     runs-on: ${{ matrix.os }}
@@ -32,6 +32,8 @@ jobs:
           pip install -e ".[test]"
           pip install ipykernel
           python -m ipykernel install --user --name=bunka_kernel
+      - name: Check Flake8
+        run: flake8 bunkatopics
       - name: Running code testing
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

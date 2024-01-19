@@ -24,15 +24,23 @@ from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
-from bunkatopics.notebook_interactions.topic_manual_cleaner import \
-    change_topic_names
+from bunkatopics.notebook_interactions.topic_manual_cleaner import change_topic_names
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic,
-                                        TextacyTermsExtractor)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    DocumentRanker,
+    LLMCleaningTopic,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
@@ -117,14 +125,6 @@ class Bunka:
         sentences = [doc.content for doc in self.docs]
         ids = [doc.doc_id for doc in self.docs]
 
-        logger.info("Extracting meaningful terms from documents...")
-        terms_extractor = TextacyTermsExtractor(language=self.language)
-        self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
-
-        # add to the docs object
-        for doc in self.docs:
-            doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
-
         logger.info(
             "Embedding documents... (can take varying amounts of time depending on their size)"
         )
@@ -185,6 +185,14 @@ class Bunka:
         )
         # Show the plot
         self.fig_quick_embedding = fig_quick_embedding
+
+        logger.info("Extracting meaningful terms from documents...")
+        terms_extractor = TextacyTermsExtractor(language=self.language)
+        self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
+
+        # add to the docs object
+        for doc in self.docs:
+            doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
     def fit_transform(self, docs: t.List[Document], n_clusters=3) -> pd.DataFrame:
         self.fit(docs)

@@ -4,7 +4,6 @@ import pandas as pd
 from sklearn.cluster import KMeans
 
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
-from bunkatopics.topic_modeling.topic_name_cleaner import remove_overlapping_terms
 from bunkatopics.topic_modeling.utils import specificity
 from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
 
@@ -185,6 +184,10 @@ def clean_terms(terms: t.List[str]) -> t.List[str]:
     for term in terms:
         # Remove leading and trailing spaces and convert to lowercase
         cleaned_term = term.strip()
+
+        # Skip the term 'CUR'
+        if cleaned_term == "CUR":
+            continue
 
         # Skip terms with one letter or number or with only alpha-numeric sign
         if (

@@ -129,11 +129,11 @@ Finally, let's visualize again the topics. We can chose from different colorscal
 bunka.visualize_topics(width=800, height=800)
 ```
 
-Solarized dark             |  Solarized Ocean
+YlGnBu           |  Portland
 :-------------------------:|:-------------------------:
 ![Image 1](images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](images/topic_modeling_clean_Portland.png)
 
-Solarized dark             |  Solarized Ocean
+delta           |  Blues
 :-------------------------:|:-------------------------:
 ![Image 3](images/topic_modeling_clean_delta.png)  |  ![Image 4](images/topic_modeling_clean_Blues.png)
 
@@ -235,11 +235,11 @@ bourdieu_fig = bunka.visualize_bourdieu(
 bourdieu_fig.show()
 ```
 
-Solarized dark             |  Solarized Ocean
+positive/negative vs humans/machines            |  politics/business vs humans/machines  
 :-------------------------:|:-------------------------:
 ![Image 1](images/bourdieu_1.png)  |  ![Image 2](images/bourdieu_2.png)
 
-Solarized dark             |  Solarized Ocean
+politics/business vs     positive/negative       |  politics/business vs startups/governments
 :-------------------------:|:-------------------------:
 ![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
 

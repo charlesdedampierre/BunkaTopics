@@ -21,7 +21,7 @@
         <link rel="next" href="technology.html">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="img/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
     
     
@@ -53,8 +53,6 @@
     
     
       <link rel="stylesheet" href="assets/_mkdocstrings.css">
-    
-      <link rel="stylesheet" href="extra.css">
     
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -226,7 +224,7 @@
   
     
   
-  Technology
+  Frame Analysis
 
       </a>
     </li>
@@ -243,7 +241,7 @@
   
     
   
-  Fine-tuning
+  Fine-tuning LLM with qualitative data
 
       </a>
     </li>
@@ -273,24 +271,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="use-cases.html" class="md-tabs__link">
-        
-  
-    
-  
-  Use Cases
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="changelog.md" class="md-tabs__link">
+      <a href="changelog.html" class="md-tabs__link">
         
   
     
@@ -419,54 +400,105 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#importing-bunka" class="md-nav__link">
+  <a href="#installation-via-pip" class="md-nav__link">
     <span class="md-ellipsis">
-      Importing Bunka
+      Installation via Pip
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#loading-an-example" class="md-nav__link">
+  <a href="#installation-via-git-clone" class="md-nav__link">
     <span class="md-ellipsis">
-      Loading an example
+      Installation via Git Clone
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#initialising-bunka" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
-      Initialising Bunka
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uploading-sample-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uploading Sample Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-your-embedding-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choose Your Embedding Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualize-your-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualize Your Topics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topic-modeling-with-genai-summarization-of-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topic Modeling with GenAI Summarization of Topics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#topic-modeling" class="md-nav__link">
+  <a href="#manually-cleaning-the-topics" class="md-nav__link">
     <span class="md-ellipsis">
-      Topic Modeling
+      Manually Cleaning the topics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#summarizing-topics-with-an-llm" class="md-nav__link">
+  <a href="#removing-data-based-on-topics-for-fine-tuning-purposes" class="md-nav__link">
     <span class="md-ellipsis">
-      Summarizing Topics with an LLM
+      Removing Data based on topics for fine-tuning purposes
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualizing-topics" class="md-nav__link">
+  <a href="#bourdieu-map" class="md-nav__link">
     <span class="md-ellipsis">
-      Visualizing Topics
+      Bourdieu Map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contribution
     </span>
   </a>
   
@@ -491,7 +523,7 @@
         
   
   <span class="md-ellipsis">
-    Technology
+    Frame Analysis
   </span>
   
 
@@ -511,7 +543,7 @@
         
   
   <span class="md-ellipsis">
-    Fine-tuning
+    Fine-tuning LLM with qualitative data
   </span>
   
 
@@ -790,27 +822,7 @@
   
   
     <li class="md-nav__item">
-      <a href="use-cases.html" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Use Cases
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="changelog.md" class="md-nav__link">
+      <a href="changelog.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -850,54 +862,105 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#importing-bunka" class="md-nav__link">
+  <a href="#installation-via-pip" class="md-nav__link">
     <span class="md-ellipsis">
-      Importing Bunka
+      Installation via Pip
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#loading-an-example" class="md-nav__link">
+  <a href="#installation-via-git-clone" class="md-nav__link">
     <span class="md-ellipsis">
-      Loading an example
+      Installation via Git Clone
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#initialising-bunka" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
-      Initialising Bunka
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uploading-sample-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uploading Sample Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-your-embedding-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choose Your Embedding Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualize-your-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualize Your Topics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topic-modeling-with-genai-summarization-of-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topic Modeling with GenAI Summarization of Topics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#topic-modeling" class="md-nav__link">
+  <a href="#manually-cleaning-the-topics" class="md-nav__link">
     <span class="md-ellipsis">
-      Topic Modeling
+      Manually Cleaning the topics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#summarizing-topics-with-an-llm" class="md-nav__link">
+  <a href="#removing-data-based-on-topics-for-fine-tuning-purposes" class="md-nav__link">
     <span class="md-ellipsis">
-      Summarizing Topics with an LLM
+      Removing Data based on topics for fine-tuning purposes
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualizing-topics" class="md-nav__link">
+  <a href="#bourdieu-map" class="md-nav__link">
     <span class="md-ellipsis">
-      Visualizing Topics
+      Bourdieu Map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contribution
     </span>
   </a>
   
@@ -921,50 +984,215 @@
   
 
 
-<h1 id="getting-started">getting-started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>Start by importing Bunka</p>
-<h2 id="importing-bunka">Importing Bunka<a class="headerlink" href="#importing-bunka" title="Permanent link">&para;</a></h2>
+<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
+<h2 id="installation-via-pip">Installation via Pip<a class="headerlink" href="#installation-via-pip" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>bunkatopics
 </code></pre></div>
+<h2 id="installation-via-git-clone">Installation via Git Clone<a class="headerlink" href="#installation-via-git-clone" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/charlesdedampierre/BunkaTopics.git
+<span class="nb">cd</span><span class="w"> </span>BunkaTopics
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<h3 id="uploading-sample-data">Uploading Sample Data<a class="headerlink" href="#uploading-sample-data" title="Permanent link">&para;</a></h3>
+<p>To get started, let's upload a sample of Medium Articles into Bunkatopics:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;bunkalab/medium&quot;</span><span class="p">)[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+</code></pre></div>
+<h3 id="choose-your-embedding-model">Choose Your Embedding Model<a class="headerlink" href="#choose-your-embedding-model" title="Permanent link">&para;</a></h3>
+<p>Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">bunkatopics</span> <span class="kn">import</span> <span class="n">Bunka</span>
-</code></pre></div>
-<p>For this example, we'll use a dataset of tweets from the HuggingFace datasets Hub</p>
-<h2 id="loading-an-example">Loading an example<a class="headerlink" href="#loading-an-example" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="kn">from</span> <span class="nn">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbeddings</span>
 
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;rguo123/trump_tweets&quot;</span><span class="p">)[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
-<span class="n">docs</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="c1"># Choose your embedding model</span>
+<span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span> <span class="c1"># We recommend starting with a small model</span>
+
+<span class="c1"># Initialize Bunka with your chosen model and language preference</span>
+<span class="n">bunka</span> <span class="o">=</span> <span class="n">Bunka</span><span class="p">(</span><span class="n">embedding_model</span><span class="o">=</span><span class="n">embedding_model</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">)</span> <span class="c1"># You can choose any language you prefer</span>
+
+<span class="c1"># Fit Bunka to your text data</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">full_docs</span><span class="p">)</span>
+
+<span class="c1"># Get a list of topics</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_topics</span><span class="p">)</span>
 </code></pre></div>
-<p>Bunka leverages embedding models for language understanding. Here, we choose a small model using the langchain framework</p>
-<h2 id="initialising-bunka">Initialising Bunka<a class="headerlink" href="#initialising-bunka" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
-<span class="n">bunka</span> <span class="o">=</span> <span class="n">Bunka</span><span class="p">(</span><span class="n">language</span> <span class="o">=</span> <span class="s1">&#39;english&#39;</span><span class="p">)</span> <span class="c1"># Bunka is multilangual but you need to chose a multilangual embedding model as well.</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">get_topics</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">name_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="c1"># Specify the number of terms to describe each topic</span>
+
+<span class="n">topic_id</span> <span class="n">topic_name</span> <span class="n">size</span> <span class="n">percent</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">12</span> <span class="n">technology</span> <span class="o">|</span> <span class="n">Tech</span> <span class="o">|</span> <span class="n">Children</span> <span class="o">|</span> <span class="n">student</span> <span class="o">|</span> <span class="n">days</span> <span class="mi">322</span> <span class="mf">10.73</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">11</span> <span class="n">blockchain</span> <span class="o">|</span> <span class="n">Cryptocurrency</span> <span class="o">|</span> <span class="n">sense</span> <span class="o">|</span> <span class="n">Cryptocurrencies</span> <span class="o">|</span> <span class="n">Impact</span> <span class="mi">283</span> <span class="mf">9.43</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">7</span> <span class="n">gadgets</span> <span class="o">|</span> <span class="n">phone</span> <span class="o">|</span> <span class="n">Device</span> <span class="o">|</span> <span class="n">specifications</span> <span class="o">|</span> <span class="n">screen</span> <span class="mi">258</span> <span class="mf">8.6</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">software</span> <span class="o">|</span> <span class="n">Kubernetes</span> <span class="o">|</span> <span class="n">ETL</span> <span class="o">|</span> <span class="n">REST</span> <span class="o">|</span> <span class="n">Salesforce</span> <span class="mi">258</span> <span class="mf">8.6</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">1</span> <span class="n">hackathon</span> <span class="o">|</span> <span class="n">review</span> <span class="o">|</span> <span class="n">Recap</span> <span class="o">|</span> <span class="n">Predictions</span> <span class="o">|</span> <span class="n">Lessons</span> <span class="mi">257</span> <span class="mf">8.57</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">4</span> <span class="n">Reality</span> <span class="o">|</span> <span class="n">world</span> <span class="o">|</span> <span class="n">cities</span> <span class="o">|</span> <span class="n">future</span> <span class="o">|</span> <span class="n">Lot</span> <span class="mi">246</span> <span class="mf">8.2</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">14</span> <span class="n">Product</span> <span class="o">|</span> <span class="n">Sales</span> <span class="o">|</span> <span class="n">day</span> <span class="o">|</span> <span class="n">dream</span> <span class="o">|</span> <span class="n">routine</span> <span class="mi">241</span> <span class="mf">8.03</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Words</span> <span class="o">|</span> <span class="n">Robots</span> <span class="o">|</span> <span class="n">discount</span> <span class="o">|</span> <span class="n">NordVPN</span> <span class="o">|</span> <span class="n">humans</span> <span class="mi">208</span> <span class="mf">6.93</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Internet</span> <span class="o">|</span> <span class="n">Overview</span> <span class="o">|</span> <span class="n">security</span> <span class="o">|</span> <span class="n">Work</span> <span class="o">|</span> <span class="n">Development</span> <span class="mi">202</span> <span class="mf">6.73</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">13</span> <span class="n">Course</span> <span class="o">|</span> <span class="n">Difference</span> <span class="o">|</span> <span class="n">Step</span> <span class="o">|</span> <span class="n">science</span> <span class="o">|</span> <span class="n">Point</span> <span class="mi">192</span> <span class="mf">6.4</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">6</span> <span class="n">quantum</span> <span class="o">|</span> <span class="n">Cars</span> <span class="o">|</span> <span class="n">Way</span> <span class="o">|</span> <span class="n">Game</span> <span class="o">|</span> <span class="n">quest</span> <span class="mi">162</span> <span class="mf">5.4</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">3</span> <span class="n">Objects</span> <span class="o">|</span> <span class="n">Strings</span> <span class="o">|</span> <span class="n">app</span> <span class="o">|</span> <span class="n">Programming</span> <span class="o">|</span> <span class="n">Functions</span> <span class="mi">119</span> <span class="mf">3.97</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">5</span> <span class="n">supply</span> <span class="o">|</span> <span class="n">chain</span> <span class="o">|</span> <span class="n">revolution</span> <span class="o">|</span> <span class="n">Risk</span> <span class="o">|</span> <span class="n">community</span> <span class="mi">119</span> <span class="mf">3.97</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">9</span> <span class="n">COVID</span> <span class="o">|</span> <span class="n">printing</span> <span class="o">|</span> <span class="n">Car</span> <span class="o">|</span> <span class="n">work</span> <span class="o">|</span> <span class="n">app</span> <span class="mi">89</span> <span class="mf">2.97</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">10</span> <span class="n">Episode</span> <span class="o">|</span> <span class="n">HD</span> <span class="o">|</span> <span class="n">Secrets</span> <span class="o">|</span> <span class="n">TV</span> <span class="mi">44</span> <span class="mf">1.47</span>
 </code></pre></div>
-<h2 id="topic-modeling">Topic Modeling<a class="headerlink" href="#topic-modeling" title="Permanent link">&para;</a></h2>
-<p>Fit Bunka to your documents and perform initial topic modeling:</p>
-<div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
-<span class="n">bunka</span><span class="o">.</span><span class="n">get_topics</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># Chose a number of topics</span>
+<h3 id="visualize-your-topics">Visualize Your Topics<a class="headerlink" href="#visualize-your-topics" title="Permanent link">&para;</a></h3>
+<p>Finally, let's visualize the topics that Bunka has computed for your text data:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;YIGnBu&#39;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="summarizing-topics-with-an-llm">Summarizing Topics with an LLM<a class="headerlink" href="#summarizing-topics-with-an-llm" title="Permanent link">&para;</a></h2>
-<p>To make the topics clearer, use a large language model (LLM) for summarization.
-Replace "your_huggingface_api_token" with your actual Hugging Face API token.</p>
+<p><img src="../images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" /></p>
+<h2 id="topic-modeling-with-genai-summarization-of-topics">Topic Modeling with GenAI Summarization of Topics<a class="headerlink" href="#topic-modeling-with-genai-summarization-of-topics" title="Permanent link">&para;</a></h2>
+<p>Explore the power of Generative AI for summarizing topics!
+We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mistral-7b/">Mistral AI</a> from the huggingface hub using the langchain framework.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">HuggingFaceHub</span>
 
-<span class="n">repo_id</span> <span class="o">=</span> <span class="s2">&quot;mistralai/Mistral-7B-Instruct-v0.1&quot;</span> <span class="c1"># Using Mistral Model from Huggingface hub</span>
-<span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceHub</span><span class="p">(</span>
-    <span class="n">repo_id</span><span class="o">=</span><span class="n">repo_id</span><span class="p">,</span>
-    <span class="n">huggingfacehub_api_token</span><span class="o">=</span><span class="s2">&quot;your_huggingface_api_token&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="c1"># Define the repository ID for Mistral-7B-v0.1</span>
+<span class="n">repo_id</span> <span class="o">=</span> <span class="s1">&#39;mistralai/Mistral-7B-v0.1&#39;</span>
 
-<span class="n">df_topics_clean</span> <span class="o">=</span> <span class="n">bunka</span><span class="o">.</span><span class="n">get_clean_topic_name</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df_topics_clean</span><span class="p">)</span>
+<span class="c1"># Using Mistral AI to Summarize the Topics</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceHub</span><span class="p">(</span><span class="n">repo_id</span><span class="o">=</span><span class="s1">&#39;mistralai/Mistral-7B-v0.1&#39;</span><span class="p">,</span> <span class="n">huggingfacehub_api_token</span><span class="o">=</span><span class="s2">&quot;HF_TOKEN&quot;</span><span class="p">)</span>
+
+<span class="c1"># Obtain clean topic names using Generative Model</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">get_clean_topic_name</span><span class="p">(</span><span class="n">generative_model</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">colorscale</span> <span class="o">=</span> <span class="s1">&#39;Portland&#39;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="visualizing-topics">Visualizing Topics<a class="headerlink" href="#visualizing-topics" title="Permanent link">&para;</a></h2>
-<p>Finally, visualize the topics:
-This function creates a plot showing the different topics extracted from your dataset.</p>
+<p>Finally, let's visualize again the topics. We can chose from different colorscale.</p>
 <div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
 </code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">YlGnBu</th>
+<th style="text-align: center;">Portland</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 1" src="../images/topic_modeling_clean_YlGnBu.png" /></td>
+<td style="text-align: center;"><img alt="Image 2" src="../images/topic_modeling_clean_Portland.png" /></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">delta</th>
+<th style="text-align: center;">Blues</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 3" src="../images/topic_modeling_clean_delta.png" /></td>
+<td style="text-align: center;"><img alt="Image 4" src="../images/topic_modeling_clean_Blues.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>We can now access the newly made topics</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">df_topics_</span>
+
+<span class="n">topic_id</span> <span class="n">topic_name</span> <span class="n">size</span> <span class="n">percent</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">1</span> <span class="n">Cryptocurrency</span> <span class="n">Impact</span> <span class="mi">345</span> <span class="mf">12.32</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">3</span> <span class="n">Data</span> <span class="n">Management</span> <span class="n">Technologies</span> <span class="mi">243</span> <span class="mf">8.68</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">14</span> <span class="n">Everyday</span> <span class="n">Life</span> <span class="mi">230</span> <span class="mf">8.21</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Digital</span> <span class="n">Learning</span> <span class="n">Campaign</span> <span class="mi">225</span> <span class="mf">8.04</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">12</span> <span class="n">Business</span> <span class="n">Development</span> <span class="mi">223</span> <span class="mf">7.96</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Technology</span> <span class="n">Devices</span> <span class="mi">212</span> <span class="mf">7.57</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">10</span> <span class="n">Market</span> <span class="n">Predictions</span> <span class="n">Recap</span> <span class="mi">201</span> <span class="mf">7.18</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">4</span> <span class="n">Comprehensive</span> <span class="n">Learning</span> <span class="n">Journey</span> <span class="mi">187</span> <span class="mf">6.68</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">6</span> <span class="n">Future</span> <span class="n">of</span> <span class="n">Work</span> <span class="mi">185</span> <span class="mf">6.61</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">11</span> <span class="n">Internet</span> <span class="n">Discounts</span> <span class="mi">175</span> <span class="mf">6.25</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">5</span> <span class="n">Technological</span> <span class="n">Urban</span> <span class="n">Water</span> <span class="n">Management</span> <span class="mi">172</span> <span class="mf">6.14</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">9</span> <span class="n">Electric</span> <span class="n">Vehicle</span> <span class="n">Technology</span> <span class="mi">145</span> <span class="mf">5.18</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">Programming</span> <span class="n">Concepts</span> <span class="mi">116</span> <span class="mf">4.14</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">13</span> <span class="n">Quantum</span> <span class="n">Technology</span> <span class="n">Industries</span> <span class="mi">105</span> <span class="mf">3.75</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">7</span> <span class="n">High</span> <span class="n">Definition</span> <span class="n">Television</span> <span class="p">(</span><span class="n">HDTV</span><span class="p">)</span> <span class="mi">36</span> <span class="mf">1.29</span>
+</code></pre></div>
+<h2 id="manually-cleaning-the-topics">Manually Cleaning the topics<a class="headerlink" href="#manually-cleaning-the-topics" title="Permanent link">&para;</a></h2>
+<p>Are you happy with the topics yes ? Let's change them manually. Click on Apply changes when you are done. In the example, we changed the topic <strong>Cryptocurrency Impact</strong> to <strong>Cryptocurrency</strong> and <strong>Internet Discounts</strong> to <strong>Advertising</strong>.</p>
+<p>The new topics will also appear on the Map.</p>
+<div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">manually_clean_topics</span><span class="p">()</span>
+</code></pre></div>
+<p><img src="../images/manually_change_topics.png" width="40%" height="20%" align="center" /></p>
+<h2 id="removing-data-based-on-topics-for-fine-tuning-purposes">Removing Data based on topics for fine-tuning purposes<a class="headerlink" href="#removing-data-based-on-topics-for-fine-tuning-purposes" title="Permanent link">&para;</a></h2>
+<p>You have the flexibility to construct a customized dataset by excluding topics that do not align with your interests. For instance, in the provided example, we omitted topics associated with <strong>Advertising</strong> and <strong>High-Definition television</strong>, as these clusters primarily contain promotional content that we prefer not to include in our model's training data.</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">clean_data_by_topics</span><span class="p">()</span>
+</code></pre></div>
+<p><img src="../images/fine_tuning_dataset.png" width="40%" height="20%" align="center" /></p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">df_cleaned_</span>
+
+<span class="n">doc_id</span> <span class="n">content</span> <span class="n">topic_id</span> <span class="n">topic_name</span>
+<span class="mi">873</span><span class="n">ba315</span> <span class="n">Invisibilize</span> <span class="n">Data</span> <span class="n">With</span> <span class="n">JavaScript</span> <span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">Programming</span> <span class="n">Concepts</span>
+<span class="mi">1243</span><span class="n">d58f</span> <span class="n">Why</span> <span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">End</span> <span class="n">Testing</span> <span class="ow">is</span> <span class="n">Important</span> <span class="k">for</span> <span class="n">Your</span> <span class="n">Team</span> <span class="n">bt</span><span class="o">-</span><span class="mi">3</span> <span class="n">Data</span> <span class="n">Management</span> <span class="n">Technologies</span>
+<span class="mi">45</span><span class="n">fb8166</span> <span class="n">This</span> <span class="n">Tiny</span> <span class="n">Wearable</span> <span class="n">Device</span> <span class="n">Uses</span> <span class="n">Your</span> <span class="n">Body</span> <span class="n">Heat</span> <span class="n">to</span> <span class="n">Chrage</span> <span class="n">Electronic</span> <span class="n">Devices</span> <span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Technology</span> <span class="n">Devices</span>
+<span class="n">a122d1d2</span> <span class="n">Digital</span> <span class="n">Policy</span> <span class="n">Salon</span><span class="p">:</span> <span class="n">The</span> <span class="n">Next</span> <span class="n">Frontier</span> <span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Digital</span> <span class="n">Learning</span> <span class="n">Campaign</span>
+<span class="mi">1</span><span class="n">bbcfc1c</span> <span class="n">Preparing</span> <span class="n">Hardware</span> <span class="k">for</span> <span class="n">Outdoor</span> <span class="n">Creative</span> <span class="n">Technology</span> <span class="n">Installations</span> <span class="n">bt</span><span class="o">-</span><span class="mi">5</span> <span class="n">Technological</span> <span class="n">Urban</span> <span class="n">Water</span> <span class="n">Management</span>
+<span class="mi">79580</span><span class="n">c34</span> <span class="n">Angular</span> <span class="n">Or</span> <span class="n">React</span> <span class="err">?</span> <span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">Programming</span> <span class="n">Concepts</span>
+<span class="n">af0b08a2</span> <span class="n">Ed</span><span class="o">-</span><span class="n">Tech</span> <span class="n">Startups</span> <span class="n">Are</span> <span class="n">Cashing</span> <span class="ow">in</span> <span class="n">on</span> <span class="n">Parents</span><span class="err">’</span> <span class="n">Insecurities</span> <span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Digital</span> <span class="n">Learning</span> <span class="n">Campaign</span>
+<span class="mi">2255</span><span class="n">c350</span> <span class="n">Former</span> <span class="n">Google</span> <span class="n">CEO</span> <span class="n">Wants</span> <span class="n">to</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">Government</span><span class="o">-</span><span class="n">Funded</span> <span class="n">University</span> <span class="n">to</span> <span class="n">Train</span> <span class="n">A</span><span class="o">.</span><span class="n">I</span><span class="o">.</span> <span class="n">Coders</span> <span class="n">bt</span><span class="o">-</span><span class="mi">6</span> <span class="n">Future</span> <span class="n">of</span> <span class="n">Work</span>
+<span class="n">d2bc4b33</span> <span class="n">Applying</span> <span class="n">Action</span> <span class="o">&amp;</span> <span class="n">The</span> <span class="n">Importance</span> <span class="n">of</span> <span class="n">Ideas</span> <span class="n">bt</span><span class="o">-</span><span class="mi">12</span> <span class="n">Business</span> <span class="n">Development</span>
+<span class="mi">5219675</span><span class="n">e</span> <span class="n">Why</span> <span class="n">You</span> <span class="n">Should</span> <span class="p">(</span><span class="ow">not</span><span class="err">?</span><span class="p">)</span> <span class="n">Use</span> <span class="n">Signal</span> <span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Technology</span> <span class="n">Devices</span>
+</code></pre></div>
+<h2 id="bourdieu-map">Bourdieu Map<a class="headerlink" href="#bourdieu-map" title="Permanent link">&para;</a></h2>
+<p>The Bourdieu map provides a 2-Dimensional unsupervised scale to visualize various texts. Each region on the map represents a distinct topic, characterized by its most specific terms. Clusters are formed, and their names are succinctly summarized using Generative AI.</p>
+<p>The significance of this visualization lies in its ability to define axes, thereby creating continuums that reveal data distribution patterns. This concept draws inspiration from the work of the renowned French sociologist Bourdieu, who employed 2-Dimensional maps to project items and gain insights.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">HuggingFaceHub</span>
+
+<span class="c1"># Define the HuggingFaceHub instance with the repository ID and API token</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceHub</span><span class="p">(</span>
+    <span class="n">repo_id</span><span class="o">=</span><span class="s1">&#39;mistralai/Mistral-7B-v0.1&#39;</span><span class="p">,</span>
+    <span class="n">huggingfacehub_api_token</span><span class="o">=</span><span class="s2">&quot;HF_TOKEN&quot;</span>
+<span class="p">)</span>
+
+<span class="c1">## Bourdieu Fig</span>
+<span class="n">bourdieu_fig</span> <span class="o">=</span> <span class="n">bunka</span><span class="o">.</span><span class="n">visualize_bourdieu</span><span class="p">(</span>
+        <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
+        <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;This is about business&quot;</span><span class="p">],</span>
+        <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;This is about politics&quot;</span><span class="p">],</span>
+        <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;this is about startups&quot;</span><span class="p">],</span>
+        <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;This is about governments&quot;</span><span class="p">],</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+        <span class="n">clustering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">topic_gen_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">label_size_ratio_clusters</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+
+<span class="c1"># Display the Bourdieu map</span>
+<span class="n">bourdieu_fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">positive/negative vs humans/machines</th>
+<th style="text-align: center;">politics/business vs humans/machines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 1" src="../images/bourdieu_1.png" /></td>
+<td style="text-align: center;"><img alt="Image 2" src="../images/bourdieu_2.png" /></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">politics/business vs     positive/negative</th>
+<th style="text-align: center;">politics/business vs startups/governments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 3" src="../images/bourdieu_3.png" /></td>
+<td style="text-align: center;"><img alt="Image 4" src="../images/bourdieu_4.png" /></td>
+</tr>
+</tbody>
+</table>
+<h2 id="contribution">Contribution<a class="headerlink" href="#contribution" title="Permanent link">&para;</a></h2>
+<p>If you have any questions, feedback, or would like to contribute, please don't hesitate to reach out!</p>
+<p>Many thanks to Maarten Grootendorst for inspiring us with his groundbreaking work on Bertopics.</p>
 
 
 

@@ -4,9 +4,6 @@ site_url: https://charlesdedampierre.github.io/BunkaTopics/
 site_description: using LLM to create and Explore topics in an innovative way
 site_author: Charles de Dampierre
 use_directory_urls: false
-extra_css:
-  - extra.css
-
 theme:
   name: material
   favicon: img/favicon.png
@@ -49,8 +46,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - Technology: technology.md
-  - Fine-tuning: fine-tuning.md
+  - Frame Analysis: technology.md
+  - Fine-tuning LLM with qualitative data: fine-tuning.md
   - API:
       - Bunka: bunka-api/bunkatopics.md
       - Topic Modeling: bunka-api/topic_modeling/topic_model_builder.md
@@ -62,7 +59,6 @@ nav:
           - Bourdieu Visualization: bunka-api/bourdieu/bourdieu-visualization.md
           - Bourdieu Visualization One Dimension: bunka-api/bourdieu/bourdieu-visualization-one-dimension.md
 
-  - Use Cases: use-cases.md
   - Changelog: changelog.md
 
 plugins:

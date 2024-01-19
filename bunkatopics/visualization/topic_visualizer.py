@@ -2,7 +2,6 @@ import typing as t
 
 import numpy as np
 import plotly.graph_objects as go
-from PIL import Image
 
 from bunkatopics.datamodel import Document, Topic
 from bunkatopics.visualization.visualization_utils import wrap_by_word
@@ -47,6 +46,30 @@ class TopicVisualizer:
         self.colorscale = colorscale
         self.density = density
         self.convex_hull = convex_hull
+
+        self.colorscale_list = [
+            "Greys",
+            "YlGnBu",
+            "Greens",
+            "YlOrRd",
+            "Bluered",
+            "RdBu",
+            "Reds",
+            "Blues",
+            "Picnic",
+            "Rainbow",
+            "Portland",
+            "Jet",
+            "Hot",
+            "Blackbody",
+            "Earth",
+            "Electric",
+            "Viridis",
+            "Cividis",
+            "Inferno",
+            "Magma",
+            "Plasma",
+        ]
 
     def fit_transform(self, docs: t.List[Document], topics: t.List[Topic]) -> go.Figure:
         """

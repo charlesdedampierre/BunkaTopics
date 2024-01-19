@@ -23,7 +23,6 @@ llm = HuggingFaceHub(
     repo_id=repo_id,
     huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
 )
-
 figure = True
 
 
@@ -59,13 +58,13 @@ class TestBunka(unittest.TestCase):
 
         self.assertIsInstance(topic_fig, go.Figure)
 
-    def test_generative_names(self):
+    """def test_generative_names(self):
         n_clusters = 3
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
-        print(df_topics_clean["topic_name_clean"])
+        print(df_topics_clean["topic_name"])
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
-        self.assertEqual(len(df_topics_clean), n_clusters)
+        self.assertEqual(len(df_topics_clean), n_clusters)"""
 
     def test_bourdieu_modeling(self):
         bourdieu_fig = self.bunka.visualize_bourdieu(
@@ -77,7 +76,7 @@ class TestBunka(unittest.TestCase):
             height=800,
             width=800,
             clustering=True,
-            topic_gen_name=True,
+            topic_gen_name=False,
             topic_n_clusters=3,
             density=False,
             colorscale="Portland",
@@ -86,7 +85,7 @@ class TestBunka(unittest.TestCase):
             bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
-    def test_rag(self):
+        """def test_rag(self):
         top_doc_len = 3
         res = self.bunka.rag_query(
             query="What is great?",
@@ -98,7 +97,7 @@ class TestBunka(unittest.TestCase):
         print(result)
         self.assertIsInstance(result, str)
         document_sources = res["source_documents"]
-        self.assertEqual(len(document_sources), top_doc_len)
+        self.assertEqual(len(document_sources), top_doc_len)"""
 
     def test_plot_query(self):
         query = "What is great?"

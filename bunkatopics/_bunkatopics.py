@@ -14,39 +14,30 @@ import plotly.express as px
 import plotly.graph_objects as go
 import umap
 from IPython.display import display
-from ipywidgets import Button, Checkbox, Label, Layout, VBox
+from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
 from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
+from langchain_core._api.deprecation import LangChainDeprecationWarning
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.bourdieu import (BourdieuAPI, BourdieuOneDimensionVisualizer,
+                                  BourdieuVisualizer)
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.logging import logger
-from bunkatopics.notebook_interactions.topic_manual_cleaner import change_topic_names
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (
-    BunkaTopicModeling,
-    DocumentRanker,
-    LLMCleaningTopic,
-    TextacyTermsExtractor,
-)
+from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
+                                        LLMCleaningTopic,
+                                        TextacyTermsExtractor)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
+from bunkatopics.utils import _create_topic_dfs
+from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
-from langchain_core._api.deprecation import LangChainDeprecationWarning
-
 
 # Filter ResourceWarning
 warnings.filterwarnings("ignore")
@@ -200,16 +191,11 @@ class Bunka:
         for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
-    def fit_transform(self, docs: t.List[Document], n_clusters=3) -> pd.DataFrame:
-        self.fit(docs)
-        df_topics = self.get_topics(n_clusters=n_clusters)
-        return df_topics
-
     def get_topics(
         self,
         n_clusters: int = 5,
         ngrams: t.List[int] = [1, 2],
-        name_length: int = 10,
+        name_length: int = 5,
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
         ranking_terms: int = 20,
@@ -261,42 +247,11 @@ class Bunka:
         model_ranker = DocumentRanker(ranking_terms=ranking_terms)
         self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
 
-        df_topics = pd.DataFrame.from_records(
-            [topic.model_dump() for topic in self.topics]
-        )
-        df_topics = pd.DataFrame.from_records(
-            [topic.model_dump() for topic in self.topics]
+        self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(
+            self.topics, self.docs
         )
 
-        df_topics["percent"] = df_topics["size"] / df_topics["size"].sum()
-        df_topics["percent"] = round(df_topics["percent"], 2)
-        df_topics = df_topics.rename(columns={"name": "topic_name"})
-
-        df_topics = df_topics[
-            ["topic_id", "topic_name", "size", "percent", "top_doc_content"].copy()
-        ]
-
-        # extract Dataframe for top documents per topic
-        top_docs_topics = [x for x in self.docs if x.topic_ranking is not None]
-        top_docs_topics = pd.DataFrame([x.model_dump() for x in top_docs_topics])
-        top_docs_topics["ranking_per_topic"] = top_docs_topics["topic_ranking"].apply(
-            lambda x: x.get("rank")
-        )
-        top_docs_topics = top_docs_topics[
-            ["topic_id", "content", "ranking_per_topic", "doc_id"]
-        ]
-        top_docs_topics = top_docs_topics.sort_values(
-            ["topic_id", "ranking_per_topic"], ascending=(True, True)
-        )
-        top_docs_topics = top_docs_topics.reset_index(drop=True)
-        top_docs_topics = pd.merge(
-            top_docs_topics, df_topics[["topic_id", "topic_name"]], on="topic_id"
-        )
-
-        self.df_topics_ = df_topics
-        self.df_top_docs_per_topic_ = top_docs_topics
-
-        return df_topics
+        return self.df_topics_
 
     def get_clean_topic_name(
         self,
@@ -335,28 +290,11 @@ class Bunka:
             self.docs,
         )
 
-        df_topics = pd.DataFrame.from_records(
-            [topic.model_dump() for topic in self.topics]
-        )
-        df_topics = pd.DataFrame.from_records(
-            [topic.model_dump() for topic in self.topics]
+        self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(
+            self.topics, self.docs
         )
 
-        df_topics["percent"] = df_topics["size"] / df_topics["size"].sum()
-        df_topics["percent"] = round(df_topics["percent"], 2)
-        df_topics = df_topics.rename(columns={"name": "topic_name_clean"})
-
-        df_topics = df_topics[
-            [
-                "topic_id",
-                "topic_name_clean",
-                "size",
-                "percent",
-                "top_doc_content",
-            ].copy()
-        ]
-
-        return df_topics
+        return self.df_topics_
 
     def visualize_topics(
         self,
@@ -429,6 +367,9 @@ class Bunka:
         convex_hull: bool = True,
         density: bool = True,
         colorscale: str = "delta",
+        label_size_ratio_clusters: int = 100,
+        label_size_ratio_label: int = 50,
+        label_size_ratio_percent: int = 10,
     ) -> go.Figure:
         """
         Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
@@ -519,6 +460,9 @@ class Bunka:
             manual_axis_name=manual_axis_name,
             density=density,
             colorscale=colorscale,
+            label_size_ratio_clusters=label_size_ratio_clusters,
+            label_size_ratio_label=label_size_ratio_label,
+            label_size_ratio_percent=label_size_ratio_percent,
         )
 
         fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
@@ -747,8 +691,8 @@ class Bunka:
             df_docs_cleaned = df_docs_cleaned[["doc_id", "content", "topic_id"]]
             df_topics = pd.DataFrame([topic.model_dump() for topic in topic_filtered])
             df_topics = df_topics[["topic_id", "name"]]
-            self.df_cleaned = pd.merge(df_docs_cleaned, df_topics, on="topic_id")
-            self.df_cleaned = self.df_cleaned.rename(columns={"name": "topic_name"})
+            self.df_cleaned_ = pd.merge(df_docs_cleaned, df_topics, on="topic_id")
+            self.df_cleaned_ = self.df_cleaned_.rename(columns={"name": "topic_name"})
 
             len_kept = len(docs_filtered)
             len_docs = len(self.docs)
@@ -787,25 +731,68 @@ class Bunka:
         Attributes Updated:
             - self.topics: Each topic in this list gets its name updated based on the changes.
 
-        Note:
-            - This method assumes the presence of a function `change_topic_names`
-              which handles the renaming process.
+        Logging:
+            - Logs the percentage of data retained after cleaning.
 
         Side Effects:
             - Modifies the `name` attribute of each topic in `self.topics` based on user input or defaults.
+            - Displays interactive widgets for user input.
+            - Logs information about the data cleaning process.
+
+        Note:
+            - This method uses interactive widgets (text fields and a button) for user input.
+            - The cleaning process is triggered by clicking the 'Apply Changes' button.
+
         """
 
-        original_topics = [x.name for x in self.topics]
-        original_topics_id = [x.topic_id for x in self.topics]
-        new_topic_names = change_topic_names(original_topics, original_topics_id)
+        def apply_changes(b):
+            for i, text_widget in enumerate(text_widgets):
+                new_name = text_widget.value.strip()
+                if new_name == "":
+                    new_names.append(original_topic_names[i])  # Keep the same name
+                else:
+                    new_names.append(new_name)
 
-        if new_topic_names == []:
-            new_topic_names = original_topics
+            # Log changes applied
+            logger.info("Changes Applied!")
 
-        topic_dict = dict(zip(original_topics_id, new_topic_names))
+            # Update the topic names
+            topic_dict = dict(zip(original_topic_ids, new_names))
+            for topic in self.topics:
+                topic.name = topic_dict.get(topic.topic_id)
 
-        for topic in self.topics:
-            topic.name = topic_dict.get(topic.topic_id)
+            self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(
+                self.topics, self.docs
+            )
+
+        original_topic_names = [x.name for x in self.topics]
+        original_topic_ids = [x.topic_id for x in self.topics]
+        new_names = []
+
+        # Create a list of Text widgets for entering new names with IDs as descriptions
+        text_widgets = []
+
+        for i, (topic, topic_id) in enumerate(
+            zip(original_topic_names, original_topic_ids)
+        ):
+            text_widget = widgets.Text(value=topic, description=f"{topic_id}:")
+            text_widgets.append(text_widget)
+
+        # Create a title widget
+        title_widget = widgets.HTML("Manually input the new topic names: ")
+
+        # Combine the title, Text widgets, and a button in a VBox
+        container = widgets.VBox([title_widget] + text_widgets)
+
+        # Create a button to apply changes with text color #2596be and bold description
+        apply_button = widgets.Button(
+            description="Apply Changes",
+            style={"button_color": "#2596be", "color": "#2596be"},
+        )
+        apply_button.on_click(apply_changes)
+
+        # Display the container and apply button
+        display(container, apply_button)
 
     def start_server_bourdieu(self):
         if is_server_running():

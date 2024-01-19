@@ -4,8 +4,6 @@ import pandas as pd
 from sklearn.cluster import KMeans
 
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
-from bunkatopics.topic_modeling.topic_name_cleaner import \
-    remove_overlapping_terms
 from bunkatopics.topic_modeling.utils import specificity
 from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
 
@@ -126,9 +124,7 @@ class BunkaTopicModeling:
             df_topics_rep.groupby("topic_id")["term_id"].apply(list).reset_index()
         )
         df_topics_rep["name"] = df_topics_rep["term_id"].apply(lambda x: x[:100])
-        df_topics_rep["name"] = df_topics_rep["name"].apply(
-            lambda x: remove_overlapping_terms(x)
-        )
+        df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: clean_terms(x))
 
         df_topics_rep["name"] = df_topics_rep["name"].apply(
             lambda x: x[: self.name_length]
@@ -170,3 +166,42 @@ class BunkaTopicModeling:
             print(e)
 
         return topics
+
+
+def clean_terms(terms: t.List[str]) -> t.List[str]:
+    """
+    Remove overlapping terms from a list of terms.
+
+    Args:
+        terms (List[str]): List of terms to process.
+
+    Returns:
+        List[str]: List of terms with overlapping terms removed.
+    """
+    seen_words = set()
+    filtered_terms = []
+
+    for term in terms:
+        # Remove leading and trailing spaces and convert to lowercase
+        cleaned_term = term.strip()
+
+        # Skip the term 'CUR'
+        if cleaned_term == "CUR":
+            continue
+
+        # Skip terms with one letter or number or with only alpha-numeric sign
+        if (
+            len(cleaned_term) <= 1
+            or cleaned_term.isnumeric()
+            or not cleaned_term.isalpha()
+        ):
+            continue
+
+        # Check if the cleaned term consists of only alphabetical characters
+        if all(char.isalpha() for char in cleaned_term):
+            # Check if the cleaned term is in the seen_words set
+            if cleaned_term not in seen_words:
+                filtered_terms.append(cleaned_term)
+                seen_words.add(cleaned_term)
+
+    return filtered_terms

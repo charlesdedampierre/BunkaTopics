@@ -63,7 +63,7 @@ class TestBunka(unittest.TestCase):
         n_clusters = 3
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
-        print(df_topics_clean["topic_name_clean"])
+        print(df_topics_clean["topic_name"])
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
         self.assertEqual(len(df_topics_clean), n_clusters)
 

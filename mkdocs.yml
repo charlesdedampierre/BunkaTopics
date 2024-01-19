@@ -4,9 +4,6 @@ site_url: https://charlesdedampierre.github.io/BunkaTopics/
 site_description: using LLM to create and Explore topics in an innovative way
 site_author: Charles de Dampierre
 use_directory_urls: false
-extra_css:
-  - extra.css
-
 theme:
   name: material
   favicon: img/favicon.png

@@ -247,6 +247,11 @@ bourdieu_fig.show()
   <img src="images/bourdieu_4.png" alt="Image 1" style="max-width: 20%; height: auto;">
 </div>
 
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![Image 1](images/bourdieu_1.png)  |  ![Image 2](images/bourdieu_2.png)
+![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
+
 ## Contribution
 
 If you have any questions, feedback, or would like to contribute, please don't hesitate to reach out!

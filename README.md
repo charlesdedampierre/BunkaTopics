@@ -20,6 +20,15 @@ Discover the different Use Case:
 
 - **Framing Analysis**: Data can be analyzed in countless ways, contingent on your objectives and interests. We've developed a tool that enables you to visualize data by semantically customizing your own axes.
 
+## Discover different examples using our Google Colab Notebooks
+
+| Theme  | Google Colab Link  |
+|---|---|
+| Visual Topic Modeling with Bunka  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11K5bKs4y6snEFEZhKFNuNVRRSAsq9b7p#scrollTo=uxQ5qCIVar1u)  |
+| Cleaning dataset for fine-tuning LLM using Bunka  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KedB5FqJ62sF7Gb5qSsA5kbeTeJDw2Mo#scrollTo=-bEv2hrvakW4)  |
+| Understanding a dataset using Frame Analysis with Bunka | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14ubgffmKPiLBUdoV1j6EjfCnI4EFWxn4#scrollTo=7jHILnazA1Im)  |
+| Full Introduction to Topic Modeling, Data Cleaning and Frame Analysis with Bunka.  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1M4xuJE782bDzVxDUmQv9SSQL0hdZIC8n#scrollTo=ySwyXC0bbVb8)  |
+
 ## Installation via Pip
 
 ```bash
@@ -33,12 +42,6 @@ git clone https://github.com/charlesdedampierre/BunkaTopics.git
 cd BunkaTopics
 pip install -e .
 ```
-
-## Colab Example
-
-| Name  | Link  |
-|---|---|
-| Visual Topic Modeling With Bunkatopics  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DtPrI82TYepWLoc4RwuQnOqMJb0eWT_t?usp=sharing)  |
 
 ## Quick Start
 
@@ -239,7 +242,7 @@ positive/negative vs humans/machines            |  politics/business vs humans/m
 :-------------------------:|:-------------------------:
 ![Image 1](images/bourdieu_1.png)  |  ![Image 2](images/bourdieu_2.png)
 
-politics/business vs     positive/negative       |  politics/business vs startups/governments
+politics/business vs     positive/negative      |  politics/business vs startups/governments
 :-------------------------:|:-------------------------:
 ![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
 

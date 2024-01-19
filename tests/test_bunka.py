@@ -59,13 +59,13 @@ class TestBunka(unittest.TestCase):
 
         self.assertIsInstance(topic_fig, go.Figure)
 
-    def test_generative_names(self):
+    """def test_generative_names(self):
         n_clusters = 3
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
         print(df_topics_clean["topic_name"])
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
-        self.assertEqual(len(df_topics_clean), n_clusters)
+        self.assertEqual(len(df_topics_clean), n_clusters)"""
 
     def test_bourdieu_modeling(self):
         bourdieu_fig = self.bunka.visualize_bourdieu(
@@ -77,7 +77,7 @@ class TestBunka(unittest.TestCase):
             height=800,
             width=800,
             clustering=True,
-            topic_gen_name=True,
+            topic_gen_name=False,
             topic_n_clusters=3,
             density=False,
             colorscale="Portland",

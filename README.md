@@ -7,7 +7,7 @@ Please read our Documentation: [The Origin of Bunka](https://charlesdedampierre.
 
 # Bunkatopics
 
-<img src="images/logo.png" width="35%" height="35%" align="right" />
+<img src="docs/images/logo.png" width="35%" height="35%" align="right" />
 
 Bunkatopics is a package designed for Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG) tasks, harnessing the power of Large Language Models (LLMs). Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleansing and optimizing LLMs through fine-tuning processes.
 Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.
@@ -105,7 +105,7 @@ Finally, let's visualize the topics that Bunka has computed for your text data:
 bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
 ```
 
-<img src="images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
+<img src="docs/images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
 
 ## Topic Modeling with GenAI Summarization of Topics
 
@@ -134,11 +134,11 @@ bunka.visualize_topics(width=800, height=800)
 
 YlGnBu           |  Portland
 :-------------------------:|:-------------------------:
-![Image 1](images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](images/topic_modeling_clean_Portland.png)
+![Image 1](docs/images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](docs/images/topic_modeling_clean_Portland.png)
 
 delta           |  Blues
 :-------------------------:|:-------------------------:
-![Image 3](images/topic_modeling_clean_delta.png)  |  ![Image 4](images/topic_modeling_clean_Blues.png)
+![Image 3](docs/images/topic_modeling_clean_delta.png)  |  ![Image 4](docs/images/topic_modeling_clean_Blues.png)
 
 We can now access the newly made topics
 
@@ -174,7 +174,7 @@ The new topics will also appear on the Map.
 bunka.manually_clean_topics()
 ```
 
-<img src="images/manually_change_topics.png" width="40%" height="20%" align="center" />
+<img src="docs/images/manually_change_topics.png" width="40%" height="20%" align="center" />
 
 ## Removing Data based on topics for fine-tuning purposes
 
@@ -184,7 +184,7 @@ You have the flexibility to construct a customized dataset by excluding topics t
 >>> bunka.clean_data_by_topics()
 ```
 
-<img src="images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
+<img src="docs/images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
 
 ```python
 >>> bunka.df_cleaned_
@@ -240,11 +240,11 @@ bourdieu_fig.show()
 
 positive/negative vs humans/machines            |  politics/business vs humans/machines  
 :-------------------------:|:-------------------------:
-![Image 1](images/bourdieu_1.png)  |  ![Image 2](images/bourdieu_2.png)
+![Image 1](docs/images/bourdieu_1.png)  |  ![Image 2](docs/images/bourdieu_2.png)
 
 politics/business vs     positive/negative      |  politics/business vs startups/governments
 :-------------------------:|:-------------------------:
-![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
+![Image 3](docs/images/bourdieu_3.png)  |  ![Image 4](docs/images/bourdieu_4.png)
 
 ## Contribution
 

@@ -222,7 +222,7 @@
   
     
   
-  Technology
+  Frame Analysis
 
       </a>
     </li>
@@ -239,7 +239,7 @@
   
     
   
-  Fine-tuning
+  Fine-tuning LLM with qualitative data
 
       </a>
     </li>
@@ -271,24 +271,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../use-cases.html" class="md-tabs__link">
-        
-  
-    
-  
-  Use Cases
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../changelog.md" class="md-tabs__link">
+      <a href="../../changelog.html" class="md-tabs__link">
         
   
     
@@ -395,7 +378,7 @@
         
   
   <span class="md-ellipsis">
-    Technology
+    Frame Analysis
   </span>
   
 
@@ -415,7 +398,7 @@
         
   
   <span class="md-ellipsis">
-    Fine-tuning
+    Fine-tuning LLM with qualitative data
   </span>
   
 
@@ -687,7 +670,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer" class="md-nav__link">
     <span class="md-ellipsis">
       BourdieuVisualizer
     </span>
@@ -696,7 +679,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.__init__" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__
     </span>
@@ -705,7 +688,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="md-nav__link">
     <span class="md-ellipsis">
       fit_transform
     </span>
@@ -765,27 +748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use-cases.html" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Use Cases
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../changelog.md" class="md-nav__link">
+      <a href="../../changelog.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -825,7 +788,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer" class="md-nav__link">
     <span class="md-ellipsis">
       BourdieuVisualizer
     </span>
@@ -834,7 +797,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.__init__" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__
     </span>
@@ -843,7 +806,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="md-nav__link">
+  <a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="md-nav__link">
     <span class="md-ellipsis">
       fit_transform
     </span>
@@ -876,7 +839,7 @@
 
 
 
-<a id="bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer"></a>
+<a id="bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer"></a>
   <div class="doc doc-contents first">
 
   
@@ -886,8 +849,9 @@ Bourdieu's field analysis. It offers features like displaying percentage areas,
 drawing convex hulls around clusters, and labeling axes with specified terms.</p>
 
             <details class="quote">
-              <summary>Source code in <code>bunkatopics/visualization/bourdieu_visualizer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 14</span>
+              <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_visualizer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 13</span>
+<span class="normal"> 14</span>
 <span class="normal"> 15</span>
 <span class="normal"> 16</span>
 <span class="normal"> 17</span>
@@ -1242,8 +1206,7 @@ drawing convex hulls around clusters, and labeling axes with specified terms.</p
 <span class="normal">366</span>
 <span class="normal">367</span>
 <span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuVisualizer</span><span class="p">:</span>
+<span class="normal">369</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuVisualizer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for visualizing Bourdieu&#39;s field analysis through a scatter plot.</span>
 
@@ -1620,10 +1583,10 @@ drawing convex hulls around clusters, and labeling axes with specified terms.</p
 
 
 
-<h2 id="bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.__init__" class="doc doc-heading">
+<h2 id="bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.__init__" class="doc doc-heading">
           <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">display_percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clustering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">label_size_ratio_clusters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">label_size_ratio_label</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">label_size_ratio_percent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">manual_axis_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">)</span></code>
 
-<a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.__init__" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.__init__" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1801,8 +1764,9 @@ drawing convex hulls around clusters, and labeling axes with specified terms.</p
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>bunkatopics/visualization/bourdieu_visualizer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
+            <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_visualizer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
@@ -1841,8 +1805,7 @@ drawing convex hulls around clusters, and labeling axes with specified terms.</p
 <span class="normal">59</span>
 <span class="normal">60</span>
 <span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">display_percent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">convex_hull</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1894,10 +1857,10 @@ drawing convex hulls around clusters, and labeling axes with specified terms.</p
 
 
 
-<h2 id="bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="doc doc-heading">
+<h2 id="bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">fit_transform</span><span class="p">(</span><span class="n">bourdieu_docs</span><span class="p">,</span> <span class="n">bourdieu_topics</span><span class="p">)</span></code>
 
-<a href="#bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer.fit_transform" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1975,8 +1938,9 @@ representing the documents in a 2D space as per Bourdieu's field analysis.</p>
   </table>
 
           <details class="quote">
-            <summary>Source code in <code>bunkatopics/visualization/bourdieu_visualizer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 65</span>
+            <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_visualizer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 64</span>
+<span class="normal"> 65</span>
 <span class="normal"> 66</span>
 <span class="normal"> 67</span>
 <span class="normal"> 68</span>
@@ -2280,8 +2244,7 @@ representing the documents in a 2D space as per Bourdieu's field analysis.</p>
 <span class="normal">366</span>
 <span class="normal">367</span>
 <span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
+<span class="normal">369</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">bourdieu_docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">bourdieu_topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

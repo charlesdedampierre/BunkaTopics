@@ -222,7 +222,7 @@
   
     
   
-  Technology
+  Frame Analysis
 
       </a>
     </li>
@@ -239,7 +239,7 @@
   
     
   
-  Fine-tuning
+  Fine-tuning LLM with qualitative data
 
       </a>
     </li>
@@ -271,24 +271,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../use-cases.html" class="md-tabs__link">
-        
-  
-    
-  
-  Use Cases
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../changelog.md" class="md-tabs__link">
+      <a href="../../changelog.html" class="md-tabs__link">
         
   
     
@@ -395,7 +378,7 @@
         
   
   <span class="md-ellipsis">
-    Technology
+    Frame Analysis
   </span>
   
 
@@ -415,7 +398,7 @@
         
   
   <span class="md-ellipsis">
-    Fine-tuning
+    Fine-tuning LLM with qualitative data
   </span>
   
 
@@ -765,27 +748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use-cases.html" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Use Cases
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../changelog.md" class="md-nav__link">
+      <a href="../../changelog.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -887,7 +850,8 @@ understanding the distribution and clustering of topics in a document corpus.</p
 
             <details class="quote">
               <summary>Source code in <code>bunkatopics/visualization/topic_visualizer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 11</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 10</span>
+<span class="normal"> 11</span>
 <span class="normal"> 12</span>
 <span class="normal"> 13</span>
 <span class="normal"> 14</span>
@@ -1046,7 +1010,30 @@ understanding the distribution and clustering of topics in a document corpus.</p
 <span class="normal">167</span>
 <span class="normal">168</span>
 <span class="normal">169</span>
-<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TopicVisualizer</span><span class="p">:</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TopicVisualizer</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for visualizing topics and their associated documents in a 2D density Map.</span>
@@ -1085,6 +1072,30 @@ understanding the distribution and clustering of topics in a document corpus.</p
         <span class="bp">self</span><span class="o">.</span><span class="n">colorscale</span> <span class="o">=</span> <span class="n">colorscale</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">density</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convex_hull</span> <span class="o">=</span> <span class="n">convex_hull</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">colorscale_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;Greys&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Greens&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;YlOrRd&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Bluered&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;RdBu&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Reds&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Blues&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Picnic&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Rainbow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Portland&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Jet&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Hot&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Blackbody&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Earth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Electric&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Viridis&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Cividis&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Inferno&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Magma&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Plasma&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1352,7 +1363,8 @@ understanding the distribution and clustering of topics in a document corpus.</p
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/visualization/topic_visualizer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
+<span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
@@ -1380,7 +1392,30 @@ understanding the distribution and clustering of topics in a document corpus.</p
 <span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">show_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">width</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
@@ -1409,6 +1444,30 @@ understanding the distribution and clustering of topics in a document corpus.</p
     <span class="bp">self</span><span class="o">.</span><span class="n">colorscale</span> <span class="o">=</span> <span class="n">colorscale</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">density</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">convex_hull</span> <span class="o">=</span> <span class="n">convex_hull</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">colorscale_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;Greys&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Greens&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;YlOrRd&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Bluered&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;RdBu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Reds&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Blues&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Picnic&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Rainbow&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Portland&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Jet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Hot&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Blackbody&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Earth&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Electric&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Viridis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Cividis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Inferno&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Magma&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Plasma&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -1503,30 +1562,7 @@ contour density, and centroids for topics.</p>
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/visualization/topic_visualizer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 74</span>
 <span class="normal"> 75</span>
 <span class="normal"> 76</span>
 <span class="normal"> 77</span>
@@ -1622,7 +1658,30 @@ contour density, and centroids for topics.</p>
 <span class="normal">167</span>
 <span class="normal">168</span>
 <span class="normal">169</span>
-<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a Plotly figure visualizing the given documents and topics.</span>
 

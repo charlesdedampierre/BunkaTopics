@@ -34,7 +34,9 @@ jobs:
           pip install ipykernel
           python -m ipykernel install --user --name=bunka_kernel
       - name: Check Flake8
-        run: python -m flake8 bunkatopics
+        run: |
+          pip install flake8
+          python -m flake8 bunkatopics
       - name: Running code testing
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

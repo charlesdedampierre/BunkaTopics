@@ -50,7 +50,7 @@ class TestBunka(unittest.TestCase):
             width=800,
             height=800,
             show_text=True,
-            density=False,
+            density=True,
             colorscale="Portland",
             convex_hull=True,
         )
@@ -80,6 +80,7 @@ class TestBunka(unittest.TestCase):
             topic_gen_name=True,
             topic_n_clusters=3,
             density=False,
+            colorscale="Portland",
         )
         if figure:
             bourdieu_fig.show()

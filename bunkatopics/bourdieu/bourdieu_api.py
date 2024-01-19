@@ -8,9 +8,8 @@ from sklearn.preprocessing import MinMaxScaler
 from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
                                    ContinuumDimension, Document, Term, Topic,
                                    TopicGenParam, TopicParam)
-from bunkatopics.topic_modeling import BunkaTopicModeling, LLMCleaningTopic
-from bunkatopics.topic_modeling.document_topic_analyzer import \
-    get_top_documents
+from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
+                                        LLMCleaningTopic)
 
 pd.options.mode.chained_assignment = None
 
@@ -34,6 +33,7 @@ class BourdieuAPI:
         generative_ai_name: bool = False,
         topic_gen_param: TopicGenParam = TopicGenParam(),
         min_count_terms: int = 2,
+        ranking_terms: int = 20,
     ) -> None:
         """
         Initializes the BourdieuAPI with the provided models, parameters, and configurations.
@@ -57,6 +57,7 @@ class BourdieuAPI:
         self.generative_ai_name = generative_ai_name
         self.topic_gen_param = topic_gen_param
         self.min_count_terms = min_count_terms
+        self.ranking_terms = ranking_terms
 
     def fit_transform(
         self, docs: t.List[Document], terms: t.List[Term]
@@ -154,9 +155,9 @@ class BourdieuAPI:
             docs=bourdieu_docs,
             terms=terms,
         )
-
-        bourdieu_docs, bourdieu_topics = get_top_documents(
-            bourdieu_docs, bourdieu_topics, ranking_terms=20
+        model_ranker = DocumentRanker(ranking_terms=self.ranking_terms)
+        bourdieu_docs, bourdieu_topics = model_ranker.fit_transform(
+            bourdieu_docs, bourdieu_topics
         )
 
         if self.generative_ai_name:

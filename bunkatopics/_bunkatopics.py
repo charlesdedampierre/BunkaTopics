@@ -24,23 +24,14 @@ from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
 from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (
-    BunkaTopicModeling,
-    LLMCleaningTopic,
-    TextacyTermsExtractor,
-)
+from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
+                                        LLMCleaningTopic,
+                                        TextacyTermsExtractor)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
-from bunkatopics.topic_modeling.document_topic_analyzer import get_top_documents
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
@@ -205,6 +196,7 @@ class Bunka:
         name_length: int = 10,
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
+        ranking_terms: int = 20,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -243,9 +235,9 @@ class Bunka:
             terms=self.terms,
         )
 
-        self.docs, self.topics = get_top_documents(
-            self.docs, self.topics, ranking_terms=20
-        )
+        model_ranker = DocumentRanker(ranking_terms=ranking_terms)
+        self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
+
         df_topics = pd.DataFrame.from_records(
             [topic.model_dump() for topic in self.topics]
         )
@@ -260,6 +252,26 @@ class Bunka:
         df_topics = df_topics[
             ["topic_id", "topic_name", "size", "percent", "top_doc_content"].copy()
         ]
+
+        # extract Dataframe for top documents per topic
+        top_docs_topics = [x for x in self.docs if x.topic_ranking is not None]
+        top_docs_topics = pd.DataFrame([x.model_dump() for x in top_docs_topics])
+        top_docs_topics["ranking_per_topic"] = top_docs_topics["topic_ranking"].apply(
+            lambda x: x.get("rank")
+        )
+        top_docs_topics = top_docs_topics[
+            ["topic_id", "content", "ranking_per_topic", "doc_id"]
+        ]
+        top_docs_topics = top_docs_topics.sort_values(
+            ["topic_id", "ranking_per_topic"], ascending=(True, True)
+        )
+        top_docs_topics = top_docs_topics.reset_index(drop=True)
+        top_docs_topics = pd.merge(
+            top_docs_topics, df_topics[["topic_id", "topic_name"]], on="topic_id"
+        )
+
+        self.df_topics_ = df_topics
+        self.df_top_docs_per_topic_ = top_docs_topics
 
         return df_topics
 

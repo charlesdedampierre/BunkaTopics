@@ -14,40 +14,30 @@ import plotly.express as px
 import plotly.graph_objects as go
 import umap
 from IPython.display import display
-from ipywidgets import Button, Checkbox, Label, Layout, VBox, Layout, widgets
+from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
 from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
+from langchain_core._api.deprecation import LangChainDeprecationWarning
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.bourdieu import BourdieuAPI, BourdieuOneDimensionVisualizer
-from bunkatopics.datamodel import (
-    DOC_ID,
-    BourdieuQuery,
-    Document,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
+from bunkatopics.bourdieu import (BourdieuAPI, BourdieuOneDimensionVisualizer,
+                                  BourdieuVisualizer)
+from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
+                                   TopicGenParam, TopicParam)
 from bunkatopics.logging import logger
 from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (
-    BunkaTopicModeling,
-    DocumentRanker,
-    LLMCleaningTopic,
-    TextacyTermsExtractor,
-)
+from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
+                                        LLMCleaningTopic,
+                                        TextacyTermsExtractor)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.visualization import BourdieuVisualizer, TopicVisualizer
-from bunkatopics.visualization.query_visualizer import plot_query
 from bunkatopics.utils import _create_topic_dfs
-
-from langchain_core._api.deprecation import LangChainDeprecationWarning
-
+from bunkatopics.visualization import TopicVisualizer
+from bunkatopics.visualization.query_visualizer import plot_query
 
 # Filter ResourceWarning
 warnings.filterwarnings("ignore")
@@ -377,6 +367,9 @@ class Bunka:
         convex_hull: bool = True,
         density: bool = True,
         colorscale: str = "delta",
+        label_size_ratio_clusters: int = 100,
+        label_size_ratio_label: int = 50,
+        label_size_ratio_percent: int = 10,
     ) -> go.Figure:
         """
         Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
@@ -467,6 +460,9 @@ class Bunka:
             manual_axis_name=manual_axis_name,
             density=density,
             colorscale=colorscale,
+            label_size_ratio_clusters=label_size_ratio_clusters,
+            label_size_ratio_label=label_size_ratio_label,
+            label_size_ratio_percent=label_size_ratio_percent,
         )
 
         fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
@@ -787,9 +783,6 @@ class Bunka:
 
         # Combine the title, Text widgets, and a button in a VBox
         container = widgets.VBox([title_widget] + text_widgets)
-
-        # Create an Output widget for displaying the applied message
-        output = widgets.Output()
 
         # Create a button to apply changes with text color #2596be and bold description
         apply_button = widgets.Button(

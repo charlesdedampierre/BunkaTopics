@@ -1,12 +1,15 @@
-import pandas as pd
 import typing as t
-from bunkatopics.datamodel import Topic, Document
+
+import pandas as pd
+
+from bunkatopics.datamodel import Document, Topic
 
 
 def _create_topic_dfs(topics: t.List[Topic], docs: t.List[Document]):
     df_topics = pd.DataFrame.from_records([topic.model_dump() for topic in topics])
 
     df_topics["percent"] = df_topics["size"] / df_topics["size"].sum()
+    df_topics["percent"] = df_topics["percent"] * 100
     df_topics["percent"] = round(df_topics["percent"], 2)
     df_topics = df_topics.rename(columns={"name": "topic_name"})
 

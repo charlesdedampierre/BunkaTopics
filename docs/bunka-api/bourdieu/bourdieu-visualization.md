@@ -1,3 +1,3 @@
 # Bourdieu Visualization
 
-::: bunkatopics.visualization.bourdieu_visualizer.BourdieuVisualizer
+::: bunkatopics.bourdieu.bourdieu_visualizer.BourdieuVisualizer

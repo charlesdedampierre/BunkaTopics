@@ -12,7 +12,7 @@
         <meta name="author" content="Charles de Dampierre">
       
       
-        <link rel="canonical" href="https://charlesdedampierre.github.io/BunkaTopics/use-cases.html">
+        <link rel="canonical" href="https://charlesdedampierre.github.io/BunkaTopics/changelog.html">
       
       
         <link rel="prev" href="bunka-api/bourdieu/bourdieu-visualization-one-dimension.html">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Use Cases - BunkaTopics</title>
+        <title>Changelog - BunkaTopics</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#use-cases" class="md-skip">
+        <a href="#bunkatopics-version-100-release-notes" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Use Cases
+              Changelog
             
           </span>
         </div>
@@ -220,7 +220,7 @@
   
     
   
-  Technology
+  Frame Analysis
 
       </a>
     </li>
@@ -237,7 +237,7 @@
   
     
   
-  Fine-tuning
+  Fine-tuning LLM with qualitative data
 
       </a>
     </li>
@@ -269,24 +269,7 @@
   
   
     <li class="md-tabs__item md-tabs__item--active">
-      <a href="use-cases.html" class="md-tabs__link">
-        
-  
-    
-  
-  Use Cases
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="changelog.md" class="md-tabs__link">
+      <a href="changelog.html" class="md-tabs__link">
         
   
     
@@ -393,7 +376,7 @@
         
   
   <span class="md-ellipsis">
-    Technology
+    Frame Analysis
   </span>
   
 
@@ -413,7 +396,7 @@
         
   
   <span class="md-ellipsis">
-    Fine-tuning
+    Fine-tuning LLM with qualitative data
   </span>
   
 
@@ -701,28 +684,18 @@
         
       
       
-      <a href="use-cases.html" class="md-nav__link md-nav__link--active">
-        
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
   
   <span class="md-ellipsis">
-    Use Cases
+    Changelog
   </span>
   
 
-      </a>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="changelog.md" class="md-nav__link">
+      <a href="changelog.html" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -731,6 +704,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Highlights
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -755,6 +757,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Highlights
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -771,8 +790,29 @@
   
 
 
-<h1 id="use-cases">use-cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h1>
-<p>Content coming soon.</p>
+<h1 id="bunkatopics-version-100-release-notes">Bunkatopics Version 1.0.0 Release Notes<a class="headerlink" href="#bunkatopics-version-100-release-notes" title="Permanent link">&para;</a></h1>
+<p>In this major update, we have completely revamped our package to align it with the latest framework and to better facilitate data cleaning for the next generation of Large Language Models (LLMs).</p>
+<h2 id="key-highlights">Key Highlights<a class="headerlink" href="#key-highlights" title="Permanent link">&para;</a></h2>
+<p>Enhanced Package Purpose:</p>
+<p>Bunkatopics version 2.0.0 continues to serve as a versatile package catering to a wide range of tasks, including Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG).</p>
+<ul>
+<li>
+<p>Utilizing Large Language Models: Our package harnesses the power of Large Language Models (LLMs) to empower developers in extracting valuable insights from unstructured data.
+Integration of Well-Known Libraries: Bunkatopics is now constructed using renowned libraries such as langchain, chroma, and transformers, ensuring seamless integration into diverse development environments.</p>
+</li>
+<li>
+<p>Bunkatopics excels at providing in-depth insights into specific topics within categories, such as exploring Technology topics on the Medium website.
+Fine-Tuning.This release offers enhanced control over data filtering, enabling precise fine-tuning processes.</p>
+</li>
+<li>
+<p>Framing Analysis: Bunkatopics introduces a 2-dimensional unsupervised scale, the Bourdieu map, facilitating the visualization of textual data and topics. This feature offers valuable insights into data distribution patterns.</p>
+</li>
+<li>
+<p>Manually Cleaning Topics: Users can now exercise greater flexibility and customization by manually changing topic names or labels to better suit their needs.
+Data Filtering by Topics. This release enables users to construct tailored datasets by excluding topics that do not align with their specific interests, simplifying the process of fine-tuning models.
+Bourdieu Map:</p>
+</li>
+</ul>
 
 
 

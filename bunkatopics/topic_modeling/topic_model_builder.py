@@ -204,4 +204,19 @@ def clean_terms(terms: t.List[str]) -> t.List[str]:
                 filtered_terms.append(cleaned_term)
                 seen_words.add(cleaned_term)
 
-    return filtered_terms
+    # Create a dictionary to store terms with lowercase keys
+    term_dict = {}
+
+    for term in filtered_terms:
+        # Convert the term to lowercase to use as the key
+        lowercase_term = term.lower()
+
+        # Check if the lowercase term is not already in the dictionary
+        # If it's not in the dictionary or if the original term is uppercase, add it
+        if lowercase_term not in term_dict or term.isupper():
+            term_dict[lowercase_term] = term
+
+    # Extract the unique terms (case-insensitive) from the dictionary values
+    result = list(term_dict.values())
+
+    return result

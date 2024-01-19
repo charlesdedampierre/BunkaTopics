@@ -21,7 +21,7 @@
         <link rel="next" href="terms_extractor.html">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../img/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
     
     
@@ -53,8 +53,6 @@
     
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
-    
-      <link rel="stylesheet" href="../../extra.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -887,7 +885,8 @@ Topics are named using the top terms associated with them.</p>
 
             <details class="quote">
               <summary>Source code in <code>bunkatopics/topic_modeling/topic_model_builder.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 12</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 11</span>
+<span class="normal"> 12</span>
 <span class="normal"> 13</span>
 <span class="normal"> 14</span>
 <span class="normal"> 15</span>
@@ -1043,8 +1042,7 @@ Topics are named using the top terms associated with them.</p>
 <span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BunkaTopicModeling</span><span class="p">:</span>
+<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BunkaTopicModeling</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to perform topic modeling on a set of documents.</span>
 
@@ -1362,7 +1360,8 @@ Topics are named using the top terms associated with them.</p>
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/topic_modeling/topic_model_builder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
+<span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
@@ -1392,8 +1391,7 @@ Topics are named using the top terms associated with them.</p>
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">n_clusters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">ngrams</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
@@ -1507,7 +1505,8 @@ additional topic properties such as centroid coordinates and convex hulls.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/topic_modeling/topic_model_builder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 53</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 52</span>
+<span class="normal"> 53</span>
 <span class="normal"> 54</span>
 <span class="normal"> 55</span>
 <span class="normal"> 56</span>
@@ -1622,8 +1621,7 @@ additional topic properties such as centroid coordinates and convex hulls.</p>
 <span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
+<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
     <span class="n">terms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Term</span><span class="p">],</span>

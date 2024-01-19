@@ -173,7 +173,7 @@ The new topics will also appear on the Map.
 bunka.manually_clean_topics()
 ```
 
-<img src="images/manually_change_topics.png" width="20%" height="20%" align="center" />
+<img src="images/manually_change_topics.png" width="40%" height="20%" align="center" />
 
 ## Removing Data based on topics for fine-tuning purposes
 
@@ -183,7 +183,7 @@ You have the flexibility to construct a customized dataset by excluding topics t
 >>> bunka.clean_data_by_topics()
 ```
 
-<img src="images/fine_tuning_dataset.png" width="20%" height="20%" align="center" />
+<img src="images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
 
 ```python
 >>> bunka.df_cleaned_
@@ -238,13 +238,13 @@ bourdieu_fig.show()
 ```
 
 <div style="display: flex; justify-content: center;">
-  <img src="images/bourdieu_1.png" alt="Image 1" style="max-width: 50%; height: auto;">
-  <img src="images/bourdieu_2.png" alt="Image 1" style="max-width: 50%; height: auto;">
+  <img src="images/bourdieu_1.png" alt="Image 1" style="max-width: 20%; height: auto;">
+  <img src="images/bourdieu_2.png" alt="Image 1" style="max-width: 20%; height: auto;">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="images/bourdieu_3.png" alt="Image 1" style="max-width: 50%; height: auto;">
-  <img src="images/bourdieu_4.png" alt="Image 1" style="max-width: 50%; height: auto;">
+  <img src="images/bourdieu_3.png" alt="Image 1" style="max-width: 20%; height: auto;">
+  <img src="images/bourdieu_4.png" alt="Image 1" style="max-width: 20%; height: auto;">
 </div>
 
 ## Contribution

@@ -4,12 +4,25 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
+from langchain_core.language_models.llms import LLM
+from langchain_core.embeddings import Embeddings
 
-from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
-                                   ContinuumDimension, Document, Term, Topic,
-                                   TopicGenParam, TopicParam)
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic)
+
+from bunkatopics.datamodel import (
+    BourdieuDimension,
+    BourdieuQuery,
+    ContinuumDimension,
+    Document,
+    Term,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    DocumentRanker,
+    LLMCleaningTopic,
+)
 
 pd.options.mode.chained_assignment = None
 
@@ -26,11 +39,10 @@ class BourdieuAPI:
 
     def __init__(
         self,
-        llm,
-        embedding_model,
+        embedding_model: Embeddings,
+        llm: t.Optional[LLM] = None,
         bourdieu_query: BourdieuQuery = BourdieuQuery(),
         topic_param: TopicParam = TopicParam(),
-        generative_ai_name: bool = False,
         topic_gen_param: TopicGenParam = TopicGenParam(),
         min_count_terms: int = 2,
         ranking_terms: int = 20,
@@ -54,7 +66,6 @@ class BourdieuAPI:
         self.embedding_model = embedding_model
         self.bourdieu_query = bourdieu_query
         self.topic_param = topic_param
-        self.generative_ai_name = generative_ai_name
         self.topic_gen_param = topic_gen_param
         self.min_count_terms = min_count_terms
         self.ranking_terms = ranking_terms
@@ -160,7 +171,7 @@ class BourdieuAPI:
             bourdieu_docs, bourdieu_topics
         )
 
-        if self.generative_ai_name:
+        if self.llm:
             model_cleaning = LLMCleaningTopic(
                 self.llm,
                 language=self.topic_gen_param.language,
@@ -171,15 +182,6 @@ class BourdieuAPI:
                 bourdieu_topics,
                 bourdieu_docs,
             )
-
-            """ bourdieu_topics = get_clean_topic_all(
-                self.generative_model,
-                bourdieu_topics,
-                bourdieu_docs,
-                language=self.topic_gen_param.language,
-                context=self.topic_gen_param.context,
-                use_doc=self.topic_gen_param.use_doc,
-            )"""
 
         return bourdieu_docs, bourdieu_topics
 

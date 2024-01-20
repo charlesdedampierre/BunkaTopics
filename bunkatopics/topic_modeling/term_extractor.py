@@ -123,8 +123,7 @@ class TextacyTermsExtractor:
 
         Args:
             ids (List[DOC_ID]): List of document IDs.
-            sentences (List[str]): List of sentences corresponding to
-            the document IDs.
+            sentences (List[str]): List of sentences corresponding to the document IDs.
 
         Notes:
             - The method processes each document to extract relevant terms based on the configured

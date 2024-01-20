@@ -76,7 +76,6 @@ class TestBunka(unittest.TestCase):
             height=800,
             width=800,
             clustering=True,
-            topic_gen_name=False,
             topic_n_clusters=3,
             density=False,
             colorscale="Portland",

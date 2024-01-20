@@ -7,8 +7,8 @@ import plotly.graph_objects as go
 
 from bunkatopics.bourdieu.bourdieu_api import _get_continuum
 from bunkatopics.datamodel import Document
-from bunkatopics.visualization.topic_explainer import plot_specific_terms
 from bunkatopics.visualization.visualization_utils import wrap_by_word
+from langchain_core.embeddings import Embeddings
 
 pd.options.mode.chained_assignment = None
 
@@ -20,7 +20,7 @@ class BourdieuOneDimensionVisualizer:
 
     def __init__(
         self,
-        embedding_model,
+        embedding_model: Embeddings,
         left: str = ["aggressivity"],
         right: str = ["peacefulness"],
         height=700,

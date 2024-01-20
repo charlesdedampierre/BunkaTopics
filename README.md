@@ -227,7 +227,6 @@ bourdieu_fig = bunka.visualize_bourdieu(
         height=800,
         width=800,
         clustering=True,
-        topic_gen_name=True,
         topic_n_clusters=10,
         density=False,
         convex_hull=True,

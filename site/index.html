@@ -1006,7 +1006,7 @@
 <a href="https://pypi.org/project/bunkatopics/"><img alt="PyPI - PyPi" src="https://img.shields.io/pypi/v/bunkatopics" /></a>
 <a href="https://pepy.tech/project/bunkatopics"><img alt="Downloads" src="https://static.pepy.tech/badge/bunkatopics" /></a>
 <a href="https://pepy.tech/project/bunkatopics"><img alt="Downloads" src="https://static.pepy.tech/badge/bunkatopics/month" /></a></p>
-<p><img src="../images/logo.png" width="35%" height="35%" align="right" /></p>
+<p><img src="images/logo.png" width="35%" height="35%" align="right" /></p>
 <p>Bunkatopics is a package designed for Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG) tasks, harnessing the power of Large Language Models (LLMs). Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleansing and optimizing LLMs through fine-tuning processes.
 Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.</p>
 <p>Discover the different Use Case:</p>
@@ -1102,7 +1102,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <p>Finally, let's visualize the topics that Bunka has computed for your text data:</p>
 <div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;YIGnBu&#39;</span><span class="p">)</span>
 </code></pre></div>
-<p><img src="../images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" /></p>
+<p><img src="images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" /></p>
 <h2 id="topic-modeling-with-genai-summarization-of-topics">Topic Modeling with GenAI Summarization of Topics<a class="headerlink" href="#topic-modeling-with-genai-summarization-of-topics" title="Permanent link">&para;</a></h2>
 <p>Explore the power of Generative AI for summarizing topics!
 We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mistral-7b/">Mistral AI</a> from the huggingface hub using the langchain framework.</p>
@@ -1130,8 +1130,8 @@ We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mist
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><img alt="Image 1" src="../images/topic_modeling_clean_YlGnBu.png" /></td>
-<td style="text-align: center;"><img alt="Image 2" src="../images/topic_modeling_clean_Portland.png" /></td>
+<td style="text-align: center;"><img alt="Image 1" src="images/topic_modeling_clean_YlGnBu.png" /></td>
+<td style="text-align: center;"><img alt="Image 2" src="images/topic_modeling_clean_Portland.png" /></td>
 </tr>
 </tbody>
 </table>
@@ -1144,8 +1144,8 @@ We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mist
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><img alt="Image 3" src="../images/topic_modeling_clean_delta.png" /></td>
-<td style="text-align: center;"><img alt="Image 4" src="../images/topic_modeling_clean_Blues.png" /></td>
+<td style="text-align: center;"><img alt="Image 3" src="images/topic_modeling_clean_delta.png" /></td>
+<td style="text-align: center;"><img alt="Image 4" src="images/topic_modeling_clean_Blues.png" /></td>
 </tr>
 </tbody>
 </table>
@@ -1174,12 +1174,12 @@ We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mist
 <p>The new topics will also appear on the Map.</p>
 <div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">manually_clean_topics</span><span class="p">()</span>
 </code></pre></div>
-<p><img src="../images/manually_change_topics.png" width="40%" height="20%" align="center" /></p>
+<p><img src="images/manually_change_topics.png" width="40%" height="20%" align="center" /></p>
 <h2 id="removing-data-based-on-topics-for-fine-tuning-purposes">Removing Data based on topics for fine-tuning purposes<a class="headerlink" href="#removing-data-based-on-topics-for-fine-tuning-purposes" title="Permanent link">&para;</a></h2>
 <p>You have the flexibility to construct a customized dataset by excluding topics that do not align with your interests. For instance, in the provided example, we omitted topics associated with <strong>Advertising</strong> and <strong>High-Definition television</strong>, as these clusters primarily contain promotional content that we prefer not to include in our model's training data.</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">clean_data_by_topics</span><span class="p">()</span>
 </code></pre></div>
-<p><img src="../images/fine_tuning_dataset.png" width="40%" height="20%" align="center" /></p>
+<p><img src="images/fine_tuning_dataset.png" width="40%" height="20%" align="center" /></p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">df_cleaned_</span>
 
 <span class="n">doc_id</span> <span class="n">content</span> <span class="n">topic_id</span> <span class="n">topic_name</span>
@@ -1234,8 +1234,8 @@ We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mist
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><img alt="Image 1" src="../images/bourdieu_1.png" /></td>
-<td style="text-align: center;"><img alt="Image 2" src="../images/bourdieu_2.png" /></td>
+<td style="text-align: center;"><img alt="Image 1" src="images/bourdieu_1.png" /></td>
+<td style="text-align: center;"><img alt="Image 2" src="images/bourdieu_2.png" /></td>
 </tr>
 </tbody>
 </table>
@@ -1248,8 +1248,8 @@ We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mist
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><img alt="Image 3" src="../images/bourdieu_3.png" /></td>
-<td style="text-align: center;"><img alt="Image 4" src="../images/bourdieu_4.png" /></td>
+<td style="text-align: center;"><img alt="Image 3" src="images/bourdieu_3.png" /></td>
+<td style="text-align: center;"><img alt="Image 4" src="images/bourdieu_4.png" /></td>
 </tr>
 </tbody>
 </table>

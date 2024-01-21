@@ -18,6 +18,7 @@ dependencies = [
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
     "langchain_openai",
+    "IPython",
 ]
 
 test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]

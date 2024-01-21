@@ -13,29 +13,44 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
-from IPython.display import display
+from IPython.display import HTML, display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
 from langchain.chains import RetrievalQA
+from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores.chroma import Chroma
 from langchain_core._api.deprecation import LangChainDeprecationWarning
+from langchain_core.embeddings import Embeddings
+from langchain_core.language_models.llms import LLM
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.bourdieu import (BourdieuAPI, BourdieuOneDimensionVisualizer,
-                                  BourdieuVisualizer)
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.bourdieu import (
+    BourdieuAPI,
+    BourdieuOneDimensionVisualizer,
+    BourdieuVisualizer,
+)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
-from bunkatopics.serveur.server_utils import is_server_running, kill_server
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic,
-                                        TextacyTermsExtractor)
+from bunkatopics.serveur import is_server_running, kill_server
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    DocumentRanker,
+    LLMCleaningTopic,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.utils import _create_topic_dfs
+from bunkatopics.utils import BunkaError, _create_topic_dfs
 from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
@@ -69,7 +84,7 @@ class Bunka:
     ```
     """
 
-    def __init__(self, embedding_model=None, language: str = "english"):
+    def __init__(self, embedding_model: Embeddings = None, language: str = "english"):
         """Initialize a BunkaTopics instance.
 
         Arguments:
@@ -191,6 +206,8 @@ class Bunka:
         for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
+        self.topics = None
+
     def get_topics(
         self,
         n_clusters: int = 5,
@@ -255,7 +272,7 @@ class Bunka:
 
     def get_clean_topic_name(
         self,
-        llm,
+        llm: LLM,
         language: str = "english",
         use_doc: bool = False,
         context: str = "everything",
@@ -346,7 +363,7 @@ class Bunka:
 
     def visualize_bourdieu(
         self,
-        llm: t.Optional[str] = None,
+        llm: t.Optional[LLM] = None,
         x_left_words: t.List[str] = ["war"],
         x_right_words: t.List[str] = ["peace"],
         y_top_words: t.List[str] = ["men"],
@@ -360,7 +377,6 @@ class Bunka:
         topic_ngrams: t.List[int] = [1, 2],
         topic_top_terms_overall: int = 1000,
         gen_topic_language: str = "english",
-        topic_gen_name: bool = False,
         manual_axis_name: t.Optional[dict] = None,
         use_doc_gen_topic: bool = False,
         radius_size: float = 0.3,
@@ -373,7 +389,6 @@ class Bunka:
     ) -> go.Figure:
         """
         Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
-
         Args:
             generative_model (t.Optional[str]): The generative model to be used. Default is None.
             x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.
@@ -386,7 +401,6 @@ class Bunka:
             topic_ngrams (t.List[int]): N-gram range for topic modeling. Default is [1, 2].
             topic_top_terms_overall (int): Top terms to consider overall. Default is 1000.
             gen_topic_language (str): Language for topic generation. Default is "english".
-            topic_gen_name (bool): Flag to generate topic names. Default is False.
             manual_axis_name (t.Optional[dict]): Custom axis names for the map. Default is None.
             use_doc_gen_topic (bool): Flag to use document context in topic generation. Default is False.
             radius_size (float): Radius size for the map isualization. Default is 0.3.
@@ -435,7 +449,6 @@ class Bunka:
             llm=llm,
             embedding_model=self.embedding_model,
             bourdieu_query=self.bourdieu_query,
-            generative_ai_name=topic_gen_name,
             topic_param=topic_param,
             topic_gen_param=topic_gen_param,
         )
@@ -469,7 +482,7 @@ class Bunka:
 
         return fig
 
-    def rag_query(self, query: str, llm, top_doc: int = 2):
+    def rag_query(self, query: str, llm: LLM, top_doc: int = 2) -> BaseRetrievalQA:
         """
         Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.
 
@@ -574,7 +587,6 @@ class Bunka:
     ) -> go.Figure:
         """
         Visualizes the similarity scores between a given query and the document set.
-
         Args:
             query (str): The query to be visualized against the documents. Default is "What is America?".
             min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.
@@ -794,55 +806,41 @@ class Bunka:
         # Display the container and apply button
         display(container, apply_button)
 
-    def start_server_bourdieu(self):
-        if is_server_running():
-            print("Server on port 3000 is already running. Killing it...")
-            kill_server()
-        try:
-            file_path = "../web/public" + "/bunka_bourdieu_docs.json"
-            docs_json = [x.model_dump() for x in self.bourdieu_docs]
-            docs_json = [x.model_dump() for x in self.bourdieu_docs]
-
-            with open(file_path, "w") as json_file:
-                json.dump(docs_json, json_file)
-
-            file_path = "../web/public" + "/bunka_bourdieu_topics.json"
-            topics_json = [x.model_dump() for x in self.bourdieu_topics]
-            topics_json = [x.model_dump() for x in self.bourdieu_topics]
-            with open(file_path, "w") as json_file:
-                json.dump(topics_json, json_file)
-
-            file_path = "../web/public" + "/bunka_bourdieu_query.json"
-            with open(file_path, "w") as json_file:
-                json.dump(self.bourdieu_query.model_dump(), json_file)
-                json.dump(self.bourdieu_query.model_dump(), json_file)
-
-            subprocess.Popen(["npm", "start"], cwd="../web")
-            print(
-                "NPM server started. Please Switch to Bourdieu View to see the results"
-            )
-        except Exception as e:
-            print(f"Error starting NPM server: {e}")
-
     def start_server(self):
+        subprocess.run(["cp", "web/env.model", "web/.env"], check=True)
         if is_server_running():
-            print("Server on port 3000 is already running. Killing it...")
+            logger.info("Server on port 3000 is already running. Killing it...")
             kill_server()
-        try:
-            file_path = "../web/public" + "/bunka_docs.json"
+        if not self.topics:
+            raise BunkaError("No topics available. Run bunka.get_topics() first.")
+        else:
+            file_path = "web/public" + "/bunka_docs.json"
             docs_json = [x.model_dump() for x in self.docs]
-            docs_json = [x.model_dump() for x in self.docs]
-
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
-            file_path = "../web/public" + "/bunka_topics.json"
-            topics_json = [x.model_dump() for x in self.topics]
+            file_path = "web/public" + "/bunka_topics.json"
             topics_json = [x.model_dump() for x in self.topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 
-            subprocess.Popen(["npm", "start"], cwd="../web")
-            print("NPM server started.")
-        except Exception as e:
-            print(f"Error starting NPM server: {e}")
+        """try:
+            file_path = "web/public" + "/bunka_bourdieu_docs.json"
+            docs_json = [x.model_dump() for x in self.bourdieu_docs]
+
+            with open(file_path, "w") as json_file:
+                json.dump(docs_json, json_file)
+
+            file_path = "web/public" + "/bunka_bourdieu_topics.json"
+            topics_json = [x.model_dump() for x in self.bourdieu_topics]
+            with open(file_path, "w") as json_file:
+                json.dump(topics_json, json_file)
+
+            file_path = "web/public" + "/bunka_bourdieu_query.json"
+            with open(file_path, "w") as json_file:
+                json.dump(self.bourdieu_query.model_dump(), json_file)
+        except:
+            logger.info("run bunka.visualize_bourdieu() first")"""
+
+        subprocess.Popen(["npm", "start"], cwd="web")
+        logger.info("NPM server started.")

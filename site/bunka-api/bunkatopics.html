@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://charlesdedampierre.github.io/BunkaTopics/bunka-api/bunkatopics.html">
       
       
-        <link rel="prev" href="../technology.html">
+        <link rel="prev" href="../fine-tuning.html">
       
       
         <link rel="next" href="topic_modeling/topic_model_builder.html">
@@ -234,7 +234,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../fine-tuning.md" class="md-tabs__link">
+      <a href="../fine-tuning.html" class="md-tabs__link">
         
   
     
@@ -394,7 +394,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fine-tuning.md" class="md-nav__link">
+      <a href="../fine-tuning.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1038,11 +1038,7 @@
 
             <details class="quote">
               <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 69</span>
 <span class="normal"> 70</span>
 <span class="normal"> 71</span>
 <span class="normal"> 72</span>
@@ -1832,8 +1828,7 @@
 <span class="normal">856</span>
 <span class="normal">857</span>
 <span class="normal">858</span>
-<span class="normal">859</span>
-<span class="normal">860</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
+<span class="normal">859</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bunka class for managing and analyzing textual data using various NLP techniques.</span>
 
 <span class="sd">    Examples:</span>
@@ -1852,7 +1847,7 @@
 <span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="p">:</span> <span class="n">Embeddings</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a BunkaTopics instance.</span>
 
 <span class="sd">        Arguments:</span>
@@ -2038,7 +2033,7 @@
 
     <span class="k">def</span> <span class="nf">get_clean_topic_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">llm</span><span class="p">,</span>
+        <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span>
         <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span>
         <span class="n">use_doc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;everything&quot;</span><span class="p">,</span>
@@ -2129,7 +2124,7 @@
 
     <span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">LLM</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">x_left_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;war&quot;</span><span class="p">],</span>
         <span class="n">x_right_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;peace&quot;</span><span class="p">],</span>
         <span class="n">y_top_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;men&quot;</span><span class="p">],</span>
@@ -2143,7 +2138,6 @@
         <span class="n">topic_ngrams</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
         <span class="n">topic_top_terms_overall</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
         <span class="n">gen_topic_language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span>
-        <span class="n">topic_gen_name</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">manual_axis_name</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_doc_gen_topic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">radius_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
@@ -2156,7 +2150,6 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</span>
-
 <span class="sd">        Args:</span>
 <span class="sd">            generative_model (t.Optional[str]): The generative model to be used. Default is None.</span>
 <span class="sd">            x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.</span>
@@ -2169,7 +2162,6 @@
 <span class="sd">            topic_ngrams (t.List[int]): N-gram range for topic modeling. Default is [1, 2].</span>
 <span class="sd">            topic_top_terms_overall (int): Top terms to consider overall. Default is 1000.</span>
 <span class="sd">            gen_topic_language (str): Language for topic generation. Default is &quot;english&quot;.</span>
-<span class="sd">            topic_gen_name (bool): Flag to generate topic names. Default is False.</span>
 <span class="sd">            manual_axis_name (t.Optional[dict]): Custom axis names for the map. Default is None.</span>
 <span class="sd">            use_doc_gen_topic (bool): Flag to use document context in topic generation. Default is False.</span>
 <span class="sd">            radius_size (float): Radius size for the map isualization. Default is 0.3.</span>
@@ -2218,7 +2210,6 @@
             <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
             <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
             <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
-            <span class="n">generative_ai_name</span><span class="o">=</span><span class="n">topic_gen_name</span><span class="p">,</span>
             <span class="n">topic_param</span><span class="o">=</span><span class="n">topic_param</span><span class="p">,</span>
             <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">topic_gen_param</span><span class="p">,</span>
         <span class="p">)</span>
@@ -2252,7 +2243,7 @@
 
         <span class="k">return</span> <span class="n">fig</span>
 
-    <span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseRetrievalQA</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.</span>
 
@@ -2357,7 +2348,6 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Visualizes the similarity scores between a given query and the document set.</span>
-
 <span class="sd">        Args:</span>
 <span class="sd">            query (str): The query to be visualized against the documents. Default is &quot;What is America?&quot;.</span>
 <span class="sd">            min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.</span>
@@ -2707,11 +2697,7 @@
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
 <span class="normal"> 89</span>
 <span class="normal"> 90</span>
 <span class="normal"> 91</span>
@@ -2729,7 +2715,11 @@
 <span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
-<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_model</span><span class="p">:</span> <span class="n">Embeddings</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a BunkaTopics instance.</span>
 
 <span class="sd">    Arguments:</span>
@@ -2806,7 +2796,8 @@ and calculates the percentage of data retained after cleaning.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">668</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">667</span>
+<span class="normal">668</span>
 <span class="normal">669</span>
 <span class="normal">670</span>
 <span class="normal">671</span>
@@ -2869,8 +2860,7 @@ and calculates the percentage of data retained after cleaning.</p>
 <span class="normal">728</span>
 <span class="normal">729</span>
 <span class="normal">730</span>
-<span class="normal">731</span>
-<span class="normal">732</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">clean_data_by_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">731</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">clean_data_by_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filters and cleans the dataset based on user-selected topics.</span>
 
@@ -3004,11 +2994,7 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
 
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
@@ -3100,7 +3086,11 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
 <span class="normal">201</span>
 <span class="normal">202</span>
 <span class="normal">203</span>
-<span class="normal">204</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">DOC_ID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3234,6 +3224,7 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
         <tr>
           <td><code>llm</code></td>
           <td>
+                <code><span title="langchain_core.language_models.llms.LLM">LLM</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -3320,11 +3311,7 @@ aiming for more understandable and relevant topic descriptors.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">272</span>
 <span class="normal">273</span>
 <span class="normal">274</span>
 <span class="normal">275</span>
@@ -3361,9 +3348,13 @@ aiming for more understandable and relevant topic descriptors.</p>
 <span class="normal">306</span>
 <span class="normal">307</span>
 <span class="normal">308</span>
-<span class="normal">309</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_clean_topic_name</span><span class="p">(</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_clean_topic_name</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">llm</span><span class="p">,</span>
+    <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span>
     <span class="n">use_doc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;everything&quot;</span><span class="p">,</span>
@@ -3501,7 +3492,8 @@ easy interpretation of the topic sizes.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">642</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">641</span>
+<span class="normal">642</span>
 <span class="normal">643</span>
 <span class="normal">644</span>
 <span class="normal">645</span>
@@ -3519,8 +3511,7 @@ easy interpretation of the topic sizes.</p>
 <span class="normal">657</span>
 <span class="normal">658</span>
 <span class="normal">659</span>
-<span class="normal">660</span>
-<span class="normal">661</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="normal">660</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a bar plot to visualize the distribution of topics by size.</span>
 
@@ -3679,11 +3670,7 @@ with the resulting topics. It also associates the identified topics with the doc
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
 <span class="normal">211</span>
 <span class="normal">212</span>
 <span class="normal">213</span>
@@ -3739,7 +3726,11 @@ with the resulting topics. It also associates the identified topics with the doc
 <span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
-<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">n_clusters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="n">ngrams</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
@@ -3853,7 +3844,8 @@ If no changes are made, it retains the original topic names.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">734</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">733</span>
+<span class="normal">734</span>
 <span class="normal">735</span>
 <span class="normal">736</span>
 <span class="normal">737</span>
@@ -3925,8 +3917,7 @@ If no changes are made, it retains the original topic names.</p>
 <span class="normal">803</span>
 <span class="normal">804</span>
 <span class="normal">805</span>
-<span class="normal">806</span>
-<span class="normal">807</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">manually_clean_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">806</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">manually_clean_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allows manual renaming of topic names in the dataset.</span>
 
@@ -4051,6 +4042,7 @@ If no changes are made, it retains the original topic names.</p>
         <tr>
           <td><code>llm</code></td>
           <td>
+                <code><span title="langchain_core.language_models.llms.LLM">LLM</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -4091,6 +4083,7 @@ If no changes are made, it retains the original topic names.</p>
     <tbody>
         <tr>
           <td>
+                <code><span title="langchain.chains.retrieval_qa.base.BaseRetrievalQA">BaseRetrievalQA</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -4139,7 +4132,7 @@ to work with complex queries and provide informative answers using the document 
 <span class="normal">511</span>
 <span class="normal">512</span>
 <span class="normal">513</span>
-<span class="normal">514</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+<span class="normal">514</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseRetrievalQA</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.</span>
 
@@ -4182,295 +4175,35 @@ to work with complex queries and provide informative answers using the document 
 
 
 <h2 id="bunkatopics._bunkatopics.Bunka.visualize_bourdieu" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">visualize_bourdieu</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;war&#39;</span><span class="p">],</span> <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peace&#39;</span><span class="p">],</span> <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;men&#39;</span><span class="p">],</span> <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;women&#39;</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">display_percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clustering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">topic_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topic_ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">topic_top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">gen_topic_language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">topic_gen_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">manual_axis_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_doc_gen_topic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="n">label_size_ratio_clusters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">label_size_ratio_label</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">label_size_ratio_percent</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">visualize_bourdieu</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;war&#39;</span><span class="p">],</span> <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peace&#39;</span><span class="p">],</span> <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;men&#39;</span><span class="p">],</span> <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;women&#39;</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">display_percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clustering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">topic_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topic_ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">topic_top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">gen_topic_language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">manual_axis_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_doc_gen_topic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="n">label_size_ratio_clusters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">label_size_ratio_label</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">label_size_ratio_percent</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></code>
 
 <a href="#bunkatopics._bunkatopics.Bunka.visualize_bourdieu" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
   
-      <p>Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>generative_model</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The generative model to be used. Default is None.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>x_left_words,</code></td>
-          <td>
-                <code>x_right_words (t.List[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Words defining the left and right axes.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>y_top_words,</code></td>
-          <td>
-                <code>y_bottom_words (t.List[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Words defining the top and bottom axes.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>height,</code></td>
-          <td>
-                <code>width (int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Dimensions of the visualization. Both default to 1500.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>display_percent</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Flag to display percentages on the map. Default is True.</p>
-            </div>
-          </td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>clustering</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Whether to apply clustering on the map. Default is False.</p>
-            </div>
-          </td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>topic_n_clusters</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Number of clusters for topic modeling. Default is 10.</p>
-            </div>
-          </td>
-          <td>
-                <code>10</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>topic_terms</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Length of topic names. Default is 2.</p>
-            </div>
-          </td>
-          <td>
-                <code>2</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>topic_ngrams</code></td>
-          <td>
-                <code><span title="typing.List">List</span>[int]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>N-gram range for topic modeling. Default is [1, 2].</p>
-            </div>
-          </td>
-          <td>
-                <code>[1, 2]</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>topic_top_terms_overall</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Top terms to consider overall. Default is 1000.</p>
-            </div>
-          </td>
-          <td>
-                <code>1000</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>gen_topic_language</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Language for topic generation. Default is "english".</p>
-            </div>
-          </td>
-          <td>
-                <code>&#39;english&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>topic_gen_name</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Flag to generate topic names. Default is False.</p>
-            </div>
-          </td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>manual_axis_name</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[dict]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Custom axis names for the map. Default is None.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>use_doc_gen_topic</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Flag to use document context in topic generation. Default is False.</p>
-            </div>
-          </td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>radius_size</code></td>
-          <td>
-                <code>float</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Radius size for the map isualization. Default is 0.3.</p>
-            </div>
-          </td>
-          <td>
-                <code>0.3</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>convex_hull</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Whether to include a convex hull in the visualization. Default is True.</p>
-            </div>
-          </td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>colorscale</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>colorscale for the Density Plot (Default is delta)</p>
-            </div>
-          </td>
-          <td>
-                <code>&#39;delta&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>density</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Whether to display a density map</p>
-            </div>
-          </td>
-          <td>
-                <code>True</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>Returns</code></td>
-          <td>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>go.Figure: A Plotly graph object figure representing the Bourdieu Map.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
+      <p>Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
+Args:
+    generative_model (t.Optional[str]): The generative model to be used. Default is None.
+    x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.
+    y_top_words, y_bottom_words (t.List[str]): Words defining the top and bottom axes.
+    height, width (int): Dimensions of the visualization. Both default to 1500.
+    display_percent (bool): Flag to display percentages on the map. Default is True.
+    clustering (bool): Whether to apply clustering on the map. Default is False.
+    topic_n_clusters (int): Number of clusters for topic modeling. Default is 10.
+    topic_terms (int): Length of topic names. Default is 2.
+    topic_ngrams (t.List[int]): N-gram range for topic modeling. Default is [1, 2].
+    topic_top_terms_overall (int): Top terms to consider overall. Default is 1000.
+    gen_topic_language (str): Language for topic generation. Default is "english".
+    manual_axis_name (t.Optional[dict]): Custom axis names for the map. Default is None.
+    use_doc_gen_topic (bool): Flag to use document context in topic generation. Default is False.
+    radius_size (float): Radius size for the map isualization. Default is 0.3.
+    convex_hull (bool): Whether to include a convex hull in the visualization. Default is True.
+    colorscale (str): colorscale for the Density Plot (Default is delta)
+    density (bool): Whether to display a density map</p>
+<div class="highlight"><pre><span></span><code>Returns:
+    go.Figure: A Plotly graph object figure representing the Bourdieu Map.
+</code></pre></div>
 
 <details class="note" open>
   <summary>Note</summary>
@@ -4481,11 +4214,7 @@ offering a range of customization options for detailed analysis.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">363</span>
 <span class="normal">364</span>
 <span class="normal">365</span>
 <span class="normal">366</span>
@@ -4606,7 +4335,7 @@ offering a range of customization options for detailed analysis.</p>
 <span class="normal">481</span>
 <span class="normal">482</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">LLM</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">x_left_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;war&quot;</span><span class="p">],</span>
     <span class="n">x_right_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;peace&quot;</span><span class="p">],</span>
     <span class="n">y_top_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;men&quot;</span><span class="p">],</span>
@@ -4620,7 +4349,6 @@ offering a range of customization options for detailed analysis.</p>
     <span class="n">topic_ngrams</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
     <span class="n">topic_top_terms_overall</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="n">gen_topic_language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span>
-    <span class="n">topic_gen_name</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">manual_axis_name</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">use_doc_gen_topic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">radius_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
@@ -4633,7 +4361,6 @@ offering a range of customization options for detailed analysis.</p>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</span>
-
 <span class="sd">    Args:</span>
 <span class="sd">        generative_model (t.Optional[str]): The generative model to be used. Default is None.</span>
 <span class="sd">        x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.</span>
@@ -4646,7 +4373,6 @@ offering a range of customization options for detailed analysis.</p>
 <span class="sd">        topic_ngrams (t.List[int]): N-gram range for topic modeling. Default is [1, 2].</span>
 <span class="sd">        topic_top_terms_overall (int): Top terms to consider overall. Default is 1000.</span>
 <span class="sd">        gen_topic_language (str): Language for topic generation. Default is &quot;english&quot;.</span>
-<span class="sd">        topic_gen_name (bool): Flag to generate topic names. Default is False.</span>
 <span class="sd">        manual_axis_name (t.Optional[dict]): Custom axis names for the map. Default is None.</span>
 <span class="sd">        use_doc_gen_topic (bool): Flag to use document context in topic generation. Default is False.</span>
 <span class="sd">        radius_size (float): Radius size for the map isualization. Default is 0.3.</span>
@@ -4695,7 +4421,6 @@ offering a range of customization options for detailed analysis.</p>
         <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
         <span class="n">embedding_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_model</span><span class="p">,</span>
         <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
-        <span class="n">generative_ai_name</span><span class="o">=</span><span class="n">topic_gen_name</span><span class="p">,</span>
         <span class="n">topic_param</span><span class="o">=</span><span class="n">topic_param</span><span class="p">,</span>
         <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">topic_gen_param</span><span class="p">,</span>
     <span class="p">)</span>
@@ -4982,79 +4707,12 @@ insight into specific terms used in the visualization.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Visualizes the similarity scores between a given query and the document set.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>query</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The query to be visualized against the documents. Default is "What is America?".</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>min_score</code></td>
-          <td>
-                <code>float</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>The minimum similarity score threshold for visualization. Default is 0.2.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>width</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Width of the visualization. Default is 600.</p>
-            </div>
-          </td>
-          <td>
-                <code>500</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>height</code></td>
-          <td>
-                <code>int</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Height of the visualization. Default is 300.</p>
-            </div>
-          </td>
-          <td>
-                <code>500</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
+      <p>Visualizes the similarity scores between a given query and the document set.
+Args:
+    query (str): The query to be visualized against the documents. Default is "What is America?".
+    min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.
+    width (int): Width of the visualization. Default is 600.
+    height (int): Height of the visualization. Default is 300.</p>
 
 
 
@@ -5157,8 +4815,7 @@ providing a visual representation of their relevance to the query.</p>
 <span class="normal">636</span>
 <span class="normal">637</span>
 <span class="normal">638</span>
-<span class="normal">639</span>
-<span class="normal">640</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
+<span class="normal">639</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">,</span> <span class="s2">&quot;fear&quot;</span><span class="p">,</span> <span class="s2">&quot;love&quot;</span><span class="p">],</span>
     <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -5167,7 +4824,6 @@ providing a visual representation of their relevance to the query.</p>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Visualizes the similarity scores between a given query and the document set.</span>
-
 <span class="sd">    Args:</span>
 <span class="sd">        query (str): The query to be visualized against the documents. Default is &quot;What is America?&quot;.</span>
 <span class="sd">        min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.</span>
@@ -5386,11 +5042,7 @@ into topics and can include text labels for clarity.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">315</span>
 <span class="normal">316</span>
 <span class="normal">317</span>
 <span class="normal">318</span>
@@ -5432,7 +5084,11 @@ into topics and can include text labels for clarity.</p>
 <span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
-<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_topics</span><span class="p">(</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_topics</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">show_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">label_size_ratio</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>

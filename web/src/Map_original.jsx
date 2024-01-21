@@ -38,7 +38,6 @@ function MapView() {
 
   const { data: apiData, isLoading: isFileProcessing } = useContext(TopicsContext);
 
-
   const svgRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
   const createScatterPlot = (data) => {
@@ -314,17 +313,17 @@ function MapView() {
             </HtmlTooltip>
             <svg ref={svgRef} />
           </div>
-          <div className="text-container">
-            {selectedDocument ? (
-              <TextContainer
-                topicName={selectedDocument.name}
-                topicSizeFraction={topicsSizeFraction(topicsCentroids, selectedDocument.size)}
-                content={selectedDocument.top_doc_content}
-              />
-            ) : (
-              // Display a default view or null if no document is selected
-              null
-            )}
+          <div className="text-container" >
+            {selectedDocument !== null ? (
+              <>
+                {/* <Box sx={{ marginBottom: "1em" }}>
+                  <Button sx={{ width: "100%" }} component="label" variant="outlined" startIcon={<RepeatIcon />} onClick={() => setSelectedDocument(null)}>
+                    Upload another CSV file
+                  </Button>
+                </Box> */}
+                <TextContainer topicName={selectedDocument.name} topicSizeFraction={topicsSizeFraction(topicsCentroids, selectedDocument.size)} content={selectedDocument.top_doc_content} />
+              </>
+            ) : <QueryView />}
           </div>
         </div>
       )}

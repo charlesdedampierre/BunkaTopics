@@ -6,6 +6,7 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 import traceback
 
+from unittest.mock import patch
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
@@ -58,13 +59,13 @@ class TestBunka(unittest.TestCase):
 
         self.assertIsInstance(topic_fig, go.Figure)
 
-    """def test_generative_names(self):
+    def test_generative_names(self):
         n_clusters = 3
         self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
         print(df_topics_clean["topic_name"])
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
-        self.assertEqual(len(df_topics_clean), n_clusters)"""
+        self.assertEqual(len(df_topics_clean), n_clusters)
 
     def test_bourdieu_modeling(self):
         bourdieu_fig = self.bunka.visualize_bourdieu(
@@ -76,7 +77,6 @@ class TestBunka(unittest.TestCase):
             height=800,
             width=800,
             clustering=True,
-            topic_gen_name=False,
             topic_n_clusters=3,
             density=False,
             colorscale="Portland",
@@ -85,7 +85,7 @@ class TestBunka(unittest.TestCase):
             bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
-        """def test_rag(self):
+    def test_rag(self):
         top_doc_len = 3
         res = self.bunka.rag_query(
             query="What is great?",
@@ -97,7 +97,7 @@ class TestBunka(unittest.TestCase):
         print(result)
         self.assertIsInstance(result, str)
         document_sources = res["source_documents"]
-        self.assertEqual(len(document_sources), top_doc_len)"""
+        self.assertEqual(len(document_sources), top_doc_len)
 
     def test_plot_query(self):
         query = "What is great?"
@@ -118,6 +118,24 @@ class TestBunka(unittest.TestCase):
         fig_distribution = self.bunka.get_topic_repartition()
         self.assertIsInstance(fig_distribution, go.Figure)
 
+    """@patch("subprocess.run")
+    @patch("bunkatopics.serveur.is_server_running", return_value=False)
+    @patch("bunkatopics.serveur.kill_server")
+    def test_bunka_server(
+        self, mock_kill_server, mock_is_server_running, mock_subprocess_run
+    ):
+        # Ensure that start_server can be called without raising an exception
+        self.bunka.get_topics(n_clusters=3, min_count_terms=1)
+        try:
+            self.bunka.start_server()
+        except Exception as e:
+            self.fail(f"start_server raised an exception: {e}")
+
+        # Check if subprocess.run was called correctly
+        mock_subprocess_run.assert_called_with(
+            ["cp", "web/env.model", "web/.env"], check=True
+        )
+    """
     """def test_notebook(self):
         notebook_filename = (
             "notebooks/cleaning.ipynb"  # Replace with your notebook file

@@ -3,6 +3,7 @@ import typing as t
 import pandas as pd
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
+from langchain_core.language_models.llms import LLM
 from tqdm import tqdm
 
 from bunkatopics.datamodel import Document, Topic
@@ -24,7 +25,7 @@ class LLMCleaningTopic:
 
     def __init__(
         self,
-        llm,
+        llm: LLM,
         language: str = "english",
         top_doc: int = 3,
         top_terms: int = 10,

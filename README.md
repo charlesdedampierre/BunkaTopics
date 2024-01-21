@@ -51,7 +51,7 @@ To get started, let's upload a sample of Medium Articles into Bunkatopics:
 
 ```python
 from datasets import load_dataset
-docs = load_dataset("bunkalab/medium")["train"]["title"]
+docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"]
 ```
 
 ### Choose Your Embedding Model
@@ -227,7 +227,6 @@ bourdieu_fig = bunka.visualize_bourdieu(
         height=800,
         width=800,
         clustering=True,
-        topic_gen_name=True,
         topic_n_clusters=10,
         density=False,
         convex_hull=True,
@@ -246,8 +245,61 @@ politics/business vs     positive/negative      |  politics/business vs startups
 :-------------------------:|:-------------------------:
 ![Image 3](docs/images/bourdieu_3.png)  |  ![Image 4](docs/images/bourdieu_4.png)
 
-## Contribution
+## Front-end
 
-If you have any questions, feedback, or would like to contribute, please don't hesitate to reach out!
+This is a beta feature. First, git clone the repository
 
-Many thanks to Maarten Grootendorst for inspiring us with his groundbreaking work on Bertopics.
+```bash
+git clone https://github.com/charlesdedampierre/BunkaTopics.git
+cd BunkaTopics
+pip install -e .
+```
+
+Then copy the environement file:
+
+```bash
+cp web/env web/.env
+```
+
+Then carry out a Topic Modeling and launch the serveur:
+
+```python
+from bunkatopics import Bunka
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+# Choose your embedding model
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We recommend starting with a small model
+
+# Initialize Bunka with your chosen model and language preference
+bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+
+# Fit Bunka to your text data
+bunka.fit(full_docs)
+bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
+
+bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
+```
+
+Same after a Bourdieu Visualisation
+
+```python
+from bunkatopics import Bunka
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+bunka.visualize_bourdieu(
+        llm=None,
+        x_left_words=["This is about business"],
+        x_right_words=["This is about politics"],
+        y_top_words=["this is about startups"],
+        y_bottom_words=["This is about governments"],
+        height=800,
+        width=800,
+        clustering=True,
+        topic_n_clusters=10,
+        density=False,
+        convex_hull=True,
+        radius_size=0.2,
+        label_size_ratio_clusters=80)
+
+bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
+```

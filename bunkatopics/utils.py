@@ -35,3 +35,9 @@ def _create_topic_dfs(topics: t.List[Topic], docs: t.List[Document]):
     )
 
     return df_topics, top_docs_topics
+
+
+class BunkaError(Exception):
+    """Custom exception for Bunka-related errors."""
+
+    pass

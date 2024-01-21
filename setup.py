@@ -55,7 +55,7 @@ setup(
     description="Bunkatopics is a Topic Modeling package and Exploration Module",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/MaartenGr/BERTopic",
+    url="https://github.com/charlesdedampierre/BunkaTopics",
     project_urls={
         "Source code": "https://github.com/charlesdedampierre/BunkaTopics",
         "Documentation": "https://charlesdedampierre.github.io/BunkaTopics/",

@@ -13,29 +13,25 @@ SHELL := /bin/bash
 install_packages:
 	pip install -e .
 	pip install -e '.['dev']'
-	pip install -e '.['check']'
 
 docs_serve:
 	mkdocs serve
 
-
 ### TO PUBLISH THIS WORKS AFTER MOVING THE POETRY FILE
-build_poetry:
-	python -m build --sdist --wheel
+# build_poetry:
+# python -m build --sdist --wheel
 
-### TO PUBLISH THIS WORKS AFTER MOVING THE POETRY FILE
+# python setup.py sdist
+
 pypi:
-	python setup.py sdist
 	python setup.py bdist_wheel --universal
-
-### TO PUBLISH THIS WORKS
 
 pypi_publish:
 	twine upload dist/* -u __token__ -p $(PYPY_TOKEN)
 ### TO PUBLISH THIS WORKS
 
-pypi_publish_test:
-	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
+# pypi_publish_test:
+# 	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
 
 default: 
 	docker_build

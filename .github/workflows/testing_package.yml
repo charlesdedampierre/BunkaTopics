@@ -2,9 +2,9 @@ name: Bunka Code Checking
 
 on:
   push:
-    branches: ["refacto_dev"]
+    branches: ["dev"]
   pull_request:
-    branches: ["refacto_dev"]
+    branches: ["dev"]
 permissions:
   contents: read
 

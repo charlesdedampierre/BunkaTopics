@@ -48,7 +48,7 @@ with open("README.md", "r") as doc:
 setup(
     name="bunkatopics",
     packages=find_packages(exclude=["notebooks", "docs"]),
-    version="0.43.1",
+    version="0.44",
     author="Charles de Dampierre",
     author_email="charlesdedampierre@gmail.com",
     description="Bunkatopics is a Topic Modeling package and Exploration Module",

@@ -87,13 +87,13 @@ class Bunka:
     def __init__(self, embedding_model: Embeddings = None, language: str = "english"):
         """Initialize a BunkaTopics instance.
 
-        Arguments:
-           embedding_model : An optional embedding model for generating document embeddings.
-               If not provided, a default model will be used based on the specified language.
-               Default: None
-           language : The language to be used for text processing and modeling.
-               Options: "english" (default), or specify another language as needed.
-               Default: "english"
+        Args:
+            embedding_model (Embeddings, optional): An optional embedding model for generating document embeddings.
+                If not provided, a default model will be used based on the specified language.
+                Default is None.
+            language (str): The language to be used for text processing and modeling.
+                Options include "english" (default), or specify another language as needed.
+                Default is "english".
         """
 
         warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)

@@ -50,7 +50,7 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Topic Exploration: topic_exploration.md
-  - Cleaning Data: fine-tuning.md
+  - Cleaning Data for LLM: fine-tuning.md
   - Framing Analysis: framing-analysis.md
   - Contributing: contribution.md
   - API:

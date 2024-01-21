@@ -2,27 +2,16 @@ import typing as t
 
 import numpy as np
 import pandas as pd
+from langchain_core.embeddings import Embeddings
+from langchain_core.language_models.llms import LLM
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
-from langchain_core.language_models.llms import LLM
-from langchain_core.embeddings import Embeddings
 
-
-from bunkatopics.datamodel import (
-    BourdieuDimension,
-    BourdieuQuery,
-    ContinuumDimension,
-    Document,
-    Term,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
-from bunkatopics.topic_modeling import (
-    BunkaTopicModeling,
-    DocumentRanker,
-    LLMCleaningTopic,
-)
+from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
+                                   ContinuumDimension, Document, Term, Topic,
+                                   TopicGenParam, TopicParam)
+from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
+                                        LLMCleaningTopic)
 
 pd.options.mode.chained_assignment = None
 

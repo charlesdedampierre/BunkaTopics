@@ -4,11 +4,11 @@ import typing as t
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from langchain_core.embeddings import Embeddings
 
 from bunkatopics.bourdieu.bourdieu_api import _get_continuum
 from bunkatopics.datamodel import Document
 from bunkatopics.visualization.visualization_utils import wrap_by_word
-from langchain_core.embeddings import Embeddings
 
 pd.options.mode.chained_assignment = None
 

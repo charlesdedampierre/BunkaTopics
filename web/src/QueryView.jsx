@@ -59,7 +59,7 @@ function QueryView() {
   const { uploadFile, isLoading, selectedView, refreshBourdieuQuery } = useContext(TopicsContext);
   const [fileDataTooLong, setFileDataTooLong] = useState(false);
   const [fileDataError, setFileDataError] = useState(null);
-  
+
   /**
    * Column name selector handler
    */
@@ -101,11 +101,11 @@ function QueryView() {
       reader.readAsText(file);
     });
 
-    /**
-     * Handler the file selection ui workflow
-     * @param {Event} e 
-     * @returns 
-     */
+  /**
+   * Handler the file selection ui workflow
+   * @param {Event} e 
+   * @returns 
+   */
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
@@ -163,11 +163,11 @@ function QueryView() {
       });
     }
   };
-  
+
   const handleRefreshQuery = useCallback(async () => {
     if (!isLoading) {
       await refreshBourdieuQuery({
-        topic_param : {
+        topic_param: {
           n_clusters: nClusters,
           name_lenght: nameLength,
           min_count_terms: minCountTerms,
@@ -255,8 +255,8 @@ function QueryView() {
                 <TextField required id="input-map-mincountterms" sx={{ marginBottom: "1em" }} label="Min Count Terms" variant="outlined" onChange={e => setMinCountTerms(e.target.value)} value={minCountTerms} />
                 <RadioGroup required name="cleantopics-radio-group" defaultValue={cleanTopics} onChange={e => setCleanTopics(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} disabled>
                   <FormLabel id="clean-topics-group-label">Clean Topics</FormLabel>
-                  <FormControlLabel value={true} label="Yes" control={<Radio />} disabled/>
-                  <FormControlLabel value={false} label="No" control={<Radio />} disabled/>
+                  <FormControlLabel value={true} label="Yes" control={<Radio />} disabled />
+                  <FormControlLabel value={false} label="No" control={<Radio />} disabled />
                 </RadioGroup>
               </FormControl>
               <Button variant="contained" color="primary" onClick={handleRefreshQuery} disabled={isLoading || fileDataTooLong === true || fileDataError !== null}>
@@ -275,13 +275,13 @@ function QueryView() {
                 <TextField required id="input-map-mincountterms" sx={{ marginBottom: "1em" }} label="Min Count Terms" variant="outlined" onChange={e => setMinCountTerms(e.target.value)} value={minCountTerms} />
                 <RadioGroup required name="cleantopics-radio-group" defaultValue={cleanTopics} onChange={e => setCleanTopics(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }} disabled>
                   <FormLabel id="clean-topics-group-label">Clean Topics</FormLabel>
-                  <FormControlLabel value={true} label="Yes" control={<Radio />} disabled/>
-                  <FormControlLabel value={false} label="No" control={<Radio />} disabled/>
+                  <FormControlLabel value={true} label="Yes" control={<Radio />} disabled />
+                  <FormControlLabel value={false} label="No" control={<Radio />} disabled />
                 </RadioGroup>
                 <RadioGroup required name="language-radio-group" defaultValue={language} onChange={e => setLanguage(e.target.value)} variant="outlined" sx={{ marginBottom: "1em" }}>
                   <FormLabel id="language-group-label">Language</FormLabel>
-                  <FormControlLabel value="french" label="fr" control={<Radio />}/>
-                  <FormControlLabel value="english" label="en" control={<Radio />}/>
+                  <FormControlLabel value="french" label="fr" control={<Radio />} />
+                  <FormControlLabel value="english" label="en" control={<Radio />} />
                 </RadioGroup>
               </FormControl>
             </Box>

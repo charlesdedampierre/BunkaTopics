@@ -20,6 +20,8 @@ Discover the different Use Case:
 
 - **Framing Analysis**: Data can be analyzed in countless ways, contingent on your objectives and interests. We've developed a tool that enables you to visualize data by semantically customizing your own axes.
 
+<img src="img/pipeline.png" width="70%" height="70%" align="center" />
+
 ## Discover different examples using our Google Colab Notebooks
 
 | Theme  | Google Colab Link  |
@@ -77,25 +79,25 @@ print(df_topics)
 
 ```python
 >>> bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
-
-topic_id topic_name size percent
-bt-12 technology | Tech | Children | student | days 322 10.73
-bt-11 blockchain | Cryptocurrency | sense | Cryptocurrencies | Impact 283 9.43
-bt-7 gadgets | phone | Device | specifications | screen 258 8.6
-bt-8 software | Kubernetes | ETL | REST | Salesforce 258 8.6
-bt-1 hackathon | review | Recap | Predictions | Lessons 257 8.57
-bt-4 Reality | world | cities | future | Lot 246 8.2
-bt-14 Product | Sales | day | dream | routine 241 8.03
-bt-0 Words | Robots | discount | NordVPN | humans 208 6.93
-bt-2 Internet | Overview | security | Work | Development 202 6.73
-bt-13 Course | Difference | Step | science | Point 192 6.4
-bt-6 quantum | Cars | Way | Game | quest 162 5.4
-bt-3 Objects | Strings | app | Programming | Functions 119 3.97
-bt-5 supply | chain | revolution | Risk | community 119 3.97
-bt-9 COVID | printing | Car | work | app 89 2.97
-bt-10 Episode | HD | Secrets | TV 44 1.47
-
 ```
+
+| topic_id | topic_name                   | size | percent |
+|:--------:|:-----------------------------|:----:|:-------:|
+|  bt-12   | technology - Tech - Children - student - days | 322  | 10.73  |
+|  bt-11   | blockchain - Cryptocurrency - sense - Cryptocurrencies - Impact | 283  | 9.43   |
+|  bt-7    | gadgets - phone - Device - specifications - screen | 258  | 8.6    |
+|  bt-8    | software - Kubernetes - ETL - REST - Salesforce | 258  | 8.6    |
+|  bt-1    | hackathon - review - Recap - Predictions - Lessons | 257  | 8.57   |
+|  bt-4    | Reality - world - cities - future - Lot | 246  | 8.2    |
+|  bt-14   | Product - Sales - day - dream - routine | 241  | 8.03   |
+|  bt-0    | Words - Robots - discount - NordVPN - humans | 208  | 6.93   |
+|  bt-2    | Internet - Overview - security - Work - Development | 202  | 6.73   |
+|  bt-13   | Course - Difference - Step - science - Point | 192  | 6.4    |
+|  bt-6    | quantum - Cars - Way - Game - quest | 162  | 5.4    |
+|  bt-3    | Objects - Strings - app - Programming - Functions | 119  | 3.97   |
+|  bt-5    | supply - chain - revolution - Risk - community | 119  | 3.97   |
+|  bt-9    | COVID - printing - Car - work - app | 89  | 2.97   |
+|  bt-10   | Episode - HD - Secrets - TV | 44  | 1.47   |
 
 ### Visualize Your Topics
 
@@ -144,25 +146,25 @@ We can now access the newly made topics
 
 ```python
 >>> bunka.df_topics_
-
-topic_id topic_name size percent
-bt-1 Cryptocurrency Impact 345 12.32
-bt-3 Data Management Technologies 243 8.68
-bt-14 Everyday Life 230 8.21
-bt-0 Digital Learning Campaign 225 8.04
-bt-12 Business Development 223 7.96
-bt-2 Technology Devices 212 7.57
-bt-10 Market Predictions Recap 201 7.18
-bt-4 Comprehensive Learning Journey 187 6.68
-bt-6 Future of Work 185 6.61
-bt-11 Internet Discounts 175 6.25
-bt-5 Technological Urban Water Management 172 6.14
-bt-9 Electric Vehicle Technology 145 5.18
-bt-8 Programming Concepts 116 4.14
-bt-13 Quantum Technology Industries 105 3.75
-bt-7 High Definition Television (HDTV) 36 1.29
-
 ```
+
+| topic_id | topic_name                            | size | percent |
+|:--------:|:--------------------------------------|:----:|:-------:|
+|   bt-1   | Cryptocurrency Impact                 | 345  | 12.32   |
+|   bt-3   | Data Management Technologies          | 243  | 8.68    |
+|   bt-14  | Everyday Life                         | 230  | 8.21    |
+|   bt-0   | Digital Learning Campaign              | 225  | 8.04    |
+|   bt-12  | Business Development                  | 223  | 7.96    |
+|   bt-2   | Technology Devices                    | 212  | 7.57    |
+|   bt-10  | Market Predictions Recap               | 201  | 7.18    |
+|   bt-4   | Comprehensive Learning Journey         | 187  | 6.68    |
+|   bt-6   | Future of Work                        | 185  | 6.61    |
+|   bt-11  | Internet Discounts                    | 175  | 6.25    |
+|   bt-5   | Technological Urban Water Management  | 172  | 6.14    |
+|   bt-9   | Electric Vehicle Technology            | 145  | 5.18    |
+|   bt-8   | Programming Concepts                   | 116  | 4.14    |
+|   bt-13  | Quantum Technology Industries          | 105  | 3.75    |
+|   bt-7   | High Definition Television (HDTV)      | 36   | 1.29    |
 
 ## Manually Cleaning the topics
 
@@ -188,19 +190,21 @@ You have the flexibility to construct a customized dataset by excluding topics t
 
 ```python
 >>> bunka.df_cleaned_
-
-doc_id content topic_id topic_name
-873ba315 Invisibilize Data With JavaScript bt-8 Programming Concepts
-1243d58f Why End-to-End Testing is Important for Your Team bt-3 Data Management Technologies
-45fb8166 This Tiny Wearable Device Uses Your Body Heat to Chrage Electronic Devices bt-2 Technology Devices
-a122d1d2 Digital Policy Salon: The Next Frontier bt-0 Digital Learning Campaign
-1bbcfc1c Preparing Hardware for Outdoor Creative Technology Installations bt-5 Technological Urban Water Management
-79580c34 Angular Or React ? bt-8 Programming Concepts
-af0b08a2 Ed-Tech Startups Are Cashing in on Parents’ Insecurities bt-0 Digital Learning Campaign
-2255c350 Former Google CEO Wants to Create a Government-Funded University to Train A.I. Coders bt-6 Future of Work
-d2bc4b33 Applying Action & The Importance of Ideas bt-12 Business Development
-5219675e Why You Should (not?) Use Signal bt-2 Technology Devices
 ```
+
+| doc_id    | content                                               | topic_id | topic_name                             |
+|:---------:|:-----------------------------------------------------:|:--------:|:--------------------------------------:|
+| 873ba315  | Invisibilize Data With JavaScript                    |   bt-8   | Programming Concepts                   |
+| 1243d58f  | Why End-to-End Testing is Important for Your Team    |   bt-3   | Data Management Technologies            |
+| 45fb8166  | This Tiny Wearable Device Uses Your Body Heat...     |   bt-2   | Technology Devices                      |
+| a122d1d2  | Digital Policy Salon: The Next Frontier              |   bt-0   | Digital Learning Campaign               |
+| 1bbcfc1c  | Preparing Hardware for Outdoor Creative Technology Installations |   bt-5   | Technological Urban Water Management   |
+| 79580c34  | Angular Or React ?                                    |   bt-8   | Programming Concepts                   |
+| af0b08a2  | Ed-Tech Startups Are Cashing in on Parents’ Insecurities |   bt-0   | Digital Learning Campaign               |
+| 2255c350  | Former Google CEO Wants to Create a Government-Funded University to Train A.I. Coders |   bt-6   | Future of Work                          |
+| d2bc4b33  | Applying Action & The Importance of Ideas             |   bt-12  | Business Development                   |
+| 5219675e  | Why You Should (not?) Use Signal                      |   bt-2   | Technology Devices                      |
+| ...       | ...                                                  |   ...    | ...                                    |
 
 ## Bourdieu Map
 
@@ -227,7 +231,6 @@ bourdieu_fig = bunka.visualize_bourdieu(
         height=800,
         width=800,
         clustering=True,
-        topic_gen_name=True,
         topic_n_clusters=10,
         density=False,
         convex_hull=True,

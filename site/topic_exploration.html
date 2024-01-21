@@ -306,7 +306,7 @@
   
     
   
-  Cleaning Data
+  Cleaning Data for LLM
 
       </a>
     </li>
@@ -614,6 +614,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#using-other-llm-for-summarizing-titles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using other LLM for Summarizing titles
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -633,7 +642,7 @@
         
   
   <span class="md-ellipsis">
-    Cleaning Data
+    Cleaning Data for LLM
   </span>
   
 
@@ -1087,6 +1096,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#using-other-llm-for-summarizing-titles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using other LLM for Summarizing titles
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1107,7 +1125,6 @@
 
 <h1 id="topic-exploration-of-a-textual-dataset">Topic Exploration of a Textual Dataset<a class="headerlink" href="#topic-exploration-of-a-textual-dataset" title="Permanent link">&para;</a></h1>
 <p>Bunkatopics is a package designed for Topic Exploration.</p>
-<p><img src="img/pipeline.png" width="70%" height="70%" align="center" /></p>
 <h2 id="discover-different-examples-using-our-google-colab-notebooks">Discover different examples using our Google Colab Notebooks<a class="headerlink" href="#discover-different-examples-using-our-google-colab-notebooks" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1406,6 +1423,26 @@ We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mist
 <h2 id="exploring-topics-on-a-react-front-end">Exploring topics on a REACT Front-end<a class="headerlink" href="#exploring-topics-on-a-react-front-end" title="Permanent link">&para;</a></h2>
 <p>Start the serveur to run the React Application</p>
 <div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">start_server</span><span class="p">()</span> <span class="c1"># A serveur will open on your computer at http://localhost:3000/ </span>
+</code></pre></div>
+<h2 id="using-other-llm-for-summarizing-titles">Using other LLM for Summarizing titles<a class="headerlink" href="#using-other-llm-for-summarizing-titles" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">HuggingFacePipeline</span>
+<span class="kn">from</span> <span class="nn">langchain.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="kn">from</span> <span class="nn">langchain.embeddings.huggingface</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbeddings</span>
+
+<span class="n">text_generation_pipeline</span> <span class="o">=</span> <span class="n">transformers</span><span class="o">.</span><span class="n">pipeline</span><span class="p">(</span>
+   <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+   <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+   <span class="n">task</span><span class="o">=</span><span class="s2">&quot;text-generation&quot;</span><span class="p">,</span>
+   <span class="n">temperature</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+   <span class="n">repetition_penalty</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+   <span class="n">return_full_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+   <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">mistral_llm</span> <span class="o">=</span> <span class="n">HuggingFacePipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="o">=</span><span class="n">text_generation_pipeline</span><span class="p">)</span>
+<span class="c1"># Obtain clean topic names using Generative Model</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">get_clean_topic_name</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">mistral_llm</span><span class="p">)</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">colorscale</span> <span class="o">=</span> <span class="s1">&#39;Portland&#39;</span><span class="p">)</span>
 </code></pre></div>
 
 

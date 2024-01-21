@@ -1,10 +1,18 @@
 # BunkaTopics web app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was made to show the results of [BunkaTopics](https://github.com/charlesdedampierre/BunkaTopics).
+Bunkatopics is a Topic Modeling Visualisation, Frame Analysis & Retrieval Augmented Generation (RAG) package that leverages LLMs
+It is built around React and D3.js and made to work with the `api` in the same repository
 
-## Available Scripts
+## Usage
 
-In the project directory, you can run:
+- Please copy `env.model` to `.env` before starting the server
+- `make docker_build`
+- `make docker_run`
+
+## Developping
+
+In the project directory, you can run a development server:
 
 ### `npm start`
 
@@ -29,7 +37,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+### Remove react-scripts helper : `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
@@ -39,8 +47,5 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
-
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).

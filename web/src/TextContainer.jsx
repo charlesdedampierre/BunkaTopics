@@ -7,9 +7,14 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import DescriptionIcon from "@mui/icons-material/Description"; // Import the document icon
+import DescriptionIcon from '@mui/icons-material/Description';
 
-function TextContainer({ topicName, sizeFraction, content }) {
+export const topicsSizeFraction = (topicsCentroids, topicSize) => {
+  const totalSize = topicsCentroids.reduce((sum, topic) => sum + topic.size, 0);
+  return Math.round((topicSize / totalSize) * 100);
+}
+
+function TextContainer({ topicName, topicSizeFraction, content }) {
   const [selectedDocument, setSelectedDocument] = useState(null);
 
   const handleDocumentClick = (docIndex) => {
@@ -49,26 +54,16 @@ function TextContainer({ topicName, sizeFraction, content }) {
             textAlign: "center",
           }}
         >
-          {sizeFraction}
-          % of the Territory
+          {topicSizeFraction}% of the Territory
         </Typography>
         <Paper elevation={3} style={{ maxHeight: "70vh", overflowY: "auto" }}>
           <List>
             {content.map((doc, index) => (
-              <ListItem
-                button
-                key={doc.id}
-                onClick={() => handleDocumentClick(index)}
-                selected={selectedDocument === index}
-              >
+              <ListItem button key={`textcontainerdoc-${index}`} onClick={() => handleDocumentClick(index)} selected={selectedDocument === index}>
                 <ListItemIcon>
-                  <DescriptionIcon />
-                  {" "}
-                  {/* Display a document icon */}
+                  <DescriptionIcon /> {/* Display a document icon */}
                 </ListItemIcon>
-                <ListItemText
-                  primary={<span style={{ fontSize: "16px" }}>{doc}</span>}
-                />
+                <ListItemText primary={<span style={{ fontSize: "14px" }}>{doc}</span>} />
               </ListItem>
             ))}
           </List>
@@ -80,7 +75,7 @@ function TextContainer({ topicName, sizeFraction, content }) {
 
 TextContainer.propTypes = {
   topicName: PropTypes.string.isRequired,
-  sizeFraction: PropTypes.string.isRequired,
+  topicSizeFraction: PropTypes.number.isRequired,
   content: PropTypes.array.isRequired,
 };
 

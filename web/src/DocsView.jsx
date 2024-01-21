@@ -1,16 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Box,
-  Container,
-} from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { TopicsContext } from "./UploadFileContext";
 
 const bunkaDocs = "bunka_docs.json";
 const bunkaTopics = "bunka_topics.json";
@@ -19,55 +9,49 @@ const { REACT_APP_API_ENDPOINT } = process.env;
 function DocsView() {
   const [docs, setDocs] = useState(null);
   const [topics, setTopics] = useState(null);
+  const { data: apiData, isLoading } = useContext(TopicsContext);
 
   useEffect(() => {
-    // Fetch the content of "docs.json" when the component mounts
-    fetch(
-      REACT_APP_API_ENDPOINT === "local"
-        ? `/${bunkaDocs}`
-        : `${REACT_APP_API_ENDPOINT}/${bunkaDocs}`,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setDocs(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching JSON data:", error);
-      });
+    if (REACT_APP_API_ENDPOINT === "local" || apiData === undefined) {
+      // Fetch the JSON data locally
+      fetch(`/${bunkaDocs}`)
+        .then((response) => response.json())
+        .then((localData) => {
+          setDocs(localData);
+          // Fetch the topics data and merge it with the existing data
+          fetch(`/${bunkaTopics}`)
+            .then((response) => response.json())
+            .then((topicsData) => {
+              // Set the topics data with the existing data
+              setTopics(topicsData);
+            })
+            .catch((error) => {
+              console.error("Error fetching topics data:", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error fetching JSON data:", error);
+        });
+    } else {
+      // Call the function to create the scatter plot with the data provided by TopicsContext
+      setDocs(apiData.docs);
+      setTopics(apiData.topics);
+    }
+  }, [apiData]);
 
-    // Fetch the topics data when the component mounts
-    fetch(
-      REACT_APP_API_ENDPOINT === "local"
-        ? `/${bunkaTopics}`
-        : `${REACT_APP_API_ENDPOINT}/${bunkaTopics}`,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setTopics(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching topics data:", error);
-      });
-  }, []);
-
-  const docsWithTopics = docs && topics
-    ? docs.map((doc) => ({
-      ...doc,
-      topic_name:
-        topics.find((topic) => topic.topic_id === doc.topic_id)?.name
-        || "Unknown",
-    })) : [];
+  const docsWithTopics =
+    docs && topics
+      ? docs.map((doc) => ({
+          ...doc,
+          topic_name: topics.find((topic) => topic.topic_id === doc.topic_id)?.name || "Unknown",
+        }))
+      : [];
 
   const downloadCSV = () => {
     // Create a CSV content string from the data
     const csvContent = `data:text/csv;charset=utf-8,${[
       ["Doc ID", "Topic ID", "Topic Name", "Content"], // CSV header
-      ...docsWithTopics.map((doc) => [
-        doc.doc_id,
-        doc.topic_id,
-        doc.topic_name,
-        doc.content,
-      ]), // CSV data
+      ...docsWithTopics.map((doc) => [doc.doc_id, doc.topic_id, doc.topic_name, doc.content]), // CSV data
     ]
       .map((row) => row.map((cell) => `"${cell}"`).join(",")) // Wrap cells in double quotes
       .join("\n")}`; // Join rows with newline
@@ -91,9 +75,16 @@ function DocsView() {
   return (
     <Container fixed>
       <div className="docs-view">
-        <h2>Documents View</h2>
-        {docs ? (
+        <h2>Data</h2>
+        {isLoading ? (
+          <Backdrop open={isLoading} style={{ zIndex: 9999 }}>
+            <CircularProgress color="primary" />
+          </Backdrop>
+        ) : (
           <div>
+            <Button variant="contained" color="primary" onClick={downloadCSV} sx={{ marginBottom: "1em" }}>
+              Download CSV
+            </Button>
             <Box
               sx={{
                 height: "1000px", // Set the height of the table
@@ -134,12 +125,7 @@ function DocsView() {
                 </Table>
               </TableContainer>
             </Box>
-            <Button variant="contained" color="primary" onClick={downloadCSV}>
-              Download CSV
-            </Button>
           </div>
-        ) : (
-          <p>Loading...</p>
         )}
       </div>
     </Container>

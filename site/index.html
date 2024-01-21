@@ -1,0 +1,1460 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="using LLM to create and Explore topics in an innovative way">
+      
+      
+        <meta name="author" content="Charles de Dampierre">
+      
+      
+        <link rel="canonical" href="https://charlesdedampierre.github.io/BunkaTopics/index.html">
+      
+      
+      
+        <link rel="next" href="getting-started.html">
+      
+      
+      <link rel="icon" href="img/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
+    
+    
+      
+        <title>BunkaTopics</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="extra.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+      
+        <meta  property="og:type"  content="website" >
+      
+        <meta  property="og:title"  content="Home" >
+      
+        <meta  property="og:description"  content="using LLM to create and Explore topics in an innovative way" >
+      
+        <meta  property="og:image"  content="https://charlesdedampierre.github.io/BunkaTopics/assets/images/social/index.png" >
+      
+        <meta  property="og:image:type"  content="image/png" >
+      
+        <meta  property="og:image:width"  content="1200" >
+      
+        <meta  property="og:image:height"  content="630" >
+      
+        <meta  property="og:url"  content="https://charlesdedampierre.github.io/BunkaTopics/index.html" >
+      
+        <meta  name="twitter:card"  content="summary_large_image" >
+      
+        <meta  name="twitter:title"  content="Home" >
+      
+        <meta  name="twitter:description"  content="using LLM to create and Explore topics in an innovative way" >
+      
+        <meta  name="twitter:image"  content="https://charlesdedampierre.github.io/BunkaTopics/assets/images/social/index.png" >
+      
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="black" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#welcome-to-bunka-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="BunkaTopics" class="md-header__button md-logo" aria-label="BunkaTopics" data-md-component="logo">
+      
+  <img src="img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BunkaTopics
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="black" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="white" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/charlesdedampierre/BunkaTopics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="index.html" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="getting-started.html" class="md-tabs__link">
+        
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="topic_exploration.html" class="md-tabs__link">
+        
+  
+    
+  
+  Topic Exploration
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="fine-tuning.html" class="md-tabs__link">
+        
+  
+    
+  
+  Cleaning Data
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="framing-analysis.html" class="md-tabs__link">
+        
+  
+    
+  
+  Framing Analysis
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="contribution.html" class="md-tabs__link">
+        
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="bunka-api/bunkatopics.html" class="md-tabs__link">
+          
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="changelog.html" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="BunkaTopics" class="md-nav__button md-logo" aria-label="BunkaTopics" data-md-component="logo">
+      
+  <img src="img/logo.png" alt="logo">
+
+    </a>
+    BunkaTopics
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/charlesdedampierre/BunkaTopics" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#discover-different-examples-using-our-google-colab-notebooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Discover different examples using our Google Colab Notebooks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-via-pip" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation via Pip
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-via-git-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation via Git Clone
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uploading-sample-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uploading Sample Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-your-embedding-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choose Your Embedding Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualize-your-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualize Your Topics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topic-modeling-with-genai-summarization-of-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topic Modeling with GenAI Summarization of Topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manually-cleaning-the-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually Cleaning the topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-data-based-on-topics-for-fine-tuning-purposes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removing Data based on topics for fine-tuning purposes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bourdieu-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bourdieu Map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contribution
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting-started.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="topic_exploration.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topic Exploration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="fine-tuning.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cleaning Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="framing-analysis.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Framing Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="contribution.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/bunkatopics.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bunka
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/topic_modeling/topic_model_builder.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topic Modeling
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/topic_modeling/terms_extractor.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Term Extractor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/topic_modeling/topic_llm_cleaning.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topic LLM Cleaner
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/bourdieu/bourdieu-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bourdieu API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Visualization
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_6">
+            <span class="md-nav__icon md-icon"></span>
+            Visualization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/visualization/topic-visualization.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topic Modeling Visualization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/bourdieu/bourdieu-visualization.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bourdieu Visualization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bunka-api/bourdieu/bourdieu-visualization-one-dimension.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bourdieu Visualization One Dimension
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="changelog.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#discover-different-examples-using-our-google-colab-notebooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Discover different examples using our Google Colab Notebooks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-via-pip" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation via Pip
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-via-git-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation via Git Clone
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uploading-sample-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uploading Sample Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-your-embedding-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choose Your Embedding Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualize-your-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualize Your Topics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topic-modeling-with-genai-summarization-of-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topic Modeling with GenAI Summarization of Topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manually-cleaning-the-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manually Cleaning the topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-data-based-on-topics-for-fine-tuning-purposes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removing Data based on topics for fine-tuning purposes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bourdieu-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bourdieu Map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contribution
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="welcome-to-bunka-documentation">Welcome to Bunka Documentation<a class="headerlink" href="#welcome-to-bunka-documentation" title="Permanent link">&para;</a></h1>
+<p>Welcome to the documentation for Bunka, an advanced library for natural language processing and data visualization.</p>
+<p><a href="https://pypi.org/project/bunkatopics/"><img alt="PyPI - Python" src="https://img.shields.io/badge/python-v3.9-blue.svg" /></a>
+<a href="https://pypi.org/project/bunkatopics/"><img alt="PyPI - PyPi" src="https://img.shields.io/pypi/v/bunkatopics" /></a>
+<a href="https://pepy.tech/project/bunkatopics"><img alt="Downloads" src="https://static.pepy.tech/badge/bunkatopics" /></a>
+<a href="https://pepy.tech/project/bunkatopics"><img alt="Downloads" src="https://static.pepy.tech/badge/bunkatopics/month" /></a></p>
+<p><img src="images/logo.png" width="35%" height="35%" align="right" /></p>
+<p>Bunkatopics is a package designed for Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG) tasks, harnessing the power of Large Language Models (LLMs). Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleansing and optimizing LLMs through fine-tuning processes.
+Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.</p>
+<p>Discover the different Use Case:</p>
+<ul>
+<li>
+<p><strong>Content Overview</strong>: The Medium website offers a wealth of content across various categories such as Data Science, Technology, Programming, Poetry, Cryptocurrency, Machine Learning, Life, and more. While these categories facilitate data searching, they may not provide a granular overview. For instance, within the Technology category, what specific topics does Medium cover?</p>
+</li>
+<li>
+<p><strong>Fine-Tuning</strong>: To achieve precise fine-tuning, it's crucial to exercise control over the data, filtering what is relevant and discarding what isn't. Bunka is a valuable tool for accomplishing this task.</p>
+</li>
+<li>
+<p><strong>Framing Analysis</strong>: Data can be analyzed in countless ways, contingent on your objectives and interests. We've developed a tool that enables you to visualize data by semantically customizing your own axes.</p>
+</li>
+</ul>
+<h2 id="discover-different-examples-using-our-google-colab-notebooks">Discover different examples using our Google Colab Notebooks<a class="headerlink" href="#discover-different-examples-using-our-google-colab-notebooks" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Theme</th>
+<th>Google Colab Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Visual Topic Modeling with Bunka</td>
+<td><a href="https://colab.research.google.com/drive/11K5bKs4y6snEFEZhKFNuNVRRSAsq9b7p#scrollTo=uxQ5qCIVar1u"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+<tr>
+<td>Cleaning dataset for fine-tuning LLM using Bunka</td>
+<td><a href="https://colab.research.google.com/drive/1KedB5FqJ62sF7Gb5qSsA5kbeTeJDw2Mo#scrollTo=-bEv2hrvakW4"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+<tr>
+<td>Understanding a dataset using Frame Analysis with Bunka</td>
+<td><a href="https://colab.research.google.com/drive/14ubgffmKPiLBUdoV1j6EjfCnI4EFWxn4#scrollTo=7jHILnazA1Im"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+<tr>
+<td>Full Introduction to Topic Modeling, Data Cleaning and Frame Analysis with Bunka.</td>
+<td><a href="https://colab.research.google.com/drive/1M4xuJE782bDzVxDUmQv9SSQL0hdZIC8n#scrollTo=ySwyXC0bbVb8"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="installation-via-pip">Installation via Pip<a class="headerlink" href="#installation-via-pip" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>bunkatopics
+</code></pre></div>
+<h2 id="installation-via-git-clone">Installation via Git Clone<a class="headerlink" href="#installation-via-git-clone" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/charlesdedampierre/BunkaTopics.git
+<span class="nb">cd</span><span class="w"> </span>BunkaTopics
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<h3 id="uploading-sample-data">Uploading Sample Data<a class="headerlink" href="#uploading-sample-data" title="Permanent link">&para;</a></h3>
+<p>To get started, let's upload a sample of Medium Articles into Bunkatopics:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;bunkalab/medium&quot;</span><span class="p">)[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+</code></pre></div>
+<h3 id="choose-your-embedding-model">Choose Your Embedding Model<a class="headerlink" href="#choose-your-embedding-model" title="Permanent link">&para;</a></h3>
+<p>Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">bunkatopics</span> <span class="kn">import</span> <span class="n">Bunka</span>
+<span class="kn">from</span> <span class="nn">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbeddings</span>
+
+<span class="c1"># Choose your embedding model</span>
+<span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span> <span class="c1"># We recommend starting with a small model</span>
+
+<span class="c1"># Initialize Bunka with your chosen model and language preference</span>
+<span class="n">bunka</span> <span class="o">=</span> <span class="n">Bunka</span><span class="p">(</span><span class="n">embedding_model</span><span class="o">=</span><span class="n">embedding_model</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">)</span> <span class="c1"># You can choose any language you prefer</span>
+
+<span class="c1"># Fit Bunka to your text data</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">full_docs</span><span class="p">)</span>
+
+<span class="c1"># Get a list of topics</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_topics</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">get_topics</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">name_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="c1"># Specify the number of terms to describe each topic</span>
+
+<span class="n">topic_id</span> <span class="n">topic_name</span> <span class="n">size</span> <span class="n">percent</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">12</span> <span class="n">technology</span> <span class="o">|</span> <span class="n">Tech</span> <span class="o">|</span> <span class="n">Children</span> <span class="o">|</span> <span class="n">student</span> <span class="o">|</span> <span class="n">days</span> <span class="mi">322</span> <span class="mf">10.73</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">11</span> <span class="n">blockchain</span> <span class="o">|</span> <span class="n">Cryptocurrency</span> <span class="o">|</span> <span class="n">sense</span> <span class="o">|</span> <span class="n">Cryptocurrencies</span> <span class="o">|</span> <span class="n">Impact</span> <span class="mi">283</span> <span class="mf">9.43</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">7</span> <span class="n">gadgets</span> <span class="o">|</span> <span class="n">phone</span> <span class="o">|</span> <span class="n">Device</span> <span class="o">|</span> <span class="n">specifications</span> <span class="o">|</span> <span class="n">screen</span> <span class="mi">258</span> <span class="mf">8.6</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">software</span> <span class="o">|</span> <span class="n">Kubernetes</span> <span class="o">|</span> <span class="n">ETL</span> <span class="o">|</span> <span class="n">REST</span> <span class="o">|</span> <span class="n">Salesforce</span> <span class="mi">258</span> <span class="mf">8.6</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">1</span> <span class="n">hackathon</span> <span class="o">|</span> <span class="n">review</span> <span class="o">|</span> <span class="n">Recap</span> <span class="o">|</span> <span class="n">Predictions</span> <span class="o">|</span> <span class="n">Lessons</span> <span class="mi">257</span> <span class="mf">8.57</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">4</span> <span class="n">Reality</span> <span class="o">|</span> <span class="n">world</span> <span class="o">|</span> <span class="n">cities</span> <span class="o">|</span> <span class="n">future</span> <span class="o">|</span> <span class="n">Lot</span> <span class="mi">246</span> <span class="mf">8.2</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">14</span> <span class="n">Product</span> <span class="o">|</span> <span class="n">Sales</span> <span class="o">|</span> <span class="n">day</span> <span class="o">|</span> <span class="n">dream</span> <span class="o">|</span> <span class="n">routine</span> <span class="mi">241</span> <span class="mf">8.03</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Words</span> <span class="o">|</span> <span class="n">Robots</span> <span class="o">|</span> <span class="n">discount</span> <span class="o">|</span> <span class="n">NordVPN</span> <span class="o">|</span> <span class="n">humans</span> <span class="mi">208</span> <span class="mf">6.93</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Internet</span> <span class="o">|</span> <span class="n">Overview</span> <span class="o">|</span> <span class="n">security</span> <span class="o">|</span> <span class="n">Work</span> <span class="o">|</span> <span class="n">Development</span> <span class="mi">202</span> <span class="mf">6.73</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">13</span> <span class="n">Course</span> <span class="o">|</span> <span class="n">Difference</span> <span class="o">|</span> <span class="n">Step</span> <span class="o">|</span> <span class="n">science</span> <span class="o">|</span> <span class="n">Point</span> <span class="mi">192</span> <span class="mf">6.4</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">6</span> <span class="n">quantum</span> <span class="o">|</span> <span class="n">Cars</span> <span class="o">|</span> <span class="n">Way</span> <span class="o">|</span> <span class="n">Game</span> <span class="o">|</span> <span class="n">quest</span> <span class="mi">162</span> <span class="mf">5.4</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">3</span> <span class="n">Objects</span> <span class="o">|</span> <span class="n">Strings</span> <span class="o">|</span> <span class="n">app</span> <span class="o">|</span> <span class="n">Programming</span> <span class="o">|</span> <span class="n">Functions</span> <span class="mi">119</span> <span class="mf">3.97</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">5</span> <span class="n">supply</span> <span class="o">|</span> <span class="n">chain</span> <span class="o">|</span> <span class="n">revolution</span> <span class="o">|</span> <span class="n">Risk</span> <span class="o">|</span> <span class="n">community</span> <span class="mi">119</span> <span class="mf">3.97</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">9</span> <span class="n">COVID</span> <span class="o">|</span> <span class="n">printing</span> <span class="o">|</span> <span class="n">Car</span> <span class="o">|</span> <span class="n">work</span> <span class="o">|</span> <span class="n">app</span> <span class="mi">89</span> <span class="mf">2.97</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">10</span> <span class="n">Episode</span> <span class="o">|</span> <span class="n">HD</span> <span class="o">|</span> <span class="n">Secrets</span> <span class="o">|</span> <span class="n">TV</span> <span class="mi">44</span> <span class="mf">1.47</span>
+</code></pre></div>
+<h3 id="visualize-your-topics">Visualize Your Topics<a class="headerlink" href="#visualize-your-topics" title="Permanent link">&para;</a></h3>
+<p>Finally, let's visualize the topics that Bunka has computed for your text data:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;YIGnBu&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p><img src="images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" /></p>
+<h2 id="topic-modeling-with-genai-summarization-of-topics">Topic Modeling with GenAI Summarization of Topics<a class="headerlink" href="#topic-modeling-with-genai-summarization-of-topics" title="Permanent link">&para;</a></h2>
+<p>Explore the power of Generative AI for summarizing topics!
+We use the 7B-instruct model of <a href="https://mistral.ai/news/announcing-mistral-7b/">Mistral AI</a> from the huggingface hub using the langchain framework.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">HuggingFaceHub</span>
+
+<span class="c1"># Define the repository ID for Mistral-7B-v0.1</span>
+<span class="n">repo_id</span> <span class="o">=</span> <span class="s1">&#39;mistralai/Mistral-7B-v0.1&#39;</span>
+
+<span class="c1"># Using Mistral AI to Summarize the Topics</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceHub</span><span class="p">(</span><span class="n">repo_id</span><span class="o">=</span><span class="s1">&#39;mistralai/Mistral-7B-v0.1&#39;</span><span class="p">,</span> <span class="n">huggingfacehub_api_token</span><span class="o">=</span><span class="s2">&quot;HF_TOKEN&quot;</span><span class="p">)</span>
+
+<span class="c1"># Obtain clean topic names using Generative Model</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">get_clean_topic_name</span><span class="p">(</span><span class="n">generative_model</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">colorscale</span> <span class="o">=</span> <span class="s1">&#39;Portland&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>Finally, let's visualize again the topics. We can chose from different colorscale.</p>
+<div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">visualize_topics</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">YlGnBu</th>
+<th style="text-align: center;">Portland</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 1" src="images/topic_modeling_clean_YlGnBu.png" /></td>
+<td style="text-align: center;"><img alt="Image 2" src="images/topic_modeling_clean_Portland.png" /></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">delta</th>
+<th style="text-align: center;">Blues</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 3" src="images/topic_modeling_clean_delta.png" /></td>
+<td style="text-align: center;"><img alt="Image 4" src="images/topic_modeling_clean_Blues.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>We can now access the newly made topics</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">df_topics_</span>
+
+<span class="n">topic_id</span> <span class="n">topic_name</span> <span class="n">size</span> <span class="n">percent</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">1</span> <span class="n">Cryptocurrency</span> <span class="n">Impact</span> <span class="mi">345</span> <span class="mf">12.32</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">3</span> <span class="n">Data</span> <span class="n">Management</span> <span class="n">Technologies</span> <span class="mi">243</span> <span class="mf">8.68</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">14</span> <span class="n">Everyday</span> <span class="n">Life</span> <span class="mi">230</span> <span class="mf">8.21</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Digital</span> <span class="n">Learning</span> <span class="n">Campaign</span> <span class="mi">225</span> <span class="mf">8.04</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">12</span> <span class="n">Business</span> <span class="n">Development</span> <span class="mi">223</span> <span class="mf">7.96</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Technology</span> <span class="n">Devices</span> <span class="mi">212</span> <span class="mf">7.57</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">10</span> <span class="n">Market</span> <span class="n">Predictions</span> <span class="n">Recap</span> <span class="mi">201</span> <span class="mf">7.18</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">4</span> <span class="n">Comprehensive</span> <span class="n">Learning</span> <span class="n">Journey</span> <span class="mi">187</span> <span class="mf">6.68</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">6</span> <span class="n">Future</span> <span class="n">of</span> <span class="n">Work</span> <span class="mi">185</span> <span class="mf">6.61</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">11</span> <span class="n">Internet</span> <span class="n">Discounts</span> <span class="mi">175</span> <span class="mf">6.25</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">5</span> <span class="n">Technological</span> <span class="n">Urban</span> <span class="n">Water</span> <span class="n">Management</span> <span class="mi">172</span> <span class="mf">6.14</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">9</span> <span class="n">Electric</span> <span class="n">Vehicle</span> <span class="n">Technology</span> <span class="mi">145</span> <span class="mf">5.18</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">Programming</span> <span class="n">Concepts</span> <span class="mi">116</span> <span class="mf">4.14</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">13</span> <span class="n">Quantum</span> <span class="n">Technology</span> <span class="n">Industries</span> <span class="mi">105</span> <span class="mf">3.75</span>
+<span class="n">bt</span><span class="o">-</span><span class="mi">7</span> <span class="n">High</span> <span class="n">Definition</span> <span class="n">Television</span> <span class="p">(</span><span class="n">HDTV</span><span class="p">)</span> <span class="mi">36</span> <span class="mf">1.29</span>
+</code></pre></div>
+<h2 id="manually-cleaning-the-topics">Manually Cleaning the topics<a class="headerlink" href="#manually-cleaning-the-topics" title="Permanent link">&para;</a></h2>
+<p>Are you happy with the topics yes ? Let's change them manually. Click on Apply changes when you are done. In the example, we changed the topic <strong>Cryptocurrency Impact</strong> to <strong>Cryptocurrency</strong> and <strong>Internet Discounts</strong> to <strong>Advertising</strong>.</p>
+<p>The new topics will also appear on the Map.</p>
+<div class="highlight"><pre><span></span><code><span class="n">bunka</span><span class="o">.</span><span class="n">manually_clean_topics</span><span class="p">()</span>
+</code></pre></div>
+<p><img src="images/manually_change_topics.png" width="40%" height="20%" align="center" /></p>
+<h2 id="removing-data-based-on-topics-for-fine-tuning-purposes">Removing Data based on topics for fine-tuning purposes<a class="headerlink" href="#removing-data-based-on-topics-for-fine-tuning-purposes" title="Permanent link">&para;</a></h2>
+<p>You have the flexibility to construct a customized dataset by excluding topics that do not align with your interests. For instance, in the provided example, we omitted topics associated with <strong>Advertising</strong> and <strong>High-Definition television</strong>, as these clusters primarily contain promotional content that we prefer not to include in our model's training data.</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">clean_data_by_topics</span><span class="p">()</span>
+</code></pre></div>
+<p><img src="images/fine_tuning_dataset.png" width="40%" height="20%" align="center" /></p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bunka</span><span class="o">.</span><span class="n">df_cleaned_</span>
+
+<span class="n">doc_id</span> <span class="n">content</span> <span class="n">topic_id</span> <span class="n">topic_name</span>
+<span class="mi">873</span><span class="n">ba315</span> <span class="n">Invisibilize</span> <span class="n">Data</span> <span class="n">With</span> <span class="n">JavaScript</span> <span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">Programming</span> <span class="n">Concepts</span>
+<span class="mi">1243</span><span class="n">d58f</span> <span class="n">Why</span> <span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">End</span> <span class="n">Testing</span> <span class="ow">is</span> <span class="n">Important</span> <span class="k">for</span> <span class="n">Your</span> <span class="n">Team</span> <span class="n">bt</span><span class="o">-</span><span class="mi">3</span> <span class="n">Data</span> <span class="n">Management</span> <span class="n">Technologies</span>
+<span class="mi">45</span><span class="n">fb8166</span> <span class="n">This</span> <span class="n">Tiny</span> <span class="n">Wearable</span> <span class="n">Device</span> <span class="n">Uses</span> <span class="n">Your</span> <span class="n">Body</span> <span class="n">Heat</span> <span class="n">to</span> <span class="n">Chrage</span> <span class="n">Electronic</span> <span class="n">Devices</span> <span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Technology</span> <span class="n">Devices</span>
+<span class="n">a122d1d2</span> <span class="n">Digital</span> <span class="n">Policy</span> <span class="n">Salon</span><span class="p">:</span> <span class="n">The</span> <span class="n">Next</span> <span class="n">Frontier</span> <span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Digital</span> <span class="n">Learning</span> <span class="n">Campaign</span>
+<span class="mi">1</span><span class="n">bbcfc1c</span> <span class="n">Preparing</span> <span class="n">Hardware</span> <span class="k">for</span> <span class="n">Outdoor</span> <span class="n">Creative</span> <span class="n">Technology</span> <span class="n">Installations</span> <span class="n">bt</span><span class="o">-</span><span class="mi">5</span> <span class="n">Technological</span> <span class="n">Urban</span> <span class="n">Water</span> <span class="n">Management</span>
+<span class="mi">79580</span><span class="n">c34</span> <span class="n">Angular</span> <span class="n">Or</span> <span class="n">React</span> <span class="err">?</span> <span class="n">bt</span><span class="o">-</span><span class="mi">8</span> <span class="n">Programming</span> <span class="n">Concepts</span>
+<span class="n">af0b08a2</span> <span class="n">Ed</span><span class="o">-</span><span class="n">Tech</span> <span class="n">Startups</span> <span class="n">Are</span> <span class="n">Cashing</span> <span class="ow">in</span> <span class="n">on</span> <span class="n">Parents</span><span class="err">’</span> <span class="n">Insecurities</span> <span class="n">bt</span><span class="o">-</span><span class="mi">0</span> <span class="n">Digital</span> <span class="n">Learning</span> <span class="n">Campaign</span>
+<span class="mi">2255</span><span class="n">c350</span> <span class="n">Former</span> <span class="n">Google</span> <span class="n">CEO</span> <span class="n">Wants</span> <span class="n">to</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">Government</span><span class="o">-</span><span class="n">Funded</span> <span class="n">University</span> <span class="n">to</span> <span class="n">Train</span> <span class="n">A</span><span class="o">.</span><span class="n">I</span><span class="o">.</span> <span class="n">Coders</span> <span class="n">bt</span><span class="o">-</span><span class="mi">6</span> <span class="n">Future</span> <span class="n">of</span> <span class="n">Work</span>
+<span class="n">d2bc4b33</span> <span class="n">Applying</span> <span class="n">Action</span> <span class="o">&amp;</span> <span class="n">The</span> <span class="n">Importance</span> <span class="n">of</span> <span class="n">Ideas</span> <span class="n">bt</span><span class="o">-</span><span class="mi">12</span> <span class="n">Business</span> <span class="n">Development</span>
+<span class="mi">5219675</span><span class="n">e</span> <span class="n">Why</span> <span class="n">You</span> <span class="n">Should</span> <span class="p">(</span><span class="ow">not</span><span class="err">?</span><span class="p">)</span> <span class="n">Use</span> <span class="n">Signal</span> <span class="n">bt</span><span class="o">-</span><span class="mi">2</span> <span class="n">Technology</span> <span class="n">Devices</span>
+</code></pre></div>
+<h2 id="bourdieu-map">Bourdieu Map<a class="headerlink" href="#bourdieu-map" title="Permanent link">&para;</a></h2>
+<p>The Bourdieu map provides a 2-Dimensional unsupervised scale to visualize various texts. Each region on the map represents a distinct topic, characterized by its most specific terms. Clusters are formed, and their names are succinctly summarized using Generative AI.</p>
+<p>The significance of this visualization lies in its ability to define axes, thereby creating continuums that reveal data distribution patterns. This concept draws inspiration from the work of the renowned French sociologist Bourdieu, who employed 2-Dimensional maps to project items and gain insights.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">HuggingFaceHub</span>
+
+<span class="c1"># Define the HuggingFaceHub instance with the repository ID and API token</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceHub</span><span class="p">(</span>
+    <span class="n">repo_id</span><span class="o">=</span><span class="s1">&#39;mistralai/Mistral-7B-v0.1&#39;</span><span class="p">,</span>
+    <span class="n">huggingfacehub_api_token</span><span class="o">=</span><span class="s2">&quot;HF_TOKEN&quot;</span>
+<span class="p">)</span>
+
+<span class="c1">## Bourdieu Fig</span>
+<span class="n">bourdieu_fig</span> <span class="o">=</span> <span class="n">bunka</span><span class="o">.</span><span class="n">visualize_bourdieu</span><span class="p">(</span>
+        <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
+        <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;This is about business&quot;</span><span class="p">],</span>
+        <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;This is about politics&quot;</span><span class="p">],</span>
+        <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;this is about startups&quot;</span><span class="p">],</span>
+        <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;This is about governments&quot;</span><span class="p">],</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+        <span class="n">clustering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">topic_gen_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">label_size_ratio_clusters</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+
+<span class="c1"># Display the Bourdieu map</span>
+<span class="n">bourdieu_fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">positive/negative vs humans/machines</th>
+<th style="text-align: center;">politics/business vs humans/machines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 1" src="images/bourdieu_1.png" /></td>
+<td style="text-align: center;"><img alt="Image 2" src="images/bourdieu_2.png" /></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">politics/business vs     positive/negative</th>
+<th style="text-align: center;">politics/business vs startups/governments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="Image 3" src="images/bourdieu_3.png" /></td>
+<td style="text-align: center;"><img alt="Image 4" src="images/bourdieu_4.png" /></td>
+</tr>
+</tbody>
+</table>
+<h2 id="contribution">Contribution<a class="headerlink" href="#contribution" title="Permanent link">&para;</a></h2>
+<p>If you have any questions, feedback, or would like to contribute, please don't hesitate to reach out!</p>
+<p>Many thanks to Maarten Grootendorst for inspiring us with his groundbreaking work on Bertopics.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.instant", "navigation.top", "navigation.tracking", "toc.follow", "content.code.copy"], "search": "assets/javascripts/workers/search.c011b7c0.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.7389ff0e.min.js"></script>
+      
+    
+  </body>
+</html>

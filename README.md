@@ -1,272 +1,276 @@
-[![PyPI - Python](https://img.shields.io/badge/python-v3.10-blue.svg)](https://pypi.org/project/bunkatopics/)
+[![PyPI - Python](https://img.shields.io/badge/python-v3.9-blue.svg)](https://pypi.org/project/bunkatopics/)
 [![PyPI - PyPi](https://img.shields.io/pypi/v/bunkatopics)](https://pypi.org/project/bunkatopics/)
 [![Downloads](https://static.pepy.tech/badge/bunkatopics)](https://pepy.tech/project/bunkatopics)
 [![Downloads](https://static.pepy.tech/badge/bunkatopics/month)](https://pepy.tech/project/bunkatopics)
 
+Please read our Documentation: [The Origin of Bunka](https://charlesdedampierre.github.io/BunkaTopics)
+
 # Bunkatopics
 
-<img src="images/logo.png" width="35%" height="35%" align="right" />
+<img src="docs/images/logo.png" width="35%" height="35%" align="right" />
 
-Bunkatopics is a Topic Modeling Visualisation, Frame Analysis & Retrieval Augmented Generation (RAG) package that leverages LLMs. It is built with the same philosophy as [BERTopic](https://github.com/MaartenGr/BERTopic) but goes deeper in the visualization to help users grasp quickly and intuitively the content of thousands of text, as well as giving the opportunity to the user to create its own frames.
+Bunkatopics is a package designed for Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG) tasks, harnessing the power of Large Language Models (LLMs). Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleansing and optimizing LLMs through fine-tuning processes.
+Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.
 
-Bunkatopics is built on top of [langchain](<https://python.langchain.com/docs/get_started/introduction>).
+Discover the different Use Case:
 
-## Pipeline
+- **Content Overview**: The Medium website offers a wealth of content across various categories such as Data Science, Technology, Programming, Poetry, Cryptocurrency, Machine Learning, Life, and more. While these categories facilitate data searching, they may not provide a granular overview. For instance, within the Technology category, what specific topics does Medium cover?
 
-<img src="images/pipeline.png" width="70%" height="70%" align="center" />
+- **Fine-Tuning**: To achieve precise fine-tuning, it's crucial to exercise control over the data, filtering what is relevant and discarding what isn't. Bunka is a valuable tool for accomplishing this task.
+
+- **Framing Analysis**: Data can be analyzed in countless ways, contingent on your objectives and interests. We've developed a tool that enables you to visualize data by semantically customizing your own axes.
+
+## Discover different examples using our Google Colab Notebooks
+
+| Theme  | Google Colab Link  |
+|---|---|
+| Visual Topic Modeling with Bunka  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11K5bKs4y6snEFEZhKFNuNVRRSAsq9b7p#scrollTo=uxQ5qCIVar1u)  |
+| Cleaning dataset for fine-tuning LLM using Bunka  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KedB5FqJ62sF7Gb5qSsA5kbeTeJDw2Mo#scrollTo=-bEv2hrvakW4)  |
+| Understanding a dataset using Frame Analysis with Bunka | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14ubgffmKPiLBUdoV1j6EjfCnI4EFWxn4#scrollTo=7jHILnazA1Im)  |
+| Full Introduction to Topic Modeling, Data Cleaning and Frame Analysis with Bunka.  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1M4xuJE782bDzVxDUmQv9SSQL0hdZIC8n#scrollTo=ySwyXC0bbVb8)  |
+
+## Installation via Pip
+
+```bash
+pip install bunkatopics
+```
 
 ## Installation via Git Clone
 
 ```bash
-pip install poetry
 git clone https://github.com/charlesdedampierre/BunkaTopics.git
 cd BunkaTopics
-
-# Create the environment from the .lock file. 
-poetry install # This will install all packages in the .lock file inside a virtual environmnet
-
-# if there is a problem with chromadb, please do:
-pip install chromadb==0.4.13
-
-# Start the environment
-poetry shell
+pip install -e .
 ```
-
-## Colab Example
-
-| Name  | Link  |
-|---|---|
-| Visual Topic Modeling With Bunkatopics  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DtPrI82TYepWLoc4RwuQnOqMJb0eWT_t?usp=sharing)  |
 
 ## Quick Start
 
-Install the spacy tokenizer model for english:
+### Uploading Sample Data
 
-```bash
-python -m spacy download en_core_web_sm
-```
-
-We start by Loading Trump data from HuggingFace datasets
+To get started, let's upload a sample of Medium Articles into Bunkatopics:
 
 ```python
-
-from bunkatopics.functions.clean_text import clean_tweet
-import random
 from datasets import load_dataset
-
-dataset = load_dataset("rguo123/trump_tweets")["train"]["content"]
-full_docs = random.sample(dataset, 5000)
-full_docs = [clean_tweet(x) for x in full_docs] # Cleaning the tweets
-full_docs = [x for x in full_docs if len(x)>50] # Removing small tweets, they are not informative enough
-
+docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"]
 ```
 
-You can the load any embedding model from langchain. Some of them might be large, please check the langchain [documentation](https://python.langchain.com/en/latest/reference/modules/embeddings.html)
+### Choose Your Embedding Model
 
-## Topic Modeling
+Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.
 
 ```python
 from bunkatopics import Bunka
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We use a small model
-bunka = Bunka(embedding_model=embedding_model)
+# Choose your embedding model
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We recommend starting with a small model
+
+# Initialize Bunka with your chosen model and language preference
+bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+
+# Fit Bunka to your text data
 bunka.fit(full_docs)
-
-# Get the list of topics
-bunka.get_topics(n_clusters = 20, name_lenght=3,  min_count_terms=2)
 ```
-
-Then, we can visualize the topics computed
 
 ```python
-bunka.visualize_topics( width=800, height=800)
+>>> bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
 ```
 
-<img src="images/newsmap.png" width="70%" height="70%" align="center" />
+Topics are described by the most specific terms belonging to the cluster.
+
+| topic_id | topic_name                   | size | percent |
+|:--------:|:-----------------------------|:----:|:-------:|
+|  bt-12   | technology - Tech - Children - student - days | 322  | 10.73  |
+|  bt-11   | blockchain - Cryptocurrency - sense - Cryptocurrencies - Impact | 283  | 9.43   |
+|  bt-7    | gadgets - phone - Device - specifications - screen | 258  | 8.6    |
+|  bt-8    | software - Kubernetes - ETL - REST - Salesforce | 258  | 8.6    |
+|  bt-1    | hackathon - review - Recap - Predictions - Lessons | 257  | 8.57   |
+|  bt-4    | Reality - world - cities - future - Lot | 246  | 8.2    |
+|  bt-14   | Product - Sales - day - dream - routine | 241  | 8.03   |
+|  bt-0    | Words - Robots - discount - NordVPN - humans | 208  | 6.93   |
+|  bt-2    | Internet - Overview - security - Work - Development | 202  | 6.73   |
+|  bt-13   | Course - Difference - Step - science - Point | 192  | 6.4    |
+|  bt-6    | quantum - Cars - Way - Game - quest | 162  | 5.4    |
+|  bt-3    | Objects - Strings - app - Programming - Functions | 119  | 3.97   |
+|  bt-5    | supply - chain - revolution - Risk - community | 119  | 3.97   |
+|  bt-9    | COVID - printing - Car - work - app | 89  | 2.97   |
+|  bt-10   | Episode - HD - Secrets - TV | 44  | 1.47   |
+
+### Visualize Your Topics
+
+Finally, let's visualize the topics that Bunka has computed for your text data:
+
+```python
+bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
+```
+
+<img src="docs/images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
 
 ## Topic Modeling with GenAI Summarization of Topics
 
-You can get the topics summarized by Generative AI.
-Use any model from Langchain. We use the 7B-instruct model of [Mistral AI](<https://mistral.ai/news/announcing-mistral-7b/>) thought [llama.cpp](<https://github.com/ggerganov/llama.cpp>) and the [langchain integration](<https://python.langchain.com/docs/integrations/llms/llamacpp>).
+Explore the power of Generative AI for summarizing topics!
+We use the 7B-instruct model of [Mistral AI](<https://mistral.ai/news/announcing-mistral-7b/>) from the huggingface hub using the langchain framework.
 
 ```python
-import os
 from langchain.llms import HuggingFaceHub
 
-# Using Mistral AI to Summarize the topics
+# Define the repository ID for Mistral-7B-v0.1
+repo_id = 'mistralai/Mistral-7B-v0.1'
 
-llm = HuggingFaceHub(repo_id = 'mistralai/Mistral-7B-v0.1', huggingfacehub_api_token = os.environ.get("HF_TOKEN")
-)
-df_topics = bunka.get_clean_topic_name(generative_model = llm)
-print(df_topics)
-bunka.visualize_topics( width=800, height=800)
+# Using Mistral AI to Summarize the Topics
+llm = HuggingFaceHub(repo_id='mistralai/Mistral-7B-v0.1', huggingfacehub_api_token="HF_TOKEN")
+
+# Obtain clean topic names using Generative Model
+bunka.get_clean_topic_name(generative_model=llm)
+bunka.visualize_topics( width=800, height=800, colorscale = 'Portland')
 ```
 
-<img src="images/newsmap_clean.png" width="70%" height="70%" align="center" />
-
-Start the serveur to visualize the data with a front-end. The map displayed used data from Arxiv.
-
-Make an .env for the front to work
-
-```bash
-cp web/env web/.env
-```
+Finally, let's visualize again the topics. We can chose from different colorscale.
 
 ```python
-bunka.start_server()
+bunka.visualize_topics(width=800, height=800)
 ```
 
-<img src="images/front.png" width="70%" height="70%" align="center" />
+YlGnBu           |  Portland
+:-------------------------:|:-------------------------:
+![Image 1](docs/images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](docs/images/topic_modeling_clean_Portland.png)
 
-## Installation via pip
+delta           |  Blues
+:-------------------------:|:-------------------------:
+![Image 3](docs/images/topic_modeling_clean_delta.png)  |  ![Image 4](docs/images/topic_modeling_clean_Blues.png)
 
-First, create a new virtual environment using pyenv
-
-```bash
-pyenv virtualenv 3.10 bunkatopics_env
-```
-
-Activate the environment
-
-```bash
-pyenv activate bunkatopics_env
-```
-
-Then Install the Bunkatopics package:
-
-```bash
-pip install bunkatopics==0.43
-pip install chromadb==0.4.13
-```
-
-## Retrieval Augmented Generation (RAG)
-
-It is possible to to Retrieval Augmented Generation (RAG) thanks to langchain integration with different Generative Models.
+We can now access the newly made topics
 
 ```python
-query = 'What is the  main fight of Donald Trump ?'
-res = bunka.rag_query(query = query, generative_model = generative_model, top_doc = 5)
-print(res['result'])
+>>> bunka.df_topics_
 ```
 
-OUTPUT:
+| topic_id | topic_name                            | size | percent |
+|:--------:|:--------------------------------------|:----:|:-------:|
+|   bt-1   | Cryptocurrency Impact                 | 345  | 12.32   |
+|   bt-3   | Data Management Technologies          | 243  | 8.68    |
+|   bt-14  | Everyday Life                         | 230  | 8.21    |
+|   bt-0   | Digital Learning Campaign              | 225  | 8.04    |
+|   bt-12  | Business Development                  | 223  | 7.96    |
+|   bt-2   | Technology Devices                    | 212  | 7.57    |
+|   bt-10  | Market Predictions Recap               | 201  | 7.18    |
+|   bt-4   | Comprehensive Learning Journey         | 187  | 6.68    |
+|   bt-6   | Future of Work                        | 185  | 6.61    |
+|   bt-11  | Internet Discounts                    | 175  | 6.25    |
+|   bt-5   | Technological Urban Water Management  | 172  | 6.14    |
+|   bt-9   | Electric Vehicle Technology            | 145  | 5.18    |
+|   bt-8   | Programming Concepts                   | 116  | 4.14    |
+|   bt-13  | Quantum Technology Industries          | 105  | 3.75    |
+|   bt-7   | High Definition Television (HDTV)      | 36   | 1.29    |
 
-- The main fight of Donald Trump in the presidential elections of 2016 was against Hillary Clinton. He believed he was the best candidate for president and was able to beat many other candidates in the field due to his fame and political opinions.
+## Manually Cleaning the topics
+
+Are you happy with the topics yes ? Let's change them manually. Click on Apply changes when you are done. In the example, we changed the topic **Cryptocurrency Impact** to **Cryptocurrency** and **Internet Discounts** to **Advertising**.
+
+The new topics will also appear on the Map.
 
 ```python
-for doc in res['source_documents']:
-    text = doc.page_content.strip()
-    print(text)
+bunka.manually_clean_topics()
 ```
 
-OUTPUT:
+<img src="docs/images/manually_change_topics.png" width="40%" height="20%" align="center" />
 
-- what do you say donald  run for president
-- why only donald trump can beat hillary/n
-- via    donald trump on who he likes for president  donald trump/n
-- if the 2016  presidential field is so deep  why is donaldtrump beating so many of their  stars
-- donald trump is a respected businessman with insightful political opinions
+## Removing Data based on topics for fine-tuning purposes
+
+You have the flexibility to construct a customized dataset by excluding topics that do not align with your interests. For instance, in the provided example, we omitted topics associated with **Advertising** and **High-Definition television**, as these clusters primarily contain promotional content that we prefer not to include in our model's training data.
+
+```python
+>>> bunka.clean_data_by_topics()
+```
+
+<img src="docs/images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
+
+```python
+>>> bunka.df_cleaned_
+```
+
+| doc_id    | content                                               | topic_id | topic_name                             |
+|:---------:|:-----------------------------------------------------:|:--------:|:--------------------------------------:|
+| 873ba315  | Invisibilize Data With JavaScript                    |   bt-8   | Programming Concepts                   |
+| 1243d58f  | Why End-to-End Testing is Important for Your Team    |   bt-3   | Data Management Technologies            |
+| 45fb8166  | This Tiny Wearable Device Uses Your Body Heat...     |   bt-2   | Technology Devices                      |
+| a122d1d2  | Digital Policy Salon: The Next Frontier              |   bt-0   | Digital Learning Campaign               |
+| 1bbcfc1c  | Preparing Hardware for Outdoor Creative Technology Installations |   bt-5   | Technological Urban Water Management   |
+| 79580c34  | Angular Or React ?                                    |   bt-8   | Programming Concepts                   |
+| af0b08a2  | Ed-Tech Startups Are Cashing in on Parents’ Insecurities |   bt-0   | Digital Learning Campaign               |
+| 2255c350  | Former Google CEO Wants to Create a Government-Funded University to Train A.I. Coders |   bt-6   | Future of Work                          |
+| d2bc4b33  | Applying Action & The Importance of Ideas             |   bt-12  | Business Development                   |
+| 5219675e  | Why You Should (not?) Use Signal                      |   bt-2   | Technology Devices                      |
+| ...       | ...                                                  |   ...    | ...                                    |
 
 ## Bourdieu Map
 
-The Bourdieu map display the different texts on a 2-Dimensional unsupervised scale. Every region of the map is a topic described by its most specific terms.
-CLusters are created and the names are also summarized using Generative AI.
+The Bourdieu map provides a 2-Dimensional unsupervised scale to visualize various texts. Each region on the map represents a distinct topic, characterized by its most specific terms. Clusters are formed, and their names are succinctly summarized using Generative AI.
 
-The power of this visualisation is to constrain the axis by creating continuums and looking how the data distribute over these continuums. The inspiration is coming from the French sociologist Bourdieu, who projected items on [2 Dimensional maps](https://www.politika.io/en/notice/multiple-correspondence-analysis).
+The significance of this visualization lies in its ability to define axes, thereby creating continuums that reveal data distribution patterns. This concept draws inspiration from the work of the renowned French sociologist Bourdieu, who employed 2-Dimensional maps to project items and gain insights.
 
 ```python
-
 from langchain.llms import HuggingFaceHub
 
-llm = HuggingFaceHub(repo_id = 'mistralai/Mistral-7B-v0.1', huggingfacehub_api_token = os.environ.get("HF_TOKEN")
+# Define the HuggingFaceHub instance with the repository ID and API token
+llm = HuggingFaceHub(
+    repo_id='mistralai/Mistral-7B-v0.1',
+    huggingfacehub_api_token="HF_TOKEN"
 )
 
-manual_axis_name = {
-                    'x_left_name':'positive',
-                    'x_right_name':'negative',
-                    'y_top_name':'women',
-                    'y_bottom_name':'men',
-                    }
-
+## Bourdieu Fig
 bourdieu_fig = bunka.visualize_bourdieu(
-    generative_model=llm,
-    x_left_words=["this is a positive content"],
-    x_right_words=["this is a negative content"],
-    y_top_words=["this is about women"],
-    y_bottom_words=["this is about men"],
-    height=800,
-    width=800,
-    display_percent=True,
-    clustering=True,
-    topic_n_clusters=10,
-    topic_terms=5,
-    topic_top_terms_overall=500,
-    topic_gen_name=True,
-    convex_hull = True,
-    radius_size = 0.5,
-    manual_axis_name = manual_axis_name
-)
+        llm=llm,
+        x_left_words=["This is about business"],
+        x_right_words=["This is about politics"],
+        y_top_words=["this is about startups"],
+        y_bottom_words=["This is about governments"],
+        height=800,
+        width=800,
+        clustering=True,
+        topic_n_clusters=10,
+        density=False,
+        convex_hull=True,
+        radius_size=0.2,
+        label_size_ratio_clusters=80)
+
+# Display the Bourdieu map
 bourdieu_fig.show()
 ```
 
-<img src="images/bourdieu.png" width="70%" height="70%" align="center" />
+positive/negative vs humans/machines            |  politics/business vs humans/machines  
+:-------------------------:|:-------------------------:
+![Image 1](docs/images/bourdieu_1.png)  |  ![Image 2](docs/images/bourdieu_2.png)
 
-## Streamlit
+politics/business vs     positive/negative      |  politics/business vs startups/governments
+:-------------------------:|:-------------------------:
+![Image 3](docs/images/bourdieu_3.png)  |  ![Image 4](docs/images/bourdieu_4.png)
 
-Run Streamlit to use BunkaTopics with a nice front-end.
+## Front-end
 
-```bash
-python -m streamlit run streamlit/app.py 
-```
-
-## Multilanguage
-
-The package use Spacy to extract meaningfull terms for the topic represenation.
-
-If you wish to change language to french, first, download the corresponding spacy model:
+This is a beta feature. First, git clone the repository
 
 ```bash
-python -m spacy download fr_core_news_lg
+git clone https://github.com/charlesdedampierre/BunkaTopics.git
+cd BunkaTopics
+pip install -e .
 ```
+
+Then carry out a Topic Modeling and launch the serveur:
 
 ```python
-embedding_model = HuggingFaceEmbeddings(model_name="distiluse-base-multilingual-cased-v2")
+from bunkatopics import Bunka
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-bunka = Bunka(embedding_model=embedding_model, language = 'fr_core_news_lg')
+# Choose your embedding model
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We recommend starting with a small model
 
+# Initialize Bunka with your chosen model and language preference
+bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+
+# Fit Bunka to your text data
 bunka.fit(full_docs)
-bunka.get_topics(n_clusters = 20)
+bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
 
-
-```  
-
-## Functionality
-
-Here are all the things you can do with Bunkatopics
-
-### Common
-
-Below, you will find an overview of common functions in Bunkatopics.
-
-| Method | Code  |
-|-----------------------|---|
-| Fit the model    |  `.fit(docs)` |
-| Fit the model and get the topics  |  `.fit_transform(docs)` |
-| Acces the topics   | `.get_topics(n_clusters=10)`  |
-| RAG   | `.rag_query(query, generative_model)`  |
-| Access the top documents per topic    |  `.get_clean_topic_name()` |
-| Access the distribution of topics   |  `.get_topic_repartition()` |
-| Visualize the topics on a Map |  `.visualize_topics()` |
-| Visualize the topics on Natural Language Supervised axis | `.visualize_bourdieu()` |
-| Access the Coherence of Topics |  `.get_topic_coherence()` |
-| Get the closest documents to your search | `.search('politics')` |
-
-### Attributes
-
-You can access several attributes
-
-| Attribute | Description |
-|------------------------|---------------------------------------------------------------------------------------------|
-| `.docs`               | The documents stores as a Document pydantic model |
-| `.topics` | The Topics stored as a Topic pydantic model. |
+bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
+```

@@ -12,6 +12,16 @@ __pycache__/
 #hidden notebooks
 notebooks_test/
 json_examples/
+generative_model_api/
+test.ipynb
+bash.sh
+hide/
+bunka_env/
+
+# remove poetry files
+poetry.lock
+#pyproject.toml
+requirements.txt
 
 # Distribution / packaging
 .Python
@@ -59,6 +69,9 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+env_*
+debug.ipynb
+
 
 # Sphinx documentation
 docs/_build/
@@ -91,3 +104,6 @@ venv.bak/
 
 # NODE.JS
 node_modules/
+
+# CELERY JOB
+results.db

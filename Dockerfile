@@ -1,14 +1,25 @@
-FROM python:3.10
+# How to
+# copy .env.model to .env and write your own OPEN_AI_KEY
+# Run the following commands :
+# make docker_build
+# make docker_run
+FROM python:3.10 as bunkatopicsbasedocker
 
-RUN apt update
-RUN apt install -y python3-dev
+ARG DEBIAN_FRONTEND=noninteractive
 
+ENV PYTHONUNBUFFERED=1
 
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    build-essential \
+    python3-dev \
+    python3 \
+    python3-pip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 # copying dependency
 COPY bunkatopics /app/bunkatopics
 
 # Rajouter variables environemment
-ENV OPEN_AI_KEY=
+ENV OPEN_AI_KEY=${OPEN_AI_KEY}
 
 # Workspace
 WORKDIR /app/api
@@ -16,35 +27,26 @@ WORKDIR /app/api
 # Python requirements (poetry has issues with fasttext: pybind11)
 RUN pip install --upgrade pip
 
-# - installing torch in a dedicated layer to ease image push to registry
-#RUN pip install "torch==1.12.1" "torchvision==0.13.1"
-
-# Other packages
-#RUN pip install uvicorn
-#RUN pip install sentence-transformers
-#RUN pip install chromadb
-
 # Bunka libraries
-#COPY bunkatopics/requirements-bunka.txt requirements-bunka.txt
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
-
+RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
+######################################
+# changing user & downloading models #
+######################################
+FROM bunkatopicsbasedocker
 # Models
-#RUN pip install spacy
-RUN python -m spacy download en_core_web_sm
-
+# RUN python -m spacy download en_core_web_sm
 # reducing privilege
 RUN groupadd rungroup && useradd -m -g rungroup runuser
 RUN chown runuser:rungroup /app
 USER runuser
 
-
 # code
-COPY --chown=runuser:rungroup api/run_docker.sh run_docker.sh
+COPY --chown=runuser:rungroup api/run_server.sh run_server.sh
 COPY --chown=runuser:rungroup api/bunka_api bunka_api
+COPY --chown=runuser:rungroup api/celeryconfig.py celeryconfig.py
 
 EXPOSE 8000
 
 # start the server
-CMD ["bash", "run_docker.sh"]
+CMD ["bash", "run_server.sh"]

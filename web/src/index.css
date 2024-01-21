@@ -15,7 +15,8 @@ body {
 .top-right {
   display: flex;
   flex-direction: row;
-  align-items: center; /* Center vertically */
+  align-items: center;
+  /* Center vertically */
   min-height: 3vh;
 }
 
@@ -59,7 +60,6 @@ body {
 
 .scatter-plot-and-text-container {
   display: flex;
-  padding: 1em;
   min-height: 89vh;
 }
 
@@ -69,14 +69,22 @@ body {
 }
 
 svg {
+  border: none;
+}
+
+.scatter-plot-container svg {
   background-color: #f7f7f7;
   border: 1px solid #ddd;
+  cursor: grab;
+}
+
+.scatter-plot-container svg .tick text {
+  font-size: 1.4em;
 }
 
 .text-container {
   width: 35%;
   min-width: 100px;
-  padding: 20px;
   font-size: 30px;
   align-items: center;
   justify-content: center;
@@ -116,7 +124,7 @@ path.contour {
   fill: none;
   stroke: black;
   stroke-width: 1;
-} 
+}
 
 .box {
   border: 3px solid #ccc;

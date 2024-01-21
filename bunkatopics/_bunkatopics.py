@@ -13,17 +13,16 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
-from IPython.display import display
+from IPython.display import HTML, display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
 from langchain.chains import RetrievalQA
+from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_core._api.deprecation import LangChainDeprecationWarning
-from langchain_core.language_models.llms import LLM
 from langchain_core.embeddings import Embeddings
-from langchain.chains.retrieval_qa.base import BaseRetrievalQA
-
+from langchain_core.language_models.llms import LLM
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
@@ -42,7 +41,7 @@ from bunkatopics.datamodel import (
     TopicParam,
 )
 from bunkatopics.logging import logger
-from bunkatopics.serveur.server_utils import is_server_running, kill_server
+from bunkatopics.serveur import is_server_running, kill_server
 from bunkatopics.topic_modeling import (
     BunkaTopicModeling,
     DocumentRanker,
@@ -51,7 +50,7 @@ from bunkatopics.topic_modeling import (
 )
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.utils import _create_topic_dfs
+from bunkatopics.utils import BunkaError, _create_topic_dfs
 from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
@@ -206,6 +205,8 @@ class Bunka:
         # add to the docs object
         for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
+
+        self.topics = None
 
     def get_topics(
         self,
@@ -805,55 +806,41 @@ class Bunka:
         # Display the container and apply button
         display(container, apply_button)
 
-    def start_server_bourdieu(self):
-        if is_server_running():
-            print("Server on port 3000 is already running. Killing it...")
-            kill_server()
-        try:
-            file_path = "../web/public" + "/bunka_bourdieu_docs.json"
-            docs_json = [x.model_dump() for x in self.bourdieu_docs]
-            docs_json = [x.model_dump() for x in self.bourdieu_docs]
-
-            with open(file_path, "w") as json_file:
-                json.dump(docs_json, json_file)
-
-            file_path = "../web/public" + "/bunka_bourdieu_topics.json"
-            topics_json = [x.model_dump() for x in self.bourdieu_topics]
-            topics_json = [x.model_dump() for x in self.bourdieu_topics]
-            with open(file_path, "w") as json_file:
-                json.dump(topics_json, json_file)
-
-            file_path = "../web/public" + "/bunka_bourdieu_query.json"
-            with open(file_path, "w") as json_file:
-                json.dump(self.bourdieu_query.model_dump(), json_file)
-                json.dump(self.bourdieu_query.model_dump(), json_file)
-
-            subprocess.Popen(["npm", "start"], cwd="../web")
-            print(
-                "NPM server started. Please Switch to Bourdieu View to see the results"
-            )
-        except Exception as e:
-            print(f"Error starting NPM server: {e}")
-
     def start_server(self):
+        subprocess.run(["cp", "web/env.model", "web/.env"], check=True)
         if is_server_running():
-            print("Server on port 3000 is already running. Killing it...")
+            logger.info("Server on port 3000 is already running. Killing it...")
             kill_server()
-        try:
-            file_path = "../web/public" + "/bunka_docs.json"
+        if not self.topics:
+            raise BunkaError("No topics available. Run bunka.get_topics() first.")
+        else:
+            file_path = "web/public" + "/bunka_docs.json"
             docs_json = [x.model_dump() for x in self.docs]
-            docs_json = [x.model_dump() for x in self.docs]
-
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
-            file_path = "../web/public" + "/bunka_topics.json"
-            topics_json = [x.model_dump() for x in self.topics]
+            file_path = "web/public" + "/bunka_topics.json"
             topics_json = [x.model_dump() for x in self.topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)
 
-            subprocess.Popen(["npm", "start"], cwd="../web")
-            print("NPM server started.")
-        except Exception as e:
-            print(f"Error starting NPM server: {e}")
+        """try:
+            file_path = "web/public" + "/bunka_bourdieu_docs.json"
+            docs_json = [x.model_dump() for x in self.bourdieu_docs]
+
+            with open(file_path, "w") as json_file:
+                json.dump(docs_json, json_file)
+
+            file_path = "web/public" + "/bunka_bourdieu_topics.json"
+            topics_json = [x.model_dump() for x in self.bourdieu_topics]
+            with open(file_path, "w") as json_file:
+                json.dump(topics_json, json_file)
+
+            file_path = "web/public" + "/bunka_bourdieu_query.json"
+            with open(file_path, "w") as json_file:
+                json.dump(self.bourdieu_query.model_dump(), json_file)
+        except:
+            logger.info("run bunka.visualize_bourdieu() first")"""
+
+        subprocess.Popen(["npm", "start"], cwd="web")
+        logger.info("NPM server started.")

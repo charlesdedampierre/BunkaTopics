@@ -46,8 +46,9 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - Frame Analysis: technology.md
-  - Fine-tuning LLM with qualitative data: fine-tuning.md
+  - Visualizing Data: technology.md
+  - Cleaning Data: fine-tuning.md
+  - Contributing: contribution.md
   - API:
       - Bunka: bunka-api/bunkatopics.md
       - Topic Modeling: bunka-api/topic_modeling/topic_model_builder.md

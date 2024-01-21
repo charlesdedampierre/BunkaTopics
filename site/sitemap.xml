@@ -6,17 +6,12 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://charlesdedampierre.github.io/BunkaTopics/boudieu.html</loc>
-         <lastmod>2024-01-20</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://charlesdedampierre.github.io/BunkaTopics/bunka-api.html</loc>
-         <lastmod>2024-01-20</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://charlesdedampierre.github.io/BunkaTopics/changelog.html</loc>
+         <lastmod>2024-01-20</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://charlesdedampierre.github.io/BunkaTopics/fine-tuning.html</loc>
          <lastmod>2024-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>

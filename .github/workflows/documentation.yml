@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - dev
 permissions:
   contents: write
 jobs:
@@ -25,4 +26,5 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs mkdocs-material mkdocstrings mkdocstrings-python
+      - run: pip install mkdocs-material[imaging]
       - run: mkdocs gh-deploy --force

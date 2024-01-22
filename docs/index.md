@@ -53,7 +53,7 @@ To get started, let's upload a sample of Medium Articles into Bunkatopics:
 
 ```python
 from datasets import load_dataset
-docs = load_dataset("bunkalab/medium")["train"]["title"]
+docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"]
 ```
 
 ### Choose Your Embedding Model
@@ -72,14 +72,13 @@ bunka = Bunka(embedding_model=embedding_model, language='english') # You can cho
 
 # Fit Bunka to your text data
 bunka.fit(full_docs)
-
-# Get a list of topics
-print(df_topics)
 ```
 
 ```python
->>> bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
+>>> bunka.get_topics(n_clusters=15, name_length=5)# Specify the number of terms to describe each topic
 ```
+
+Topics are described by the most specific terms belonging to the cluster.
 
 | topic_id | topic_name                   | size | percent |
 |:--------:|:-----------------------------|:----:|:-------:|
@@ -104,10 +103,10 @@ print(df_topics)
 Finally, let's visualize the topics that Bunka has computed for your text data:
 
 ```python
-bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
+>>> bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
 ```
 
-<img src="images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
+<img src="docs/images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
 
 ## Topic Modeling with GenAI Summarization of Topics
 
@@ -124,23 +123,23 @@ repo_id = 'mistralai/Mistral-7B-v0.1'
 llm = HuggingFaceHub(repo_id='mistralai/Mistral-7B-v0.1', huggingfacehub_api_token="HF_TOKEN")
 
 # Obtain clean topic names using Generative Model
-bunka.get_clean_topic_name(generative_model=llm)
+bunka.get_clean_topic_name(generative_model=llm, language='english')
 bunka.visualize_topics( width=800, height=800, colorscale = 'Portland')
 ```
 
-Finally, let's visualize again the topics. We can chose from different colorscale.
+Finally, let's visualize again the topics. We can chose from different colorscales.
 
 ```python
-bunka.visualize_topics(width=800, height=800)
+>>> bunka.visualize_topics(width=800, height=800)
 ```
 
 YlGnBu           |  Portland
 :-------------------------:|:-------------------------:
-![Image 1](images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](images/topic_modeling_clean_Portland.png)
+![Image 1](docs/images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](docs/images/topic_modeling_clean_Portland.png)
 
 delta           |  Blues
 :-------------------------:|:-------------------------:
-![Image 3](images/topic_modeling_clean_delta.png)  |  ![Image 4](images/topic_modeling_clean_Blues.png)
+![Image 3](docs/images/topic_modeling_clean_delta.png)  |  ![Image 4](docs/images/topic_modeling_clean_Blues.png)
 
 We can now access the newly made topics
 
@@ -168,15 +167,13 @@ We can now access the newly made topics
 
 ## Manually Cleaning the topics
 
-Are you happy with the topics yes ? Let's change them manually. Click on Apply changes when you are done. In the example, we changed the topic **Cryptocurrency Impact** to **Cryptocurrency** and **Internet Discounts** to **Advertising**.
-
-The new topics will also appear on the Map.
+If you are not happy with the resulting topics, you can change them manually. Click on Apply changes when you are done. In the example, we changed the topic **Cryptocurrency Impact** to **Cryptocurrency** and **Internet Discounts** to **Advertising**.
 
 ```python
-bunka.manually_clean_topics()
+>>> bunka.manually_clean_topics()
 ```
 
-<img src="images/manually_change_topics.png" width="40%" height="20%" align="center" />
+<img src="docs/images/manually_change_topics.png" width="40%" height="20%" align="center" />
 
 ## Removing Data based on topics for fine-tuning purposes
 
@@ -186,7 +183,7 @@ You have the flexibility to construct a customized dataset by excluding topics t
 >>> bunka.clean_data_by_topics()
 ```
 
-<img src="images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
+<img src="docs/images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
 
 ```python
 >>> bunka.df_cleaned_
@@ -236,21 +233,47 @@ bourdieu_fig = bunka.visualize_bourdieu(
         convex_hull=True,
         radius_size=0.2,
         label_size_ratio_clusters=80)
+```
 
-# Display the Bourdieu map
-bourdieu_fig.show()
+```python
+>>> bourdieu_fig.show()
 ```
 
 positive/negative vs humans/machines            |  politics/business vs humans/machines  
 :-------------------------:|:-------------------------:
-![Image 1](images/bourdieu_1.png)  |  ![Image 2](images/bourdieu_2.png)
+![Image 1](docs/images/bourdieu_1.png)  |  ![Image 2](docs/images/bourdieu_2.png)
 
 politics/business vs     positive/negative      |  politics/business vs startups/governments
 :-------------------------:|:-------------------------:
-![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
+![Image 3](docs/images/bourdieu_3.png)  |  ![Image 4](docs/images/bourdieu_4.png)
 
-## Contribution
+## Front-end
 
-If you have any questions, feedback, or would like to contribute, please don't hesitate to reach out!
+This is a beta feature. First, git clone the repository
 
-Many thanks to Maarten Grootendorst for inspiring us with his groundbreaking work on Bertopics.
+```bash
+git clone https://github.com/charlesdedampierre/BunkaTopics.git
+cd BunkaTopics
+pip install -e .
+```
+
+Then carry out a Topic Modeling and launch the serveur:
+
+```python
+from bunkatopics import Bunka
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+# Choose your embedding model
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We recommend starting with a small model
+
+# Initialize Bunka with your chosen model and language preference
+bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+
+# Fit Bunka to your text data
+bunka.fit(full_docs)
+bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
+```
+
+```python
+>>> bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
+```

@@ -40,7 +40,7 @@ embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We reco
 bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
 
 # Fit Bunka to your text data
-bunka.fit(full_docs)
+bunka.fit(docs)
 ```
 
 ```python
@@ -239,7 +239,7 @@ embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We reco
 bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
 
 # Fit Bunka to your text data
-bunka.fit(full_docs)
+bunka.fit(docs)
 bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
 ```
 

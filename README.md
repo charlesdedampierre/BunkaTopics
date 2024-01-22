@@ -96,6 +96,22 @@ Topics are described by the most specific terms belonging to the cluster.
 |  bt-9    | COVID - printing - Car - work - app | 89  | 2.97   |
 |  bt-10   | Episode - HD - Secrets - TV | 44  | 1.47   |
 
+#### Troubleshooting
+
+If you have an error on sqlite3 like:
+```
+RuntimeError: Your system has an unsupported version of sqlite3. Chroma requires sqlite3 >= 3.35.0.
+Please visit https://docs.trychroma.com/troubleshooting#sqlite to learn how to upgrade.
+```
+
+Use the following code snippet (from https://stackoverflow.com/a/77245450)
+```py
+>>> import pysqlite3
+>>> import sys
+>>> sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+>>> import chromadb
+```
+
 ### Visualize Your Topics
 
 Finally, let's visualize the topics that Bunka has computed for your text data:

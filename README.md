@@ -121,7 +121,7 @@ repo_id = 'mistralai/Mistral-7B-v0.1'
 llm = HuggingFaceHub(repo_id='mistralai/Mistral-7B-v0.1', huggingfacehub_api_token="HF_TOKEN")
 
 # Obtain clean topic names using Generative Model
-bunka.get_clean_topic_name(generative_model=llm)
+bunka.get_clean_topic_name(generative_model=llm, language='english')
 bunka.visualize_topics( width=800, height=800, colorscale = 'Portland')
 ```
 
@@ -270,8 +270,6 @@ bunka = Bunka(embedding_model=embedding_model, language='english') # You can cho
 # Fit Bunka to your text data
 bunka.fit(full_docs)
 bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
-
-bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
 ```
 
 ```python

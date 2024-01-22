@@ -51,7 +51,7 @@ To get started, let's upload a sample of Medium Articles into Bunkatopics:
 
 ```python
 from datasets import load_dataset
-docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"]
+docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"] # docs is a list of text
 ```
 
 ### Choose Your Embedding Model
@@ -68,8 +68,8 @@ embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We reco
 # Initialize Bunka with your chosen model and language preference
 bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
 
-# Fit Bunka to your text data
-bunka.fit(full_docs)
+# Fit Bunka to your list of text
+bunka.fit(docs)
 ```
 
 ```python
@@ -268,7 +268,7 @@ embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We reco
 bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
 
 # Fit Bunka to your text data
-bunka.fit(full_docs)
+bunka.fit(docs)
 bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
 ```
 

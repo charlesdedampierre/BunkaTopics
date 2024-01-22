@@ -1142,8 +1142,7 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">181</span>
 <span class="normal">182</span>
 <span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for performing Bourdieu analysis on a collection of documents.</span>
 
@@ -1172,7 +1171,6 @@ and the use of generative AI for topic naming.</p>
 <span class="sd">            bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.</span>
 <span class="sd">                                                       Defaults to BourdieuQuery().</span>
 <span class="sd">            topic_param (TopicParam, optional): Parameters for topic modeling. Defaults to TopicParam().</span>
-<span class="sd">            generative_ai_name (bool, optional): Flag to use AI for generating topic names. Defaults to False.</span>
 <span class="sd">            topic_gen_param (TopicGenParam, optional): Parameters for the generative AI in topic naming.</span>
 <span class="sd">                                                       Defaults to TopicGenParam().</span>
 <span class="sd">            min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.</span>
@@ -1401,20 +1399,6 @@ and the use of generative AI for topic naming.</p>
           </td>
         </tr>
         <tr>
-          <td><code>generative_ai_name</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>Flag to use AI for generating topic names. Defaults to False.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
           <td><code>topic_gen_param</code></td>
           <td>
                 <code><span title="bunkatopics.datamodel.TopicGenParam">TopicGenParam</span></code>
@@ -1478,8 +1462,7 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">embedding_model</span><span class="p">:</span> <span class="n">Embeddings</span><span class="p">,</span>
     <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">LLM</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1498,7 +1481,6 @@ and the use of generative AI for topic naming.</p>
 <span class="sd">        bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.</span>
 <span class="sd">                                                   Defaults to BourdieuQuery().</span>
 <span class="sd">        topic_param (TopicParam, optional): Parameters for topic modeling. Defaults to TopicParam().</span>
-<span class="sd">        generative_ai_name (bool, optional): Flag to use AI for generating topic names. Defaults to False.</span>
 <span class="sd">        topic_gen_param (TopicGenParam, optional): Parameters for the generative AI in topic naming.</span>
 <span class="sd">                                                   Defaults to TopicGenParam().</span>
 <span class="sd">        min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.</span>
@@ -1591,7 +1573,8 @@ uses a generative AI model for naming the topics.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_api.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 72</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 71</span>
+<span class="normal"> 72</span>
 <span class="normal"> 73</span>
 <span class="normal"> 74</span>
 <span class="normal"> 75</span>
@@ -1703,8 +1686,7 @@ uses a generative AI model for naming the topics.</p>
 <span class="normal">181</span>
 <span class="normal">182</span>
 <span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">terms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Term</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

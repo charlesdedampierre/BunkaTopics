@@ -75,7 +75,7 @@ Finally, let's visualize the topics that Bunka has computed for your text data:
 >>> bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
 ```
 
-<img src="docs/images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
+<img src="images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
 
 ## Topic Modeling with GenAI Summarization of Topics
 
@@ -104,11 +104,11 @@ Finally, let's visualize again the topics. We can chose from different colorscal
 
 YlGnBu           |  Portland
 :-------------------------:|:-------------------------:
-![Image 1](docs/images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](docs/images/topic_modeling_clean_Portland.png)
+![Image 1](images/topic_modeling_clean_YlGnBu.png)  |  ![Image 2](images/topic_modeling_clean_Portland.png)
 
 delta           |  Blues
 :-------------------------:|:-------------------------:
-![Image 3](docs/images/topic_modeling_clean_delta.png)  |  ![Image 4](docs/images/topic_modeling_clean_Blues.png)
+![Image 3](images/topic_modeling_clean_delta.png)  |  ![Image 4](images/topic_modeling_clean_Blues.png)
 
 We can now access the newly made topics
 
@@ -142,7 +142,7 @@ If you are not happy with the resulting topics, you can change them manually. Cl
 >>> bunka.manually_clean_topics()
 ```
 
-<img src="docs/images/manually_change_topics.png" width="40%" height="20%" align="center" />
+<img src="images/manually_change_topics.png" width="40%" height="20%" align="center" />
 
 ## Removing Data based on topics for fine-tuning purposes
 
@@ -152,7 +152,7 @@ You have the flexibility to construct a customized dataset by excluding topics t
 >>> bunka.clean_data_by_topics()
 ```
 
-<img src="docs/images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
+<img src="images/fine_tuning_dataset.png" width="40%" height="20%" align="center" />
 
 ```python
 >>> bunka.df_cleaned_
@@ -210,11 +210,11 @@ bourdieu_fig = bunka.visualize_bourdieu(
 
 positive/negative vs humans/machines            |  politics/business vs humans/machines  
 :-------------------------:|:-------------------------:
-![Image 1](docs/images/bourdieu_1.png)  |  ![Image 2](docs/images/bourdieu_2.png)
+![Image 1](images/bourdieu_1.png)  |  ![Image 2](images/bourdieu_2.png)
 
 politics/business vs     positive/negative      |  politics/business vs startups/governments
 :-------------------------:|:-------------------------:
-![Image 3](docs/images/bourdieu_3.png)  |  ![Image 4](docs/images/bourdieu_4.png)
+![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
 
 ## Front-end
 

@@ -48,7 +48,7 @@ embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We reco
 bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
 
 # Fit Bunka to your text data
-bunka.fit(full_docs)
+bunka.fit(docs)
 ```
 
 You can use other models like OpenAI thanks to langchain integration

@@ -53,7 +53,7 @@ To get started, let's upload a sample of Medium Articles into Bunkatopics:
 
 ```python
 from datasets import load_dataset
-docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"]
+docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"] # 'docs' is a list of text [text1, text2, ..., textN]
 ```
 
 ### Choose Your Embedding Model

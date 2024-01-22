@@ -7,11 +7,21 @@ from langchain_core.language_models.llms import LLM
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
-                                   ContinuumDimension, Document, Term, Topic,
-                                   TopicGenParam, TopicParam)
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic)
+from bunkatopics.datamodel import (
+    BourdieuDimension,
+    BourdieuQuery,
+    ContinuumDimension,
+    Document,
+    Term,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    DocumentRanker,
+    LLMCleaningTopic,
+)
 
 pd.options.mode.chained_assignment = None
 
@@ -39,13 +49,12 @@ class BourdieuAPI:
         """
         Initializes the BourdieuAPI with the provided models, parameters, and configurations.
 
-        Arguments
+        Args:
             llm: The generative AI model for topic naming.
             embedding_model: The model used for embedding documents.
             bourdieu_query (BourdieuQuery, optional): Configuration for Bourdieu analysis.
                                                        Defaults to BourdieuQuery().
             topic_param (TopicParam, optional): Parameters for topic modeling. Defaults to TopicParam().
-            generative_ai_name (bool, optional): Flag to use AI for generating topic names. Defaults to False.
             topic_gen_param (TopicGenParam, optional): Parameters for the generative AI in topic naming.
                                                        Defaults to TopicGenParam().
             min_count_terms (int, optional): Minimum term count for topic modeling. Defaults to 2.

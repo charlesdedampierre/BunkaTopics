@@ -1955,7 +1955,10 @@
 <span class="normal">843</span>
 <span class="normal">844</span>
 <span class="normal">845</span>
-<span class="normal">846</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
+<span class="normal">846</span>
+<span class="normal">847</span>
+<span class="normal">848</span>
+<span class="normal">849</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bunka class for managing and analyzing textual data using various NLP techniques.</span>
 
 <span class="sd">    Examples:</span>
@@ -2279,11 +2282,15 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            generative_model (t.Optional[str]): The generative model to be used. Default is None.</span>
-<span class="sd">            x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.</span>
-<span class="sd">            y_top_words, y_bottom_words (t.List[str]): Words defining the top and bottom axes.</span>
-<span class="sd">            height, width (int): Dimensions of the visualization. Both default to 1500.</span>
+<span class="sd">            llm (t.Optional[str]): The generative model to be used. Default is None.</span>
+<span class="sd">            x_left_words (t.List[str]): Words defining the left and left x axes.</span>
+<span class="sd">            x_right_words (t.List[str]): Words defining the left and right x axes.</span>
+<span class="sd">            y_top_words (t.List[str]): Words defining the left and top y axes.</span>
+<span class="sd">            y_bottom_words (t.List[str]): Words defining the top and bottom y axes.</span>
+<span class="sd">            height (int): Dimensions of the visualization. Default to 1500.</span>
+<span class="sd">            width (int): Dimensions of the visualization. Default to 1500.</span>
 <span class="sd">            display_percent (bool): Flag to display percentages on the map. Default is True.</span>
 <span class="sd">            clustering (bool): Whether to apply clustering on the map. Default is False.</span>
 <span class="sd">            topic_n_clusters (int): Number of clusters for topic modeling. Default is 10.</span>
@@ -2298,9 +2305,8 @@
 <span class="sd">            colorscale (str): colorscale for the Density Plot (Default is delta)</span>
 <span class="sd">            density (bool): Whether to display a density map</span>
 
-
-<span class="sd">            Returns:</span>
-<span class="sd">                go.Figure: A Plotly graph object figure representing the Bourdieu Map.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            go.Figure: A Plotly graph object figure representing the Bourdieu Map.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The Bourdieu Map is a sophisticated visualization that plots documents and topics</span>
@@ -2477,11 +2483,11 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Visualizes the similarity scores between a given query and the document set.</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            query (str): The query to be visualized against the documents. Default is &quot;What is America?&quot;.</span>
-<span class="sd">            min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.</span>
 <span class="sd">            width (int): Width of the visualization. Default is 600.</span>
 <span class="sd">            height (int): Height of the visualization. Default is 300.</span>
+
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A tuple (fig, percent) where &#39;fig&#39; is a Plotly graph object figure representing the</span>
@@ -2913,10 +2919,7 @@ and calculates the percentage of data retained after cleaning.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">668</span>
-<span class="normal">669</span>
-<span class="normal">670</span>
-<span class="normal">671</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">671</span>
 <span class="normal">672</span>
 <span class="normal">673</span>
 <span class="normal">674</span>
@@ -2977,7 +2980,10 @@ and calculates the percentage of data retained after cleaning.</p>
 <span class="normal">729</span>
 <span class="normal">730</span>
 <span class="normal">731</span>
-<span class="normal">732</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">clean_data_by_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">732</span>
+<span class="normal">733</span>
+<span class="normal">734</span>
+<span class="normal">735</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">clean_data_by_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filters and cleans the dataset based on user-selected topics.</span>
 
@@ -3613,10 +3619,7 @@ easy interpretation of the topic sizes.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">642</span>
-<span class="normal">643</span>
-<span class="normal">644</span>
-<span class="normal">645</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">645</span>
 <span class="normal">646</span>
 <span class="normal">647</span>
 <span class="normal">648</span>
@@ -3632,7 +3635,10 @@ easy interpretation of the topic sizes.</p>
 <span class="normal">658</span>
 <span class="normal">659</span>
 <span class="normal">660</span>
-<span class="normal">661</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="normal">661</span>
+<span class="normal">662</span>
+<span class="normal">663</span>
+<span class="normal">664</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a bar plot to visualize the distribution of topics by size.</span>
 
@@ -3965,10 +3971,7 @@ If no changes are made, it retains the original topic names.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">734</span>
-<span class="normal">735</span>
-<span class="normal">736</span>
-<span class="normal">737</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">737</span>
 <span class="normal">738</span>
 <span class="normal">739</span>
 <span class="normal">740</span>
@@ -4038,7 +4041,10 @@ If no changes are made, it retains the original topic names.</p>
 <span class="normal">804</span>
 <span class="normal">805</span>
 <span class="normal">806</span>
-<span class="normal">807</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">manually_clean_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">807</span>
+<span class="normal">808</span>
+<span class="normal">809</span>
+<span class="normal">810</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">manually_clean_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allows manual renaming of topic names in the dataset.</span>
 
@@ -4223,10 +4229,7 @@ to work with complex queries and provide informative answers using the document 
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">485</span>
-<span class="normal">486</span>
-<span class="normal">487</span>
-<span class="normal">488</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">488</span>
 <span class="normal">489</span>
 <span class="normal">490</span>
 <span class="normal">491</span>
@@ -4253,7 +4256,10 @@ to work with complex queries and provide informative answers using the document 
 <span class="normal">512</span>
 <span class="normal">513</span>
 <span class="normal">514</span>
-<span class="normal">515</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseRetrievalQA</span><span class="p">:</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseRetrievalQA</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.</span>
 
@@ -4303,28 +4309,327 @@ to work with complex queries and provide informative answers using the document 
 
   <div class="doc doc-contents ">
   
-      <p>Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
-Args:
-    generative_model (t.Optional[str]): The generative model to be used. Default is None.
-    x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.
-    y_top_words, y_bottom_words (t.List[str]): Words defining the top and bottom axes.
-    height, width (int): Dimensions of the visualization. Both default to 1500.
-    display_percent (bool): Flag to display percentages on the map. Default is True.
-    clustering (bool): Whether to apply clustering on the map. Default is False.
-    topic_n_clusters (int): Number of clusters for topic modeling. Default is 10.
-    topic_terms (int): Length of topic names. Default is 2.
-    topic_ngrams (t.List[int]): N-gram range for topic modeling. Default is [1, 2].
-    topic_top_terms_overall (int): Top terms to consider overall. Default is 1000.
-    gen_topic_language (str): Language for topic generation. Default is "english".
-    manual_axis_name (t.Optional[dict]): Custom axis names for the map. Default is None.
-    use_doc_gen_topic (bool): Flag to use document context in topic generation. Default is False.
-    radius_size (float): Radius size for the map isualization. Default is 0.3.
-    convex_hull (bool): Whether to include a convex hull in the visualization. Default is True.
-    colorscale (str): colorscale for the Density Plot (Default is delta)
-    density (bool): Whether to display a density map</p>
-<div class="highlight"><pre><span></span><code>Returns:
-    go.Figure: A Plotly graph object figure representing the Bourdieu Map.
-</code></pre></div>
+      <p>Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>llm</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The generative model to be used. Default is None.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>x_left_words</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Words defining the left and left x axes.</p>
+            </div>
+          </td>
+          <td>
+                <code>[&#39;war&#39;]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>x_right_words</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Words defining the left and right x axes.</p>
+            </div>
+          </td>
+          <td>
+                <code>[&#39;peace&#39;]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>y_top_words</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Words defining the left and top y axes.</p>
+            </div>
+          </td>
+          <td>
+                <code>[&#39;men&#39;]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>y_bottom_words</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Words defining the top and bottom y axes.</p>
+            </div>
+          </td>
+          <td>
+                <code>[&#39;women&#39;]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>height</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimensions of the visualization. Default to 1500.</p>
+            </div>
+          </td>
+          <td>
+                <code>1500</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>width</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimensions of the visualization. Default to 1500.</p>
+            </div>
+          </td>
+          <td>
+                <code>1500</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>display_percent</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Flag to display percentages on the map. Default is True.</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>clustering</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether to apply clustering on the map. Default is False.</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>topic_n_clusters</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Number of clusters for topic modeling. Default is 10.</p>
+            </div>
+          </td>
+          <td>
+                <code>10</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>topic_terms</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Length of topic names. Default is 2.</p>
+            </div>
+          </td>
+          <td>
+                <code>2</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>topic_ngrams</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>N-gram range for topic modeling. Default is [1, 2].</p>
+            </div>
+          </td>
+          <td>
+                <code>[1, 2]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>topic_top_terms_overall</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Top terms to consider overall. Default is 1000.</p>
+            </div>
+          </td>
+          <td>
+                <code>1000</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>gen_topic_language</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Language for topic generation. Default is "english".</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;english&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>manual_axis_name</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[dict]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Custom axis names for the map. Default is None.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>use_doc_gen_topic</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Flag to use document context in topic generation. Default is False.</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>radius_size</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Radius size for the map isualization. Default is 0.3.</p>
+            </div>
+          </td>
+          <td>
+                <code>0.3</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>convex_hull</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether to include a convex hull in the visualization. Default is True.</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>colorscale</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>colorscale for the Density Plot (Default is delta)</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;delta&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>density</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether to display a density map</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="plotly.Figure">Figure</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>go.Figure: A Plotly graph object figure representing the Bourdieu Map.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 <details class="note" open>
   <summary>Note</summary>
@@ -4454,7 +4759,10 @@ offering a range of customization options for detailed analysis.</p>
 <span class="normal">480</span>
 <span class="normal">481</span>
 <span class="normal">482</span>
-<span class="normal">483</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">LLM</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">x_left_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;war&quot;</span><span class="p">],</span>
@@ -4482,11 +4790,15 @@ offering a range of customization options for detailed analysis.</p>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        generative_model (t.Optional[str]): The generative model to be used. Default is None.</span>
-<span class="sd">        x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.</span>
-<span class="sd">        y_top_words, y_bottom_words (t.List[str]): Words defining the top and bottom axes.</span>
-<span class="sd">        height, width (int): Dimensions of the visualization. Both default to 1500.</span>
+<span class="sd">        llm (t.Optional[str]): The generative model to be used. Default is None.</span>
+<span class="sd">        x_left_words (t.List[str]): Words defining the left and left x axes.</span>
+<span class="sd">        x_right_words (t.List[str]): Words defining the left and right x axes.</span>
+<span class="sd">        y_top_words (t.List[str]): Words defining the left and top y axes.</span>
+<span class="sd">        y_bottom_words (t.List[str]): Words defining the top and bottom y axes.</span>
+<span class="sd">        height (int): Dimensions of the visualization. Default to 1500.</span>
+<span class="sd">        width (int): Dimensions of the visualization. Default to 1500.</span>
 <span class="sd">        display_percent (bool): Flag to display percentages on the map. Default is True.</span>
 <span class="sd">        clustering (bool): Whether to apply clustering on the map. Default is False.</span>
 <span class="sd">        topic_n_clusters (int): Number of clusters for topic modeling. Default is 10.</span>
@@ -4501,9 +4813,8 @@ offering a range of customization options for detailed analysis.</p>
 <span class="sd">        colorscale (str): colorscale for the Density Plot (Default is delta)</span>
 <span class="sd">        density (bool): Whether to display a density map</span>
 
-
-<span class="sd">        Returns:</span>
-<span class="sd">            go.Figure: A Plotly graph object figure representing the Bourdieu Map.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        go.Figure: A Plotly graph object figure representing the Bourdieu Map.</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        The Bourdieu Map is a sophisticated visualization that plots documents and topics</span>
@@ -4724,10 +5035,7 @@ insight into specific terms used in the visualization.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">517</span>
-<span class="normal">518</span>
-<span class="normal">519</span>
-<span class="normal">520</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">520</span>
 <span class="normal">521</span>
 <span class="normal">522</span>
 <span class="normal">523</span>
@@ -4766,7 +5074,10 @@ insight into specific terms used in the visualization.</p>
 <span class="normal">556</span>
 <span class="normal">557</span>
 <span class="normal">558</span>
-<span class="normal">559</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu_one_dimension</span><span class="p">(</span>
+<span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu_one_dimension</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">left</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;negative&quot;</span><span class="p">],</span>
     <span class="n">right</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">],</span>
@@ -4828,12 +5139,51 @@ insight into specific terms used in the visualization.</p>
 
   <div class="doc doc-contents ">
   
-      <p>Visualizes the similarity scores between a given query and the document set.
-Args:
-    query (str): The query to be visualized against the documents. Default is "What is America?".
-    min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.
-    width (int): Width of the visualization. Default is 600.
-    height (int): Height of the visualization. Default is 300.</p>
+      <p>Visualizes the similarity scores between a given query and the document set.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>width</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Width of the visualization. Default is 600.</p>
+            </div>
+          </td>
+          <td>
+                <code>500</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>height</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Height of the visualization. Default is 300.</p>
+            </div>
+          </td>
+          <td>
+                <code>500</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
 
@@ -4877,10 +5227,7 @@ providing a visual representation of their relevance to the query.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">581</span>
-<span class="normal">582</span>
-<span class="normal">583</span>
-<span class="normal">584</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">584</span>
 <span class="normal">585</span>
 <span class="normal">586</span>
 <span class="normal">587</span>
@@ -4936,7 +5283,10 @@ providing a visual representation of their relevance to the query.</p>
 <span class="normal">637</span>
 <span class="normal">638</span>
 <span class="normal">639</span>
-<span class="normal">640</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
+<span class="normal">640</span>
+<span class="normal">641</span>
+<span class="normal">642</span>
+<span class="normal">643</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">,</span> <span class="s2">&quot;fear&quot;</span><span class="p">,</span> <span class="s2">&quot;love&quot;</span><span class="p">],</span>
     <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -4945,11 +5295,11 @@ providing a visual representation of their relevance to the query.</p>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Visualizes the similarity scores between a given query and the document set.</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        query (str): The query to be visualized against the documents. Default is &quot;What is America?&quot;.</span>
-<span class="sd">        min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.</span>
 <span class="sd">        width (int): Width of the visualization. Default is 600.</span>
 <span class="sd">        height (int): Height of the visualization. Default is 300.</span>
+
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A tuple (fig, percent) where &#39;fig&#39; is a Plotly graph object figure representing the</span>

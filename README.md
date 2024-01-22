@@ -9,14 +9,14 @@ Please read our Documentation: [The Origin of Bunka](https://charlesdedampierre.
 
 <img src="docs/images/logo.png" width="35%" height="35%" align="right" />
 
-Bunkatopics is a package designed for Topic Modeling Visualization, Frame Analysis, and Retrieval Augmented Generation (RAG) tasks, harnessing the power of Large Language Models (LLMs). Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleaning and optimizing LLMs through fine-tuning processes.
+Bunkatopics is a package designed for Data Cleaning, Topic Modeling Visualization and Frame Analysis. Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleaning and optimizing LLMs through fine-tuning processes.
 Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.
 
 Discover the different Use Case:
 
-- **Content Overview**: The Medium website offers a wealth of content across various categories such as Data Science, Technology, Programming, Poetry, Cryptocurrency, Machine Learning, Life, and more. While these categories facilitate data searching, they may not provide a granular overview. For instance, within the Technology category, what specific topics does Medium cover?
-
 - **Fine-Tuning**: To achieve precise fine-tuning, it's crucial to exercise control over the data, filtering what is relevant and discarding what isn't. Bunka is a valuable tool for accomplishing this task.
+
+- **Content Overview**: As an example, the Medium website offers a wealth of content across various categories such as Data Science, Technology, Programming, Poetry, Cryptocurrency, Machine Learning, Life, and more. While these categories facilitate exploration of data, they may not provide a granular overview. For instance, within the Technology category, what specific topics does Medium cover?
 
 - **Framing Analysis**: Data can be analyzed in countless ways, contingent on your objectives and interests. We've developed a tool that enables you to visualize data by semantically customizing your own axes.
 
@@ -73,7 +73,7 @@ bunka.fit(full_docs)
 ```
 
 ```python
->>> bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
+>>> bunka.get_topics(n_clusters=15, name_length=5)# Specify the number of terms to describe each topic
 ```
 
 Topics are described by the most specific terms belonging to the cluster.
@@ -101,7 +101,7 @@ Topics are described by the most specific terms belonging to the cluster.
 Finally, let's visualize the topics that Bunka has computed for your text data:
 
 ```python
-bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
+>>> bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
 ```
 
 <img src="docs/images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />
@@ -125,10 +125,10 @@ bunka.get_clean_topic_name(generative_model=llm)
 bunka.visualize_topics( width=800, height=800, colorscale = 'Portland')
 ```
 
-Finally, let's visualize again the topics. We can chose from different colorscale.
+Finally, let's visualize again the topics. We can chose from different colorscales.
 
 ```python
-bunka.visualize_topics(width=800, height=800)
+>>> bunka.visualize_topics(width=800, height=800)
 ```
 
 YlGnBu           |  Portland
@@ -165,12 +165,10 @@ We can now access the newly made topics
 
 ## Manually Cleaning the topics
 
-Are you happy with the topics yes ? Let's change them manually. Click on Apply changes when you are done. In the example, we changed the topic **Cryptocurrency Impact** to **Cryptocurrency** and **Internet Discounts** to **Advertising**.
-
-The new topics will also appear on the Map.
+If you are not happy with the resulting topics, you can change them manually. Click on Apply changes when you are done. In the example, we changed the topic **Cryptocurrency Impact** to **Cryptocurrency** and **Internet Discounts** to **Advertising**.
 
 ```python
-bunka.manually_clean_topics()
+>>> bunka.manually_clean_topics()
 ```
 
 <img src="docs/images/manually_change_topics.png" width="40%" height="20%" align="center" />
@@ -233,9 +231,10 @@ bourdieu_fig = bunka.visualize_bourdieu(
         convex_hull=True,
         radius_size=0.2,
         label_size_ratio_clusters=80)
+```
 
-# Display the Bourdieu map
-bourdieu_fig.show()
+```python
+>>> bourdieu_fig.show()
 ```
 
 positive/negative vs humans/machines            |  politics/business vs humans/machines  
@@ -273,4 +272,8 @@ bunka.fit(full_docs)
 bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
 
 bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
+```
+
+```python
+>>> bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
 ```

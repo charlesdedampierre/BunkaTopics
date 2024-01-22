@@ -389,11 +389,15 @@ class Bunka:
     ) -> go.Figure:
         """
         Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
+
         Args:
-            generative_model (t.Optional[str]): The generative model to be used. Default is None.
-            x_left_words, x_right_words (t.List[str]): Words defining the left and right axes.
-            y_top_words, y_bottom_words (t.List[str]): Words defining the top and bottom axes.
-            height, width (int): Dimensions of the visualization. Both default to 1500.
+            llm (t.Optional[str]): The generative model to be used. Default is None.
+            x_left_words (t.List[str]): Words defining the left and left x axes.
+            x_right_words (t.List[str]): Words defining the left and right x axes.
+            y_top_words (t.List[str]): Words defining the left and top y axes.
+            y_bottom_words (t.List[str]): Words defining the top and bottom y axes.
+            height (int): Dimensions of the visualization. Default to 1500.
+            width (int): Dimensions of the visualization. Default to 1500.
             display_percent (bool): Flag to display percentages on the map. Default is True.
             clustering (bool): Whether to apply clustering on the map. Default is False.
             topic_n_clusters (int): Number of clusters for topic modeling. Default is 10.
@@ -408,9 +412,8 @@ class Bunka:
             colorscale (str): colorscale for the Density Plot (Default is delta)
             density (bool): Whether to display a density map
 
-
-            Returns:
-                go.Figure: A Plotly graph object figure representing the Bourdieu Map.
+        Returns:
+            go.Figure: A Plotly graph object figure representing the Bourdieu Map.
 
         Note:
             The Bourdieu Map is a sophisticated visualization that plots documents and topics
@@ -587,11 +590,11 @@ class Bunka:
     ) -> go.Figure:
         """
         Visualizes the similarity scores between a given query and the document set.
+
         Args:
-            query (str): The query to be visualized against the documents. Default is "What is America?".
-            min_score (float): The minimum similarity score threshold for visualization. Default is 0.2.
             width (int): Width of the visualization. Default is 600.
             height (int): Height of the visualization. Default is 300.
+
 
         Returns:
             A tuple (fig, percent) where 'fig' is a Plotly graph object figure representing the

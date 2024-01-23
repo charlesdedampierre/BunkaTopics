@@ -137,7 +137,7 @@ class Bunka:
         if ids is not None:
             df["doc_id"] = ids
         else:
-            df["doc_id"] = [str(uuid.uuid4())[:8] for _ in range(len(df))]
+            df["doc_id"] = [str(uuid.uuid4())[:20] for _ in range(len(df))]
         df = df[~df["content"].isna()]
         df = df.reset_index(drop=True)
         self.docs = [Document(**row) for row in df.to_dict(orient="records")]
@@ -178,6 +178,7 @@ class Bunka:
         )  # Not random state to go quicker
         bunka_embeddings_2D = reducer.fit_transform(bunka_embeddings)
         df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
+
         df_embeddings_2D["doc_id"] = bunka_ids
         df_embeddings_2D["bunka_docs"] = bunka_docs
 

@@ -95,14 +95,21 @@ class Bunka:
                 Options include "english" (default), or specify another language as needed.
                 Default is "english".
         """
-
         warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
         if embedding_model is None:
             if language == "english":
-                embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+                embedding_model = HuggingFaceEmbeddings(
+                    model_name="all-MiniLM-L6-v2",
+                    model_kwargs={"device": "cpu"},
+                    encode_kwargs={"show_progress_bar": True},
+                    multi_process=False,
+                )
             else:
                 embedding_model = HuggingFaceEmbeddings(
-                    model_name="paraphrase-multilingual-MiniLM-L12-v2"
+                    model_name="paraphrase-multilingual-MiniLM-L12-v2",
+                    model_kwargs={"device": "cpu"},
+                    encode_kwargs={"show_progress_bar": True},
+                    multi_process=False,
                 )
         self.embedding_model = embedding_model
         self.language = language

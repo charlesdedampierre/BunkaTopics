@@ -20,6 +20,7 @@ dependencies = [
     "langchain_openai",
     "ipython",
     "hdbscan",
+    "ipywidgets",
 ]
 
 test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]

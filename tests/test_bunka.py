@@ -41,7 +41,6 @@ class TestBunka(unittest.TestCase):
         # Test Topic Modeling
         n_clusters = 3
         df_topics = self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=4)
-        print(df_topics["topic_name"])
         self.assertIsInstance(df_topics, pd.DataFrame)
         self.assertEqual(len(df_topics), n_clusters)
 

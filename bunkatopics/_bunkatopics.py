@@ -50,7 +50,7 @@ from bunkatopics.topic_modeling import (
 )
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.utils import BunkaError, _create_topic_dfs
+from bunkatopics.utils import BunkaError, _create_topic_dfs, _filter_hdbscan
 from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
@@ -224,6 +224,7 @@ class Bunka:
         min_count_terms: int = 2,
         ranking_terms: int = 20,
         max_doc_per_topic: int = 20,
+        custom_clustering_model=None,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -262,6 +263,7 @@ class Bunka:
             y_column="y",
             top_terms_overall=top_terms_overall,
             min_count_terms=min_count_terms,
+            custom_clustering_model=custom_clustering_model,
         )
 
         self.topics: t.List[Topic] = topic_model.fit_transform(
@@ -273,6 +275,11 @@ class Bunka:
             ranking_terms=ranking_terms, max_doc_per_topic=max_doc_per_topic
         )
         self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
+
+        (
+            self.topics,
+            self.docs,
+        ) = _filter_hdbscan(self.topics, self.docs)
 
         self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(
             self.topics, self.docs

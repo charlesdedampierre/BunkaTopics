@@ -58,6 +58,8 @@ class TestBunka(unittest.TestCase):
             topic_fig.show()
 
         self.assertIsInstance(topic_fig, go.Figure)
+        self.assertIsInstance(self.bunka.df_top_docs_per_topic_, pd.DataFrame)
+        print(self.bunka.df_top_docs_per_topic_)
 
     """def test_generative_names(self):
         n_clusters = 3

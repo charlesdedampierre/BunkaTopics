@@ -223,6 +223,7 @@ class Bunka:
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
         ranking_terms: int = 20,
+        max_doc_per_topic: int = 20,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -268,7 +269,9 @@ class Bunka:
             terms=self.terms,
         )
 
-        model_ranker = DocumentRanker(ranking_terms=ranking_terms)
+        model_ranker = DocumentRanker(
+            ranking_terms=ranking_terms, max_doc_per_topic=max_doc_per_topic
+        )
         self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
 
         self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(

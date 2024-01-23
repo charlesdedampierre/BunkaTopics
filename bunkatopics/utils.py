@@ -34,6 +34,10 @@ def _create_topic_dfs(topics: t.List[Topic], docs: t.List[Document]):
         top_docs_topics, df_topics[["topic_id", "topic_name"]], on="topic_id"
     )
 
+    top_docs_topics = top_docs_topics[
+        ["doc_id", "content", "ranking_per_topic", "topic_id", "topic_name"]  # re-order
+    ]
+
     return df_topics, top_docs_topics
 
 

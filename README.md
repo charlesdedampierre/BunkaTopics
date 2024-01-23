@@ -67,12 +67,15 @@ embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2",# We recom
                                         model_kwargs={"device": "cpu"}, # Or cuda if you have GPU
                                         encode_kwargs={"show_progress_bar": True}, # Show the progress of embeddings
                                         multi_process=False)  # set to True if you have mutliprocessing
+
 # Initialize Bunka with your chosen model and language preference
 bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
 
 # Fit Bunka to your list of text
 bunka.fit(docs)
 ```
+
+Note: Only embedders supported by SentenceTransformers will work.
 
 ```python
 >>> bunka.get_topics(n_clusters=15, name_length=5)# Specify the number of terms to describe each topic
@@ -121,10 +124,19 @@ repo_id = 'mistralai/Mistral-7B-v0.1'
 
 # Using Mistral AI to Summarize the Topics
 llm = HuggingFaceHub(repo_id='mistralai/Mistral-7B-v0.1', huggingfacehub_api_token="HF_TOKEN")
+```
 
+Note: It is recommended to use an Instruct model ie a model that has been fine-tuned on a discussion task. If not, the results might be meaningless.
+
+```python
 # Obtain clean topic names using Generative Model
 bunka.get_clean_topic_name(generative_model=llm, language='english')
-bunka.visualize_topics( width=800, height=800, colorscale = 'Portland')
+```
+
+Check the top documents for every topic!
+
+```python
+>>> bunka.df_top_docs_per_topic_
 ```
 
 Finally, let's visualize again the topics. We can chose from different colorscales.

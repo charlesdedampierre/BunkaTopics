@@ -169,6 +169,7 @@ export function TopicsProvider({ children, onSelectView, selectedView }) {
     () => ({
       data,
       bourdieuData,
+      setBourdieuData,
       uploadFile,
       isLoading,
       error,

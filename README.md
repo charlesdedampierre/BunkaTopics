@@ -276,7 +276,10 @@ from bunkatopics import Bunka
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # Choose your embedding model
-embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We recommend starting with a small model
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2",# We recommend starting with a small model
+                                        model_kwargs={"device": "cpu"}, # Or cuda if you have GPU
+                                        encode_kwargs={"show_progress_bar": True}, # Show the progress of embeddings
+                                        multi_process=False)  # set to True if you have mutliprocessing
 
 # Initialize Bunka with your chosen model and language preference
 bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer

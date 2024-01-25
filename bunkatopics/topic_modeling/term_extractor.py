@@ -143,7 +143,6 @@ class TextacyTermsExtractor:
             ngs=self.ngs,
             ents=self.ents,
             ncs=self.ncs,
-            sample_size=100000,
             drop_emoji=self.drop_emoji,
             ngrams=self.ngrams,
             remove_punctuation=True,
@@ -174,7 +173,6 @@ class TextacyTermsExtractor:
         ngs: bool = True,
         ents: bool = True,
         ncs: bool = False,
-        sample_size: int = 100000,
         drop_emoji: bool = True,
         ngrams: t.Tuple[int, int] = (2, 2),
         remove_punctuation: bool = False,
@@ -263,7 +261,6 @@ class TextacyTermsExtractor:
             return df
 
         data = data[data[text_var].notna()]
-        data = data.sample(min(sample_size, len(data)))
 
         sentences = data[text_var].tolist()
         indexes = data[index_var].tolist()

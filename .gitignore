@@ -22,6 +22,7 @@ bunka_env/
 poetry.lock
 #pyproject.toml
 requirements.txt
+roadmap.txt
 
 # Distribution / packaging
 .Python

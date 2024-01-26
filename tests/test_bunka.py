@@ -33,14 +33,14 @@ class TestBunka(unittest.TestCase):
         # Load a sample dataset
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 800)
+        docs = random.sample(docs, 1000)
         cls.bunka = Bunka()
         cls.bunka.fit(docs)
 
     def test_topic_modeling(self):
         # Test Topic Modeling
         df_topics = self.bunka.get_topics(
-            n_clusters=10, min_count_terms=4, min_docs_per_cluster=None
+            n_clusters=30, min_count_terms=4, min_docs_per_cluster=100
         )
         self.assertIsInstance(df_topics, pd.DataFrame)
         # self.assertEqual(len(df_topics), n_clusters)

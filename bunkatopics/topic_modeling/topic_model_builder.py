@@ -98,7 +98,9 @@ class BunkaTopicModeling:
         if self.custom_clustering_model is None:
             # clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")
             if self.min_docs_per_cluster is not None:
-                n_clusters = int(round(len(docs) / self.min_docs_per_cluster, 0))
+                n_clusters = (
+                    int(round(len(docs) / self.min_docs_per_cluster, 0)) - 1
+                )  # to avoid that n_clusters*self.min_docs_per_cluster>=len(docs)
                 if n_clusters <= self.n_clusters:
                     logger.info(
                         f"min_docs_per_cluster has been set to {self.min_docs_per_cluster}, the number of clusters set is {n_clusters} instead of {self.n_clusters}"

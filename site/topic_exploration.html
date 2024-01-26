@@ -822,6 +822,27 @@
   
   
     <li class="md-nav__item">
+      <a href="bunka-api/topic_modeling/topic-ranker.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Document Ranker in Topics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="bunka-api/bourdieu/bourdieu-api.html" class="md-nav__link">
         
   
@@ -855,10 +876,10 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_7" >
         
           
-          <label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7_7" id="__nav_7_7_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -869,8 +890,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_7">
             <span class="md-nav__icon md-icon"></span>
             Visualization
           </label>
@@ -1152,7 +1173,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <h3 id="uploading-sample-data">Uploading Sample Data<a class="headerlink" href="#uploading-sample-data" title="Permanent link">&para;</a></h3>
 <p>To get started, let's upload a sample of Medium Articles into Bunkatopics:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
-<span class="n">docs</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;bunkalab/medium-sample-technology&quot;</span><span class="p">)[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;bunkalab/medium-sample-technology&quot;</span><span class="p">)[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="c1"># &#39;docs&#39; is a list of text [text1, text2, ..., textN]</span>
 </code></pre></div>
 <h3 id="choose-your-embedding-model">Choose Your Embedding Model<a class="headerlink" href="#choose-your-embedding-model" title="Permanent link">&para;</a></h3>
 <p>Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.</p>
@@ -1160,13 +1181,16 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <span class="kn">from</span> <span class="nn">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbeddings</span>
 
 <span class="c1"># Choose your embedding model</span>
-<span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span> <span class="c1"># We recommend starting with a small model</span>
+<span class="n">embedding_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">,</span><span class="c1"># We recommend starting with a small model</span>
+                                        <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="s2">&quot;cpu&quot;</span><span class="p">},</span> <span class="c1"># Or cuda if you have GPU</span>
+                                        <span class="n">encode_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;show_progress_bar&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="c1"># Show the progress of embeddings</span>
+                                        <span class="n">multi_process</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># set to True if you have mutliprocessing</span>
 
 <span class="c1"># Initialize Bunka with your chosen model and language preference</span>
 <span class="n">bunka</span> <span class="o">=</span> <span class="n">Bunka</span><span class="p">(</span><span class="n">embedding_model</span><span class="o">=</span><span class="n">embedding_model</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">)</span> <span class="c1"># You can choose any language you prefer</span>
 
 <span class="c1"># Fit Bunka to your text data</span>
-<span class="n">bunka</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">full_docs</span><span class="p">)</span>
+<span class="n">bunka</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 </code></pre></div>
 <p>You can use other models like OpenAI thanks to langchain integration</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">langchain_openai</span> <span class="kn">import</span> <span class="n">OpenAIEmbeddings</span>

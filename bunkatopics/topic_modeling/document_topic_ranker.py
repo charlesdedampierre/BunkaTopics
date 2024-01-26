@@ -6,8 +6,19 @@ from bunkatopics.datamodel import Document, Topic, TopicRanking
 
 
 class DocumentRanker:
-    def __init__(self, ranking_terms: int = 20) -> None:
+    def __init__(self, ranking_terms: int = 20, max_doc_per_topic: int = 20) -> None:
+        """
+        Initialize the class with ranking_terms and max_doc_per_topic parameters.
+
+        Args:
+            ranking_terms (int): Number of ranking terms to be used.
+            max_doc_per_topic (int): Maximum number of documents per topic.
+
+        Returns:
+            None
+        """
         self.ranking_terms = ranking_terms
+        self.max_doc_per_topic = max_doc_per_topic
 
     def fit_transform(
         self,
@@ -56,6 +67,8 @@ class DocumentRanker:
         df_rank["rank"] = df_rank.groupby("topic_id")["count_topic_terms"].rank(
             method="first", ascending=False
         )
+
+        df_rank = df_rank[df_rank["rank"] <= self.max_doc_per_topic]
 
         # Create a dictionary of TopicRanking objects for each document
         final_dict = {}

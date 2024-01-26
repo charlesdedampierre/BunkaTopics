@@ -50,7 +50,7 @@ from bunkatopics.topic_modeling import (
 )
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.utils import BunkaError, _create_topic_dfs
+from bunkatopics.utils import BunkaError, _create_topic_dfs, _filter_hdbscan
 from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
@@ -137,7 +137,7 @@ class Bunka:
         if ids is not None:
             df["doc_id"] = ids
         else:
-            df["doc_id"] = [str(uuid.uuid4())[:8] for _ in range(len(df))]
+            df["doc_id"] = [str(uuid.uuid4())[:20] for _ in range(len(df))]
         df = df[~df["content"].isna()]
         df = df.reset_index(drop=True)
         self.docs = [Document(**row) for row in df.to_dict(orient="records")]
@@ -178,6 +178,7 @@ class Bunka:
         )  # Not random state to go quicker
         bunka_embeddings_2D = reducer.fit_transform(bunka_embeddings)
         df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
+
         df_embeddings_2D["doc_id"] = bunka_ids
         df_embeddings_2D["bunka_docs"] = bunka_docs
 
@@ -223,6 +224,8 @@ class Bunka:
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
         ranking_terms: int = 20,
+        max_doc_per_topic: int = 20,
+        custom_clustering_model=None,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -261,6 +264,7 @@ class Bunka:
             y_column="y",
             top_terms_overall=top_terms_overall,
             min_count_terms=min_count_terms,
+            custom_clustering_model=custom_clustering_model,
         )
 
         self.topics: t.List[Topic] = topic_model.fit_transform(
@@ -268,8 +272,15 @@ class Bunka:
             terms=self.terms,
         )
 
-        model_ranker = DocumentRanker(ranking_terms=ranking_terms)
+        model_ranker = DocumentRanker(
+            ranking_terms=ranking_terms, max_doc_per_topic=max_doc_per_topic
+        )
         self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
+
+        (
+            self.topics,
+            self.docs,
+        ) = _filter_hdbscan(self.topics, self.docs)
 
         self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(
             self.topics, self.docs

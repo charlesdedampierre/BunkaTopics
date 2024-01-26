@@ -165,6 +165,8 @@ class BunkaTopicModeling:
         except Exception as e:
             print(e)
 
+        # Remove in case of HDBSCAN ?
+
         return topics
 
 

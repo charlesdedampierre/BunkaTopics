@@ -5,6 +5,25 @@ import pandas as pd
 from bunkatopics.datamodel import Document, Topic
 
 
+def _filter_hdbscan(topics: t.List[Topic], docs: t.List[Document]):
+    # Remove for HDBSCAN
+    filtered_topics = []
+    for topic in topics:
+        if topic.topic_id == "bt--1":
+            continue
+        else:
+            filtered_topics.append(topic)
+
+    filtered_docs = []
+    for doc in docs:
+        if doc.topic_id == "bt--1":
+            continue
+        else:
+            filtered_docs.append(doc)
+
+    return filtered_topics, filtered_docs
+
+
 def _create_topic_dfs(topics: t.List[Topic], docs: t.List[Document]):
     df_topics = pd.DataFrame.from_records([topic.model_dump() for topic in topics])
 
@@ -33,6 +52,10 @@ def _create_topic_dfs(topics: t.List[Topic], docs: t.List[Document]):
     top_docs_topics = pd.merge(
         top_docs_topics, df_topics[["topic_id", "topic_name"]], on="topic_id"
     )
+
+    top_docs_topics = top_docs_topics[
+        ["doc_id", "content", "ranking_per_topic", "topic_id", "topic_name"]  # re-order
+    ]
 
     return df_topics, top_docs_topics
 

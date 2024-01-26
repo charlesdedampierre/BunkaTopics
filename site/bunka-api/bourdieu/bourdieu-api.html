@@ -1163,7 +1163,10 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">181</span>
 <span class="normal">182</span>
 <span class="normal">183</span>
-<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BourdieuAPI</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class for performing Bourdieu analysis on a collection of documents.</span>
 
@@ -1182,6 +1185,7 @@ and the use of generative AI for topic naming.</p>
         <span class="n">topic_gen_param</span><span class="p">:</span> <span class="n">TopicGenParam</span> <span class="o">=</span> <span class="n">TopicGenParam</span><span class="p">(),</span>
         <span class="n">min_count_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">ranking_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes the BourdieuAPI with the provided models, parameters, and configurations.</span>
@@ -1204,6 +1208,7 @@ and the use of generative AI for topic naming.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span> <span class="o">=</span> <span class="n">topic_gen_param</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_count_terms</span> <span class="o">=</span> <span class="n">min_count_terms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ranking_terms</span> <span class="o">=</span> <span class="n">ranking_terms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span> <span class="o">=</span> <span class="n">min_docs_per_cluster</span>
 
     <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">terms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Term</span><span class="p">]</span>
@@ -1295,6 +1300,7 @@ and the use of generative AI for topic naming.</p>
             <span class="n">name_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_param</span><span class="o">.</span><span class="n">name_length</span><span class="p">,</span>
             <span class="n">top_terms_overall</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_param</span><span class="o">.</span><span class="n">top_terms_overall</span><span class="p">,</span>
             <span class="n">min_count_terms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_count_terms</span><span class="p">,</span>
+            <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">bourdieu_topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
@@ -1340,7 +1346,7 @@ and the use of generative AI for topic naming.</p>
 
 
 <h2 id="bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">embedding_model</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bourdieu_query</span><span class="o">=</span><span class="n">BourdieuQuery</span><span class="p">(),</span> <span class="n">topic_param</span><span class="o">=</span><span class="n">TopicParam</span><span class="p">(),</span> <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">TopicGenParam</span><span class="p">(),</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ranking_terms</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">embedding_model</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bourdieu_query</span><span class="o">=</span><span class="n">BourdieuQuery</span><span class="p">(),</span> <span class="n">topic_param</span><span class="o">=</span><span class="n">TopicParam</span><span class="p">(),</span> <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">TopicGenParam</span><span class="p">(),</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ranking_terms</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
 
 <a href="#bunkatopics.bourdieu.bourdieu_api.BourdieuAPI.__init__" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -1483,7 +1489,9 @@ and the use of generative AI for topic naming.</p>
 <span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">embedding_model</span><span class="p">:</span> <span class="n">Embeddings</span><span class="p">,</span>
     <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">LLM</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1492,6 +1500,7 @@ and the use of generative AI for topic naming.</p>
     <span class="n">topic_gen_param</span><span class="p">:</span> <span class="n">TopicGenParam</span> <span class="o">=</span> <span class="n">TopicGenParam</span><span class="p">(),</span>
     <span class="n">min_count_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="n">ranking_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initializes the BourdieuAPI with the provided models, parameters, and configurations.</span>
@@ -1514,6 +1523,7 @@ and the use of generative AI for topic naming.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">topic_gen_param</span> <span class="o">=</span> <span class="n">topic_gen_param</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">min_count_terms</span> <span class="o">=</span> <span class="n">min_count_terms</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">ranking_terms</span> <span class="o">=</span> <span class="n">ranking_terms</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span> <span class="o">=</span> <span class="n">min_docs_per_cluster</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -1594,9 +1604,7 @@ uses a generative AI model for naming the topics.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/bourdieu/bourdieu_api.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 73</span>
 <span class="normal"> 74</span>
 <span class="normal"> 75</span>
 <span class="normal"> 76</span>
@@ -1707,7 +1715,10 @@ uses a generative AI model for naming the topics.</p>
 <span class="normal">181</span>
 <span class="normal">182</span>
 <span class="normal">183</span>
-<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">terms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Term</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1797,6 +1808,7 @@ uses a generative AI model for naming the topics.</p>
         <span class="n">name_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_param</span><span class="o">.</span><span class="n">name_length</span><span class="p">,</span>
         <span class="n">top_terms_overall</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">topic_param</span><span class="o">.</span><span class="n">top_terms_overall</span><span class="p">,</span>
         <span class="n">min_count_terms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_count_terms</span><span class="p">,</span>
+        <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">bourdieu_topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>

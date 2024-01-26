@@ -45,6 +45,7 @@ class BourdieuAPI:
         topic_gen_param: TopicGenParam = TopicGenParam(),
         min_count_terms: int = 2,
         ranking_terms: int = 20,
+        min_docs_per_cluster: int = 20,
     ) -> None:
         """
         Initializes the BourdieuAPI with the provided models, parameters, and configurations.
@@ -67,6 +68,7 @@ class BourdieuAPI:
         self.topic_gen_param = topic_gen_param
         self.min_count_terms = min_count_terms
         self.ranking_terms = ranking_terms
+        self.min_docs_per_cluster = min_docs_per_cluster
 
     def fit_transform(
         self, docs: t.List[Document], terms: t.List[Term]
@@ -158,6 +160,7 @@ class BourdieuAPI:
             name_length=self.topic_param.name_length,
             top_terms_overall=self.topic_param.top_terms_overall,
             min_count_terms=self.min_count_terms,
+            min_docs_per_cluster=self.min_docs_per_cluster,
         )
 
         bourdieu_topics: t.List[Topic] = topic_model.fit_transform(

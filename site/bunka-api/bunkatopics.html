@@ -1989,7 +1989,20 @@
 <span class="normal">856</span>
 <span class="normal">857</span>
 <span class="normal">858</span>
-<span class="normal">859</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
+<span class="normal">859</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
+<span class="normal">862</span>
+<span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span>
+<span class="normal">866</span>
+<span class="normal">867</span>
+<span class="normal">868</span>
+<span class="normal">869</span>
+<span class="normal">870</span>
+<span class="normal">871</span>
+<span class="normal">872</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Bunka</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Bunka class for managing and analyzing textual data using various NLP techniques.</span>
 
 <span class="sd">    Examples:</span>
@@ -2061,7 +2074,7 @@
         <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ids</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">8</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">20</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))]</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)]</span>
@@ -2102,6 +2115,7 @@
         <span class="p">)</span>  <span class="c1"># Not random state to go quicker</span>
         <span class="n">bunka_embeddings_2D</span> <span class="o">=</span> <span class="n">reducer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">bunka_embeddings</span><span class="p">)</span>
         <span class="n">df_embeddings_2D</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">bunka_embeddings_2D</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
+
         <span class="n">df_embeddings_2D</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bunka_ids</span>
         <span class="n">df_embeddings_2D</span><span class="p">[</span><span class="s2">&quot;bunka_docs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bunka_docs</span>
 
@@ -2148,6 +2162,8 @@
         <span class="n">min_count_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">ranking_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
         <span class="n">max_doc_per_topic</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">custom_clustering_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes and organizes topics from the documents using specified parameters.</span>
@@ -2160,6 +2176,7 @@
 <span class="sd">            name_length (int): The length of the name for topics. Default is 10.</span>
 <span class="sd">            top_terms_overall (int): The number of top terms to consider overall. Default is 2000.</span>
 <span class="sd">            min_count_terms (int): The minimum count of terms to be considered. Default is 2.</span>
+<span class="sd">            min_docs_per_cluster (int, optional): Minimum count of documents per topic</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            pd.DataFrame: A DataFrame containing the topics and their associated data.</span>
@@ -2186,6 +2203,8 @@
             <span class="n">y_column</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
             <span class="n">top_terms_overall</span><span class="o">=</span><span class="n">top_terms_overall</span><span class="p">,</span>
             <span class="n">min_count_terms</span><span class="o">=</span><span class="n">min_count_terms</span><span class="p">,</span>
+            <span class="n">custom_clustering_model</span><span class="o">=</span><span class="n">custom_clustering_model</span><span class="p">,</span>
+            <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
@@ -2197,6 +2216,11 @@
             <span class="n">ranking_terms</span><span class="o">=</span><span class="n">ranking_terms</span><span class="p">,</span> <span class="n">max_doc_per_topic</span><span class="o">=</span><span class="n">max_doc_per_topic</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">topics</span> <span class="o">=</span> <span class="n">model_ranker</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">)</span>
+
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">_filter_hdbscan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">df_topics_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_top_docs_per_topic_</span> <span class="o">=</span> <span class="n">_create_topic_dfs</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span>
@@ -2320,6 +2344,7 @@
         <span class="n">label_size_ratio_clusters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">label_size_ratio_label</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
         <span class="n">label_size_ratio_percent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</span>
@@ -2388,6 +2413,7 @@
             <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
             <span class="n">topic_param</span><span class="o">=</span><span class="n">topic_param</span><span class="p">,</span>
             <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">topic_gen_param</span><span class="p">,</span>
+            <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">new_docs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
@@ -2974,20 +3000,7 @@ and calculates the percentage of data retained after cleaning.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">681</span>
-<span class="normal">682</span>
-<span class="normal">683</span>
-<span class="normal">684</span>
-<span class="normal">685</span>
-<span class="normal">686</span>
-<span class="normal">687</span>
-<span class="normal">688</span>
-<span class="normal">689</span>
-<span class="normal">690</span>
-<span class="normal">691</span>
-<span class="normal">692</span>
-<span class="normal">693</span>
-<span class="normal">694</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">694</span>
 <span class="normal">695</span>
 <span class="normal">696</span>
 <span class="normal">697</span>
@@ -3038,7 +3051,20 @@ and calculates the percentage of data retained after cleaning.</p>
 <span class="normal">742</span>
 <span class="normal">743</span>
 <span class="normal">744</span>
-<span class="normal">745</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">clean_data_by_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">745</span>
+<span class="normal">746</span>
+<span class="normal">747</span>
+<span class="normal">748</span>
+<span class="normal">749</span>
+<span class="normal">750</span>
+<span class="normal">751</span>
+<span class="normal">752</span>
+<span class="normal">753</span>
+<span class="normal">754</span>
+<span class="normal">755</span>
+<span class="normal">756</span>
+<span class="normal">757</span>
+<span class="normal">758</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">clean_data_by_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filters and cleans the dataset based on user-selected topics.</span>
 
@@ -3270,7 +3296,8 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
 <span class="normal">213</span>
 <span class="normal">214</span>
 <span class="normal">215</span>
-<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+<span class="normal">216</span>
+<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">DOC_ID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3292,7 +3319,7 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
     <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ids</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">8</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))]</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">20</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))]</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)]</span>
@@ -3333,6 +3360,7 @@ applies dimensionality reduction to prepare the data for topic modeling.</p>
     <span class="p">)</span>  <span class="c1"># Not random state to go quicker</span>
     <span class="n">bunka_embeddings_2D</span> <span class="o">=</span> <span class="n">reducer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">bunka_embeddings</span><span class="p">)</span>
     <span class="n">df_embeddings_2D</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">bunka_embeddings_2D</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
+
     <span class="n">df_embeddings_2D</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bunka_ids</span>
     <span class="n">df_embeddings_2D</span><span class="p">[</span><span class="s2">&quot;bunka_docs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bunka_docs</span>
 
@@ -3493,18 +3521,7 @@ aiming for more understandable and relevant topic descriptors.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">294</span>
 <span class="normal">295</span>
 <span class="normal">296</span>
 <span class="normal">297</span>
@@ -3534,7 +3551,18 @@ aiming for more understandable and relevant topic descriptors.</p>
 <span class="normal">321</span>
 <span class="normal">322</span>
 <span class="normal">323</span>
-<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_clean_topic_name</span><span class="p">(</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_clean_topic_name</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;english&quot;</span><span class="p">,</span>
@@ -3674,26 +3702,26 @@ easy interpretation of the topic sizes.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">655</span>
-<span class="normal">656</span>
-<span class="normal">657</span>
-<span class="normal">658</span>
-<span class="normal">659</span>
-<span class="normal">660</span>
-<span class="normal">661</span>
-<span class="normal">662</span>
-<span class="normal">663</span>
-<span class="normal">664</span>
-<span class="normal">665</span>
-<span class="normal">666</span>
-<span class="normal">667</span>
-<span class="normal">668</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">668</span>
 <span class="normal">669</span>
 <span class="normal">670</span>
 <span class="normal">671</span>
 <span class="normal">672</span>
 <span class="normal">673</span>
-<span class="normal">674</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="normal">674</span>
+<span class="normal">675</span>
+<span class="normal">676</span>
+<span class="normal">677</span>
+<span class="normal">678</span>
+<span class="normal">679</span>
+<span class="normal">680</span>
+<span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
+<span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
+<span class="normal">687</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topic_repartition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a bar plot to visualize the distribution of topics by size.</span>
 
@@ -3725,7 +3753,7 @@ easy interpretation of the topic sizes.</p>
 
 
 <h2 id="bunkatopics._bunkatopics.Bunka.get_topics" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_topics</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">name_length</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">top_terms_overall</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ranking_terms</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_doc_per_topic</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">get_topics</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">name_length</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">top_terms_overall</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ranking_terms</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_doc_per_topic</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">custom_clustering_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></code>
 
 <a href="#bunkatopics._bunkatopics.Bunka.get_topics" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -3818,6 +3846,20 @@ easy interpretation of the topic sizes.</p>
                 <code>2</code>
           </td>
         </tr>
+        <tr>
+          <td><code>min_docs_per_cluster</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Minimum count of documents per topic</p>
+            </div>
+          </td>
+          <td>
+                <code>10</code>
+          </td>
+        </tr>
     </tbody>
   </table>
 
@@ -3852,8 +3894,7 @@ with the resulting topics. It also associates the identified topics with the doc
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">218</span>
-<span class="normal">219</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
 <span class="normal">220</span>
 <span class="normal">221</span>
 <span class="normal">222</span>
@@ -3915,7 +3956,18 @@ with the resulting topics. It also associates the identified topics with the doc
 <span class="normal">278</span>
 <span class="normal">279</span>
 <span class="normal">280</span>
-<span class="normal">281</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">n_clusters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="n">ngrams</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
@@ -3924,6 +3976,8 @@ with the resulting topics. It also associates the identified topics with the doc
     <span class="n">min_count_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="n">ranking_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="n">max_doc_per_topic</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">custom_clustering_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes and organizes topics from the documents using specified parameters.</span>
@@ -3936,6 +3990,7 @@ with the resulting topics. It also associates the identified topics with the doc
 <span class="sd">        name_length (int): The length of the name for topics. Default is 10.</span>
 <span class="sd">        top_terms_overall (int): The number of top terms to consider overall. Default is 2000.</span>
 <span class="sd">        min_count_terms (int): The minimum count of terms to be considered. Default is 2.</span>
+<span class="sd">        min_docs_per_cluster (int, optional): Minimum count of documents per topic</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame: A DataFrame containing the topics and their associated data.</span>
@@ -3962,6 +4017,8 @@ with the resulting topics. It also associates the identified topics with the doc
         <span class="n">y_column</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
         <span class="n">top_terms_overall</span><span class="o">=</span><span class="n">top_terms_overall</span><span class="p">,</span>
         <span class="n">min_count_terms</span><span class="o">=</span><span class="n">min_count_terms</span><span class="p">,</span>
+        <span class="n">custom_clustering_model</span><span class="o">=</span><span class="n">custom_clustering_model</span><span class="p">,</span>
+        <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
@@ -3973,6 +4030,11 @@ with the resulting topics. It also associates the identified topics with the doc
         <span class="n">ranking_terms</span><span class="o">=</span><span class="n">ranking_terms</span><span class="p">,</span> <span class="n">max_doc_per_topic</span><span class="o">=</span><span class="n">max_doc_per_topic</span>
     <span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">topics</span> <span class="o">=</span> <span class="n">model_ranker</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">)</span>
+
+    <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">_filter_hdbscan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">df_topics_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_top_docs_per_topic_</span> <span class="o">=</span> <span class="n">_create_topic_dfs</span><span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">topics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span>
@@ -4032,20 +4094,7 @@ If no changes are made, it retains the original topic names.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">747</span>
-<span class="normal">748</span>
-<span class="normal">749</span>
-<span class="normal">750</span>
-<span class="normal">751</span>
-<span class="normal">752</span>
-<span class="normal">753</span>
-<span class="normal">754</span>
-<span class="normal">755</span>
-<span class="normal">756</span>
-<span class="normal">757</span>
-<span class="normal">758</span>
-<span class="normal">759</span>
-<span class="normal">760</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">760</span>
 <span class="normal">761</span>
 <span class="normal">762</span>
 <span class="normal">763</span>
@@ -4105,7 +4154,20 @@ If no changes are made, it retains the original topic names.</p>
 <span class="normal">817</span>
 <span class="normal">818</span>
 <span class="normal">819</span>
-<span class="normal">820</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">manually_clean_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
+<span class="normal">822</span>
+<span class="normal">823</span>
+<span class="normal">824</span>
+<span class="normal">825</span>
+<span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span>
+<span class="normal">832</span>
+<span class="normal">833</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">manually_clean_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allows manual renaming of topic names in the dataset.</span>
 
@@ -4290,20 +4352,7 @@ to work with complex queries and provide informative answers using the document 
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">498</span>
-<span class="normal">499</span>
-<span class="normal">500</span>
-<span class="normal">501</span>
-<span class="normal">502</span>
-<span class="normal">503</span>
-<span class="normal">504</span>
-<span class="normal">505</span>
-<span class="normal">506</span>
-<span class="normal">507</span>
-<span class="normal">508</span>
-<span class="normal">509</span>
-<span class="normal">510</span>
-<span class="normal">511</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">511</span>
 <span class="normal">512</span>
 <span class="normal">513</span>
 <span class="normal">514</span>
@@ -4320,7 +4369,20 @@ to work with complex queries and provide informative answers using the document 
 <span class="normal">525</span>
 <span class="normal">526</span>
 <span class="normal">527</span>
-<span class="normal">528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseRetrievalQA</span><span class="p">:</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rag_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">,</span> <span class="n">top_doc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseRetrievalQA</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.</span>
 
@@ -4363,7 +4425,7 @@ to work with complex queries and provide informative answers using the document 
 
 
 <h2 id="bunkatopics._bunkatopics.Bunka.visualize_bourdieu" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">visualize_bourdieu</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;war&#39;</span><span class="p">],</span> <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peace&#39;</span><span class="p">],</span> <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;men&#39;</span><span class="p">],</span> <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;women&#39;</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">display_percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clustering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">topic_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topic_ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">topic_top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">gen_topic_language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">manual_axis_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_doc_gen_topic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="n">label_size_ratio_clusters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">label_size_ratio_label</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">label_size_ratio_percent</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">visualize_bourdieu</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_left_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;war&#39;</span><span class="p">],</span> <span class="n">x_right_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;peace&#39;</span><span class="p">],</span> <span class="n">y_top_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;men&#39;</span><span class="p">],</span> <span class="n">y_bottom_words</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;women&#39;</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">display_percent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clustering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">topic_n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">topic_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">topic_ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">topic_top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">gen_topic_language</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">manual_axis_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_doc_gen_topic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radius_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">convex_hull</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="n">label_size_ratio_clusters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">label_size_ratio_label</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">label_size_ratio_percent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#bunkatopics._bunkatopics.Bunka.visualize_bourdieu" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -4701,18 +4763,7 @@ offering a range of customization options for detailed analysis.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">385</span>
 <span class="normal">386</span>
 <span class="normal">387</span>
 <span class="normal">388</span>
@@ -4823,7 +4874,20 @@ offering a range of customization options for detailed analysis.</p>
 <span class="normal">493</span>
 <span class="normal">494</span>
 <span class="normal">495</span>
-<span class="normal">496</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">llm</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">LLM</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">x_left_words</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;war&quot;</span><span class="p">],</span>
@@ -4848,6 +4912,7 @@ offering a range of customization options for detailed analysis.</p>
     <span class="n">label_size_ratio_clusters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="n">label_size_ratio_label</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
     <span class="n">label_size_ratio_percent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates and visualizes a Bourdieu Map using specified parameters and a generative model.</span>
@@ -4916,6 +4981,7 @@ offering a range of customization options for detailed analysis.</p>
         <span class="n">bourdieu_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bourdieu_query</span><span class="p">,</span>
         <span class="n">topic_param</span><span class="o">=</span><span class="n">topic_param</span><span class="p">,</span>
         <span class="n">topic_gen_param</span><span class="o">=</span><span class="n">topic_gen_param</span><span class="p">,</span>
+        <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">new_docs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
@@ -5096,20 +5162,7 @@ insight into specific terms used in the visualization.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">530</span>
-<span class="normal">531</span>
-<span class="normal">532</span>
-<span class="normal">533</span>
-<span class="normal">534</span>
-<span class="normal">535</span>
-<span class="normal">536</span>
-<span class="normal">537</span>
-<span class="normal">538</span>
-<span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span>
-<span class="normal">543</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">543</span>
 <span class="normal">544</span>
 <span class="normal">545</span>
 <span class="normal">546</span>
@@ -5138,7 +5191,20 @@ insight into specific terms used in the visualization.</p>
 <span class="normal">569</span>
 <span class="normal">570</span>
 <span class="normal">571</span>
-<span class="normal">572</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu_one_dimension</span><span class="p">(</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span>
+<span class="normal">585</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_bourdieu_one_dimension</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">left</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;negative&quot;</span><span class="p">],</span>
     <span class="n">right</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">],</span>
@@ -5288,20 +5354,7 @@ providing a visual representation of their relevance to the query.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">594</span>
-<span class="normal">595</span>
-<span class="normal">596</span>
-<span class="normal">597</span>
-<span class="normal">598</span>
-<span class="normal">599</span>
-<span class="normal">600</span>
-<span class="normal">601</span>
-<span class="normal">602</span>
-<span class="normal">603</span>
-<span class="normal">604</span>
-<span class="normal">605</span>
-<span class="normal">606</span>
-<span class="normal">607</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">607</span>
 <span class="normal">608</span>
 <span class="normal">609</span>
 <span class="normal">610</span>
@@ -5347,7 +5400,20 @@ providing a visual representation of their relevance to the query.</p>
 <span class="normal">650</span>
 <span class="normal">651</span>
 <span class="normal">652</span>
-<span class="normal">653</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
+<span class="normal">653</span>
+<span class="normal">654</span>
+<span class="normal">655</span>
+<span class="normal">656</span>
+<span class="normal">657</span>
+<span class="normal">658</span>
+<span class="normal">659</span>
+<span class="normal">660</span>
+<span class="normal">661</span>
+<span class="normal">662</span>
+<span class="normal">663</span>
+<span class="normal">664</span>
+<span class="normal">665</span>
+<span class="normal">666</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_dimensions</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">,</span> <span class="s2">&quot;fear&quot;</span><span class="p">,</span> <span class="s2">&quot;love&quot;</span><span class="p">],</span>
     <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -5574,18 +5640,7 @@ into topics and can include text labels for clarity.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/_bunkatopics.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">337</span>
 <span class="normal">338</span>
 <span class="normal">339</span>
 <span class="normal">340</span>
@@ -5620,7 +5675,18 @@ into topics and can include text labels for clarity.</p>
 <span class="normal">369</span>
 <span class="normal">370</span>
 <span class="normal">371</span>
-<span class="normal">372</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_topics</span><span class="p">(</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">visualize_topics</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">show_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">label_size_ratio</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>

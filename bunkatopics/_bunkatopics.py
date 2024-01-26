@@ -225,7 +225,8 @@ class Bunka:
         min_count_terms: int = 2,
         ranking_terms: int = 20,
         max_doc_per_topic: int = 20,
-        custom_clustering_model=None,
+        custom_clustering_model: bool = None,
+        min_docs_per_cluster: int = 10,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -238,6 +239,7 @@ class Bunka:
             name_length (int): The length of the name for topics. Default is 10.
             top_terms_overall (int): The number of top terms to consider overall. Default is 2000.
             min_count_terms (int): The minimum count of terms to be considered. Default is 2.
+            min_docs_per_cluster (int, optional): Minimum count of documents per topic
 
         Returns:
             pd.DataFrame: A DataFrame containing the topics and their associated data.
@@ -265,6 +267,7 @@ class Bunka:
             top_terms_overall=top_terms_overall,
             min_count_terms=min_count_terms,
             custom_clustering_model=custom_clustering_model,
+            min_docs_per_cluster=min_docs_per_cluster,
         )
 
         self.topics: t.List[Topic] = topic_model.fit_transform(
@@ -404,6 +407,7 @@ class Bunka:
         label_size_ratio_clusters: int = 100,
         label_size_ratio_label: int = 50,
         label_size_ratio_percent: int = 10,
+        min_docs_per_cluster: int = None,
     ) -> go.Figure:
         """
         Creates and visualizes a Bourdieu Map using specified parameters and a generative model.
@@ -472,6 +476,7 @@ class Bunka:
             bourdieu_query=self.bourdieu_query,
             topic_param=topic_param,
             topic_gen_param=topic_gen_param,
+            min_docs_per_cluster=min_docs_per_cluster,
         )
 
         new_docs = copy.deepcopy(self.docs)

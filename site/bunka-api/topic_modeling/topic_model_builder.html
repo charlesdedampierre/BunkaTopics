@@ -1165,7 +1165,25 @@ Topics are named using the top terms associated with them.</p>
 <span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
-<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BunkaTopicModeling</span><span class="p">:</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BunkaTopicModeling</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to perform topic modeling on a set of documents.</span>
 
@@ -1180,6 +1198,7 @@ Topics are named using the top terms associated with them.</p>
         <span class="n">name_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
         <span class="n">top_terms_overall</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
         <span class="n">min_count_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">x_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span>
         <span class="n">y_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span>
         <span class="n">custom_clustering_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1192,6 +1211,7 @@ Topics are named using the top terms associated with them.</p>
 <span class="sd">            name_length (int, optional): Maximum length of topic names. Defaults to 15.</span>
 <span class="sd">            top_terms_overall (int, optional): Number of top terms to consider overall. Defaults to 1000.</span>
 <span class="sd">            min_count_terms (int, optional): Minimum count of terms to be considered. Defaults to 2.</span>
+<span class="sd">            min_docs_per_cluster (int, optional): Minimum count of documents per topic</span>
 <span class="sd">            x_column (str, optional): Column name for x-coordinate in the DataFrame. Defaults to &quot;x&quot;.</span>
 <span class="sd">            y_column (str, optional): Column name for y-coordinate in the DataFrame. Defaults to &quot;y&quot;.</span>
 <span class="sd">            custom_clustering_model (optional): Custom clustering model instance, if any. Defaults to None.</span>
@@ -1205,6 +1225,7 @@ Topics are named using the top terms associated with them.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_column</span> <span class="o">=</span> <span class="n">x_column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_column</span> <span class="o">=</span> <span class="n">y_column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span> <span class="o">=</span> <span class="n">custom_clustering_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span> <span class="o">=</span> <span class="n">min_docs_per_cluster</span>
 
     <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1231,10 +1252,6 @@ Topics are named using the top terms associated with them.</p>
 <span class="sd">            - Topics are named using the most significant terms within each cluster.</span>
 <span class="sd">            - The method calculates the centroid and convex hull for each topic based on the document embeddings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">clustering_model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">clustering_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span>
 
         <span class="c1"># Rest of the function remains the same...</span>
 
@@ -1251,6 +1268,23 @@ Topics are named using the top terms associated with them.</p>
             <span class="p">}</span>
         <span class="p">)</span>
         <span class="n">df_embeddings_2D</span> <span class="o">=</span> <span class="n">df_embeddings_2D</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;doc_id&quot;</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">df_embeddings_2D</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># Convert DataFrame to NumPy array if needed</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># clustering_model = KMeans(n_clusters=self.n_clusters, n_init=&quot;auto&quot;)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">n_clusters</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n_clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span>
+            <span class="n">clustering_model</span> <span class="o">=</span> <span class="n">KMeansConstrained</span><span class="p">(</span>
+                <span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
+                <span class="n">size_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
+                <span class="n">size_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">clustering_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span>
 
         <span class="n">df_embeddings_2D</span><span class="p">[</span><span class="s2">&quot;topic_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clustering_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
             <span class="n">df_embeddings_2D</span>
@@ -1322,6 +1356,8 @@ Topics are named using the top terms associated with them.</p>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
+        <span class="c1"># Remove in case of HDBSCAN ?</span>
+
         <span class="k">return</span> <span class="n">topics</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1344,7 +1380,7 @@ Topics are named using the top terms associated with them.</p>
 
 
 <h2 id="bunkatopics.topic_modeling.topic_model_builder.BunkaTopicModeling.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">name_length</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x_column</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y_column</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">custom_clustering_model</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ngrams</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">name_length</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">top_terms_overall</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_count_terms</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_docs_per_cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_column</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y_column</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">custom_clustering_model</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#bunkatopics.topic_modeling.topic_model_builder.BunkaTopicModeling.__init__" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -1437,6 +1473,20 @@ Topics are named using the top terms associated with them.</p>
           </td>
         </tr>
         <tr>
+          <td><code>min_docs_per_cluster</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Minimum count of documents per topic</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
           <td><code>x_column</code></td>
           <td>
                 <code>str</code>
@@ -1514,13 +1564,17 @@ Topics are named using the top terms associated with them.</p>
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
-<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">n_clusters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">ngrams</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
     <span class="n">name_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
     <span class="n">top_terms_overall</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="n">min_count_terms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">min_docs_per_cluster</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">x_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span>
     <span class="n">y_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span>
     <span class="n">custom_clustering_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1533,6 +1587,7 @@ Topics are named using the top terms associated with them.</p>
 <span class="sd">        name_length (int, optional): Maximum length of topic names. Defaults to 15.</span>
 <span class="sd">        top_terms_overall (int, optional): Number of top terms to consider overall. Defaults to 1000.</span>
 <span class="sd">        min_count_terms (int, optional): Minimum count of terms to be considered. Defaults to 2.</span>
+<span class="sd">        min_docs_per_cluster (int, optional): Minimum count of documents per topic</span>
 <span class="sd">        x_column (str, optional): Column name for x-coordinate in the DataFrame. Defaults to &quot;x&quot;.</span>
 <span class="sd">        y_column (str, optional): Column name for y-coordinate in the DataFrame. Defaults to &quot;y&quot;.</span>
 <span class="sd">        custom_clustering_model (optional): Custom clustering model instance, if any. Defaults to None.</span>
@@ -1546,6 +1601,7 @@ Topics are named using the top terms associated with them.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">x_column</span> <span class="o">=</span> <span class="n">x_column</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">y_column</span> <span class="o">=</span> <span class="n">y_column</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span> <span class="o">=</span> <span class="n">custom_clustering_model</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span> <span class="o">=</span> <span class="n">min_docs_per_cluster</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -1628,10 +1684,7 @@ additional topic properties such as centroid coordinates and convex hulls.</p>
 </details>
           <details class="quote">
             <summary>Source code in <code>bunkatopics/topic_modeling/topic_model_builder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 55</span>
 <span class="normal"> 56</span>
 <span class="normal"> 57</span>
 <span class="normal"> 58</span>
@@ -1744,7 +1797,25 @@ additional topic properties such as centroid coordinates and convex hulls.</p>
 <span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
-<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
     <span class="n">terms</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Term</span><span class="p">],</span>
@@ -1769,10 +1840,6 @@ additional topic properties such as centroid coordinates and convex hulls.</p>
 <span class="sd">        - Topics are named using the most significant terms within each cluster.</span>
 <span class="sd">        - The method calculates the centroid and convex hull for each topic based on the document embeddings.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">clustering_model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">clustering_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span>
 
     <span class="c1"># Rest of the function remains the same...</span>
 
@@ -1789,6 +1856,23 @@ additional topic properties such as centroid coordinates and convex hulls.</p>
         <span class="p">}</span>
     <span class="p">)</span>
     <span class="n">df_embeddings_2D</span> <span class="o">=</span> <span class="n">df_embeddings_2D</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;doc_id&quot;</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">df_embeddings_2D</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># Convert DataFrame to NumPy array if needed</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># clustering_model = KMeans(n_clusters=self.n_clusters, n_init=&quot;auto&quot;)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_clusters</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span>
+        <span class="n">clustering_model</span> <span class="o">=</span> <span class="n">KMeansConstrained</span><span class="p">(</span>
+            <span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
+            <span class="n">size_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_docs_per_cluster</span><span class="p">,</span>
+            <span class="n">size_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">clustering_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_clustering_model</span>
 
     <span class="n">df_embeddings_2D</span><span class="p">[</span><span class="s2">&quot;topic_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clustering_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
         <span class="n">df_embeddings_2D</span>
@@ -1859,6 +1943,8 @@ additional topic properties such as centroid coordinates and convex hulls.</p>
             <span class="n">x</span><span class="o">.</span><span class="n">convex_hull</span> <span class="o">=</span> <span class="n">res</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="c1"># Remove in case of HDBSCAN ?</span>
 
     <span class="k">return</span> <span class="n">topics</span>
 </code></pre></div></td></tr></table></div>

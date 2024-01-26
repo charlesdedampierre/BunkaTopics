@@ -2,7 +2,7 @@ import typing as t
 
 import pandas as pd
 from sklearn.cluster import KMeans
-
+from k_means_constrained import KMeansConstrained
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
 from bunkatopics.topic_modeling.utils import specificity
 from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
@@ -23,6 +23,7 @@ class BunkaTopicModeling:
         name_length: int = 15,
         top_terms_overall: int = 1000,
         min_count_terms: int = 2,
+        min_docs_per_cluster: int = None,
         x_column: str = "x",
         y_column: str = "y",
         custom_clustering_model=None,
@@ -35,6 +36,7 @@ class BunkaTopicModeling:
             name_length (int, optional): Maximum length of topic names. Defaults to 15.
             top_terms_overall (int, optional): Number of top terms to consider overall. Defaults to 1000.
             min_count_terms (int, optional): Minimum count of terms to be considered. Defaults to 2.
+            min_docs_per_cluster (int, optional): Minimum count of documents per topic
             x_column (str, optional): Column name for x-coordinate in the DataFrame. Defaults to "x".
             y_column (str, optional): Column name for y-coordinate in the DataFrame. Defaults to "y".
             custom_clustering_model (optional): Custom clustering model instance, if any. Defaults to None.
@@ -48,6 +50,7 @@ class BunkaTopicModeling:
         self.x_column = x_column
         self.y_column = y_column
         self.custom_clustering_model = custom_clustering_model
+        self.min_docs_per_cluster = min_docs_per_cluster
 
     def fit_transform(
         self,
@@ -74,10 +77,6 @@ class BunkaTopicModeling:
             - Topics are named using the most significant terms within each cluster.
             - The method calculates the centroid and convex hull for each topic based on the document embeddings.
         """
-        if self.custom_clustering_model is None:
-            clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")
-        else:
-            clustering_model = self.custom_clustering_model
 
         # Rest of the function remains the same...
 
@@ -94,6 +93,23 @@ class BunkaTopicModeling:
             }
         )
         df_embeddings_2D = df_embeddings_2D.set_index("doc_id")
+        X = df_embeddings_2D.values  # Convert DataFrame to NumPy array if needed
+
+        if self.custom_clustering_model is None:
+            # clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")
+            if self.min_docs_per_cluster is not None:
+                n_clusters = int(round(len(docs) / self.min_docs_per_cluster, 0))
+            else:
+                n_clusters = self.n_clusters
+            clustering_model = KMeansConstrained(
+                n_clusters=n_clusters,
+                size_min=self.min_docs_per_cluster,
+                size_max=None,
+                random_state=42,
+            )
+
+        else:
+            clustering_model = self.custom_clustering_model
 
         df_embeddings_2D["topic_number"] = clustering_model.fit(
             df_embeddings_2D

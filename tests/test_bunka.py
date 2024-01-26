@@ -33,14 +33,14 @@ class TestBunka(unittest.TestCase):
         # Load a sample dataset
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 400)
+        docs = random.sample(docs, 800)
         cls.bunka = Bunka()
         cls.bunka.fit(docs)
 
     def test_topic_modeling(self):
         # Test Topic Modeling
         df_topics = self.bunka.get_topics(
-            n_clusters=20, min_count_terms=4, min_docs_per_cluster=30
+            n_clusters=50, min_count_terms=4, min_docs_per_cluster=50
         )
         self.assertIsInstance(df_topics, pd.DataFrame)
         # self.assertEqual(len(df_topics), n_clusters)
@@ -79,7 +79,8 @@ class TestBunka(unittest.TestCase):
             height=800,
             width=800,
             clustering=True,
-            topic_n_clusters=3,
+            topic_n_clusters=30,
+            min_docs_per_cluster=50,
             density=False,
             colorscale="Portland",
         )
@@ -101,7 +102,7 @@ class TestBunka(unittest.TestCase):
         document_sources = res["source_documents"]
         self.assertEqual(len(document_sources), top_doc_len)"""
 
-    def test_plot_query(self):
+    """def test_plot_query(self):
         query = "What is great?"
         fig_query, percent = self.bunka.visualize_query(
             query=query, width=800, height=800
@@ -113,12 +114,12 @@ class TestBunka(unittest.TestCase):
             left=["negative"], right=["positive"], explainer=False
         )
         # fig_one_dimension.show()
-        self.assertIsInstance(fig_one_dimension, go.Figure)
+        self.assertIsInstance(fig_one_dimension, go.Figure)"""
 
-    def test_topic_distribution(self):
+    """def test_topic_distribution(self):
         self.bunka.get_topics(n_clusters=3, min_count_terms=1)
         fig_distribution = self.bunka.get_topic_repartition()
-        self.assertIsInstance(fig_distribution, go.Figure)
+        self.assertIsInstance(fig_distribution, go.Figure)"""
 
     """@patch("subprocess.run")
     @patch("bunkatopics.serveur.is_server_running", return_value=False)

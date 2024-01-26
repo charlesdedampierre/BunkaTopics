@@ -21,6 +21,7 @@ dependencies = [
     "ipython",
     "hdbscan",
     "ipywidgets",
+    "k_means_constrained",
 ]
 
 test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]

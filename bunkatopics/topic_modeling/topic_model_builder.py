@@ -1,11 +1,11 @@
 import typing as t
 
 import pandas as pd
-from sklearn.cluster import KMeans
 from k_means_constrained import KMeansConstrained
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
 from bunkatopics.topic_modeling.utils import specificity
 from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
+from bunkatopics.logging import logger
 
 
 class BunkaTopicModeling:
@@ -99,6 +99,10 @@ class BunkaTopicModeling:
             # clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")
             if self.min_docs_per_cluster is not None:
                 n_clusters = int(round(len(docs) / self.min_docs_per_cluster, 0))
+                if n_clusters <= self.n_clusters:
+                    logger.info(
+                        f"min_docs_per_cluster has been set to {self.min_docs_per_cluster}, the number of clusters set is {n_clusters} instead of {self.n_clusters}"
+                    )
             else:
                 n_clusters = self.n_clusters
             clustering_model = KMeansConstrained(

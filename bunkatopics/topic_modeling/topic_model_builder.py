@@ -2,10 +2,11 @@ import typing as t
 
 import pandas as pd
 from k_means_constrained import KMeansConstrained
+
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
+from bunkatopics.logging import logger
 from bunkatopics.topic_modeling.utils import specificity
 from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
-from bunkatopics.logging import logger
 
 
 class BunkaTopicModeling:
@@ -93,7 +94,6 @@ class BunkaTopicModeling:
             }
         )
         df_embeddings_2D = df_embeddings_2D.set_index("doc_id")
-        X = df_embeddings_2D.values  # Convert DataFrame to NumPy array if needed
 
         if self.custom_clustering_model is None:
             # clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")

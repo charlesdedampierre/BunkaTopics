@@ -17,6 +17,7 @@ test.ipynb
 bash.sh
 hide/
 bunka_env/
+bunka-test/
 
 # remove poetry files
 poetry.lock

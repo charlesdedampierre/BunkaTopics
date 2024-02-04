@@ -27,7 +27,7 @@ I have data about {context}
 I have a topic that is described the following keywords:
 {terms}
 
-Based on the keywrods about the topic, create a Short label (3 words maximum) that summarizes best the topic.
+Based on the keywords about the topic, create a Short label (3 words maximum) that summarizes best the topic.
 The topics is a large topic, the keywords may not be directly connected to each other. Create a topic large enought to keywords all the words it contains.
 
 Only give the name of the topic and nothing else in {language}:[/INST]

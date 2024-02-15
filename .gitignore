@@ -18,6 +18,7 @@ bash.sh
 hide/
 bunka_env/
 bunka-test/
+French-PD-Books-Exploration/
 
 # remove poetry files
 poetry.lock

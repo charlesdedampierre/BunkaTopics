@@ -1,0 +1,26 @@
+1) Ajouter doc_id et topic_id
+2) une fois que t'as fit ton bunka, t'as une method .predict() pour trouver le topic d'autres docs sans fit à nouveau ?
+3) clean top_odc_id with the good order of topic
+4) multiprocessing terms extractor
+5)Bug wiht HBDCAN WHEN RE-reunning
+6) add HDBSCAN in the doc
+7) see another reducer when too many data (GPUMAP for UMAP + GPU)
+8) Méthode de chunking et garder les ids originelles
+9) methode pour ajouter des méta-data
+10) make, the image only with 5 terms max
+11) rename variable names
+12) outlier detection
+13) deduplicate detection
+14) check problem avec ngrams (2, 2)
+15) Add possibility to seed everything
+16) Add a possibility to save the emebeddings and relaod easily
+17) make the Kmeans as defaults
+18) add a bunka_df_docs ?
+19) enlever les petits clusters après-coup (après le Kmeans)
+20) Ajouter les métadonnées
+21) remove outliers
+22) make it possible to extract top specific topic_id
+23) problem with show_progress and Vctprstore
+24) faire quelque chose de déterminisyt
+25) nettoyer les topics sur la base d'un nmbre minimum (utiliser deepcopy etc)
+26) Optimize Bunka for ery large datasets

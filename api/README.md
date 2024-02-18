@@ -76,7 +76,7 @@ This guide outlines the steps to install the NVIDIA GPU Toolkit (CUDA) on an Ubu
 - User: Interacts with the FastAPI application through HTTP requests.
 - FastAPI Application: Receives HTTP requests from the user. For asynchronous tasks, it sends task requests to the Celery worker queue and provides immediate responses (like task IDs) back to the user.
  -Celery Worker Queue: Receives task requests from the FastAPI application. It queues these tasks and processes them asynchronously. The status and results of these tasks are managed using Redis.
- - Redis: Acts as a message broker and a result backend for Celery. It stores the task queue and the states/results of tasks processed by the Celery workers.
+- Redis: Acts as a message broker and a result backend for Celery. It stores the task queue and the states/results of tasks processed by the Celery workers.
 
 ## FastAPI, Celery, and Redis Flow
 
@@ -110,7 +110,7 @@ Run both API and Celery worker with Docker using the Makefile at the root of thi
 - Run both docker: `make run_docker && make run_docker_worker`
 
 Type hostname in your *NIX terminal to print your hostname
-Go to http://[$hostname] or http://localhost
+Go to http://[$hostname] or <http://localhost>
 
 ## Updating the application
 

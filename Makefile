@@ -101,3 +101,9 @@ docker_push_worker:
 
 docker_run_redis:
 	docker run --restart=always --network bunkatopics_network -d -p 6379:6379 --name redis redis
+
+
+#docker run --restart=always --network bunkatopics_network --env-file .env -p 8001:8000 --name bunkaapi bunkatopicsapi
+#docker run --restart=always --network bunkatopics_network --env-file .env -d --gpus all --name bunkaworker bunkatopicsworker
+#docker build -f DockerfileWorker -t bunkatopicsworker .
+

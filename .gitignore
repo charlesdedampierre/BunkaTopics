@@ -13,6 +13,7 @@ __pycache__/
 notebooks_test/
 json_examples/
 usecases
+roadmap.txt
 
 # Distribution / packaging
 .Python

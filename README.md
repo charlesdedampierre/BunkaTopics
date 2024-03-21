@@ -114,16 +114,11 @@ Finally, let's visualize the topics that Bunka has computed for your text data:
 ## Topic Modeling with GenAI Summarization of Topics
 
 Explore the power of Generative AI for summarizing topics!
-We use the 7B-instruct model of [Mistral AI](<https://mistral.ai/news/announcing-mistral-7b/>) from the huggingface hub using the langchain framework.
 
 ```python
-from langchain.llms import HuggingFaceHub
+from langchain.llms import OpenAI
 
-# Define the repository ID for Mistral-7B-v0.1
-repo_id = 'mistralai/Mistral-7B-v0.1'
-
-# Using Mistral AI to Summarize the Topics
-llm = HuggingFaceHub(repo_id='mistralai/Mistral-7B-v0.1', huggingfacehub_api_token="HF_TOKEN")
+llm = OpenAI(openai_api_key = 'OPEN_AI_KEY')
 ```
 
 Note: It is recommended to use an Instruct model ie a model that has been fine-tuned on a discussion task. If not, the results might be meaningless.

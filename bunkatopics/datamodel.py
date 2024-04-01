@@ -42,6 +42,7 @@ class Document(BaseModel):
     term_id: t.Optional[t.List[TERM_ID]] = None
     embedding: t.Optional[t.List[float]] = Field(None, repr=False)
     bourdieu_dimensions: t.List[BourdieuDimension] = []
+    metadata: t.Optional[t.Dict[str, t.Any]] = None
 
 
 class TopicParam(BaseModel):

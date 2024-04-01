@@ -10,6 +10,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
@@ -84,12 +85,19 @@ class Bunka:
     ```
     """
 
-    def __init__(self, embedding_model: Embeddings = None, language: str = "english"):
+    def __init__(
+        self,
+        embedding_model: Embeddings = None,
+        projection_model=None,
+        language: str = "english",
+    ):
         """Initialize a BunkaTopics instance.
 
         Args:
             embedding_model (Embeddings, optional): An optional embedding model for generating document embeddings.
                 If not provided, a default model will be used based on the specified language.
+                Default is None.
+            projection_model (optional): An optional projection model to reduce the dimensionality of the embeddings.
                 Default is None.
             language (str): The language to be used for text processing and modeling.
                 Options include "english" (default), or specify another language as needed.
@@ -111,6 +119,14 @@ class Bunka:
                     # encode_kwargs={"show_progress_bar": True},
                     multi_process=False,
                 )
+
+        if projection_model is None:
+            projection_model = umap.UMAP(
+                n_components=2,
+                random_state=42,
+            )
+
+        self.projection_model = projection_model
         self.embedding_model = embedding_model
         self.language = language
         self.df_cleaned = None
@@ -119,6 +135,7 @@ class Bunka:
         self,
         docs: t.List[str],
         ids: t.List[DOC_ID] = None,
+        metadata: t.Optional[t.List[dict]] = None,
     ) -> None:
         """
         Fits the Bunka model to the provided list of documents.
@@ -129,6 +146,7 @@ class Bunka:
         Args:
             docs (t.List[str]): A list of document strings.
             ids (t.Optional[t.List[DOC_ID]]): Optional. A list of identifiers for the documents. If not provided, UUIDs are generated.
+            metadata (t.Optional[t.List[str]): A of metadata dictionaries for the documents.
         """
 
         df = pd.DataFrame(docs, columns=["content"])
@@ -138,8 +156,17 @@ class Bunka:
             df["doc_id"] = ids
         else:
             df["doc_id"] = [str(uuid.uuid4())[:20] for _ in range(len(df))]
+
+        if metadata is not None:
+            metadata_values = [
+                {key: metadata[key][i] for key in metadata} for i in range(len(df))
+            ]
+
+            df["metadata"] = metadata_values
+
         df = df[~df["content"].isna()]
         df = df.reset_index(drop=True)
+
         self.docs = [Document(**row) for row in df.to_dict(orient="records")]
         sentences = [doc.content for doc in self.docs]
         ids = [doc.doc_id for doc in self.docs]
@@ -150,6 +177,10 @@ class Bunka:
 
         characters = string.ascii_letters + string.digits
         random_string = "".join(random.choice(characters) for _ in range(20))
+
+        df_loader = df.copy()
+        if metadata is not None:
+            df_loader = df_loader.drop("metadata", axis=1)
 
         df_loader = pd.DataFrame(sentences, columns=["text"])
         df_loader["doc_id"] = ids
@@ -172,11 +203,10 @@ class Bunka:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
         logger.info("Reducing the dimensions of embeddings...")
-        reducer = umap.UMAP(
-            n_components=2,
-            random_state=42,
-        )  # You can remove the random state to go quicker
-        bunka_embeddings_2D = reducer.fit_transform(bunka_embeddings)
+
+        bunka_embeddings_2D = self.projection_model.fit_transform(
+            np.array(bunka_embeddings)
+        )
         df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
 
         df_embeddings_2D["doc_id"] = bunka_ids
@@ -343,6 +373,7 @@ class Bunka:
         colorscale: str = "delta",
         density: bool = True,
         convex_hull: bool = True,
+        color: str = None,
     ) -> go.Figure:
         """
         Generates a visualization of the identified topics in the document set.
@@ -355,6 +386,7 @@ class Bunka:
             colorscale (str): colorscale for the Density Plot (Default is delta)
             density (bool): Whether to display a density map
             convex_hull (bool): Whether to display lines around the clusters
+            color (str): What category to use to display the color
 
         Returns:
             go.Figure: A Plotly graph object figure representing the topic visualization.
@@ -375,10 +407,7 @@ class Bunka:
             density=density,
             convex_hull=convex_hull,
         )
-        fig = model_visualizer.fit_transform(
-            self.docs,
-            self.topics,
-        )
+        fig = model_visualizer.fit_transform(self.docs, self.topics, color=color)
 
         return fig
 

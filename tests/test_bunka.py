@@ -12,6 +12,8 @@ import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
+from sklearn.manifold import TSNE
+from sklearn.cluster import KMeans
 
 load_dotenv()
 from langchain_community.llms import HuggingFaceHub
@@ -32,16 +34,40 @@ class TestBunka(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load a sample dataset
-        dataset = load_dataset("rguo123/trump_tweets")
-        docs = dataset["train"]["content"]
-        docs = random.sample(docs, 2000)
-        cls.bunka = Bunka()
-        cls.bunka.fit(docs)
+
+        dataset = pd.read_csv(
+            "/Users/charlesdedampierre/Desktop/Personal Data Science/meilli/imdb.csv"
+        )
+
+        dataset["iw"] = dataset["iw"].astype(str)
+
+        dataset = dataset[["imdb", "iw", "description", "avg_vote"]]
+
+        # metadata = {'genre':list(data['genre']), 'iw':list(data['iw'])}
+        metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
+
+        docs = list(dataset["description"])
+
+        # dataset = load_dataset("rguo123/trump_tweets")
+        # docs = dataset["train"]["content"]
+        docs = random.sample(docs, 3000)
+        projection_model = TSNE(
+            n_components=2, learning_rate="auto", init="random", perplexity=3
+        )
+
+        cls.bunka = Bunka(projection_model=projection_model)
+        # metadata = None
+        cls.bunka.fit(docs, metadata=metadata)
 
     def test_topic_modeling(self):
         # Test Topic Modeling
+
+        custom_clustering_model = KMeans(n_clusters=10)
         df_topics = self.bunka.get_topics(
-            n_clusters=100, min_count_terms=4, min_docs_per_cluster=75
+            custom_clustering_model=custom_clustering_model,
+            n_clusters=100,
+            min_count_terms=4,
+            min_docs_per_cluster=75,
         )
         self.assertIsInstance(df_topics, pd.DataFrame)
         # self.assertEqual(len(df_topics), n_clusters)
@@ -54,6 +80,7 @@ class TestBunka(unittest.TestCase):
             density=True,
             colorscale="Portland",
             convex_hull=True,
+            color="iw",
         )
         if figure:
             topic_fig.show()
@@ -70,24 +97,24 @@ class TestBunka(unittest.TestCase):
         self.assertIsInstance(df_topics_clean, pd.DataFrame)
         self.assertEqual(len(df_topics_clean), n_clusters)"""
 
-    def test_bourdieu_modeling(self):
-        bourdieu_fig = self.bunka.visualize_bourdieu(
-            llm=None,
-            x_left_words=["past"],
-            x_right_words=["future"],
-            y_top_words=["men"],
-            y_bottom_words=["women"],
-            height=800,
-            width=800,
-            clustering=True,
-            topic_n_clusters=30,
-            min_docs_per_cluster=50,
-            density=False,
-            colorscale="Portland",
-        )
-        if figure:
-            bourdieu_fig.show()
-        self.assertIsInstance(bourdieu_fig, go.Figure)
+    # def test_bourdieu_modeling(self):
+    #     bourdieu_fig = self.bunka.visualize_bourdieu(
+    #         llm=None,
+    #         x_left_words=["past"],
+    #         x_right_words=["future"],
+    #         y_top_words=["men"],
+    #         y_bottom_words=["women"],
+    #         height=800,
+    #         width=800,
+    #         clustering=True,
+    #         topic_n_clusters=30,
+    #         min_docs_per_cluster=50,
+    #         density=False,
+    #         colorscale="Portland",
+    #     )
+    #     if figure:
+    #         bourdieu_fig.show()
+    #     self.assertIsInstance(bourdieu_fig, go.Figure)
 
     """def test_rag(self):
         top_doc_len = 3

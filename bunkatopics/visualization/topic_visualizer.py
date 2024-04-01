@@ -8,7 +8,6 @@ from bunkatopics.visualization.visualization_utils import wrap_by_word
 
 
 class TopicVisualizer:
-
     """
     A class for visualizing topics and their associated documents in a 2D density Map.
 
@@ -71,7 +70,12 @@ class TopicVisualizer:
             "Plasma",
         ]
 
-    def fit_transform(self, docs: t.List[Document], topics: t.List[Topic]) -> go.Figure:
+    def fit_transform(
+        self,
+        docs: t.List[Document],
+        topics: t.List[Topic],
+        color: str = None,
+    ) -> go.Figure:
         """
         Generates a Plotly figure visualizing the given documents and topics.
 
@@ -82,6 +86,7 @@ class TopicVisualizer:
         Args:
             docs (List[Document]): A list of Document objects to be visualized.
             topics (List[Topic]): A list of Topic objects for clustering visualization.
+            color (str): The metadata field to use for coloring the documents. Defaults to None.
 
         Returns:
             go.Figure: A Plotly figure object representing the visualized documents and topics.
@@ -97,6 +102,13 @@ class TopicVisualizer:
         topics_y = [topic.y_centroid for topic in topics]
         topics_name = [topic.name for topic in topics]
         topics_name_plotly = [wrap_by_word(x, 6) for x in topics_name]
+
+        if color is not None:
+            self.density = None
+            list_color = [x.metadata[color] for x in docs]
+
+        else:
+            list_color = None
 
         if self.density:
             # Create a figure with Histogram2dContour
@@ -135,6 +147,35 @@ class TopicVisualizer:
         nk[:, 0] = np.array(docs_topic_id).reshape(-1, 1)
         nk[:, 1] = np.array(docs_content_plotly).reshape(-1, 1)
 
+        if color is not None:
+            nk[:, 2] = np.array(list_color).reshape(-1, 1)
+            hovertemplate = f"<br>%{{customdata[1]}}<br>{color}: %{{customdata[2]}}"
+        else:
+            hovertemplate = "<br>%{customdata[1]}<br>"
+
+        from .visualization_utils import list_of_colors, check_list_type
+
+        if color is not None:
+            if check_list_type(list_color) == "string":
+                unique_categories = list(set(list_color))
+                colormap = {
+                    category: list_of_colors[i]
+                    for i, category in enumerate(unique_categories)
+                }
+                list_color_figure = [colormap[value] for value in list_color]
+                colorscale = None
+                colorbar = None
+
+            else:
+                list_color_figure = list_color
+                colorscale = "Blues"
+                colorbar = dict(title=color)
+
+        else:
+            list_color_figure = None
+            colorscale = None
+            colorbar = None
+
         if self.show_text:
             # Add points with information
             fig_density.add_trace(
@@ -142,11 +183,37 @@ class TopicVisualizer:
                     x=docs_x,
                     y=docs_y,
                     mode="markers",
-                    marker=dict(opacity=0.5),
+                    marker=dict(
+                        color=list_color_figure,  # Assigning colors based on the list_color
+                        # size=10,  # Adjust the size of the markers as needed
+                        opacity=0.5,  # Adjust the opacity of the markers as needed
+                        colorscale=colorscale,  # You can specify a colorscale if needed
+                        colorbar=colorbar,  # Optional colorbar title
+                    ),
+                    showlegend=False,
                     customdata=nk,
-                    hovertemplate=("<br>%{customdata[1]}<br>"),
-                )
+                    hovertemplate=hovertemplate,
+                ),
             )
+
+        if color is not None:
+            if check_list_type(list_color) == "string":
+                # Create legend based on categories
+                legend_items = []
+                for category, color_item in colormap.items():
+                    legend_items.append(
+                        go.Scatter(
+                            x=[None],
+                            y=[None],
+                            mode="markers",
+                            marker=dict(color=color_item),
+                            name=category,
+                        )
+                    )
+
+                # Add legend items to the figure
+                for item in legend_items:
+                    fig_density.add_trace(item)
 
         # Add centroids labels
         for x, y, label in zip(topics_x, topics_y, topics_name_plotly):
@@ -180,12 +247,16 @@ class TopicVisualizer:
                         name="Convex Hull",
                         line=dict(color="grey", dash="dot"),
                         hoverinfo="none",
+                        showlegend=False,
                     )
                     fig_density.add_trace(trace)
             except Exception as e:
                 print(e)
 
-        fig_density.update_layout(showlegend=False)
+        if color is not None:
+            fig_density.update_layout(legend_title_text=color)
+
+        # fig_density.update_layout(showlegend=True)
         fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
         fig_density.update_yaxes(showgrid=False, showticklabels=False, zeroline=False)
         fig_density.update_yaxes(showticklabels=False)

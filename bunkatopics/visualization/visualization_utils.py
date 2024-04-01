@@ -8,3 +8,34 @@ def wrap_by_word(string, n_words):
     except Exception as e:
         print(e)
     return ret
+
+
+list_of_colors = [
+    "red",
+    "blue",
+    "green",
+    "yellow",
+    "orange",
+    "purple",
+    "pink",
+    "brown",
+    "cyan",
+    "magenta",
+    "teal",
+    "lime",
+    "indigo",
+    "maroon",
+    "navy",
+    "olive",
+    "coral",
+    "lavender",
+    "turquoise",
+    "slategray",
+]
+
+
+def check_list_type(lst):
+    if all(isinstance(item, str) for item in lst):
+        return "string"
+    elif all(isinstance(item, int) for item in lst):
+        return "integer"

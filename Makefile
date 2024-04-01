@@ -9,7 +9,6 @@ SHELL := /bin/bash
 # source bunka_env/bin/activate
 # rm -r bunka_env (delete the environment)
 
-
 install_packages:
 	pip install -e .
 	pip install -e '.['dev']'

@@ -101,14 +101,14 @@ class Bunka:
                 embedding_model = HuggingFaceEmbeddings(
                     model_name="all-MiniLM-L6-v2",
                     model_kwargs={"device": "cpu"},
-                    encode_kwargs={"show_progress_bar": True},
+                    # encode_kwargs={"show_progress_bar": True},
                     multi_process=False,
                 )
             else:
                 embedding_model = HuggingFaceEmbeddings(
                     model_name="paraphrase-multilingual-MiniLM-L12-v2",
                     model_kwargs={"device": "cpu"},
-                    encode_kwargs={"show_progress_bar": True},
+                    # encode_kwargs={"show_progress_bar": True},
                     multi_process=False,
                 )
         self.embedding_model = embedding_model
@@ -174,8 +174,8 @@ class Bunka:
         logger.info("Reducing the dimensions of embeddings...")
         reducer = umap.UMAP(
             n_components=2,
-            random_state=None,
-        )  # Not random state to go quicker
+            random_state=42,
+        )  # You can remove the random state to go quicker
         bunka_embeddings_2D = reducer.fit_transform(bunka_embeddings)
         df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
 

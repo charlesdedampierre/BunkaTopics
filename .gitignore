@@ -1,3 +1,19 @@
+# project specific
+
+#hidden notebooks
+bunka-test/
+notebooks_test/
+json_examples/
+generative_model_api/
+test.ipynb
+bash.sh
+hide/
+bunka_env/
+roadmap.txt
+French-PD-Books-Exploration/
+usescase/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -9,14 +25,7 @@ __pycache__/
 #*bunka_docs.json
 #*bunka_topics.json
 
-#hidden notebooks
-notebooks_test/
-json_examples/
-generative_model_api/
-test.ipynb
-bash.sh
-hide/
-bunka_env/
+
 
 # remove poetry files
 poetry.lock

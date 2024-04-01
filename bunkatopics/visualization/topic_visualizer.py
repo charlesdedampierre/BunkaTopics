@@ -168,7 +168,7 @@ class TopicVisualizer:
 
             else:
                 list_color_figure = list_color
-                colorscale = "Blues"
+                colorscale = "RdBu"
                 colorbar = dict(title=color)
 
         else:

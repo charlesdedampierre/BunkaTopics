@@ -80,7 +80,7 @@ class TestBunka(unittest.TestCase):
             density=True,
             colorscale="Portland",
             convex_hull=True,
-            color="iw",
+            color="avg_vote",
         )
         if figure:
             topic_fig.show()

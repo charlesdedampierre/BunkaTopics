@@ -7,11 +7,21 @@ from langchain_core.language_models.llms import LLM
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
-                                   ContinuumDimension, Document, Term, Topic,
-                                   TopicGenParam, TopicParam)
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic)
+from bunkatopics.datamodel import (
+    BourdieuDimension,
+    BourdieuQuery,
+    ContinuumDimension,
+    Document,
+    Term,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    DocumentRanker,
+    LLMCleaningTopic,
+)
 
 pd.options.mode.chained_assignment = None
 
@@ -211,8 +221,8 @@ def _get_continuum(
     )
 
     # Compute the extremity embeddings
-    left_embedding = embedding_model.embed_documents(continuum.left_words)
-    right_embedding = embedding_model.embed_documents(continuum.right_words)
+    left_embedding = embedding_model.encode(continuum.left_words)
+    right_embedding = embedding_model.encode(continuum.right_words)
 
     left_embedding = pd.DataFrame(left_embedding).mean().values.reshape(1, -1)
     right_embedding = pd.DataFrame(right_embedding).mean().values.reshape(1, -1)

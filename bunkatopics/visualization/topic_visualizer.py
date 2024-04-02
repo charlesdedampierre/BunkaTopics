@@ -26,7 +26,6 @@ class TopicVisualizer:
         colorscale="delta",
         density: bool = False,
         convex_hull: bool = False,
-        vectorstore: t.Optional[t.Any] = None,
     ) -> None:
         """
         Initializes the TopicVisualizer with specified parameters.
@@ -47,7 +46,6 @@ class TopicVisualizer:
         self.colorscale = colorscale
         self.density = density
         self.convex_hull = convex_hull
-        self.vectorstore = vectorstore
 
         self.colorscale_list = [
             "Greys",

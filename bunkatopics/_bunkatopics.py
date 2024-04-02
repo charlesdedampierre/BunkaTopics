@@ -20,13 +20,14 @@ from langchain.chains import RetrievalQA
 from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores.chroma import Chroma
 from langchain_core._api.deprecation import LangChainDeprecationWarning
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.llms import LLM
 from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
+from sentence_transformers import SentenceTransformer
+
 
 from bunkatopics.bourdieu import (
     BourdieuAPI,
@@ -61,7 +62,6 @@ warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", message="omp_set_nested routine deprecated")
-
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -106,18 +106,13 @@ class Bunka:
         warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
         if embedding_model is None:
             if language == "english":
-                embedding_model = HuggingFaceEmbeddings(
-                    model_name="all-MiniLM-L6-v2",
-                    model_kwargs={"device": "cpu"},
-                    # encode_kwargs={"show_progress_bar": True},
-                    multi_process=False,
+                embedding_model = SentenceTransformer(
+                    model_name_or_path="all-MiniLM-L6-v2"
                 )
+
             else:
-                embedding_model = HuggingFaceEmbeddings(
-                    model_name="paraphrase-multilingual-MiniLM-L12-v2",
-                    model_kwargs={"device": "cpu"},
-                    # encode_kwargs={"show_progress_bar": True},
-                    multi_process=False,
+                embedding_model = SentenceTransformer(
+                    model_name_or_path="paraphrase-multilingual-MiniLM-L12-v2"
                 )
 
         if projection_model is None:
@@ -135,6 +130,7 @@ class Bunka:
         self,
         docs: t.List[str],
         ids: t.List[DOC_ID] = None,
+        pre_computed_embeddings: t.Optional[t.List[t.Dict[DOC_ID, np.array]]] = None,
         metadata: t.Optional[t.List[dict]] = None,
         sampling_size: t.Optional[int] = 2000,
     ) -> None:
@@ -179,42 +175,39 @@ class Bunka:
             "Embedding documents... (can take varying amounts of time depending on their size)"
         )
 
-        characters = string.ascii_letters + string.digits
-        random_string = "".join(random.choice(characters) for _ in range(20))
+        if pre_computed_embeddings is None:
+            bunka_embeddings = self.embedding_model.encode(
+                sentences, show_progress_bar=True
+            )
 
-        df_loader = df.copy()
-        if metadata is not None:
-            df_loader = df_loader.drop("metadata", axis=1)
-
-        df_loader = pd.DataFrame(sentences, columns=["text"])
-        df_loader["doc_id"] = ids
-
-        loader = DataFrameLoader(df_loader, page_content_column="text")
-        documents_langchain = loader.load()
-        self.vectorstore = Chroma.from_documents(
-            documents_langchain, self.embedding_model, collection_name=random_string
-        )
-
-        bunka_ids = [item["doc_id"] for item in self.vectorstore.get()["metadatas"]]
-        bunka_docs = self.vectorstore.get()["documents"]
-        bunka_embeddings = self.vectorstore._collection.get(include=["embeddings"])[
-            "embeddings"
-        ]
+        else:
+            pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
+            bunka_embeddings = [
+                x["embedding"].tolist() for x in pre_computed_embeddings
+            ]
 
         # Add to the bunka objects
-        emb_doc_dict = {x: y for x, y in zip(bunka_ids, bunka_embeddings)}
+        emb_doc_dict = {x: y for x, y in zip(ids, bunka_embeddings)}
         for doc in self.docs:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
+        # Add to the bunka objects
+        emb_doc_dict = {x: y for x, y in zip(ids, bunka_embeddings)}
+        for doc in self.docs:
+            doc.embedding = emb_doc_dict.get(doc.doc_id, [])
+
+        # REDUCTION OF DIMENSIONS
         logger.info("Reducing the dimensions of embeddings...")
 
         bunka_embeddings_2D = self.projection_model.fit_transform(
             np.array(bunka_embeddings)
         )
+
+        # Insert to the Pydantic object
         df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
 
-        df_embeddings_2D["doc_id"] = bunka_ids
-        df_embeddings_2D["bunka_docs"] = bunka_docs
+        df_embeddings_2D["doc_id"] = ids
+        df_embeddings_2D["bunka_docs"] = sentences
 
         xy_dict = df_embeddings_2D.set_index("doc_id")[["x", "y"]].to_dict("index")
 
@@ -223,24 +216,13 @@ class Bunka:
             doc.x = xy_dict[doc.doc_id]["x"]
             doc.y = xy_dict[doc.doc_id]["y"]
 
-        self.df_embeddings_2D = df_embeddings_2D
+        # CREATE A PLOT
 
-        # Create a scatter plot
-        fig_quick_embedding = px.scatter(
-            self.df_embeddings_2D, x="x", y="y", hover_data=["bunka_docs"]
-        )
-
-        # Update layout for better readability
-        fig_quick_embedding.update_layout(
-            title="Raw Scatter Plot of Bunka Embeddings",
-            xaxis_title="X Embedding",
-            yaxis_title="Y Embedding",
-            hovermode="closest",
-        )
-        # Show the plot
-        self.fig_quick_embedding = fig_quick_embedding
+        self.fig_embeddings = self._quick_plot(df_embeddings_2D)
 
         logger.info("Extracting meaningful terms from documents...")
+
+        ### EXTRACTIOB PROCESS
         terms_extractor = TextacyTermsExtractor(language=self.language)
 
         if len(sentences) >= sampling_size:
@@ -479,7 +461,6 @@ class Bunka:
             colorscale=colorscale,
             density=density,
             convex_hull=convex_hull,
-            vectorstore=self.vectorstore,
         )
         fig = model_visualizer.fit_transform(self.docs, self.topics, color=color)
 
@@ -610,38 +591,6 @@ class Bunka:
         fig = visualizer.fit_transform(self.bourdieu_docs, self.bourdieu_topics)
 
         return fig
-
-    def rag_query(self, query: str, llm: LLM, top_doc: int = 2) -> BaseRetrievalQA:
-        """
-        Executes a Retrieve-and-Generate (RAG) query using the provided language model and document set.
-
-        Args:
-            query (str): The query string to be processed.
-            llm: The language model used for generating answers.
-            top_doc (int): The number of top documents to retrieve for the query. Default is 2.
-
-        Returns:
-            The response from the RAG query, including the answer and source documents.
-
-        Note:
-            This method utilizes a RetrievalQA chain to answer queries. It retrieves relevant documents
-            based on the query and uses the language model to generate a response. The method is designed
-            to work with complex queries and provide informative answers using the document set.
-        """
-        # Log a message indicating the query is being processed
-        logger.info("Answering your query, please wait a few seconds")
-
-        # Create a RetrievalQA instance with the specified llm and retriever
-        qa_with_sources_chain = RetrievalQA.from_chain_type(
-            llm=llm,
-            retriever=self.vectorstore.as_retriever(search_kwargs={"k": top_doc}),
-            return_source_documents=True,  # Include source documents in the response
-        )
-
-        # Provide the query to the RetrievalQA instance for answering
-        response = qa_with_sources_chain({"query": query})
-
-        return response
 
     def visualize_bourdieu_one_dimension(
         self,
@@ -973,3 +922,21 @@ class Bunka:
 
         subprocess.Popen(["npm", "start"], cwd="web")
         logger.info("NPM server started.")
+
+    def _quick_plot(self, df_embeddings_2D):
+
+        # Create a scatter plot
+        fig_quick_embedding = px.scatter(
+            df_embeddings_2D, x="x", y="y", hover_data=["bunka_docs"]
+        )
+
+        # Update layout for better readability
+        fig_quick_embedding.update_layout(
+            title="Raw Scatter Plot of Bunka Embeddings",
+            xaxis_title="X Embedding",
+            yaxis_title="Y Embedding",
+            hovermode="closest",
+        )
+        # Show the plot
+
+        return fig_quick_embedding

@@ -14,7 +14,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "matplotlib>=3.7.2",
     "datasets>=2.14.5",
-    "chromadb>=0.4.13",
+    # "chromadb>=0.4.13",
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
     "langchain_openai",

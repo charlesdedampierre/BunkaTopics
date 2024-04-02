@@ -19,6 +19,7 @@ import umap
 
 load_dotenv()
 from langchain_community.llms import HuggingFaceHub
+from sentence_transformers import SentenceTransformer
 
 from bunkatopics import Bunka
 
@@ -71,7 +72,7 @@ df_test["doc_id"] = df_test.index
 df_test = df_test.explode("tags")
 
 top_tags = list(df_test["tags"].value_counts().head(10)[1:].index)
-top_tags = ["Artificial Intelligence", "Tech", "Startup", "Cryptocurrency"]
+# top_tags = ["Artificial Intelligence", "Tech", "Startup", "Cryptocurrency"]
 df_test = df_test[df_test["tags"].isin(top_tags)]
 df_test = df_test.drop_duplicates("doc_id", keep="first")
 df_test = df_test[~df_test["tags"].isna()]
@@ -88,16 +89,18 @@ class TestBunka(unittest.TestCase):
     def setUpClass(cls):
         # Load a sample dataset
 
-        # dataset = pd.read_csv(
-        #     "/Users/charlesdedampierre/Desktop/Personal Data Science/meilli/imdb.csv"
-        # )
+        dataset = pd.read_csv(
+            "/Users/charlesdedampierre/Desktop/Personal Data Science/meilli/imdb.csv"
+        )
 
-        # dataset["iw"] = dataset["iw"].astype(str)
+        dataset["iw"] = dataset["iw"].astype(str)
 
-        # dataset = dataset[["imdb", "iw", "description", "avg_vote"]]
+        dataset = dataset[["imdb", "iw", "description", "avg_vote"]]
+        dataset = dataset.sample(5000, random_state=42)
 
-        # metadata = {'genre':list(data['genre']), 'iw':list(data['iw'])}
-        # metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
+        metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
+        docs = list(dataset["description"])
+        ids = list(dataset["imdb"])
 
         # dataset = load_dataset("rguo123/trump_tweets")
         # docs = dataset["train"]["content"]
@@ -141,10 +144,14 @@ class TestBunka(unittest.TestCase):
         # projection_model = umap.UMAP(
         #     n_components=2, n_neighbors=5, min_dist=0.3, random_state=42
         # )
-
-        cls.bunka = Bunka(projection_model=projection_model)
+        embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
+        cls.bunka = Bunka(
+            projection_model=projection_model, embedding_model=embedding_model
+        )
         # metadata = None
-        cls.bunka.fit(ids=ids, docs=docs, metadata=metadata)
+        cls.bunka.fit(
+            ids=ids, docs=docs, metadata=metadata, pre_computed_embeddings=None
+        )
 
     def test_topic_modeling(self):
         # Test Topic Modeling
@@ -192,7 +199,7 @@ class TestBunka(unittest.TestCase):
             density=True,
             colorscale="Portland",
             convex_hull=True,
-            color="tags",
+            color="avg_vote",
         )
         if figure:
             topic_fig.show()

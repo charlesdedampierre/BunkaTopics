@@ -149,6 +149,25 @@ class TestBunka(unittest.TestCase):
             colorscale="Portland",
             convex_hull=True,
             color=None,
+            search=None,
+        )
+        if figure:
+            topic_fig.show()
+
+        self.assertIsInstance(topic_fig, go.Figure)
+
+    def test_visualize_topics_search(self):
+
+        # Visualize Topics
+        topic_fig = self.bunka.visualize_topics(
+            width=800,
+            height=800,
+            show_text=True,
+            density=True,
+            colorscale="Portland",
+            convex_hull=True,
+            color=None,
+            search="this is great",
         )
         if figure:
             topic_fig.show()

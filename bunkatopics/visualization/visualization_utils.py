@@ -39,3 +39,10 @@ def check_list_type(lst):
         return "string"
     elif all(isinstance(item, int) for item in lst):
         return "integer"
+
+
+def normalize_list(lst):
+    min_val = min(lst)
+    max_val = max(lst)
+    normalized_lst = [(x - min_val) / (max_val - min_val) for x in lst]
+    return normalized_lst

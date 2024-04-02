@@ -28,15 +28,27 @@ from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.bourdieu import (BourdieuAPI, BourdieuOneDimensionVisualizer,
-                                  BourdieuVisualizer)
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.bourdieu import (
+    BourdieuAPI,
+    BourdieuOneDimensionVisualizer,
+    BourdieuVisualizer,
+)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
 from bunkatopics.serveur import is_server_running, kill_server
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic,
-                                        TextacyTermsExtractor)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    DocumentRanker,
+    LLMCleaningTopic,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.utils import BunkaError, _create_topic_dfs, _filter_hdbscan
@@ -416,6 +428,7 @@ class Bunka:
         density: bool = True,
         convex_hull: bool = True,
         color: str = None,
+        search: str = None,
     ) -> go.Figure:
         """
         Generates a visualization of the identified topics in the document set.
@@ -448,8 +461,11 @@ class Bunka:
             colorscale=colorscale,
             density=density,
             convex_hull=convex_hull,
+            vectorstore=self.vectorstore,
         )
-        fig = model_visualizer.fit_transform(self.docs, self.topics, color=color)
+        fig = model_visualizer.fit_transform(
+            self.docs, self.topics, color=color, search=search
+        )
 
         return fig
 
@@ -689,7 +705,6 @@ class Bunka:
             width (int): Width of the visualization. Default is 600.
             height (int): Height of the visualization. Default is 300.
 
-
         Returns:
             A tuple (fig, percent) where 'fig' is a Plotly graph object figure representing the
             visualization and 'percent' is the percentage of documents above the similarity threshold.
@@ -699,6 +714,7 @@ class Bunka:
             the specified query. Documents with similarity scores above the threshold are highlighted,
             providing a visual representation of their relevance to the query.
         """
+
         final_df = []
         logger.info("Computing Similarities")
         scaler = MinMaxScaler(feature_range=(0, 1))

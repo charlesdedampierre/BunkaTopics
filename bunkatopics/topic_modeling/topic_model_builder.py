@@ -1,7 +1,6 @@
 import typing as t
 
 import pandas as pd
-from k_means_constrained import KMeansConstrained
 from sklearn.cluster import KMeans
 
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic

@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
 import ast
+import umap
 
 load_dotenv()
 from langchain_community.llms import HuggingFaceHub
@@ -43,7 +44,7 @@ top_tags = list(df_test["tags"].value_counts().head(10)[1:].index)
 df_test = df_test[df_test["tags"].isin(top_tags)]
 df_test = df_test.drop_duplicates("doc_id", keep="first")
 df_test = df_test[~df_test["tags"].isna()]
-df_test = df_test.sample(1000, random_state=42)
+df_test = df_test.sample(500, random_state=42)
 
 
 class TestBunka(unittest.TestCase):
@@ -71,8 +72,16 @@ class TestBunka(unittest.TestCase):
         metadata = {"tags": list(df_test["tags"])}
 
         projection_model = TSNE(
-            n_components=2, learning_rate="auto", init="random", perplexity=3
+            n_components=2,
+            learning_rate="auto",
+            init="random",
+            perplexity=3,
+            random_state=42,
         )
+
+        # projection_model = umap.UMAP(
+        #     n_components=2, n_neighbors=5, min_dist=0.3, random_state=42
+        # )
 
         cls.bunka = Bunka(projection_model=projection_model)
 

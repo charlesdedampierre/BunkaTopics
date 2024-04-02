@@ -155,6 +155,10 @@ class TopicVisualizer:
 
         from .visualization_utils import list_of_colors, check_list_type
 
+        import plotly.express as px
+
+        list_of_colors = px.colors.qualitative.Dark24
+
         if color is not None:
             if check_list_type(list_color) == "string":
                 unique_categories = list(set(list_color))
@@ -261,9 +265,11 @@ class TopicVisualizer:
                         family="Arial",
                         size=int(self.width / 60),  # Adjust font size of the legend
                         color="black",
-                    )
+                    ),
                 ),
             )
+
+            fig_density.update_layout(plot_bgcolor="white")
 
         # fig_density.update_layout(showlegend=True)
         fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)

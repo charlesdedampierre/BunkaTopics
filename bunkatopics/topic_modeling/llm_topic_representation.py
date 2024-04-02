@@ -8,7 +8,9 @@ from tqdm import tqdm
 
 from bunkatopics.datamodel import Document, Topic
 from bunkatopics.topic_modeling.prompt_generator import (
-    promp_template_topics_terms, promp_template_topics_terms_no_docs)
+    promp_template_topics_terms,
+    promp_template_topics_terms_no_docs,
+)
 
 TERM_ID = str
 
@@ -146,11 +148,14 @@ def _get_clean_topic(
                 "language": language,
             }
         )
+    response = clean_topic_name["text"]
 
-    clean_topic_name = clean_topic_name["text"]
-    clean_topic_name = _clean_final_output(clean_topic_name)
+    if "Topic Name:" in response:
+        response = response.split("Topic Name:")[1].strip()
 
-    return clean_topic_name
+    response = _clean_final_output(response)
+
+    return response
 
 
 def _clean_final_output(x):

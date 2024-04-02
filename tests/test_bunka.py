@@ -23,15 +23,23 @@ from langchain_community.llms import HuggingFaceHub
 
 from bunkatopics import Bunka
 
+from langchain.llms import OpenAI
+
+KEY = os.getenv("OPEN_AI_KEY")
+
+print(KEY)
+
+llm = OpenAI(openai_api_key=KEY)
+
 random.seed(42)
 
-"""repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
-llm = HuggingFaceHub(
-    repo_id=repo_id,
-    huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
-)"""
-figure = True
+# repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
+# llm = HuggingFaceHub(
+#     repo_id=repo_id,
+#     huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
+# )
 
+figure = True
 
 # Preprocess a dataset
 dataset = load_dataset("bunkalab/medium-sample-technology")
@@ -45,7 +53,7 @@ top_tags = list(df_test["tags"].value_counts().head(10)[1:].index)
 df_test = df_test[df_test["tags"].isin(top_tags)]
 df_test = df_test.drop_duplicates("doc_id", keep="first")
 df_test = df_test[~df_test["tags"].isna()]
-df_test = df_test.sample(1000, random_state=42)
+df_test = df_test.sample(500, random_state=42)
 
 docs = list(df_test["title"])
 ids = list(df_test["doc_id"])
@@ -70,7 +78,7 @@ class TestBunka(unittest.TestCase):
 
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 5000)
+        docs = random.sample(docs, 100)
         ids = None
 
         # from detoxify import Detoxify
@@ -124,8 +132,10 @@ class TestBunka(unittest.TestCase):
             custom_clustering_model=custom_clustering_model,
             n_clusters=10,
             min_count_terms=2,
-            min_docs_per_cluster=10,
+            min_docs_per_cluster=5,
         )
+
+        df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
         self.assertIsInstance(df_topics, pd.DataFrame)
         # self.assertEqual(len(df_topics), n_clusters)
 
@@ -147,13 +157,13 @@ class TestBunka(unittest.TestCase):
         self.assertIsInstance(self.bunka.df_top_docs_per_topic_, pd.DataFrame)
         print(self.bunka.df_top_docs_per_topic_)
 
-    """def test_generative_names(self):
-        n_clusters = 3
-        self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
-        df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
-        print(df_topics_clean["topic_name"])
-        self.assertIsInstance(df_topics_clean, pd.DataFrame)
-        self.assertEqual(len(df_topics_clean), n_clusters)"""
+    # def test_generative_names(self):
+    #     n_clusters = 3
+    #     self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
+    #     df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
+    #     print(df_topics_clean["topic_name"])
+    #     self.assertIsInstance(df_topics_clean, pd.DataFrame)
+    #     self.assertEqual(len(df_topics_clean), n_clusters)
 
     # def test_bourdieu_modeling(self):
     #     bourdieu_fig = self.bunka.visualize_bourdieu(

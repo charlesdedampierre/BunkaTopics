@@ -4,7 +4,8 @@ import numpy as np
 import plotly.graph_objects as go
 
 from bunkatopics.datamodel import Document, Topic
-from bunkatopics.visualization.visualization_utils import wrap_by_word
+from bunkatopics.visualization.visualization_utils import wrap_by_word, check_list_type
+import plotly.express as px
 
 
 class TopicVisualizer:
@@ -108,13 +109,6 @@ class TopicVisualizer:
 
         if color is not None:
             self.density = None
-            list_color = [x.metadata[color] for x in docs]
-
-        if search is not None:
-            self.density = None
-
-        else:
-            list_color = None
 
         if self.density:
             # Create a figure with Histogram2dContour
@@ -154,14 +148,11 @@ class TopicVisualizer:
         nk[:, 1] = np.array(docs_content_plotly).reshape(-1, 1)
 
         if color is not None:
+            list_color = [x.metadata[color] for x in docs]
             nk[:, 2] = np.array(list_color).reshape(-1, 1)
             hovertemplate = f"<br>%{{customdata[1]}}<br>{color}: %{{customdata[2]}}"
         else:
             hovertemplate = "<br>%{customdata[1]}<br>"
-
-        import plotly.express as px
-
-        from .visualization_utils import check_list_type
 
         list_of_colors = px.colors.qualitative.Dark24
 
@@ -181,25 +172,25 @@ class TopicVisualizer:
                 colorscale = "RdBu"
                 colorbar = dict(title=color)
 
-        elif search is not None:
-            from .visualization_utils import normalize_list
+        # if search is not None:
+        #     from .visualization_utils import normalize_list
 
-            docs_search = self.vectorstore.similarity_search_with_score(
-                search, k=len(self.vectorstore.get()["documents"])
-            )
-            similarity_score = [doc[1] for doc in docs_search]
-            similarity_score_norm = normalize_list(similarity_score)
-            similarity_score_norm = [1 - doc for doc in similarity_score_norm]
+        #     docs_search = self.vectorstore.similarity_search_with_score(
+        #         search, k=len(self.vectorstore.get()["documents"])
+        #     )
+        #     similarity_score = [doc[1] for doc in docs_search]
+        #     similarity_score_norm = normalize_list(similarity_score)
+        #     similarity_score_norm = [1 - doc for doc in similarity_score_norm]
 
-            docs_search = {
-                "doc_id": [doc[0].metadata["doc_id"] for doc in docs_search],
-                "score": [score for score in similarity_score_norm],
-                "page_content": [doc[0].page_content for doc in docs_search],
-            }
+        #     docs_search = {
+        #         "doc_id": [doc[0].metadata["doc_id"] for doc in docs_search],
+        #         "score": [score for score in similarity_score_norm],
+        #         "page_content": [doc[0].page_content for doc in docs_search],
+        #     }
 
-            list_color_figure = docs_search["score"]
-            colorscale = "RdBu"
-            colorbar = None
+        #     list_color_figure = docs_search["score"]
+        #     colorscale = "RdBu"
+        #     colorbar = dict(title="Semantic Similarity")
 
         else:
             list_color_figure = None
@@ -297,21 +288,7 @@ class TopicVisualizer:
 
             fig_density.update_layout(plot_bgcolor="white")
 
-        elif search is not None:
-            fig_density.update_layout(
-                legend_title_text="Semantic Similarity",
-                legend=dict(
-                    font=dict(
-                        family="Arial",
-                        size=int(self.width / 60),  # Adjust font size of the legend
-                        color="black",
-                    ),
-                ),
-            )
-
-            fig_density.update_layout(plot_bgcolor="white")
-
-        fig_density.update_layout(showlegend=True)
+        # fig_density.update_layout(showlegend=True)
         fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)
         fig_density.update_yaxes(showgrid=False, showticklabels=False, zeroline=False)
         fig_density.update_yaxes(showticklabels=False)

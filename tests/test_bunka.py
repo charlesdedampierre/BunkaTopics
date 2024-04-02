@@ -185,6 +185,7 @@ class TestBunka(unittest.TestCase):
             colorscale="Portland",
             convex_hull=True,
             color="sentiment",
+            search=None,
         )
         if figure:
             topic_fig.show()

@@ -13,7 +13,8 @@ import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
 from sklearn.manifold import TSNE
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
+from sklearn.cluster import HDBSCAN
 import ast
 import umap
 
@@ -44,7 +45,7 @@ top_tags = list(df_test["tags"].value_counts().head(10)[1:].index)
 df_test = df_test[df_test["tags"].isin(top_tags)]
 df_test = df_test.drop_duplicates("doc_id", keep="first")
 df_test = df_test[~df_test["tags"].isna()]
-df_test = df_test.sample(500, random_state=42)
+df_test = df_test.sample(1000, random_state=42)
 
 
 class TestBunka(unittest.TestCase):
@@ -91,12 +92,13 @@ class TestBunka(unittest.TestCase):
     def test_topic_modeling(self):
         # Test Topic Modeling
 
-        custom_clustering_model = KMeans(n_clusters=10)
+        custom_clustering_model = KMeans(n_clusters=15)
+        # custom_clustering_model = HDBSCAN()
         df_topics = self.bunka.get_topics(
             custom_clustering_model=custom_clustering_model,
-            n_clusters=100,
-            min_count_terms=4,
-            min_docs_per_cluster=75,
+            n_clusters=10,
+            min_count_terms=2,
+            min_docs_per_cluster=10,
         )
         self.assertIsInstance(df_topics, pd.DataFrame)
         # self.assertEqual(len(df_topics), n_clusters)
@@ -109,7 +111,8 @@ class TestBunka(unittest.TestCase):
             density=True,
             colorscale="Portland",
             convex_hull=True,
-            color="tags",
+            # color="tags",
+            color=None,
         )
         if figure:
             topic_fig.show()

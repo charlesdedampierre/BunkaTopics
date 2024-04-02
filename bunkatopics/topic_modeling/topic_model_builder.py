@@ -2,6 +2,7 @@ import typing as t
 
 import pandas as pd
 from k_means_constrained import KMeansConstrained
+from sklearn.cluster import KMeans
 
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
 from bunkatopics.logging import logger
@@ -96,22 +97,7 @@ class BunkaTopicModeling:
         df_embeddings_2D = df_embeddings_2D.set_index("doc_id")
 
         if self.custom_clustering_model is None:
-            # clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")
-            if self.min_docs_per_cluster is not None:
-                n_clusters = int(len(docs) / self.min_docs_per_cluster)
-                # to avoid that n_clusters*self.min_docs_per_cluster>=len(docs)
-                if n_clusters <= self.n_clusters:
-                    logger.info(
-                        f"min_docs_per_cluster has been set to {self.min_docs_per_cluster}, the number of clusters set is {n_clusters} instead of {self.n_clusters}"
-                    )
-            else:
-                n_clusters = self.n_clusters
-            clustering_model = KMeansConstrained(
-                n_clusters=n_clusters,
-                size_min=self.min_docs_per_cluster,
-                size_max=None,
-                random_state=42,
-            )
+            clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")
 
         else:
             clustering_model = self.custom_clustering_model
@@ -127,6 +113,7 @@ class BunkaTopicModeling:
             doc.topic_id = topic_doc_dict.get(doc.doc_id, [])
 
         terms = [x for x in terms if x.count_terms >= self.min_count_terms]
+
         df_terms = pd.DataFrame.from_records([term.model_dump() for term in terms])
         df_terms = df_terms.sort_values("count_terms", ascending=False)
         df_terms = df_terms.head(self.top_terms_overall)
@@ -168,6 +155,9 @@ class BunkaTopicModeling:
             topic.size = topic_dict[topic.topic_id]["size"]
             topic.x_centroid = topic_dict[topic.topic_id]["x_centroid"]
             topic.y_centroid = topic_dict[topic.topic_id]["y_centroid"]
+
+        # remove too small clusters
+        topics = [x for x in topics if x.size >= self.min_docs_per_cluster]
 
         try:
             for x in topics:

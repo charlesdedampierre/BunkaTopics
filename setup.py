@@ -19,7 +19,6 @@ dependencies = [
     "colorlog>=6.8.0",
     "langchain_openai",
     "ipython",
-    "hdbscan",
     "ipywidgets",
     "k_means_constrained",
 ]

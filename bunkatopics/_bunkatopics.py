@@ -148,6 +148,7 @@ class Bunka:
             docs (t.List[str]): A list of document strings.
             ids (t.Optional[t.List[DOC_ID]]): Optional. A list of identifiers for the documents. If not provided, UUIDs are generated.
             metadata (t.Optional[t.List[str]): A of metadata dictionaries for the documents.
+            sampling_size (t.Optional[int]): The number of documents to sample for term extraction. Default is 2000.
         """
 
         df = pd.DataFrame(docs, columns=["content"])

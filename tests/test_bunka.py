@@ -155,7 +155,7 @@ class TestBunka(unittest.TestCase):
             custom_clustering_model=custom_clustering_model,
             n_clusters=10,
             min_count_terms=2,
-            min_docs_per_cluster=5,
+            min_docs_per_cluster=30,
         )
 
         # df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)

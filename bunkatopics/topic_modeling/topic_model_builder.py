@@ -24,7 +24,7 @@ class BunkaTopicModeling:
         name_length: int = 15,
         top_terms_overall: int = 1000,
         min_count_terms: int = 2,
-        min_docs_per_cluster: int = None,
+        min_docs_per_cluster: int = 10,
         x_column: str = "x",
         y_column: str = "y",
         custom_clustering_model=None,
@@ -119,6 +119,7 @@ class BunkaTopicModeling:
         df_terms = df_terms[df_terms["ngrams"].isin(self.ngrams)]
 
         df_terms_indexed = pd.DataFrame.from_records([doc.model_dump() for doc in docs])
+
         df_terms_indexed = df_terms_indexed[["doc_id", "term_id", "topic_id"]]
         df_terms_indexed = df_terms_indexed.explode("term_id").reset_index(drop=True)
 

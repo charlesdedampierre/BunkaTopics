@@ -153,9 +153,9 @@ class TopicVisualizer:
         else:
             hovertemplate = "<br>%{customdata[1]}<br>"
 
-        from .visualization_utils import list_of_colors, check_list_type
-
         import plotly.express as px
+
+        from .visualization_utils import check_list_type
 
         list_of_colors = px.colors.qualitative.Dark24
 

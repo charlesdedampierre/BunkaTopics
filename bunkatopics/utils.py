@@ -1,8 +1,10 @@
+import os
 import typing as t
 
+import jsonlines
 import pandas as pd
 
-from bunkatopics.datamodel import Document, Topic
+from bunkatopics.datamodel import Document, Term, Topic
 
 
 def _filter_hdbscan(topics: t.List[Topic], docs: t.List[Document]):
@@ -66,12 +68,7 @@ class BunkaError(Exception):
     pass
 
 
-import jsonlines
-import os
-
-
 def save_bunka_models(bunka, path="bunka_dump"):
-
     os.makedirs(path, exist_ok=True)
 
     # Dump the data into JSONL files
@@ -83,9 +80,6 @@ def save_bunka_models(bunka, path="bunka_dump"):
     with jsonlines.open(path + "/bunka_terms.jsonl", mode="w") as writer:
         for item in bunka.terms:
             writer.write(item.dict())
-
-
-from bunkatopics.datamodel import Document, Term
 
 
 # Define a function to read documents from a JSONL file

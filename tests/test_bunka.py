@@ -133,7 +133,12 @@ class TestBunka(unittest.TestCase):
 
         df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
         self.assertIsInstance(df_topics, pd.DataFrame)
+        print(self.bunka.df_top_docs_per_topic_)
+        self.assertIsInstance(self.bunka.df_top_docs_per_topic_, pd.DataFrame)
+
         # self.assertEqual(len(df_topics), n_clusters)
+
+    def test_visualize_topics(self):
 
         # Visualize Topics
         topic_fig = self.bunka.visualize_topics(
@@ -143,15 +148,29 @@ class TestBunka(unittest.TestCase):
             density=True,
             colorscale="Portland",
             convex_hull=True,
-            # color="tags",
+            color=None,
+        )
+        if figure:
+            topic_fig.show()
+
+        self.assertIsInstance(topic_fig, go.Figure)
+
+    def test_visualize_topics_colors(self):
+
+        # Visualize Topics
+        topic_fig = self.bunka.visualize_topics(
+            width=800,
+            height=800,
+            show_text=True,
+            density=True,
+            colorscale="Portland",
+            convex_hull=True,
             color="sentiment",
         )
         if figure:
             topic_fig.show()
 
         self.assertIsInstance(topic_fig, go.Figure)
-        self.assertIsInstance(self.bunka.df_top_docs_per_topic_, pd.DataFrame)
-        print(self.bunka.df_top_docs_per_topic_)
 
     # def test_generative_names(self):
     #     n_clusters = 3

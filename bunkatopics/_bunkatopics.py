@@ -153,7 +153,9 @@ class Bunka:
 
         # Transform into a Document model
         if ids is not None:
+            ids = [str(x) for x in ids]
             df["doc_id"] = ids
+
         else:
             df["doc_id"] = [str(uuid.uuid4())[:20] for _ in range(len(df))]
 

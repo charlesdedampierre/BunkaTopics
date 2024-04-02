@@ -14,6 +14,7 @@ from datasets import load_dataset
 from dotenv import load_dotenv
 from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
+import ast
 
 load_dotenv()
 from langchain_community.llms import HuggingFaceHub
@@ -30,34 +31,53 @@ llm = HuggingFaceHub(
 figure = True
 
 
+# Preprocess a dataset
+dataset = load_dataset("bunkalab/medium-sample-technology")
+df_test = pd.DataFrame(dataset["train"])
+
+df_test = df_test[["title", "tags"]]
+df_test["tags"] = df_test["tags"].apply(lambda x: ast.literal_eval(x))
+df_test["doc_id"] = df_test.index
+df_test = df_test.explode("tags")
+top_tags = list(df_test["tags"].value_counts().head(10)[1:].index)
+df_test = df_test[df_test["tags"].isin(top_tags)]
+df_test = df_test.drop_duplicates("doc_id", keep="first")
+df_test = df_test[~df_test["tags"].isna()]
+df_test = df_test.sample(1000, random_state=42)
+
+
 class TestBunka(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load a sample dataset
 
-        dataset = pd.read_csv(
-            "/Users/charlesdedampierre/Desktop/Personal Data Science/meilli/imdb.csv"
-        )
+        # dataset = pd.read_csv(
+        #     "/Users/charlesdedampierre/Desktop/Personal Data Science/meilli/imdb.csv"
+        # )
 
-        dataset["iw"] = dataset["iw"].astype(str)
+        # dataset["iw"] = dataset["iw"].astype(str)
 
-        dataset = dataset[["imdb", "iw", "description", "avg_vote"]]
+        # dataset = dataset[["imdb", "iw", "description", "avg_vote"]]
 
         # metadata = {'genre':list(data['genre']), 'iw':list(data['iw'])}
-        metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
-
-        docs = list(dataset["description"])
+        # metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
 
         # dataset = load_dataset("rguo123/trump_tweets")
         # docs = dataset["train"]["content"]
-        docs = random.sample(docs, 3000)
+
+        # docs = list(dataset["description"])
+        docs = list(df_test["title"])
+        ids = list(df_test["doc_id"])
+        metadata = {"tags": list(df_test["tags"])}
+
         projection_model = TSNE(
             n_components=2, learning_rate="auto", init="random", perplexity=3
         )
 
         cls.bunka = Bunka(projection_model=projection_model)
+
         # metadata = None
-        cls.bunka.fit(docs, metadata=metadata)
+        cls.bunka.fit(ids=ids, docs=docs, metadata=metadata)
 
     def test_topic_modeling(self):
         # Test Topic Modeling
@@ -80,7 +100,7 @@ class TestBunka(unittest.TestCase):
             density=True,
             colorscale="Portland",
             convex_hull=True,
-            color="avg_vote",
+            color="tags",
         )
         if figure:
             topic_fig.show()

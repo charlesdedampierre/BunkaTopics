@@ -254,7 +254,16 @@ class TopicVisualizer:
                 print(e)
 
         if color is not None:
-            fig_density.update_layout(legend_title_text=color)
+            fig_density.update_layout(
+                legend_title_text=color,
+                legend=dict(
+                    font=dict(
+                        family="Arial",
+                        size=int(self.width / 60),  # Adjust font size of the legend
+                        color="black",
+                    )
+                ),
+            )
 
         # fig_density.update_layout(showlegend=True)
         fig_density.update_xaxes(showgrid=False, showticklabels=False, zeroline=False)

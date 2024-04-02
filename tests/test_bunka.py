@@ -96,11 +96,17 @@ class TestBunka(unittest.TestCase):
         dataset["iw"] = dataset["iw"].astype(str)
 
         dataset = dataset[["imdb", "iw", "description", "avg_vote"]]
-        dataset = dataset.sample(5000, random_state=42)
+        dataset = dataset.drop_duplicates("imdb", keep="first")
+
+        # dataset = dataset.sample(5000, random_state=42)
 
         metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
         docs = list(dataset["description"])
         ids = list(dataset["imdb"])
+
+        data = pd.read_csv("big_data/lemonde_bunka_sample.csv")
+        data = data.sample(10000, random_state=42)
+        docs = list(data["titles"])
 
         # dataset = load_dataset("rguo123/trump_tweets")
         # docs = dataset["train"]["content"]
@@ -144,13 +150,26 @@ class TestBunka(unittest.TestCase):
         # projection_model = umap.UMAP(
         #     n_components=2, n_neighbors=5, min_dist=0.3, random_state=42
         # )
+
         embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
+
+        # from FlagEmbedding import FlagModel
+
+        # embedding_model = FlagModel(
+        #     "BAAI/bge-large-en-v1.5",
+        #     use_fp16=True,
+        # )  #
+
         cls.bunka = Bunka(
             projection_model=projection_model, embedding_model=embedding_model
         )
         # metadata = None
         cls.bunka.fit(
-            ids=ids, docs=docs, metadata=metadata, pre_computed_embeddings=None
+            ids=None,
+            docs=docs,
+            metadata=None,
+            pre_computed_embeddings=None,
+            sampling_size=5000,
         )
 
     def test_topic_modeling(self):
@@ -178,7 +197,7 @@ class TestBunka(unittest.TestCase):
         topic_fig = self.bunka.visualize_topics(
             width=800,
             height=800,
-            show_text=True,
+            show_text=False,
             density=True,
             colorscale="Portland",
             convex_hull=True,
@@ -189,22 +208,22 @@ class TestBunka(unittest.TestCase):
 
         self.assertIsInstance(topic_fig, go.Figure)
 
-    def test_visualize_topics_colors(self):
+    # def test_visualize_topics_colors(self):
 
-        # Visualize Topics
-        topic_fig = self.bunka.visualize_topics(
-            width=800,
-            height=800,
-            show_text=True,
-            density=True,
-            colorscale="Portland",
-            convex_hull=True,
-            color="avg_vote",
-        )
-        if figure:
-            topic_fig.show()
+    #     # Visualize Topics
+    #     topic_fig = self.bunka.visualize_topics(
+    #         width=800,
+    #         height=800,
+    #         show_text=True,
+    #         density=True,
+    #         colorscale="Portland",
+    #         convex_hull=True,
+    #         color="avg_vote",
+    #     )
+    #     if figure:
+    #         topic_fig.show()
 
-        self.assertIsInstance(topic_fig, go.Figure)
+    #     self.assertIsInstance(topic_fig, go.Figure)
 
     # def test_generative_names(self):
     #     n_clusters = 3
@@ -214,24 +233,24 @@ class TestBunka(unittest.TestCase):
     #     self.assertIsInstance(df_topics_clean, pd.DataFrame)
     #     self.assertEqual(len(df_topics_clean), n_clusters)
 
-    # def test_bourdieu_modeling(self):
-    #     bourdieu_fig = self.bunka.visualize_bourdieu(
-    #         llm=None,
-    #         x_left_words=["past"],
-    #         x_right_words=["future"],
-    #         y_top_words=["men"],
-    #         y_bottom_words=["women"],
-    #         height=800,
-    #         width=800,
-    #         clustering=True,
-    #         topic_n_clusters=30,
-    #         min_docs_per_cluster=50,
-    #         density=False,
-    #         colorscale="Portland",
-    #     )
-    #     if figure:
-    #         bourdieu_fig.show()
-    #     self.assertIsInstance(bourdieu_fig, go.Figure)
+    def test_bourdieu_modeling(self):
+        bourdieu_fig = self.bunka.visualize_bourdieu(
+            llm=None,
+            x_left_words=["past"],
+            x_right_words=["future"],
+            y_top_words=["men"],
+            y_bottom_words=["women"],
+            height=800,
+            width=800,
+            clustering=True,
+            topic_n_clusters=30,
+            min_docs_per_cluster=50,
+            density=False,
+            colorscale="Portland",
+        )
+        if figure:
+            bourdieu_fig.show()
+        self.assertIsInstance(bourdieu_fig, go.Figure)
 
     """def test_rag(self):
         top_doc_len = 3

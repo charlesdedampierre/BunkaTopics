@@ -63,6 +63,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", message="omp_set_nested routine deprecated")
 
+
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 
@@ -153,6 +154,7 @@ class Bunka:
         if ids is not None:
             ids = [str(x) for x in ids]
             df["doc_id"] = ids
+            df = df.drop_duplicates(subset="doc_id", keep="first")
 
         else:
             df["doc_id"] = [str(uuid.uuid4())[:20] for _ in range(len(df))]
@@ -176,9 +178,17 @@ class Bunka:
         )
 
         if pre_computed_embeddings is None:
+
+            # Determine if self.embedding_model is an instance of SentenceTransformer
+            if isinstance(self.embedding_model, SentenceTransformer):
+                bunka_embeddings = self.embedding_model.encode(
+                    sentences, show_progress_bar=True
+                )
+            else:
+                bunka_embeddings = self.embedding_model.encode(sentences)
             bunka_embeddings = self.embedding_model.encode(
-                sentences, show_progress_bar=True
-            )
+                sentences
+            )  # show_progress_bar=True
 
         else:
             pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
@@ -247,6 +257,24 @@ class Bunka:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
         self.topics = None
+
+    def remove_outliers(self, threshold=6):
+        """
+        Removes outliers from the dataset based on a specified threshold.
+
+        This method applies an outlier detection algorithm to identify and remove outliers
+        Args:
+            threshold (int): The threshold value for outlier detection. Default is 6.
+        """
+
+        from bunkatopics.cleaning.outlier_detection import remove_outliers
+
+        cleaned_docs = remove_outliers(docs=self.docs, threshold=threshold)
+        # Calculate the number of removed documents
+
+        removed_docs_count = len(self.docs) - len(cleaned_docs)
+        logger.info("Number of removed documents: {}".format(removed_docs_count))
+        self.docs = cleaned_docs
 
     def save_bunka(self, path: str = "bunka_dumps"):
         """

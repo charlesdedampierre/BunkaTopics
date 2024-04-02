@@ -1,6 +1,7 @@
 # project specific
 
 #hidden notebooks
+big_data/
 bunka-test/
 notebooks_test/
 json_examples/

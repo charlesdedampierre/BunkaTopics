@@ -24,6 +24,10 @@ from bunkatopics.topic_modeling import (
 )
 
 pd.options.mode.chained_assignment = None
+import warnings
+
+# Ignore all UserWarnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 
 class BourdieuAPI:

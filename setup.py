@@ -21,6 +21,7 @@ dependencies = [
     "ipython",
     "ipywidgets",
     "jsonlines",
+    "pyod",
 ]
 
 test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]

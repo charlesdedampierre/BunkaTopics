@@ -32,7 +32,6 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 class TextacyTermsExtractor:
-
     """
     Extracts terms from text using Textacy and SpaCy libraries.
 

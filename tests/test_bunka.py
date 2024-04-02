@@ -47,6 +47,10 @@ df_test = df_test.drop_duplicates("doc_id", keep="first")
 df_test = df_test[~df_test["tags"].isna()]
 df_test = df_test.sample(1000, random_state=42)
 
+docs = list(df_test["title"])
+ids = list(df_test["doc_id"])
+metadata = {"tags": list(df_test["tags"])}
+
 
 class TestBunka(unittest.TestCase):
     @classmethod
@@ -64,13 +68,36 @@ class TestBunka(unittest.TestCase):
         # metadata = {'genre':list(data['genre']), 'iw':list(data['iw'])}
         # metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
 
-        # dataset = load_dataset("rguo123/trump_tweets")
-        # docs = dataset["train"]["content"]
+        dataset = load_dataset("rguo123/trump_tweets")
+        docs = dataset["train"]["content"]
+        docs = random.sample(docs, 5000)
+        ids = None
 
-        # docs = list(dataset["description"])
-        docs = list(df_test["title"])
-        ids = list(df_test["doc_id"])
-        metadata = {"tags": list(df_test["tags"])}
+        # from detoxify import Detoxify
+
+        # print("Predicting toxicity...")
+        # results = Detoxify("original").predict(docs)
+        # metadata = {"toxicity": results["toxicity"]}
+
+        from transformers import pipeline
+
+        print("Sentiment Analysis...")
+
+        sentiment_pipeline = pipeline("sentiment-analysis")
+        # results = sentiment_pipeline(docs)
+        # metadata = {"sentiment": [x["label"] for x in results]}
+
+        from tqdm import tqdm
+
+        # Create an empty list to store sentiment labels
+        metadata = {"sentiment": []}
+
+        # Iterate over the documents with tqdm to show the progress bar
+        for doc in tqdm(docs, desc="Processing documents", unit="documents"):
+            # Perform sentiment analysis on each document
+            result = sentiment_pipeline(doc)
+            # Append the sentiment label to the metadata
+            metadata["sentiment"].append(result[0]["label"])
 
         projection_model = TSNE(
             n_components=2,
@@ -85,7 +112,6 @@ class TestBunka(unittest.TestCase):
         # )
 
         cls.bunka = Bunka(projection_model=projection_model)
-
         # metadata = None
         cls.bunka.fit(ids=ids, docs=docs, metadata=metadata)
 
@@ -112,7 +138,7 @@ class TestBunka(unittest.TestCase):
             colorscale="Portland",
             convex_hull=True,
             # color="tags",
-            color=None,
+            color="sentiment",
         )
         if figure:
             topic_fig.show()

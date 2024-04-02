@@ -13,8 +13,7 @@ import plotly.graph_objects as go
 from datasets import load_dataset
 from dotenv import load_dotenv
 from sklearn.manifold import TSNE
-from sklearn.cluster import KMeans, DBSCAN
-from sklearn.cluster import HDBSCAN
+from sklearn.cluster import KMeans, HDBSCAN
 import ast
 import umap
 
@@ -25,19 +24,16 @@ from bunkatopics import Bunka
 
 from langchain.llms import OpenAI
 
-KEY = os.getenv("OPEN_AI_KEY")
-
-print(KEY)
-
-llm = OpenAI(openai_api_key=KEY)
+# KEY = os.getenv("OPEN_AI_KEY")
+# llm = OpenAI(openai_api_key=KEY)
 
 random.seed(42)
 
-# repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
-# llm = HuggingFaceHub(
-#     repo_id=repo_id,
-#     huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
-# )
+repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
+llm = HuggingFaceHub(
+    repo_id=repo_id,
+    huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
+)
 
 figure = True
 
@@ -78,7 +74,7 @@ class TestBunka(unittest.TestCase):
 
         dataset = load_dataset("rguo123/trump_tweets")
         docs = dataset["train"]["content"]
-        docs = random.sample(docs, 100)
+        docs = random.sample(docs, 500)
         ids = None
 
         # from detoxify import Detoxify

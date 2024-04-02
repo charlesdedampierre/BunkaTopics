@@ -20,7 +20,7 @@ dependencies = [
     "langchain_openai",
     "ipython",
     "ipywidgets",
-    "k_means_constrained",
+    "jsonlines",
 ]
 
 test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]

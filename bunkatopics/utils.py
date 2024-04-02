@@ -64,3 +64,44 @@ class BunkaError(Exception):
     """Custom exception for Bunka-related errors."""
 
     pass
+
+
+import jsonlines
+import os
+
+
+def save_bunka_models(bunka, path="bunka_dump"):
+
+    os.makedirs(path, exist_ok=True)
+
+    # Dump the data into JSONL files
+    with jsonlines.open(path + "/bunka_docs.jsonl", mode="w") as writer:
+        for item in bunka.docs:
+            writer.write(item.dict())
+
+    # Dump the data into JSONL files
+    with jsonlines.open(path + "/bunka_terms.jsonl", mode="w") as writer:
+        for item in bunka.terms:
+            writer.write(item.dict())
+
+
+from bunkatopics.datamodel import Document, Term
+
+
+# Define a function to read documents from a JSONL file
+def read_documents_from_jsonl(file_path):
+    documents = []
+    with jsonlines.open(file_path, mode="r") as reader:
+        for item in reader:
+            document = Document(**item)
+            documents.append(document)
+    return documents
+
+
+def read_terms_from_jsonl(file_path):
+    terms = []
+    with jsonlines.open(file_path, mode="r") as reader:
+        for item in reader:
+            term = Term(**item)
+            terms.append(term)
+    return terms

@@ -248,6 +248,58 @@ class Bunka:
 
         self.topics = None
 
+    def save_bunka(self, path: str = "bunka_dumps"):
+        """
+        Save the Bunka model to disk.
+
+        This method saves the Bunka model to disk by serializing its documents and terms.
+
+        Args:
+            path (str, optional): The directory path where the model will be saved.
+                Defaults to "bunka_dumps".
+
+        Examples:
+        ```python
+        from bunkatopics import Bunka
+        bunka = Bunka() etc..
+
+        # Run the different steps to create the Bunka model
+
+        bunka.save_bunka('bunka_dumps')```
+
+        """
+        from .utils import save_bunka_models
+
+        save_bunka_models(path=path, bunka=self)
+
+    def load_bunka(self, path):
+        """
+        Load the Bunka model from disk.
+
+        This method loads the Bunka model from disk by reading the serialized documents and terms.
+
+        Args:
+            path (str): The directory path from where the model will be loaded.
+
+        Returns:
+            BunkaTopics: The loaded Bunka model.
+
+        Exemples:
+            ```python
+            from bunkatopics import Bunka
+            bunka = Bunka().load_bunka('bunka_dumps')```
+
+        """
+        from .utils import read_documents_from_jsonl, read_terms_from_jsonl
+
+        documents = read_documents_from_jsonl(path + "/bunka_docs.jsonl")
+        terms = read_terms_from_jsonl(path + "/bunka_terms.jsonl")
+
+        self.docs = documents
+        self.terms = terms
+
+        return self
+
     def get_topics(
         self,
         n_clusters: int = 5,

@@ -27,6 +27,30 @@ from langchain.llms import OpenAI
 # KEY = os.getenv("OPEN_AI_KEY")
 # llm = OpenAI(openai_api_key=KEY)
 
+import re
+
+
+def clean_tweet(tweet):
+
+    try:
+
+        # temp = tweet.lower()
+        temp = re.sub("@[A-Za-z0-9_]+", "", tweet)
+        temp = re.sub("#[A-Za-z0-9_]+", "", temp)
+
+        temp = re.sub(r"http\S+", "", temp)
+        temp = re.sub(r"www.\S+", "", temp)
+
+        # temp = re.sub('[()!?]', ' ', temp)
+        # temp = re.sub('\[.*?\]',' ', temp)
+
+        # temp = re.sub("[^a-z0-9]"," ", temp)
+    except:
+        temp = tweet.copy()
+
+    return temp
+
+
 random.seed(42)
 
 repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
@@ -45,13 +69,16 @@ df_test = df_test[["title", "tags"]]
 df_test["tags"] = df_test["tags"].apply(lambda x: ast.literal_eval(x))
 df_test["doc_id"] = df_test.index
 df_test = df_test.explode("tags")
+
 top_tags = list(df_test["tags"].value_counts().head(10)[1:].index)
+top_tags = ["Artificial Intelligence", "Tech", "Startup", "Cryptocurrency"]
 df_test = df_test[df_test["tags"].isin(top_tags)]
 df_test = df_test.drop_duplicates("doc_id", keep="first")
 df_test = df_test[~df_test["tags"].isna()]
-df_test = df_test.sample(500, random_state=42)
+# df_test = df_test.sample(3000, random_state=42)
 
 docs = list(df_test["title"])
+docs = [clean_tweet(x) for x in docs]
 ids = list(df_test["doc_id"])
 metadata = {"tags": list(df_test["tags"])}
 
@@ -72,10 +99,10 @@ class TestBunka(unittest.TestCase):
         # metadata = {'genre':list(data['genre']), 'iw':list(data['iw'])}
         # metadata = {"iw": list(dataset["iw"]), "avg_vote": list(dataset["avg_vote"])}
 
-        dataset = load_dataset("rguo123/trump_tweets")
-        docs = dataset["train"]["content"]
-        docs = random.sample(docs, 500)
-        ids = None
+        # dataset = load_dataset("rguo123/trump_tweets")
+        # docs = dataset["train"]["content"]
+        # docs = random.sample(docs, 3000)
+        # ids = None
 
         # from detoxify import Detoxify
 
@@ -85,23 +112,23 @@ class TestBunka(unittest.TestCase):
 
         from transformers import pipeline
 
-        print("Sentiment Analysis...")
+        # print("Sentiment Analysis...")
 
-        sentiment_pipeline = pipeline("sentiment-analysis")
-        # results = sentiment_pipeline(docs)
-        # metadata = {"sentiment": [x["label"] for x in results]}
+        # sentiment_pipeline = pipeline("sentiment-analysis")
+        # # results = sentiment_pipeline(docs)
+        # # metadata = {"sentiment": [x["label"] for x in results]}
 
-        from tqdm import tqdm
+        # from tqdm import tqdm
 
-        # Create an empty list to store sentiment labels
-        metadata = {"sentiment": []}
+        # # Create an empty list to store sentiment labels
+        # metadata = {"sentiment": []}
 
-        # Iterate over the documents with tqdm to show the progress bar
-        for doc in tqdm(docs, desc="Processing documents", unit="documents"):
-            # Perform sentiment analysis on each document
-            result = sentiment_pipeline(doc)
-            # Append the sentiment label to the metadata
-            metadata["sentiment"].append(result[0]["label"])
+        # # Iterate over the documents with tqdm to show the progress bar
+        # for doc in tqdm(docs, desc="Processing documents", unit="documents"):
+        #     # Perform sentiment analysis on each document
+        #     result = sentiment_pipeline(doc)
+        #     # Append the sentiment label to the metadata
+        #     metadata["sentiment"].append(result[0]["label"])
 
         projection_model = TSNE(
             n_components=2,
@@ -131,7 +158,7 @@ class TestBunka(unittest.TestCase):
             min_docs_per_cluster=5,
         )
 
-        df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
+        # df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
         self.assertIsInstance(df_topics, pd.DataFrame)
         print(self.bunka.df_top_docs_per_topic_)
         self.assertIsInstance(self.bunka.df_top_docs_per_topic_, pd.DataFrame)
@@ -149,25 +176,6 @@ class TestBunka(unittest.TestCase):
             colorscale="Portland",
             convex_hull=True,
             color=None,
-            search=None,
-        )
-        if figure:
-            topic_fig.show()
-
-        self.assertIsInstance(topic_fig, go.Figure)
-
-    def test_visualize_topics_search(self):
-
-        # Visualize Topics
-        topic_fig = self.bunka.visualize_topics(
-            width=800,
-            height=800,
-            show_text=True,
-            density=True,
-            colorscale="Portland",
-            convex_hull=True,
-            color=None,
-            search="this is great",
         )
         if figure:
             topic_fig.show()
@@ -184,8 +192,7 @@ class TestBunka(unittest.TestCase):
             density=True,
             colorscale="Portland",
             convex_hull=True,
-            color="sentiment",
-            search=None,
+            color="tags",
         )
         if figure:
             topic_fig.show()

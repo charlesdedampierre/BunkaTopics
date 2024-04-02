@@ -78,7 +78,6 @@ class TopicVisualizer:
         docs: t.List[Document],
         topics: t.List[Topic],
         color: str = None,
-        search: str = None,
     ) -> go.Figure:
         """
         Generates a Plotly figure visualizing the given documents and topics.
@@ -206,6 +205,7 @@ class TopicVisualizer:
                     mode="markers",
                     marker=dict(
                         color=list_color_figure,  # Assigning colors based on the list_color
+                        size=self.width / 70,
                         # size=10,  # Adjust the size of the markers as needed
                         opacity=0.5,  # Adjust the opacity of the markers as needed
                         colorscale=colorscale,  # You can specify a colorscale if needed

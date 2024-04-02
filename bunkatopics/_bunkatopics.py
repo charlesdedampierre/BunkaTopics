@@ -136,6 +136,7 @@ class Bunka:
         docs: t.List[str],
         ids: t.List[DOC_ID] = None,
         metadata: t.Optional[t.List[dict]] = None,
+        sampling_size: t.Optional[int] = 2000,
     ) -> None:
         """
         Fits the Bunka model to the provided list of documents.
@@ -240,7 +241,23 @@ class Bunka:
 
         logger.info("Extracting meaningful terms from documents...")
         terms_extractor = TextacyTermsExtractor(language=self.language)
-        self.terms, indexed_terms_dict = terms_extractor.fit_transform(ids, sentences)
+
+        if len(sentences) >= sampling_size:
+            # Pair sentences with their corresponding ids
+            paired_data = list(zip(sentences, ids))
+            sampled_data = random.sample(paired_data, sampling_size)
+
+            # Unpack the sampled pairs back into sentences and ids lists
+            sampled_sentences, sampled_ids = zip(*sampled_data)
+            logger.info("Sampling 2000 documents for term extraction")
+            self.terms, indexed_terms_dict = terms_extractor.fit_transform(
+                sampled_ids, sampled_sentences
+            )
+
+        else:
+            self.terms, indexed_terms_dict = terms_extractor.fit_transform(
+                ids, sentences
+            )
 
         # add to the docs object
         for doc in self.docs:
@@ -428,7 +445,7 @@ class Bunka:
         density: bool = True,
         convex_hull: bool = True,
         color: str = None,
-        search: str = None,
+        # search: str = None,
     ) -> go.Figure:
         """
         Generates a visualization of the identified topics in the document set.
@@ -463,9 +480,7 @@ class Bunka:
             convex_hull=convex_hull,
             vectorstore=self.vectorstore,
         )
-        fig = model_visualizer.fit_transform(
-            self.docs, self.topics, color=color, search=search
-        )
+        fig = model_visualizer.fit_transform(self.docs, self.topics, color=color)
 
         return fig
 

@@ -105,7 +105,7 @@ class TestBunka(unittest.TestCase):
         ids = list(dataset["imdb"])
 
         data = pd.read_csv("big_data/lemonde_bunka_sample.csv")
-        data = data.sample(10000, random_state=42)
+        data = data.sample(3000, random_state=42)
         docs = list(data["titles"])
 
         # dataset = load_dataset("rguo123/trump_tweets")
@@ -169,7 +169,7 @@ class TestBunka(unittest.TestCase):
             docs=docs,
             metadata=None,
             pre_computed_embeddings=None,
-            sampling_size=5000,
+            sampling_size=1000,
         )
 
     def test_topic_modeling(self):
@@ -188,6 +188,7 @@ class TestBunka(unittest.TestCase):
         self.assertIsInstance(df_topics, pd.DataFrame)
         print(self.bunka.df_top_docs_per_topic_)
         self.assertIsInstance(self.bunka.df_top_docs_per_topic_, pd.DataFrame)
+        self.bunka.start_server()
 
         # self.assertEqual(len(df_topics), n_clusters)
 

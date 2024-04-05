@@ -921,11 +921,15 @@ class Bunka:
             raise BunkaError("No topics available. Run bunka.get_topics() first.")
         else:
             file_path = "web/public" + "/bunka_docs.json"
+
+            for x in self.docs:
+                x.embedding = None
             docs_json = [x.model_dump() for x in self.docs]
             with open(file_path, "w") as json_file:
                 json.dump(docs_json, json_file)
 
             file_path = "web/public" + "/bunka_topics.json"
+
             topics_json = [x.model_dump() for x in self.topics]
             with open(file_path, "w") as json_file:
                 json.dump(topics_json, json_file)

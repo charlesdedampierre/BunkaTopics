@@ -110,10 +110,7 @@ class TestBunka(unittest.TestCase):
             random_state=42,
         )
 
-        embedding_model = FlagModel(
-            "BAAI/bge-small-en",
-            use_fp16=True,
-        )  #
+        embedding_model = FlagModel("BAAI/bge-small-en")
 
         bunka = Bunka(
             projection_model=projection_model, embedding_model=embedding_model

@@ -2,7 +2,6 @@ import copy
 import json
 import os
 import random
-import string
 import subprocess
 import typing as t
 import uuid
@@ -15,9 +14,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import umap
 from FlagEmbedding import FlagModel
-from IPython.display import HTML, display
+from IPython.display import display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
-from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core._api.deprecation import LangChainDeprecationWarning
 from langchain_core.embeddings import Embeddings
@@ -48,7 +46,6 @@ from bunkatopics.topic_modeling import (
     LLMCleaningTopic,
     TextacyTermsExtractor,
 )
-from bunkatopics.topic_modeling.coherence_calculator import get_coherence
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
 from bunkatopics.utils import BunkaError, _create_topic_dfs, _filter_hdbscan
 from bunkatopics.visualization import TopicVisualizer
@@ -769,11 +766,6 @@ class Bunka:
 
         fig = get_topic_repartition(self.topics, width=width, height=height)
         return fig
-
-    def get_topic_coherence(self, topic_terms_n=10):
-        texts = [doc.term_id for doc in self.docs]
-        res = get_coherence(self.topics, texts, topic_terms_n=topic_terms_n)
-        return res
 
     def clean_data_by_topics(self):
         """

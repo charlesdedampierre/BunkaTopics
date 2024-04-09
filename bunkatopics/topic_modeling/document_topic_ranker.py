@@ -31,7 +31,6 @@ class DocumentRanker:
         Args:
             docs (List[Document]): List of documents.
             topics (List[Topic]): List of topics.
-            ranking_terms (int): Number of topic specific terms to hekp ranking the topics
 
         Returns:
             Tuple[List[Document], List[Topic]]: Updated lists of documents and topics.

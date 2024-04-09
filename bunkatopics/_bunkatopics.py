@@ -134,7 +134,7 @@ class Bunka:
             t.List[t.Dict[DOC_ID, t.List[float]]]
         ] = None,
         metadata: t.Optional[t.List[dict]] = None,
-        sampling_size: t.Optional[int] = 2000,
+        sampling_size_for_terms: t.Optional[int] = 2000,
     ) -> None:
         """
         Fits the Bunka model to the provided list of documents.
@@ -146,7 +146,7 @@ class Bunka:
             docs (t.List[str]): A list of document strings.
             ids (t.Optional[t.List[DOC_ID]]): Optional. A list of identifiers for the documents. If not provided, UUIDs are generated.
             metadata (t.Optional[t.List[str]): A of metadata dictionaries for the documents.
-            sampling_size (t.Optional[int]): The number of documents to sample for term extraction. Default is 2000.
+            sampling_size_for_terms (t.Optional[int]): The number of documents to sample for term extraction. Default is 2000.
         """
 
         df = pd.DataFrame(docs, columns=["content"])
@@ -198,12 +198,17 @@ class Bunka:
                 bunka_embeddings = self.embedding_model.encode(
                     sentences
                 )  # show_progress_bar=True
-
         else:
+
             pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
-            bunka_embeddings = [
-                x["embedding"].tolist() for x in pre_computed_embeddings
-            ]
+            # bunka_embeddings = [x["embedding"] for x in pre_computed_embeddings]
+            bunka_embeddings = []
+            for x in pre_computed_embeddings:
+                embedding = x["embedding"]
+                if isinstance(embedding, list):
+                    bunka_embeddings.append(embedding)
+                else:
+                    bunka_embeddings.append(embedding.tolist())
 
         # Add to the bunka objects
         emb_doc_dict = {x: y for x, y in zip(ids, bunka_embeddings)}
@@ -244,15 +249,17 @@ class Bunka:
         ### EXTRACTIOB PROCESS
         terms_extractor = TextacyTermsExtractor(language=self.language)
 
-        if len(sentences) >= sampling_size:
+        if len(sentences) >= sampling_size_for_terms:
             # Pair sentences with their corresponding ids
             paired_data = list(zip(sentences, ids))
             random.seed(42)
-            sampled_data = random.sample(paired_data, sampling_size)
+            sampled_data = random.sample(paired_data, sampling_size_for_terms)
 
             # Unpack the sampled pairs back into sentences and ids lists
             sampled_sentences, sampled_ids = zip(*sampled_data)
-            logger.info(f"Sampling {sampling_size} documents for term extraction")
+            logger.info(
+                f"Sampling {sampling_size_for_terms} documents for term extraction"
+            )
             self.terms, indexed_terms_dict = terms_extractor.fit_transform(
                 sampled_ids, sampled_sentences
             )

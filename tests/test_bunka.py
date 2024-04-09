@@ -27,7 +27,7 @@ llm = HuggingFaceHub(
     huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
 )
 
-figure = True
+figure = False
 
 # Preprocess a dataset
 dataset = load_dataset("bunkalab/medium-sample-technology")
@@ -71,7 +71,7 @@ class TestBunka(unittest.TestCase):
             docs=docs,
             metadata=metadata,
             pre_computed_embeddings=None,
-            sampling_size=1000,
+            sampling_size_for_terms=1000,
         )
 
     def test_embed_sentence_transformer(self):
@@ -97,7 +97,7 @@ class TestBunka(unittest.TestCase):
             docs=docs,
             metadata=metadata,
             pre_computed_embeddings=None,
-            sampling_size=1000,
+            sampling_size_for_terms=1000,
         )
 
     def test_embed_flag_embeddings(self):
@@ -124,7 +124,7 @@ class TestBunka(unittest.TestCase):
             docs=docs,
             metadata=metadata,
             pre_computed_embeddings=None,
-            sampling_size=1000,
+            sampling_size_for_terms=1000,
         )
 
         self.assertIsInstance(bunka, Bunka)
@@ -151,7 +151,7 @@ class TestBunka(unittest.TestCase):
             docs=docs,
             metadata=metadata,
             pre_computed_embeddings=None,
-            sampling_size=1000,
+            sampling_size_for_terms=1000,
         )
 
     # def test_topic_modeling_dbscan(self):
@@ -244,11 +244,11 @@ class TestBunka(unittest.TestCase):
             bourdieu_fig.show()
         self.assertIsInstance(bourdieu_fig, go.Figure)
 
-    def save_bunka(self):
-        self.bunka.save_bunka("bunka_dump")
+    # def test_save_bunka(self):
+    #     self.bunka.save_bunka("bunka_dump")
 
-    def load_bunka(self):
-        self.bunka.load_bunka("bunka_dump")
+    # def test_load_bunka(self):
+    #     self.bunka.load_bunka("bunka_dump")
 
 
 if __name__ == "__main__":

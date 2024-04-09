@@ -151,7 +151,19 @@ class TopicVisualizer:
         else:
             hovertemplate = "<br>%{customdata[1]}<br>"
 
-        list_of_colors = px.colors.qualitative.Dark24
+        def extend_color_palette(number_of_categories):
+            list_of_colors = px.colors.qualitative.Dark24
+            extended_list_of_colors = (
+                list_of_colors * (number_of_categories // len(list_of_colors))
+                + list_of_colors[: number_of_categories % len(list_of_colors)]
+            )
+            return extended_list_of_colors
+
+        if color is not None:
+            if len(list_color) > 24:
+                list_of_colors = extend_color_palette(len(list_color))
+            else:
+                list_of_colors = px.colors.qualitative.Dark24
 
         if color is not None:
             if check_list_type(list_color) == "string":

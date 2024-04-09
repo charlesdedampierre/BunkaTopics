@@ -22,7 +22,7 @@ dependencies = [
     "ipywidgets",
     "jsonlines",
     "pyod",
-    "FlagEmbedding==1.0.6",
+    "FlagEmbedding==1.2.8",
 ]
 
 test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]

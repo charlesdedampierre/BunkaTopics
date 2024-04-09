@@ -245,10 +245,6 @@ def _get_continuum(
         left_embedding = embedding_model.encode(continuum.left_words)
         right_embedding = embedding_model.encode(continuum.right_words)
 
-    # Compute the extremity embeddings
-    left_embedding = embedding_model.encode(continuum.left_words)
-    right_embedding = embedding_model.encode(continuum.right_words)
-
     left_embedding = pd.DataFrame(left_embedding).mean().values.reshape(1, -1)
     right_embedding = pd.DataFrame(right_embedding).mean().values.reshape(1, -1)
 

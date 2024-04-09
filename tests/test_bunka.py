@@ -27,7 +27,7 @@ llm = HuggingFaceHub(
     huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
 )
 
-figure = False
+figure = True
 
 # Preprocess a dataset
 dataset = load_dataset("bunkalab/medium-sample-technology")

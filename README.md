@@ -286,37 +286,6 @@ politics/business vs     positive/negative      |  politics/business vs startups
 :-------------------------:|:-------------------------:
 ![Image 3](docs/images/bourdieu_3.png)  |  ![Image 4](docs/images/bourdieu_4.png)
 
-## Front-end (Beta)
-
-This is a beta feature. First, git clone the repository
-
-```bash
-git clone https://github.com/charlesdedampierre/BunkaTopics.git
-cd BunkaTopics
-pip install -e .
-
-cd web # got the web directory
-npm install # install the needed React packages
-```
-
-```python
-from bunkatopics import Bunka
-
-from sentence_transformers import SentenceTransformer
-embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
-
-# Initialize Bunka with your chosen model and language preference
-bunka = Bunka(embedding_model=embedding_model, language='english') # The language is used for NER detection. You can choose the following languages: english,spanish, french, german, arabic, chinese, danish etc. Be sure to use an embedding model adapted.
-
-# Fit Bunka to your text data
-bunka.fit(docs)
-bunka.get_topics(n_clusters=15, name_length=3) # Specify the number of terms to describe each topic
-```
-
-```python
->>> bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
-```
-
 ## Saving and loading Bunka
 
 ```python
@@ -355,6 +324,37 @@ from sklearn.cluster import KMeans
 clustering_model = KMeans(n_clusters=15)
 >>> bunka.get_topics(name_length=5, 
                     custom_clustering_model=clustering_model)# Specify the number of terms to describe each topic
+```
+
+## Front-end (Beta)
+
+This is a beta feature. First, git clone the repository
+
+```bash
+git clone https://github.com/charlesdedampierre/BunkaTopics.git
+cd BunkaTopics
+pip install -e .
+
+cd web # got the web directory
+npm install # install the needed React packages
+```
+
+```python
+from bunkatopics import Bunka
+
+from sentence_transformers import SentenceTransformer
+embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
+
+# Initialize Bunka with your chosen model and language preference
+bunka = Bunka(embedding_model=embedding_model, language='english') # The language is used for NER detection. You can choose the following languages: english,spanish, french, german, arabic, chinese, danish etc. Be sure to use an embedding model adapted.
+
+# Fit Bunka to your text data
+bunka.fit(docs)
+bunka.get_topics(n_clusters=15, name_length=3) # Specify the number of terms to describe each topic
+```
+
+```python
+>>> bunka.start_server() # A serveur will open on your computer at http://localhost:3000/ 
 ```
 
 <img src="docs/images/bunka_server.png" width="100%" height="100%" align="center" />

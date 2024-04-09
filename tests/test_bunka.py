@@ -176,8 +176,6 @@ class TestBunka(unittest.TestCase):
             min_docs_per_cluster=30,
         )
 
-        self.bunka.start_server()
-
         # df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
         self.assertIsInstance(df_topics, pd.DataFrame)
         self.assertIsInstance(self.bunka.df_top_docs_per_topic_, pd.DataFrame)

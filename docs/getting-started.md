@@ -32,8 +32,6 @@ docs = list(dataset['title'])
 Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.
 
 ```python
-
-
 # Load Embedding model
 from sentence_transformers import SentenceTransformer
 embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
@@ -153,7 +151,6 @@ We can now access the newly made topics
 ## visualise Dimensions on topics
 
 ```python
-
 dataset = load_dataset("bunkalab/medium-sample-technology-tags")
 docs = list(dataset['Title'])
 ids = list(dataset['doc_id'])

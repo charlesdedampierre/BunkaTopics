@@ -117,7 +117,7 @@ function MapView() {
       .x((d) => xScale(d.x))
       .y((d) => yScale(d.y))
       .size([plotWidth, plotHeight])
-      .bandwidth(30)(
+      .bandwidth(15)(
         // Adjust the bandwidth as needed
         data,
       );

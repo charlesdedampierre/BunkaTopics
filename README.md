@@ -356,3 +356,5 @@ clustering_model = KMeans(n_clusters=15)
 >>> bunka.get_topics(name_length=5, 
                     custom_clustering_model=clustering_model)# Specify the number of terms to describe each topic
 ```
+
+<img src="docs/images/bunka_server.png" width="100%" height="100%" align="center" />

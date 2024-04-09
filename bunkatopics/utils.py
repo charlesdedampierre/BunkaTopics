@@ -71,6 +71,10 @@ class BunkaError(Exception):
 def save_bunka_models(bunka, path="bunka_dump"):
     os.makedirs(path, exist_ok=True)
 
+    for doc in bunka.docs:
+        list_of_floats = [float(value) for value in doc.embedding]
+        doc.embedding = list_of_floats
+
     # Dump the data into JSONL files
     with jsonlines.open(path + "/bunka_docs.jsonl", mode="w") as writer:
         for item in bunka.docs:

@@ -96,7 +96,9 @@ class BunkaTopicModeling:
         df_embeddings_2D = df_embeddings_2D.set_index("doc_id")
 
         if self.custom_clustering_model is None:
-            clustering_model = KMeans(n_clusters=self.n_clusters, n_init="auto")
+            clustering_model = KMeans(
+                n_clusters=self.n_clusters, n_init="auto", random_state=42
+            )
 
         else:
             clustering_model = self.custom_clustering_model

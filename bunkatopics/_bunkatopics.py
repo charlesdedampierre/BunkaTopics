@@ -16,9 +16,7 @@ import plotly.graph_objects as go
 import umap
 from IPython.display import HTML, display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
-from langchain.chains import RetrievalQA
 from langchain.chains.retrieval_qa.base import BaseRetrievalQA
-from langchain_community.document_loaders import DataFrameLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core._api.deprecation import LangChainDeprecationWarning
 from langchain_core.embeddings import Embeddings
@@ -27,6 +25,7 @@ from numba.core.errors import NumbaDeprecationWarning
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
+from FlagEmbedding import FlagModel
 
 
 from bunkatopics.bourdieu import (
@@ -131,7 +130,9 @@ class Bunka:
         self,
         docs: t.List[str],
         ids: t.List[DOC_ID] = None,
-        pre_computed_embeddings: t.Optional[t.List[t.Dict[DOC_ID, np.array]]] = None,
+        pre_computed_embeddings: t.Optional[
+            t.List[t.Dict[DOC_ID, t.List[float]]]
+        ] = None,
         metadata: t.Optional[t.List[dict]] = None,
         sampling_size: t.Optional[int] = 2000,
     ) -> None:
@@ -184,11 +185,19 @@ class Bunka:
                 bunka_embeddings = self.embedding_model.encode(
                     sentences, show_progress_bar=True
                 )
-            else:
+                bunka_embeddings = bunka_embeddings.tolist()
+
+            elif isinstance(self.embedding_model, HuggingFaceEmbeddings):
+                bunka_embeddings = self.embedding_model.embed_documents(sentences)
+
+            elif isinstance(self.embedding_model, FlagModel):
                 bunka_embeddings = self.embedding_model.encode(sentences)
-            bunka_embeddings = self.embedding_model.encode(
-                sentences
-            )  # show_progress_bar=True
+                bunka_embeddings = bunka_embeddings.tolist()
+
+            else:
+                bunka_embeddings = self.embedding_model.encode(
+                    sentences
+                )  # show_progress_bar=True
 
         else:
             pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
@@ -238,11 +247,12 @@ class Bunka:
         if len(sentences) >= sampling_size:
             # Pair sentences with their corresponding ids
             paired_data = list(zip(sentences, ids))
+            random.seed(42)
             sampled_data = random.sample(paired_data, sampling_size)
 
             # Unpack the sampled pairs back into sentences and ids lists
             sampled_sentences, sampled_ids = zip(*sampled_data)
-            logger.info("Sampling 2000 documents for term extraction")
+            logger.info(f"Sampling {sampling_size} documents for term extraction")
             self.terms, indexed_terms_dict = terms_extractor.fit_transform(
                 sampled_ids, sampled_sentences
             )

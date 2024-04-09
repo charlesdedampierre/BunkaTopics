@@ -1,4 +1,5 @@
 import typing as t
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -23,11 +24,9 @@ from bunkatopics.topic_modeling import (
     LLMCleaningTopic,
 )
 
-pd.options.mode.chained_assignment = None
-import warnings
-
 # Ignore all UserWarnings
 warnings.filterwarnings("ignore", category=UserWarning)
+pd.options.mode.chained_assignment = None
 
 
 class BourdieuAPI:

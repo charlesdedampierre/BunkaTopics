@@ -1,6 +1,6 @@
-from pyod.models.ecod import ECOD
 import numpy as np
 import pandas as pd
+from pyod.models.ecod import ECOD
 
 
 def remove_outliers(docs, threshold=6):

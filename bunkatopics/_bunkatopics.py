@@ -14,6 +14,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
+from FlagEmbedding import FlagModel
 from IPython.display import HTML, display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
 from langchain.chains.retrieval_qa.base import BaseRetrievalQA
@@ -22,11 +23,9 @@ from langchain_core._api.deprecation import LangChainDeprecationWarning
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.llms import LLM
 from numba.core.errors import NumbaDeprecationWarning
+from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
-from sentence_transformers import SentenceTransformer
-from FlagEmbedding import FlagModel
-
 
 from bunkatopics.bourdieu import (
     BourdieuAPI,
@@ -179,7 +178,6 @@ class Bunka:
         )
 
         if pre_computed_embeddings is None:
-
             # Determine if self.embedding_model is an instance of SentenceTransformer
             if isinstance(self.embedding_model, SentenceTransformer):
                 bunka_embeddings = self.embedding_model.encode(
@@ -199,7 +197,6 @@ class Bunka:
                     sentences
                 )  # show_progress_bar=True
         else:
-
             pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
             # bunka_embeddings = [x["embedding"] for x in pre_computed_embeddings]
             bunka_embeddings = []
@@ -245,8 +242,6 @@ class Bunka:
         self.fig_embeddings = self._quick_plot(df_embeddings_2D)
 
         logger.info("Extracting meaningful terms from documents...")
-
-        ### EXTRACTIOB PROCESS
         terms_extractor = TextacyTermsExtractor(language=self.language)
 
         if len(sentences) >= sampling_size_for_terms:
@@ -306,10 +301,8 @@ class Bunka:
         Examples:
         ```python
         from bunkatopics import Bunka
-        bunka = Bunka() etc..
-
-        # Run the different steps to create the Bunka model
-
+        bunka = Bunka()
+        ...
         bunka.save_bunka('bunka_dumps')```
 
         """
@@ -327,13 +320,7 @@ class Bunka:
             path (str): The directory path from where the model will be loaded.
 
         Returns:
-            BunkaTopics: The loaded Bunka model.
-
-        Exemples:
-            ```python
-            from bunkatopics import Bunka
-            bunka = Bunka().load_bunka('bunka_dumps')```
-
+            bunka (Bunka): The loaded Bunka model.
         """
         from .utils import read_documents_from_jsonl, read_terms_from_jsonl
 
@@ -973,7 +960,6 @@ class Bunka:
         logger.info("NPM server started.")
 
     def _quick_plot(self, df_embeddings_2D):
-
         # Create a scatter plot
         fig_quick_embedding = px.scatter(
             df_embeddings_2D, x="x", y="y", hover_data=["bunka_docs"]

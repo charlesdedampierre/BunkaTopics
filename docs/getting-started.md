@@ -22,7 +22,9 @@ To get started, let's upload a sample of Medium Articles into Bunkatopics:
 
 ```python
 from datasets import load_dataset
-docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"] # 'docs' is a list of text [text1, text2, ..., textN]
+dataset = load_dataset("bunkalab/medium-sample-technology")["train"] # 'docs' is a list of text [text1, text2, ..., 
+docs = list(dataset['title'])
+
 ```
 
 ### Choose Your Embedding Model
@@ -30,24 +32,35 @@ docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"] # 'do
 Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.
 
 ```python
+
+
+# Load Embedding model
+from sentence_transformers import SentenceTransformer
+embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
+
+# Load Projection Model
+import umap
+projection_model = umap.UMAP(
+                n_components=2,
+                random_state=42,
+            )
+
 from bunkatopics import Bunka
-from langchain_community.embeddings import HuggingFaceEmbeddings
 
-# Choose your embedding model
-embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2",# We recommend starting with a small model
-                                        model_kwargs={"device": "cpu"}, # Or cuda if you have GPU
-                                        encode_kwargs={"show_progress_bar": True}, # Show the progress of embeddings
-                                        multi_process=False)  # set to True if you have mutliprocessing
-# Initialize Bunka with your chosen model and language preference
-
-bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+bunka = Bunka(embedding_model=embedding_model, 
+            projection_model=projection_model, 
+            language='english') # You can choose any language you prefer
 
 # Fit Bunka to your text data
-bunka.fit(docs)
+ bunka.fit(docs)
 ```
 
 ```python
->>> bunka.get_topics(n_clusters=15, name_length=5)# Specify the number of terms to describe each topic
+# Get a clustering model
+from sklearn.cluster import KMeans
+clustering_model = KMeans(n_clusters=15)
+>>> bunka.get_topics(name_length=5, 
+                    custom_clustering_model=clustering_model)# Specify the number of terms to describe each topic
 ```
 
 Topics are described by the most specific terms belonging to the cluster.
@@ -137,6 +150,27 @@ We can now access the newly made topics
 |   bt-13  | Quantum Technology Industries          | 105  | 3.75    |
 |   bt-7   | High Definition Television (HDTV)      | 36   | 1.29    |
 
+## visualise Dimensions on topics
+
+```python
+
+dataset = load_dataset("bunkalab/medium-sample-technology-tags")
+docs = list(dataset['Title'])
+ids = list(dataset['doc_id'])
+tags = list(dataset['tags'])
+
+metadata = {'tags':tags}
+
+from bunkatopics import Bunka
+
+bunka = Bunka()
+
+# Fit Bunka to your text data
+bunka.fit(docs=docs, ids=ids, metadata=metadata)
+bunka.get_topics(n_clusters=10)
+bunka.visualize_topics(color = 'tags', width=800, height=800) # Add the metadata names
+```
+
 ## Manually Cleaning the topics
 
 If you are not happy with the resulting topics, you can change them manually. Click on Apply changes when you are done. In the example, we changed the topic **Cryptocurrency Impact** to **Cryptocurrency** and **Internet Discounts** to **Advertising**.
@@ -218,6 +252,51 @@ positive/negative vs humans/machines            |  politics/business vs humans/m
 politics/business vs     positive/negative      |  politics/business vs startups/governments
 :-------------------------:|:-------------------------:
 ![Image 3](images/bourdieu_3.png)  |  ![Image 4](images/bourdieu_4.png)
+
+## Saving and loading Bunka
+
+```python
+bunka.save_bunka("bunka_dump")
+...
+
+from bunkatopics import Bunka
+bunka = Bunka().load_bunka("bunka_dump")
+
+
+from sklearn.cluster import KMeans
+clustering_model = KMeans(n_clusters=15)
+>>> bunka.get_topics(name_length=5, 
+                    custom_clustering_model=clustering_model)# Specify the number of terms to describe each topic
+```
+
+## Loading customed embeddings
+
+```python
+'''
+ids = ['doc_1', 'doc_2'...., 'doc_n']
+embeddings = [[0.05121125280857086,
+  -0.03985324501991272,
+  -0.05017390474677086,
+  -0.03173152357339859,
+  -0.07367539405822754,
+  0.0331297293305397,
+  -0.00685789855197072...]]
+
+'''
+
+pre_computed_embeddings = [{'doc_id': doc_id, 'embedding': embedding} for doc_id, embedding in zip(ids, embeddings)]
+...
+
+from bunkatopics import Bunka
+bunka = Bunka()
+bunka.fit(docs=docs, ids = ids, pre_computed_embeddings = pre_computed_embeddings)
+
+
+from sklearn.cluster import KMeans
+clustering_model = KMeans(n_clusters=15)
+>>> bunka.get_topics(name_length=5, 
+                    custom_clustering_model=clustering_model)# Specify the number of terms to describe each topic
+```
 
 ## Front-end
 

@@ -1,11 +1,12 @@
 import typing as t
 
 import numpy as np
+import plotly.express as px
 import plotly.graph_objects as go
 
 from bunkatopics.datamodel import Document, Topic
-from bunkatopics.visualization.visualization_utils import wrap_by_word, check_list_type
-import plotly.express as px
+from bunkatopics.visualization.visualization_utils import (check_list_type,
+                                                           wrap_by_word)
 
 
 class TopicVisualizer:

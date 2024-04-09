@@ -24,6 +24,10 @@ from bunkatopics.topic_modeling import (
     LLMCleaningTopic,
 )
 
+from sentence_transformers import SentenceTransformer
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from FlagEmbedding import FlagModel
+
 # Ignore all UserWarnings
 warnings.filterwarnings("ignore", category=UserWarning)
 pd.options.mode.chained_assignment = None
@@ -222,6 +226,24 @@ def _get_continuum(
     continuum = ContinuumDimension(
         id=cont_name, left_words=left_words, right_words=right_words
     )
+
+    # Determine if self.embedding_model is an instance of SentenceTransformer
+
+    if isinstance(embedding_model, SentenceTransformer):
+        left_embedding = embedding_model.encode(
+            continuum.left_words, show_progress_bar=True
+        )
+        right_embedding = embedding_model.encode(
+            continuum.right_words, show_progress_bar=True
+        )
+
+    elif isinstance(embedding_model, HuggingFaceEmbeddings):
+        left_embedding = embedding_model.embed_documents(continuum.left_words)
+        right_embedding = embedding_model.embed_documents(continuum.right_words)
+
+    elif isinstance(embedding_model, FlagModel):
+        left_embedding = embedding_model.encode(continuum.left_words)
+        right_embedding = embedding_model.encode(continuum.right_words)
 
     # Compute the extremity embeddings
     left_embedding = embedding_model.encode(continuum.left_words)

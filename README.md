@@ -10,7 +10,7 @@ Please read our Documentation: [The Origin of Bunka](https://charlesdedampierre.
 <img src="docs/images/logo.png" width="35%" height="35%" align="right" />
 
 Bunkatopics is a package designed for Data Cleaning, Topic Modeling Visualization and Frame Analysis. Its primary goal is to assist developers in gaining insights from unstructured data, potentially facilitating data cleaning and optimizing LLMs through fine-tuning processes.
-Bunkatopics is constructed using well-known libraries like langchain, chroma, and transformers, enabling seamless integration into various environments.
+Bunkatopics is constructed using well-known libraries like sentence_transformers, langchain and transformers, enabling seamless integration into various environments.
 
 Discover the different Use Case:
 
@@ -56,7 +56,7 @@ docs = load_dataset("bunkalab/medium-sample-technology")["train"]["title"] # 'do
 
 ### Choose Your Embedding Model
 
-Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size. Please refer to the langchain documentation for details on available models.
+Bunkatopics offers seamless integration with Huggingface's extensive collection of embedding models. You can select from a wide range of models, but be mindful of their size.
 
 ```python
 # Load Embedding model

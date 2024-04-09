@@ -182,11 +182,11 @@ We can now access the newly made topics
 |   bt-13  | Quantum Technology Industries          | 105  | 3.75    |
 |   bt-7   | High Definition Television (HDTV)      | 36   | 1.29    |
 
-## visualise Dimensions on topics
+## Visualise Dimensions on topics
 
 ```python
-dataset = load_dataset("bunkalab/medium-sample-technology-tags")
-docs = list(dataset['Title'])
+dataset = load_dataset("bunkalab/medium-sample-technology-tags")['train']
+docs = list(dataset['title'])
 ids = list(dataset['doc_id'])
 tags = list(dataset['tags'])
 
@@ -200,6 +200,9 @@ bunka = Bunka()
 bunka.fit(docs=docs, ids=ids, metadata=metadata)
 bunka.get_topics(n_clusters=10)
 bunka.visualize_topics(color='tags', width=800, height=800) # Adjust the color
+```
+
+<img src="docs/images/bunka_color.png" width="70%" height="70%" align="center" />
 
 ## Manually Cleaning the topics
 
@@ -283,7 +286,7 @@ politics/business vs     positive/negative      |  politics/business vs startups
 :-------------------------:|:-------------------------:
 ![Image 3](docs/images/bourdieu_3.png)  |  ![Image 4](docs/images/bourdieu_4.png)
 
-## Front-end
+## Front-end (Beta)
 
 This is a beta feature. First, git clone the repository
 
@@ -291,14 +294,7 @@ This is a beta feature. First, git clone the repository
 git clone https://github.com/charlesdedampierre/BunkaTopics.git
 cd BunkaTopics
 pip install -e .
-```
 
-Then carry out a Topic Modeling and launch the serveur:
-
-First clone the repo
-
-```bash
-git clone https://github.com/charlesdedampierre/BunkaTopics.git
 cd web # got the web directory
 npm install # install the needed React packages
 ```
@@ -310,11 +306,11 @@ from sentence_transformers import SentenceTransformer
 embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
 
 # Initialize Bunka with your chosen model and language preference
-bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+bunka = Bunka(embedding_model=embedding_model, language='english') # The language is used for NER detection. You can choose the following languages: english,spanish, french, german, arabic, chinese, danish etc. Be sure to use an embedding model adapted.
 
 # Fit Bunka to your text data
 bunka.fit(docs)
-bunka.get_topics(n_clusters=15, name_length=3)# Specify the number of terms to describe each topic
+bunka.get_topics(n_clusters=15, name_length=3) # Specify the number of terms to describe each topic
 ```
 
 ```python

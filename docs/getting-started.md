@@ -151,8 +151,8 @@ We can now access the newly made topics
 ## visualise Dimensions on topics
 
 ```python
-dataset = load_dataset("bunkalab/medium-sample-technology-tags")
-docs = list(dataset['Title'])
+dataset = load_dataset("bunkalab/medium-sample-technology-tags")['train']
+docs = list(dataset['title'])
 ids = list(dataset['doc_id'])
 tags = list(dataset['tags'])
 

@@ -14,18 +14,18 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "matplotlib>=3.7.2",
     "datasets>=2.14.5",
-    # "chromadb>=0.4.13",
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
     "langchain_openai",
-    "ipython",
-    "ipywidgets",
-    "jsonlines",
-    "pyod",
+    "ipython>=8.23.0",
+    "ipywidgets>=8.1.2",
+    "jsonlines>=4.0.0",
+    "pyod>=1.1.3",
     "FlagEmbedding>=1.2.8",
+    "tiktoken==0.6.0",
 ]
 
-test = ["nbformat>=4.2.0", "ipywidgets", "nbconvert", "jupyter"]
+test = ["nbformat>=4.2.0", "nbconvert>=7.16.3", "jupyter>=1.00"]
 
 format_dependencies = [
     "black ~= 23.0",

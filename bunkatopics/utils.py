@@ -4,6 +4,9 @@ import typing as t
 import jsonlines
 import pandas as pd
 
+import typing as t
+import tiktoken
+
 from bunkatopics.datamodel import Document, Term, Topic
 
 
@@ -103,3 +106,13 @@ def read_terms_from_jsonl(file_path):
             term = Term(**item)
             terms.append(term)
     return terms
+
+
+enc = tiktoken.get_encoding("cl100k_base")
+
+
+def count_tokens(docs: t.List[str]):
+    tokens = [enc.encode(x) for x in docs]
+    sum_tokens = [len(x) for x in tokens]
+    total_number_of_tokens = sum(sum_tokens)
+    return total_number_of_tokens

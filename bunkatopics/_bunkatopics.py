@@ -47,7 +47,12 @@ from bunkatopics.topic_modeling import (
     TextacyTermsExtractor,
 )
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.utils import BunkaError, _create_topic_dfs, _filter_hdbscan
+from bunkatopics.utils import (
+    BunkaError,
+    _create_topic_dfs,
+    _filter_hdbscan,
+    count_tokens,
+)
 from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
@@ -168,6 +173,10 @@ class Bunka:
 
         self.docs = [Document(**row) for row in df.to_dict(orient="records")]
         sentences = [doc.content for doc in self.docs]
+
+        total_number_of_tokens = count_tokens(sentences)
+        logger.info(f"Processing {total_number_of_tokens} tokens")
+
         ids = [doc.doc_id for doc in self.docs]
 
         logger.info(

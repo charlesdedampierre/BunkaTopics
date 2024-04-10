@@ -67,8 +67,7 @@ embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
 import umap
 projection_model = umap.UMAP(
                 n_components=2,
-                random_state=42,
-            )
+                random_state=42)
 
 from bunkatopics import Bunka
 

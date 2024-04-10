@@ -11,7 +11,7 @@ import textacy.preprocessing
 from tqdm import tqdm
 
 import random
-from .utils import supported_languages
+from .utils import detect_language_to_spacy_model
 
 from bunkatopics.datamodel import Term
 from .utils import detect_language
@@ -56,6 +56,7 @@ class TextacyTermsExtractor:
         drop_emoji: bool = True,
         include_pos: t.List[str] = ["NOUN"],
         include_types: t.List[str] = ["PERSON", "ORG"],
+        language: str = "en",
     ):
         """
         Initializes the TextacyTermsExtractor with specified configuration.
@@ -80,6 +81,7 @@ class TextacyTermsExtractor:
         self.include_pos = include_pos
         self.include_types = include_types
         self.ngrams = ngrams
+        self.language = language
 
     def fit_transform(
         self,
@@ -100,19 +102,12 @@ class TextacyTermsExtractor:
             replacing currency symbols, removing HTML tags, and optionally dropping emojis.
         """
 
-        # detect language:
-
-        sample_size = len(sentences) // 100  # sample 1% of the dataset
-
-        # Randomly sample 1% of the dataset
-        sampled_sentences = random.sample(sentences, sample_size)
-        detected_language = detect_language(sampled_sentences)
-
         try:
-            self.language_model = supported_languages[detected_language]
-            logger.info(f"Detected language: {detected_language}")
+            self.language_model = detect_language_to_spacy_model[self.language]
         except:
-            logger.info("We could not detect the language, we set English as default")
+            logger.info(
+                "We could not find the adapted model, we set to en_core_web_sm (English) as default"
+            )
             self.language_model = "en_core_web_sm"
 
         try:

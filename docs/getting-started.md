@@ -46,8 +46,7 @@ projection_model = umap.UMAP(
 from bunkatopics import Bunka
 
 bunka = Bunka(embedding_model=embedding_model, 
-            projection_model=projection_model, 
-            language='english') # You can choose any language you prefer
+            projection_model=projection_model)
 
 # Fit Bunka to your text data
  bunka.fit(docs)
@@ -106,7 +105,7 @@ repo_id = 'mistralai/Mistral-7B-v0.1'
 llm = HuggingFaceHub(repo_id='mistralai/Mistral-7B-v0.1', huggingfacehub_api_token="HF_TOKEN")
 
 # Obtain clean topic names using Generative Model
-bunka.get_clean_topic_name(generative_model=llm, language='english')
+bunka.get_clean_topic_name(generative_model=llm)
 bunka.visualize_topics( width=800, height=800, colorscale = 'Portland')
 ```
 
@@ -315,8 +314,8 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 # Choose your embedding model
 embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2") # We recommend starting with a small model
 
-# Initialize Bunka with your chosen model and language preference
-bunka = Bunka(embedding_model=embedding_model, language='english') # You can choose any language you prefer
+# Initialize Bunka with your chosen model
+bunka = Bunka(embedding_model=embedding_model) 
 
 # Fit Bunka to your text data
 bunka.fit(docs)

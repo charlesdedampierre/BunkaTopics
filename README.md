@@ -72,8 +72,7 @@ projection_model = umap.UMAP(
 from bunkatopics import Bunka
 
 bunka = Bunka(embedding_model=embedding_model, 
-            projection_model=projection_model, 
-            language='english') # You can choose any language you prefer
+            projection_model=projection_model)  # the language is automatically detected, make sure the embedding model is adapted
 
 # Fit Bunka to your text data
  bunka.fit(docs)
@@ -129,7 +128,7 @@ Note: It is recommended to use an Instruct model ie a model that has been fine-t
 
 ```python
 # Obtain clean topic names using Generative Model
-bunka.get_clean_topic_name(generative_model=llm, language='english')
+bunka.get_clean_topic_name(generative_model=llm)
 ```
 
 Check the top documents for every topic!
@@ -340,8 +339,8 @@ from bunkatopics import Bunka
 from sentence_transformers import SentenceTransformer
 embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
 
-# Initialize Bunka with your chosen model and language preference
-bunka = Bunka(embedding_model=embedding_model, language='english') # The language is used for NER detection. You can choose the following languages: english,spanish, french, german, arabic, chinese, danish etc. Be sure to use an embedding model adapted.
+# Initialize Bunka with your chosen model
+bunka = Bunka(embedding_model=embedding_model) 
 
 # Fit Bunka to your text data
 bunka.fit(docs)

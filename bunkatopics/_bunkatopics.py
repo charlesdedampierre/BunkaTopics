@@ -46,7 +46,12 @@ from bunkatopics.topic_modeling import (
     LLMCleaningTopic,
     TextacyTermsExtractor,
 )
-from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
+from bunkatopics.topic_modeling.topic_utils import (
+    get_topic_repartition,
+)
+
+from bunkatopics.topic_modeling.utils import detect_language_to_language_name
+
 from bunkatopics.utils import (
     BunkaError,
     _create_topic_dfs,
@@ -90,7 +95,7 @@ class Bunka:
         self,
         embedding_model: Embeddings = None,
         projection_model=None,
-        language: str = "english",
+        language: str = "english",  # will be removed in the future
     ):
         """Initialize a BunkaTopics instance.
 
@@ -100,21 +105,10 @@ class Bunka:
                 Default is None.
             projection_model (optional): An optional projection model to reduce the dimensionality of the embeddings.
                 Default is None.
-            language (str): The language to be used for text processing and modeling.
-                Options include "english" (default), or specify another language as needed.
-                Default is "english".
         """
         warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
         if embedding_model is None:
-            if language == "english":
-                embedding_model = SentenceTransformer(
-                    model_name_or_path="all-MiniLM-L6-v2"
-                )
-
-            else:
-                embedding_model = SentenceTransformer(
-                    model_name_or_path="paraphrase-multilingual-MiniLM-L12-v2"
-                )
+            embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
 
         if projection_model is None:
             projection_model = umap.UMAP(
@@ -124,7 +118,6 @@ class Bunka:
 
         self.projection_model = projection_model
         self.embedding_model = embedding_model
-        self.language = language
         self.df_cleaned = None
 
     def fit(
@@ -149,6 +142,8 @@ class Bunka:
             metadata (t.Optional[t.List[str]): A of metadata dictionaries for the documents.
             sampling_size_for_terms (t.Optional[int]): The number of documents to sample for term extraction. Default is 2000.
         """
+
+        from bunkatopics.topic_modeling.utils import detect_language
 
         df = pd.DataFrame(docs, columns=["content"])
 
@@ -178,6 +173,24 @@ class Bunka:
         logger.info(f"Processing {total_number_of_tokens} tokens")
 
         ids = [doc.doc_id for doc in self.docs]
+
+        # Detect language
+
+        sample_size = len(sentences) // 100  # sample 1% of the dataset
+
+        # Randomly sample 1% of the dataset
+        sampled_sentences = random.sample(sentences, sample_size)
+        self.detected_language = detect_language(sampled_sentences)
+        self.language_name = detect_language_to_language_name.get(
+            self.detected_language, "english"
+        )
+
+        logger.info(f"Detected language: {self.language_name}")
+
+        # if self.language_name != "english":
+        #     embedding_model = SentenceTransformer(
+        #         model_name_or_path="paraphrase-multilingual-MiniLM-L12-v2"
+        #     )
 
         logger.info(
             "Embedding documents... (can take varying amounts of time depending on their size)"
@@ -248,7 +261,7 @@ class Bunka:
         self.fig_embeddings = self._quick_plot(df_embeddings_2D)
 
         logger.info("Extracting meaningful terms from documents...")
-        terms_extractor = TextacyTermsExtractor()
+        terms_extractor = TextacyTermsExtractor(language=self.detected_language)
 
         if len(sentences) >= sampling_size_for_terms:
             # Pair sentences with their corresponding ids
@@ -416,7 +429,6 @@ class Bunka:
     def get_clean_topic_name(
         self,
         llm: LLM,
-        language: str = "english",
         use_doc: bool = False,
         context: str = "everything",
     ) -> pd.DataFrame:
@@ -425,7 +437,6 @@ class Bunka:
 
         Args:
             llm: The language model used for cleaning topic names.
-            language (str): The language context for the language model. Default is "english".
             use_doc (bool): Flag to determine whether to use document context in the cleaning process. Default is False.
             context (str): The broader context within which the topics are related Default is "everything". For instance, if you are looking at Computer Science, then update context = 'Computer Science'
 
@@ -441,7 +452,7 @@ class Bunka:
 
         model_cleaning = LLMCleaningTopic(
             llm,
-            language=language,
+            language=self.language_name,
             use_doc=use_doc,
             context=context,
         )

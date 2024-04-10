@@ -86,7 +86,7 @@ def detect_language(documents):
     return res
 
 
-supported_languages = {
+detect_language_to_spacy_model = {
     "ar": "ar_core_news_sm",  # Arabic
     "da": "da_core_news_sm",  # Danish
     "de": "de_core_news_sm",  # German
@@ -106,6 +106,28 @@ supported_languages = {
     "tr": "tr_core_news_sm",  # Turkish
     "zh-cn": "zh_core_web_sm",  # Chinese Simplified
     "zh-tw": "zh_core_web_sm",  # Chinese Traditional
+}
+
+detect_language_to_language_name = {
+    "ar": "Arabic",
+    "da": "Danish",
+    "de": "German",
+    "el": "Greek",
+    "en": "English",
+    "es": "Spanish",
+    "fa": "Persian",
+    "fr": "French",
+    "it": "Italian",
+    "ja": "Japanese",
+    "no": "Norwegian",
+    "pl": "Polish",
+    "pt": "Portuguese",
+    "ro": "Romanian",
+    "ru": "Russian",
+    "sv": "Swedish",
+    "tr": "Turkish",
+    "zh-cn": "Chinese Simplified",
+    "zh-tw": "Chinese Traditional",
 }
 
 # Supported languages with corresponding SpaCy models

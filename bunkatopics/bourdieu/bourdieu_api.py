@@ -3,30 +3,19 @@ import warnings
 
 import numpy as np
 import pandas as pd
+from FlagEmbedding import FlagModel
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.llms import LLM
+from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-from bunkatopics.datamodel import (
-    BourdieuDimension,
-    BourdieuQuery,
-    ContinuumDimension,
-    Document,
-    Term,
-    Topic,
-    TopicGenParam,
-    TopicParam,
-)
-from bunkatopics.topic_modeling import (
-    BunkaTopicModeling,
-    DocumentRanker,
-    LLMCleaningTopic,
-)
-
-from sentence_transformers import SentenceTransformer
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from FlagEmbedding import FlagModel
+from bunkatopics.datamodel import (BourdieuDimension, BourdieuQuery,
+                                   ContinuumDimension, Document, Term, Topic,
+                                   TopicGenParam, TopicParam)
+from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
+                                        LLMCleaningTopic)
 
 # Ignore all UserWarnings
 warnings.filterwarnings("ignore", category=UserWarning)

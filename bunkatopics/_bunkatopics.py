@@ -529,7 +529,7 @@ class Bunka:
         label_size_ratio_clusters: int = 100,
         label_size_ratio_label: int = 50,
         label_size_ratio_percent: int = 10,
-        min_docs_per_cluster: int = 1,
+        min_docs_per_cluster: int = 5,
     ) -> go.Figure:
         """
         Creates and visualizes a Bourdieu Map using specified parameters and a generative model.

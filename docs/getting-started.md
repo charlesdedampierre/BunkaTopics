@@ -235,6 +235,7 @@ bourdieu_fig = bunka.visualize_bourdieu(
         density=False,
         convex_hull=True,
         radius_size=0.2,
+        min_docs_per_cluster = 5, 
         label_size_ratio_clusters=80)
 ```
 

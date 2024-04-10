@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from langdetect import detect
+from collections import Counter
 
 
 def specificity(
@@ -63,3 +65,69 @@ def specificity(
     edge = edge.reset_index(drop=True)
 
     return edge
+
+
+def most_common_element(lst):
+    counter = Counter(lst)
+    most_common = counter.most_common(1)
+    return most_common[0][0] if most_common else None
+
+
+def detect_language(documents):
+
+    langs = []
+    for doc in documents:
+
+        lang = detect(doc)
+        langs.append(lang)
+
+    res = most_common_element(langs)
+
+    return res
+
+
+supported_languages = {
+    "ar": "ar_core_news_sm",  # Arabic
+    "da": "da_core_news_sm",  # Danish
+    "de": "de_core_news_sm",  # German
+    "el": "el_core_news_sm",  # Greek
+    "en": "en_core_web_sm",  # English
+    "es": "es_core_news_sm",  # Spanish
+    "fa": "fa_core_news_sm",  # Persian
+    "fr": "fr_core_news_sm",  # French
+    "it": "it_core_news_sm",  # Italian
+    "ja": "ja_core_news_sm",  # Japanese
+    "no": "nb_core_news_sm",  # Norwegian
+    "pl": "pl_core_news_sm",  # Polish
+    "pt": "pt_core_news_sm",  # Portuguese
+    "ro": "ro_core_news_sm",  # Romanian
+    "ru": "ru_core_news_sm",  # Russian
+    "sv": "sv_core_news_sm",  # Swedish
+    "tr": "tr_core_news_sm",  # Turkish
+    "zh-cn": "zh_core_web_sm",  # Chinese Simplified
+    "zh-tw": "zh_core_web_sm",  # Chinese Traditional
+}
+
+# Supported languages with corresponding SpaCy models
+old_supported_languages = {
+    "english": "en_core_web_sm",
+    "spanish": "es_core_news_sm",
+    "french": "fr_core_news_sm",
+    "german": "de_core_news_sm",
+    "arabic": "ar_core_news_sm",
+    "chinese": "zh_core_web_sm",
+    "danish": "da_core_news_sm",
+    "dutch": "nl_core_news_sm",
+    "greek": "el_core_news_sm",
+    "italian": "it_core_news_sm",
+    "japanese": "ja_core_news_sm",
+    "norwegian": "nb_core_news_sm",
+    "polish": "pl_core_news_sm",
+    "portuguese": "pt_core_news_sm",
+    "romanian": "ro_core_news_sm",
+    "russian": "ru_core_news_sm",
+    "swedish": "sv_core_news_sm",
+    "turkish": "tr_core_news_sm",
+    "multilingual": "xx_ent_wiki_sm",  # Multilingual model
+    # Additional languages can be added here
+}

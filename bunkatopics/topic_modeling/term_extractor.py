@@ -6,9 +6,16 @@ import pandas as pd
 import spacy
 import textacy
 import textacy.preprocessing
+
+
 from tqdm import tqdm
 
+import random
+from .utils import supported_languages
+
 from bunkatopics.datamodel import Term
+from .utils import detect_language
+from bunkatopics.logging import logger
 
 # Define a preprocessing pipeline
 preproc = textacy.preprocessing.make_pipeline(
@@ -42,7 +49,6 @@ class TextacyTermsExtractor:
 
     def __init__(
         self,
-        language: str = "english",
         ngrams: t.List[int] = [1, 2, 3],
         ngs: bool = True,
         ents: bool = False,
@@ -55,7 +61,6 @@ class TextacyTermsExtractor:
         Initializes the TextacyTermsExtractor with specified configuration.
 
         Args:
-            language (str): The language of the text. Defaults to 'english'.
             ngrams (tuple[int, ...]): Tuple of n-gram lengths to consider. Defaults to (1, 2, 3).
             ngs (bool): Include n-grams in extraction. Defaults to True.
             ents (bool): Include named entities in extraction. Defaults to True.
@@ -68,30 +73,6 @@ class TextacyTermsExtractor:
             ValueError: If the specified language is not supported.
         """
 
-        # Supported languages with corresponding SpaCy models
-        self.supported_languages = {
-            "english": "en_core_web_sm",
-            "spanish": "es_core_news_sm",
-            "french": "fr_core_news_sm",
-            "german": "de_core_news_sm",
-            "arabic": "ar_core_news_sm",
-            "chinese": "zh_core_web_sm",
-            "danish": "da_core_news_sm",
-            "dutch": "nl_core_news_sm",
-            "greek": "el_core_news_sm",
-            "italian": "it_core_news_sm",
-            "japanese": "ja_core_news_sm",
-            "norwegian": "nb_core_news_sm",
-            "polish": "pl_core_news_sm",
-            "portuguese": "pt_core_news_sm",
-            "romanian": "ro_core_news_sm",
-            "russian": "ru_core_news_sm",
-            "swedish": "sv_core_news_sm",
-            "turkish": "tr_core_news_sm",
-            "multilingual": "xx_ent_wiki_sm",  # Multilingual model
-            # Additional languages can be added here
-        }
-
         self.ngs = ngs
         self.ents = ents
         self.ncs = ncs
@@ -99,18 +80,6 @@ class TextacyTermsExtractor:
         self.include_pos = include_pos
         self.include_types = include_types
         self.ngrams = ngrams
-
-        # Set the language model based on the provided language
-        if language in self.supported_languages:
-            self.language_model = self.supported_languages[language]
-        else:
-            raise ValueError(f"The language '{language}' is not supported.")
-
-        try:
-            spacy.load(self.language_model)
-        except OSError:
-            # The model is not installed, so download it
-            spacy.cli.download(self.language_model)
 
     def fit_transform(
         self,
@@ -130,6 +99,27 @@ class TextacyTermsExtractor:
             - It also handles pre-processing steps like normalizing text, removing brackets,
             replacing currency symbols, removing HTML tags, and optionally dropping emojis.
         """
+
+        # detect language:
+
+        sample_size = len(sentences) // 100  # sample 1% of the dataset
+
+        # Randomly sample 1% of the dataset
+        sampled_sentences = random.sample(sentences, sample_size)
+        detected_language = detect_language(sampled_sentences)
+
+        try:
+            self.language_model = supported_languages[detected_language]
+            logger.info(f"Detected language: {detected_language}")
+        except:
+            logger.info("We could not detect the language, we set English as default")
+            self.language_model = "en_core_web_sm"
+
+        try:
+            spacy.load(self.language_model)
+        except OSError:
+            # The model is not installed, so download it
+            spacy.cli.download(self.language_model)
 
         # Create a DataFrame from the provided document IDs and sentences
         self.df = pd.DataFrame({"content": sentences, "doc_id": ids})

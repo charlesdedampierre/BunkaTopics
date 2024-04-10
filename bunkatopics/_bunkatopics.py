@@ -248,7 +248,7 @@ class Bunka:
         self.fig_embeddings = self._quick_plot(df_embeddings_2D)
 
         logger.info("Extracting meaningful terms from documents...")
-        terms_extractor = TextacyTermsExtractor(language=self.language)
+        terms_extractor = TextacyTermsExtractor()
 
         if len(sentences) >= sampling_size_for_terms:
             # Pair sentences with their corresponding ids

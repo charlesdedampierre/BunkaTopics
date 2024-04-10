@@ -102,9 +102,9 @@ class TextacyTermsExtractor:
             replacing currency symbols, removing HTML tags, and optionally dropping emojis.
         """
 
-        try:
-            self.language_model = detect_language_to_spacy_model[self.language]
-        except:
+        self.language_model = detect_language_to_spacy_model.get(self.language)
+
+        if self.language_model is None:
             logger.info(
                 "We could not find the adapted model, we set to en_core_web_sm (English) as default"
             )

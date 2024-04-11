@@ -24,7 +24,7 @@ Discover the different Use Case:
 
 | Theme  | Google Colab Link  |
 |---|---|
-| Visual Topic Modeling with Bunka  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11K5bKs4y6snEFEZhKFNuNVRRSAsq9b7p#scrollTo=uxQ5qCIVar1u)  |
+| Visual Topic Modeling with Bunka  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1VHPc_sbAsDDlcK3UPpKyJWHjBl-ac9CU)  |
 | Cleaning dataset for fine-tuning LLM using Bunka  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KedB5FqJ62sF7Gb5qSsA5kbeTeJDw2Mo#scrollTo=-bEv2hrvakW4)  |
 | Understanding a dataset using Frame Analysis with Bunka | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14ubgffmKPiLBUdoV1j6EjfCnI4EFWxn4#scrollTo=7jHILnazA1Im)  |
 | Full Introduction to Topic Modeling, Data Cleaning and Frame Analysis with Bunka.  | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1M4xuJE782bDzVxDUmQv9SSQL0hdZIC8n#scrollTo=ySwyXC0bbVb8)  |

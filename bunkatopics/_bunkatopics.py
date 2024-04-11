@@ -46,6 +46,8 @@ from bunkatopics.topic_modeling import (
     LLMCleaningTopic,
     TextacyTermsExtractor,
 )
+
+from bunkatopics.topic_modeling.utils import detect_language
 from bunkatopics.topic_modeling.topic_utils import (
     get_topic_repartition,
 )
@@ -142,8 +144,6 @@ class Bunka:
             metadata (t.Optional[t.List[str]): A of metadata dictionaries for the documents.
             sampling_size_for_terms (t.Optional[int]): The number of documents to sample for term extraction. Default is 2000.
         """
-
-        from bunkatopics.topic_modeling.utils import detect_language
 
         df = pd.DataFrame(docs, columns=["content"])
 

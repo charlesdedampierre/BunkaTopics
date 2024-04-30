@@ -5,8 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from bunkatopics.datamodel import Document, Topic
-from bunkatopics.visualization.visualization_utils import (check_list_type,
-                                                           wrap_by_word)
+from bunkatopics.visualization.visualization_utils import check_list_type, wrap_by_word
 
 
 class TopicVisualizer:
@@ -216,7 +215,7 @@ class TopicVisualizer:
                     mode="markers",
                     marker=dict(
                         color=list_color_figure,  # Assigning colors based on the list_color
-                        size=self.width / 70,
+                        size=self.width / 100,
                         # size=10,  # Adjust the size of the markers as needed
                         opacity=0.5,  # Adjust the opacity of the markers as needed
                         colorscale=colorscale,  # You can specify a colorscale if needed

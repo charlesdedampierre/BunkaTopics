@@ -78,8 +78,11 @@ def detect_language(documents):
     langs = []
     for doc in documents:
 
-        lang = detect(doc)
-        langs.append(lang)
+        try:
+            lang = detect(doc)
+            langs.append(lang)
+        except:
+            pass
 
     res = most_common_element(langs)
 

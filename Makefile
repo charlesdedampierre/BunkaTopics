@@ -32,6 +32,10 @@ pypi_publish:
 # pypi_publish_test:
 # 	twine upload --repository testpypi dist/* -u __token__ -p $(PYPY_TOKEN)
 
+
+see_process:
+	asitop
+
 default: 
 	docker_build
 	docker_build_worker

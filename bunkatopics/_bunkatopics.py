@@ -130,7 +130,8 @@ class Bunka:
             t.List[t.Dict[DOC_ID, t.List[float]]]
         ] = None,
         metadata: t.Optional[t.List[dict]] = None,
-        sampling_size_for_terms: t.Optional[int] = 2000,
+        sampling_size_for_terms: t.Optional[int] = 1000,
+        language: bool = None,
     ) -> None:
         """
         Fits the Bunka model to the provided list of documents.
@@ -180,7 +181,11 @@ class Bunka:
 
         # Randomly sample 1% of the dataset
         sampled_sentences = random.sample(sentences, sample_size)
-        self.detected_language = detect_language(sampled_sentences)
+
+        if language is None:
+            self.detected_language = detect_language(sampled_sentences)
+        else:
+            self.detected_language = language
         self.language_name = detect_language_to_language_name.get(
             self.detected_language, "english"
         )

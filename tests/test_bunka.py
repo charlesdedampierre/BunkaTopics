@@ -21,12 +21,6 @@ from bunkatopics import Bunka
 
 import torch
 
-
-import os
-
-os.environ["PYTORCH_MPS_HIGH_WATERMARK_RATIO"] = "0.0"
-
-
 device = torch.device("cpu")
 
 random.seed(42)

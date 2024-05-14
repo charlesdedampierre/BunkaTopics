@@ -21,7 +21,7 @@ from bunkatopics import Bunka
 
 import torch
 
-device = torch.device("mps")
+device = torch.device("cpu")
 
 random.seed(42)
 

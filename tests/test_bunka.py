@@ -19,6 +19,10 @@ from sentence_transformers import SentenceTransformer
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from bunkatopics import Bunka
 
+import torch
+
+device = torch.device("mps")
+
 random.seed(42)
 
 # repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
@@ -62,7 +66,9 @@ class TestBunka(unittest.TestCase):
             perplexity=3,
             random_state=42,
         )
-        embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
+        embedding_model = SentenceTransformer(
+            model_name_or_path="all-MiniLM-L6-v2", device=device
+        )
         cls.bunka = Bunka(
             projection_model=projection_model, embedding_model=embedding_model
         )
@@ -85,7 +91,9 @@ class TestBunka(unittest.TestCase):
             random_state=42,
         )
 
-        embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
+        embedding_model = SentenceTransformer(
+            model_name_or_path="all-MiniLM-L6-v2", device=device
+        )
 
         bunka = Bunka(
             projection_model=projection_model, embedding_model=embedding_model

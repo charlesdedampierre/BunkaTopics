@@ -24,6 +24,7 @@ dependencies = [
     "FlagEmbedding>=1.2.8",
     "tiktoken==0.6.0",
     "langdetect>=1.0.9",
+    "torch==2.3.0",
 ]
 
 test = ["nbformat>=4.2.0", "nbconvert>=7.16.3", "jupyter>=1.00"]

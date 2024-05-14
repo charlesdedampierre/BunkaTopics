@@ -1,7 +1,9 @@
+from collections import Counter
+
 import numpy as np
 import pandas as pd
-from langdetect import detect
-from collections import Counter
+from langdetect import LangDetectException, detect
+from bunkatopics.logging import logger
 
 
 def specificity(
@@ -74,12 +76,14 @@ def most_common_element(lst):
 
 
 def detect_language(documents):
-
     langs = []
     for doc in documents:
-
-        lang = detect(doc)
-        langs.append(lang)
+        try:
+            lang = detect(doc)
+            langs.append(lang)
+        except LangDetectException:
+            logger.debug(f"Could not detect language for document: {doc}")
+            pass
 
     res = most_common_element(langs)
 

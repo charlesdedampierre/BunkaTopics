@@ -1,3 +1,4 @@
+import random
 import typing as t
 import warnings
 from functools import partial
@@ -6,16 +7,12 @@ import pandas as pd
 import spacy
 import textacy
 import textacy.preprocessing
-
-
 from tqdm import tqdm
 
-import random
-from .utils import detect_language_to_spacy_model
-
 from bunkatopics.datamodel import Term
-from .utils import detect_language
 from bunkatopics.logging import logger
+
+from .utils import detect_language, detect_language_to_spacy_model
 
 # Define a preprocessing pipeline
 preproc = textacy.preprocessing.make_pipeline(

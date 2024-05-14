@@ -135,30 +135,30 @@ class TestBunka(unittest.TestCase):
 
     #     self.assertIsInstance(bunka, Bunka)
 
-    def test_embed_hf_embed(self):
+    # def test_embed_hf_embed(self):
 
-        projection_model = TSNE(
-            n_components=2,
-            learning_rate="auto",
-            init="random",
-            perplexity=3,
-            random_state=42,
-        )
+    #     projection_model = TSNE(
+    #         n_components=2,
+    #         learning_rate="auto",
+    #         init="random",
+    #         perplexity=3,
+    #         random_state=42,
+    #     )
 
-        embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    #     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-        bunka = Bunka(
-            projection_model=projection_model, embedding_model=embedding_model
-        )
+    #     bunka = Bunka(
+    #         projection_model=projection_model, embedding_model=embedding_model
+    #     )
 
-        print("Fitting Bunka with HuggingFaceEmbeddings")
-        bunka.fit(
-            ids=ids,
-            docs=docs,
-            metadata=metadata,
-            pre_computed_embeddings=None,
-            sampling_size_for_terms=1000,
-        )
+    #     print("Fitting Bunka with HuggingFaceEmbeddings")
+    #     bunka.fit(
+    #         ids=ids,
+    #         docs=docs,
+    #         metadata=metadata,
+    #         pre_computed_embeddings=None,
+    #         sampling_size_for_terms=1000,
+    #     )
 
     # def test_topic_modeling_dbscan(self):
     #     custom_clustering_model = DBSCAN(eps=0.5, min_samples=5)

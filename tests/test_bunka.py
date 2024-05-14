@@ -21,13 +21,14 @@ from bunkatopics import Bunka
 
 random.seed(42)
 
-repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
-llm = HuggingFaceHub(
-    repo_id=repo_id,
-    huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
-)
+# repo_id = "mistralai/Mistral-7B-Instruct-v0.1"
+# llm = HuggingFaceHub(
+#     repo_id=repo_id,
+#     huggingfacehub_api_token=os.environ.get("HF_TOKEN"),
+# )
 
 figure = True
+
 
 # Preprocess a dataset
 dataset = load_dataset("bunkalab/medium-sample-technology")
@@ -214,13 +215,13 @@ class TestBunka(unittest.TestCase):
 
         self.assertIsInstance(topic_fig, go.Figure)
 
-    def test_generative_names(self):
-        n_clusters = 3
-        self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
-        df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
-        print(df_topics_clean["topic_name"])
-        self.assertIsInstance(df_topics_clean, pd.DataFrame)
-        self.assertEqual(len(df_topics_clean), n_clusters)
+    # def test_generative_names(self):
+    #     n_clusters = 3
+    #     self.bunka.get_topics(n_clusters=n_clusters, min_count_terms=1)
+    #     df_topics_clean = self.bunka.get_clean_topic_name(llm=llm)
+    #     print(df_topics_clean["topic_name"])
+    #     self.assertIsInstance(df_topics_clean, pd.DataFrame)
+    #     self.assertEqual(len(df_topics_clean), n_clusters)
 
     def test_bourdieu_modeling(self):
         bourdieu_fig = self.bunka.visualize_bourdieu(

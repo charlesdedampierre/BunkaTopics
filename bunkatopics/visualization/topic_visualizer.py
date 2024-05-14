@@ -23,6 +23,7 @@ class TopicVisualizer:
         width=1000,
         height=1000,
         label_size_ratio=100,
+        point_size_ratio=150,
         colorscale="delta",
         density: bool = False,
         convex_hull: bool = False,
@@ -43,6 +44,7 @@ class TopicVisualizer:
         self.width = width
         self.height = height
         self.label_size_ratio = label_size_ratio
+        self.point_size_ratio = point_size_ratio
         self.colorscale = colorscale
         self.density = density
         self.convex_hull = convex_hull
@@ -215,7 +217,7 @@ class TopicVisualizer:
                     mode="markers",
                     marker=dict(
                         color=list_color_figure,  # Assigning colors based on the list_color
-                        size=self.width / 100,
+                        size=self.width / self.point_size_ratio,
                         # size=10,  # Adjust the size of the markers as needed
                         opacity=0.5,  # Adjust the opacity of the markers as needed
                         colorscale=colorscale,  # You can specify a colorscale if needed

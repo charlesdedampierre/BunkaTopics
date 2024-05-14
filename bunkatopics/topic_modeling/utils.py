@@ -81,7 +81,7 @@ def detect_language(documents):
         try:
             lang = detect(doc)
             langs.append(lang)
-        except:
+        except LangDetectException:
             logger.debug(f"Could not detect language for document: {doc}")
             pass
 

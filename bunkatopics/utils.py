@@ -1,10 +1,9 @@
 import os
+import typing as t
 
 import jsonlines
 import pandas as pd
 import tiktoken
-
-import typing as t
 
 from bunkatopics.datamodel import Document, Term, Topic
 

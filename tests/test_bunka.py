@@ -47,7 +47,7 @@ top_tags = list(df_test["tags"].value_counts().head(10)[1:].index)
 df_test = df_test[df_test["tags"].isin(top_tags)]
 df_test = df_test.drop_duplicates("doc_id", keep="first")
 df_test = df_test[~df_test["tags"].isna()]
-df_test = df_test.sample(1000, random_state=42)
+df_test = df_test.sample(300, random_state=42)
 
 docs = df_test["title"].tolist()
 ids = df_test["doc_id"].tolist()

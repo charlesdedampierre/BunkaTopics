@@ -81,8 +81,7 @@ def detect_language(documents):
         try:
             lang = detect(doc)
             langs.append(lang)
-        except LangDetectException:
-            logger.debug(f"Could not detect language for document: {doc}")
+        except:
             pass
 
     res = most_common_element(langs)

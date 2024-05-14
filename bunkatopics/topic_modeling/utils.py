@@ -3,6 +3,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 from langdetect import LangDetectException, detect
+from bunkatopics.logging import logger
 
 
 def specificity(
@@ -81,6 +82,7 @@ def detect_language(documents):
             lang = detect(doc)
             langs.append(lang)
         except LangDetectException:
+            logger.debug(f"Could not detect language for document: {doc}")
             pass
 
     res = most_common_element(langs)

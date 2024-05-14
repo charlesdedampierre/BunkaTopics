@@ -25,20 +25,38 @@ from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.bourdieu import (BourdieuAPI, BourdieuOneDimensionVisualizer,
-                                  BourdieuVisualizer)
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.bourdieu import (
+    BourdieuAPI,
+    BourdieuOneDimensionVisualizer,
+    BourdieuVisualizer,
+)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
 from bunkatopics.serveur import is_server_running, kill_server
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic,
-                                        TextacyTermsExtractor)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    DocumentRanker,
+    LLMCleaningTopic,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.topic_modeling.utils import (detect_language,
-                                              detect_language_to_language_name)
-from bunkatopics.utils import (BunkaError, _create_topic_dfs, _filter_hdbscan,
-                               count_tokens)
+from bunkatopics.topic_modeling.utils import (
+    detect_language,
+    detect_language_to_language_name,
+)
+from bunkatopics.utils import (
+    BunkaError,
+    _create_topic_dfs,
+    _filter_hdbscan,
+    count_tokens,
+)
 from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 

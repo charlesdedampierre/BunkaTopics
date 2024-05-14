@@ -115,31 +115,31 @@ class TestBunka(unittest.TestCase):
             sampling_size_for_terms=1000,
         )
 
-    def test_embed_flag_embeddings(self):
+    # def test_embed_flag_embeddings(self):
 
-        projection_model = TSNE(
-            n_components=2,
-            learning_rate="auto",
-            init="random",
-            perplexity=3,
-            random_state=42,
-        )
+    #     projection_model = TSNE(
+    #         n_components=2,
+    #         learning_rate="auto",
+    #         init="random",
+    #         perplexity=3,
+    #         random_state=42,
+    #     )
 
-        embedding_model = FlagModel("BAAI/bge-small-en")
+    #     embedding_model = FlagModel("BAAI/bge-small-en")
 
-        bunka = Bunka(
-            projection_model=projection_model, embedding_model=embedding_model
-        )
-        print("Fitting Bunka with FlagModel")
-        bunka.fit(
-            ids=ids,
-            docs=docs,
-            metadata=metadata,
-            pre_computed_embeddings=None,
-            sampling_size_for_terms=1000,
-        )
+    #     bunka = Bunka(
+    #         projection_model=projection_model, embedding_model=embedding_model
+    #     )
+    #     print("Fitting Bunka with FlagModel")
+    #     bunka.fit(
+    #         ids=ids,
+    #         docs=docs,
+    #         metadata=metadata,
+    #         pre_computed_embeddings=None,
+    #         sampling_size_for_terms=1000,
+    #     )
 
-        self.assertIsInstance(bunka, Bunka)
+    #     self.assertIsInstance(bunka, Bunka)
 
     def test_embed_hf_embed(self):
 

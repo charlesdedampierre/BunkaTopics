@@ -16,7 +16,6 @@ dependencies = [
     "datasets>=2.14.5",
     "psutil>=5.9.7",
     "colorlog>=6.8.0",
-    "langchain_openai",
     "ipython",
     "ipywidgets>=8.1.2",
     "jsonlines>=4.0.0",

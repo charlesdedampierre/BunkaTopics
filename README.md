@@ -128,7 +128,7 @@ Note: It is recommended to use an Instruct model ie a model that has been fine-t
 
 ```python
 # Obtain clean topic names using Generative Model
-bunka.get_clean_topic_name(generative_model=llm)
+bunka.get_clean_topic_name(llm=llm)
 ```
 
 Check the top documents for every topic!

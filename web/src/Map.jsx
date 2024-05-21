@@ -38,6 +38,7 @@ function MapView() {
 
   const { data: apiData, isLoading: isFileProcessing } = useContext(TopicsContext);
 
+
   const svgRef = useRef(null);
   const scatterPlotContainerRef = useRef(null);
   const createScatterPlot = (data) => {
@@ -51,7 +52,7 @@ function MapView() {
     const plotHeight = window.innerHeight - document.getElementById("top-banner").clientHeight - 50; // Adjust the height as desired
 
     d3.select(svgRef.current).selectAll("*").remove();
-    
+
     const svg = d3
       .select(svgRef.current)
       .attr("width", "100%")
@@ -67,7 +68,7 @@ function MapView() {
     */
     const zoom = d3.zoom()
       .scaleExtent([1, 3])
-      .translateExtent([[0,0], [1000, 1000]])
+      .translateExtent([[0, 0], [1000, 1000]])
       .on("zoom", function ({ transform }) {
         g.attr(
           "transform",
@@ -116,10 +117,10 @@ function MapView() {
       .x((d) => xScale(d.x))
       .y((d) => yScale(d.y))
       .size([plotWidth, plotHeight])
-      .bandwidth(30)(
-      // Adjust the bandwidth as needed
-      data,
-    );
+      .bandwidth(15)(
+        // Adjust the bandwidth as needed
+        data,
+      );
 
     // Define a custom color for the contour lines
 
@@ -263,20 +264,27 @@ function MapView() {
               console.error("Error fetching topics data:", error);
             })
             .finally(() => {
-              setMapLoading(false);  
+              setMapLoading(false);
             });
         })
         .catch((error) => {
           console.error("Error fetching JSON data:", error);
         })
         .finally(() => {
-          setMapLoading(false);  
+          setMapLoading(false);
         });
     } else {
       // Call the function to create the scatter plot with the data provided by TopicsContext
       createScatterPlot(apiData.docs.concat(apiData.topics));
     }
+
+    // After the data is loaded, set the default topic
+    if (apiData && apiData.topics && apiData.topics.length > 0) {
+      // Set the default topic to the first topic in the list
+      setSelectedDocument(apiData.topics[0]);
+    }
   }, [apiData]);
+
 
   const mapDescription = "This map is created by embedding documents in a two-dimensional space. Two documents are close to each other if they share similar semantic features, such as vocabulary, expressions, and language. The documents are not directly represented on the map; instead, they are grouped into clusters. A cluster is a set of documents that share similarities. A cluster  is automatically described by a few words that best describes it.";
 
@@ -289,34 +297,34 @@ function MapView() {
       ) : (
         <div className="scatter-plot-and-text-container">
           <div className="scatter-plot-container" ref={scatterPlotContainerRef}>
-          <HtmlTooltip
-            title={
-              <React.Fragment>
-                <Typography color="inherit">{mapDescription}</Typography>
-              </React.Fragment>
-            }
-            followCursor
+            <HtmlTooltip
+              title={
+                <React.Fragment>
+                  <Typography color="inherit">{mapDescription}</Typography>
+                </React.Fragment>
+              }
+              followCursor
             >
               <HelpIcon style={{
                 position: "relative",
                 top: 10,
                 left: 40,
                 border: "none"
-              }}/>
+              }} />
             </HtmlTooltip>
             <svg ref={svgRef} />
           </div>
-          <div className="text-container" >
-            {selectedDocument !== null ? (
-            <>
-              <Box sx={{ marginBottom: "1em" }}>
-                <Button sx={{ width: "100%" }} component="label" variant="outlined" startIcon={<RepeatIcon />} onClick={() => setSelectedDocument(null)}>
-                  Upload another CSV file
-                </Button>
-              </Box>
-              <TextContainer topicName={selectedDocument.name} topicSizeFraction={topicsSizeFraction(topicsCentroids, selectedDocument.size)} content={selectedDocument.top_doc_content} />
-            </>
-            ) : <QueryView />}
+          <div className="text-container">
+            {selectedDocument ? (
+              <TextContainer
+                topicName={selectedDocument.name}
+                topicSizeFraction={topicsSizeFraction(topicsCentroids, selectedDocument.size)}
+                content={selectedDocument.top_doc_content}
+              />
+            ) : (
+              // Display a default view or null if no document is selected
+              null
+            )}
           </div>
         </div>
       )}

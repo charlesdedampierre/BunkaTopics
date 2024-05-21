@@ -38,24 +38,25 @@ class Document(BaseModel):
     x: t.Optional[float] = None
     y: t.Optional[float] = None
     topic_id: t.Optional[TOPIC_ID] = None
-    topic_ranking: TopicRanking = None
+    topic_ranking: t.Optional[TopicRanking] = None
     term_id: t.Optional[t.List[TERM_ID]] = None
     embedding: t.Optional[t.List[float]] = Field(None, repr=False)
     bourdieu_dimensions: t.List[BourdieuDimension] = []
+    metadata: t.Optional[t.Dict[str, t.Any]] = None
 
 
 class TopicParam(BaseModel):
-    n_clusters = 5
-    ngrams = [1, 2]
-    name_lenght = 4
-    top_terms_overall = 1000
+    n_clusters: int = 5
+    ngrams: t.List[int] = [1, 2]
+    name_length: int = 4
+    top_terms_overall: int = 1000
 
 
 class TopicGenParam(BaseModel):
     language: str = "english"
     top_doc: int = 3
     top_terms: int = 10
-    use_doc = False
+    use_doc: bool = False
     context: str = "everything"
 
 

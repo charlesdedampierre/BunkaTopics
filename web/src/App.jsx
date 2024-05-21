@@ -13,9 +13,6 @@ function App() {
     <div className="App">
       <div className="main-display">
         <div className="top-right" id="top-banner">
-          <a href="https://www.linkedin.com/company/bunka-ai/" target="_blank" rel="noopener noreferrer" className="linkedin-icon">
-            <img src="/linkedin_logo.png" alt="LinkedIn" />
-          </a>
           <img src="/bunka_logo.png" alt="Bunka Logo" className="bunka-logo" />
           <DropdownMenu onSelectView={setSelectedView} selectedView={selectedView} />
         </div>

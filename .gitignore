@@ -1,3 +1,22 @@
+# project specific
+
+#hidden notebooks
+AI_Camp_Analysis_of_Visual_Topic_Modeling_with_Bunka.ipynb
+bunka_dump/
+big_data/
+bunka-test/
+notebooks_test/
+json_examples/
+generative_model_api/
+test.ipynb
+bash.sh
+hide/
+bunka_env/
+roadmap.txt
+French-PD-Books-Exploration/
+usecases/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -9,9 +28,13 @@ __pycache__/
 #*bunka_docs.json
 #*bunka_topics.json
 
-#hidden notebooks
-notebooks_test/
-json_examples/
+
+
+# remove poetry files
+poetry.lock
+#pyproject.toml
+requirements.txt
+roadmap.txt
 
 # Distribution / packaging
 .Python
@@ -59,6 +82,9 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+env_*
+debug.ipynb
+
 
 # Sphinx documentation
 docs/_build/

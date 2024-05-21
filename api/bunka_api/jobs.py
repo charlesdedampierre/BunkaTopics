@@ -1,26 +1,28 @@
-import sys
 import logging
+import sys
+
 from dotenv import load_dotenv
 
 load_dotenv()
 sys.path.append("../")
 
-from fastapi.encoders import jsonable_encoder
-from celery import Celery, states
-from celery.exceptions import Ignore
 import typing as t
 
-from api.bunka_api.processing_functions import (
-    process_topics,
-    process_full_topics_and_bourdieu,
-)
-from api.bunka_api.datamodel import (
-    TopicParameterApi,
-    BourdieuQueryApi,
-    BourdieuResponse,
-    BourdieuQueryDict
-)
+from celery import Celery, states
+from celery.exceptions import Ignore
+from fastapi.encoders import jsonable_encoder
+
 from api import celeryconfig
+from api.bunka_api.datamodel import (
+    BourdieuQueryApi,
+    BourdieuQueryDict,
+    BourdieuResponse,
+    TopicParameterApi,
+)
+from api.bunka_api.processing_functions import (
+    process_full_topics_and_bourdieu,
+    process_topics,
+)
 
 celery = Celery()
 celery.config_from_object(celeryconfig)
@@ -32,7 +34,8 @@ def process_topics_task(
     full_docs: t.List[str],
     params: t.Dict,
     process_bourdieu: bool,
-    bourdieu_query: t.Dict):
+    bourdieu_query: t.Dict,
+):
     try:
         # Initialization
         total = len(full_docs)
@@ -48,16 +51,16 @@ def process_topics_task(
             )
 
         result = process_topics(
-            full_docs, 
+            full_docs,
             TopicParameterApi(
                 n_clusters=params["n_clusters"],
                 language=params["language"],
                 clean_topics=params["clean_topics"],
                 min_count_terms=params["min_count_terms"],
-                name_lenght=params["name_lenght"]
+                name_lenght=params["name_lenght"],
             ),
             process_bourdieu,
-            bourdieu_query=query
+            bourdieu_query=query,
         )
         # TODO get the real progress
         i = total
@@ -89,7 +92,7 @@ def bourdieu_api_task(
             language=topic_param["language"],
             clean_topics=topic_param["clean_topics"],
             min_count_terms=topic_param["min_count_terms"],
-            name_lenght=topic_param["name_lenght"]
+            name_lenght=topic_param["name_lenght"],
         )
         bourdieu_query_ins = BourdieuQueryApi(
             x_left_words=bourdieu_query["x_left_words"],

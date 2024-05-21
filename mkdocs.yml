@@ -1,0 +1,77 @@
+site_name: BunkaTopics
+repo_url: https://github.com/charlesdedampierre/BunkaTopics
+site_url: https://charlesdedampierre.github.io/BunkaTopics/
+site_description: using LLM to create and Explore topics in an innovative way
+site_author: Charles de Dampierre
+use_directory_urls: false
+extra_css:
+  - extra.css
+
+theme:
+  name: material
+  favicon: img/favicon.png
+  font:
+    text: Roboto
+    code: Roboto Mono
+  logo: img/logo.png
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.instant
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      primary: indigo
+      scheme: black
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: white
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Topic Exploration: topic_exploration.md
+  - Cleaning Data for LLM: fine-tuning.md
+  - Framing Analysis: framing-analysis.md
+  - Contributing: contribution.md
+  - API:
+      - Bunka: bunka-api/bunkatopics.md
+      - Topic Modeling: bunka-api/topic_modeling/topic_model_builder.md
+      - Term Extractor: bunka-api/topic_modeling/terms_extractor.md
+      - Topic LLM Cleaner: bunka-api/topic_modeling/topic_llm_cleaning.md
+      - Document Ranker in Topics: bunka-api/topic_modeling/topic-ranker.md
+      - Bourdieu API: bunka-api/bourdieu/bourdieu-api.md
+      - Visualization:
+          - Topic Modeling Visualization: bunka-api/visualization/topic-visualization.md
+          - Bourdieu Visualization: bunka-api/bourdieu/bourdieu-visualization.md
+          - Bourdieu Visualization One Dimension: bunka-api/bourdieu/bourdieu-visualization-one-dimension.md
+
+  - Changelog: changelog.md
+
+plugins:
+  - search
+  - social
+  - mkdocstrings:
+      handlers:
+        python:
+          rendering:
+            show_source: true

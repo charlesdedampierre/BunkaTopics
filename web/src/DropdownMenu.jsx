@@ -26,7 +26,7 @@ function DropdownMenu({ onSelectView, selectedView }) {
         }}
       >
         <MenuItem value="map">{LABELS.map}</MenuItem>
-        <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem>
+        {/* <MenuItem value="bourdieu">{LABELS.bourdieu}</MenuItem> */}
         <MenuItem value="docs">{LABELS.docs}</MenuItem>
       </Select>
     </FormControl>

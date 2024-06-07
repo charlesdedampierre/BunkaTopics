@@ -109,7 +109,7 @@ Topics are described by the most specific terms belonging to the cluster.
 Finally, let's visualize the topics that Bunka has computed for your text data:
 
 ```python
->>> bunka.visualize_topics(width=800, height=800, colorscale='YIGnBu')
+>>> bunka.visualize_topics(width=800, height=800, colorscale='delta')
 ```
 
 <img src="docs/images/topic_modeling_raw_YlGnBu.png" width="70%" height="70%" align="center" />

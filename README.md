@@ -307,6 +307,7 @@ embeddings = [[0.05121125280857086,
 '''
 
 pre_computed_embeddings = [{'doc_id': doc_id, 'embedding': embedding} for doc_id, embedding in zip(ids, embeddings)]
+#Make sure the list of embeddings are in the same order as the docs
 ...
 
 from bunkatopics import Bunka

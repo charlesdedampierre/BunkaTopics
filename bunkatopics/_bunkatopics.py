@@ -218,7 +218,7 @@ class Bunka:
                     sentences
                 )  # show_progress_bar=True
         else:
-            pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
+            # pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
             # bunka_embeddings = [x["embedding"] for x in pre_computed_embeddings]
             bunka_embeddings = []
             for x in pre_computed_embeddings:

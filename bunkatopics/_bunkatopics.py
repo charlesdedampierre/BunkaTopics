@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import umap
+from umap import UMAP
 from FlagEmbedding import FlagModel
 from IPython.display import display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
@@ -29,6 +29,15 @@ from bunkatopics.bourdieu import (BourdieuAPI, BourdieuOneDimensionVisualizer,
                                   BourdieuVisualizer)
 from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
                                    TopicGenParam, TopicParam)
+
+try:
+    from cuml.manifold.umap import UMAP as cuUMAP
+
+    CUML_AVAILABLE = True
+except ImportError:
+    cuUMAP = None
+    CUML_AVAILABLE = False
+
 from bunkatopics.logging import logger
 from bunkatopics.serveur import is_server_running, kill_server
 from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
@@ -91,11 +100,17 @@ class Bunka:
         if embedding_model is None:
             embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
 
+        umap_args = {
+            "n_components": 2,
+            "random_state": 42,
+        }
+
         if projection_model is None:
-            projection_model = umap.UMAP(
-                n_components=2,
-                random_state=42,
-            )
+            if CUML_AVAILABLE and cuUMAP is not None:
+                # CUDA optimized
+                projection_model = cuUMAP(**umap_args)
+            else:
+                projection_model = UMAP(**umap_args)
 
         self.projection_model = projection_model
         self.embedding_model = embedding_model

@@ -5,8 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from bunkatopics.datamodel import Document, Topic
-from bunkatopics.visualization.visualization_utils import (check_list_type,
-                                                           wrap_by_word)
+from bunkatopics.visualization.visualization_utils import check_list_type, wrap_by_word
 
 
 class TopicVisualizer:
@@ -182,7 +181,7 @@ class TopicVisualizer:
             else:
                 list_color_figure = list_color
                 colorscale = "RdBu"
-                colorbar = dict(title=color)
+                colorbar = dict(title=color, tickfont=dict(size=self.width / 50))
 
         # if search is not None:
         #     from .visualization_utils import normalize_list

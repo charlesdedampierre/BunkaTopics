@@ -108,6 +108,9 @@ class BunkaTopicModeling:
         ).labels_.astype(str)
 
         df_embeddings_2D["topic_id"] = "bt" + "-" + df_embeddings_2D["topic_number"]
+        df_embeddings_2D["topic_id"][
+            df_embeddings_2D["topic_id"] == "bt--1"
+        ] = "bt-no-topic"
 
         topic_doc_dict = df_embeddings_2D["topic_id"].to_dict()
         for doc in docs:
@@ -164,16 +167,17 @@ class BunkaTopicModeling:
         try:
             for x in topics:
                 topic_id = x.topic_id
-                x_points = [doc.x for doc in docs if doc.topic_id == topic_id]
-                y_points = [doc.y for doc in docs if doc.topic_id == topic_id]
+                if topic_id != "bt-no-topic":
+                    x_points = [doc.x for doc in docs if doc.topic_id == topic_id]
+                    y_points = [doc.y for doc in docs if doc.topic_id == topic_id]
 
-                points = pd.DataFrame({"x": x_points, "y": y_points}).values
+                    points = pd.DataFrame({"x": x_points, "y": y_points}).values
 
-                x_ch, y_ch = get_convex_hull_coord(points, interpolate_curve=True)
-                x_ch = list(x_ch)
-                y_ch = list(y_ch)
+                    x_ch, y_ch = get_convex_hull_coord(points, interpolate_curve=True)
+                    x_ch = list(x_ch)
+                    y_ch = list(y_ch)
 
-                res = ConvexHullModel(x_coordinates=x_ch, y_coordinates=y_ch)
+                    res = ConvexHullModel(x_coordinates=x_ch, y_coordinates=y_ch)
                 x.convex_hull = res
         except Exception as e:
             print(e)

@@ -1,12 +1,16 @@
 import typing as t
 
 import pandas as pd
+
+
 from sklearn.cluster import KMeans
 
 from bunkatopics.datamodel import ConvexHullModel, Document, Term, Topic
 from bunkatopics.logging import logger
 from bunkatopics.topic_modeling.utils import specificity
 from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
+
+pd.options.mode.chained_assignment = None
 
 
 class BunkaTopicModeling:
@@ -108,6 +112,8 @@ class BunkaTopicModeling:
         ).labels_.astype(str)
 
         df_embeddings_2D["topic_id"] = "bt" + "-" + df_embeddings_2D["topic_number"]
+
+        # For the case of HDBSCAN
         df_embeddings_2D["topic_id"][
             df_embeddings_2D["topic_id"] == "bt--1"
         ] = "bt-no-topic"
@@ -143,6 +149,7 @@ class BunkaTopicModeling:
             lambda x: x[: self.name_length]
         )
         df_topics_rep["name"] = df_topics_rep["name"].apply(lambda x: " | ".join(x))
+        df_topics_rep["name"][df_topics_rep["topic_id"] == "bt-no-topic"] = "no-topic"
 
         topics = [Topic(**x) for x in df_topics_rep.to_dict(orient="records")]
 
@@ -183,7 +190,6 @@ class BunkaTopicModeling:
             print(e)
 
         # Remove in case of HDBSCAN ?
-
         return topics
 
 

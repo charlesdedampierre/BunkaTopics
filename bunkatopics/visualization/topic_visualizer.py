@@ -101,6 +101,8 @@ class TopicVisualizer:
         docs_content = [doc.content for doc in docs]
         docs_content_plotly = [wrap_by_word(x, 10) for x in docs_content]
 
+        # remove the topic names with no topics
+        topics = [x for x in topics if x.topic_id != "bt-no-topic"]
         topics_x = [topic.x_centroid for topic in topics]
         topics_y = [topic.y_centroid for topic in topics]
         topics_name = [topic.name for topic in topics]

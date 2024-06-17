@@ -170,7 +170,6 @@ class BunkaTopicModeling:
 
         # remove too small clusters
         topics = [x for x in topics if x.size >= self.min_docs_per_cluster]
-
         try:
             for x in topics:
                 topic_id = x.topic_id

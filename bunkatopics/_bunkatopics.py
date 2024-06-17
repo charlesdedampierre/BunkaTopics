@@ -361,9 +361,9 @@ class Bunka:
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
         ranking_terms: int = 20,
-        max_doc_per_topic: int = 20,
+        max_doc_per_topic: int = 100,
         custom_clustering_model: bool = None,
-        min_docs_per_cluster: int = 10,
+        min_docs_per_cluster: int = 1,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.

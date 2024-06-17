@@ -47,6 +47,7 @@ class DocumentRanker:
         df_topics["term_id"] = df_topics["term_id"].apply(
             lambda x: x[: self.ranking_terms]
         )
+
         df_topics = df_topics[["topic_id", "term_id"]]
         df_topics = df_topics.explode("term_id").reset_index(drop=True)
 

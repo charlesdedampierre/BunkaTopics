@@ -34,7 +34,7 @@ try:
     from cuml.manifold.umap import UMAP as cuUMAP
 
     CUML_AVAILABLE = True
-except:
+except Exception:
     cuUMAP = None
     CUML_AVAILABLE = False
 

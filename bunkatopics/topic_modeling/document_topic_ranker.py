@@ -59,7 +59,6 @@ class DocumentRanker:
             .rename("count_topic_terms")
             .reset_index()
         )
-
         # Sort and rank documents within each topic
         df_rank = df_rank.sort_values(
             ["topic_id", "count_topic_terms"], ascending=(True, False)

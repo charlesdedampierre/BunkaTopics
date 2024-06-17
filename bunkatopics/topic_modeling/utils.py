@@ -3,6 +3,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 from langdetect import LangDetectException, detect
+
 from bunkatopics.logging import logger
 
 

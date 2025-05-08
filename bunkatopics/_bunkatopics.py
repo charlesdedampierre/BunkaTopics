@@ -418,6 +418,7 @@ class Bunka:
         max_doc_per_topic: int = 20,
         custom_clustering_model=None,
         min_docs_per_cluster: int = 10,
+        umap_target_weight: float = 0.5,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -534,15 +535,47 @@ class Bunka:
                     self.vis_projection_model = UMAP(
                         n_components=2,
                         random_state=42,
+                        target_weight=umap_target_weight,
                         # Use the same parameters as the original projection but with 2 dimensions
                         n_neighbors=getattr(self.projection_model, "n_neighbors", 15),
                         min_dist=getattr(self.projection_model, "min_dist", 0.1),
                         metric=getattr(self.projection_model, "metric", "euclidean"),
                     )
 
-                    # Project only the document embeddings to 2D
+                    # Extract topic_ids from documents as targets for supervision
+                    doc_topic_ids = []
+                    for doc_idx in doc_indices:
+                        topic_id = self.docs[doc_idx].topic_id
+                        # Handle None values - map to a default value or filter out
+                        if topic_id is None:
+                            topic_id = (
+                                -1
+                            )  # Use -1 or another value to indicate "no topic"
+                        doc_topic_ids.append(topic_id)
+
+                    # Transform in a number
+                    def transform_doc_topic_ids(doc_topic_ids):
+                        result = []
+
+                        for item in doc_topic_ids:
+                            if item == "bt-no-topic":
+                                result.append(-1)
+                            else:
+                                # Extract the number after 'bt-'
+                                number = int(item.split("-")[1])
+                                result.append(number)
+
+                        return result
+
+                    transformed_list = transform_doc_topic_ids(list(doc_topic_ids))
+                    transformed_list = [int(x) for x in transformed_list]
+
+                    # Project document embeddings to 2D with supervised learning
                     doc_2d_embeddings = self.vis_projection_model.fit_transform(
-                        np.array(doc_nd_embeddings)
+                        np.array(doc_nd_embeddings),
+                        y=np.array(
+                            transformed_list
+                        ),  # Pass target variable for supervision
                     )
 
                     # Update document x, y coordinates

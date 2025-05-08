@@ -153,6 +153,7 @@ class Bunka:
         ] = None,
         metadata: t.Optional[t.List[dict]] = None,
         sampling_size_for_terms: t.Optional[int] = 2000,
+        language: bool = None,
     ) -> None:
         """
         Fits the Bunka model to the provided list of documents.
@@ -193,6 +194,23 @@ class Bunka:
         logger.info(f"Processing {total_number_of_tokens} tokens")
 
         ids = [doc.doc_id for doc in self.docs]
+
+        # Detect language
+
+        sample_size = len(sentences) // 100  # sample 1% of the dataset
+
+        # Randomly sample 1% of the dataset
+        sampled_sentences = random.sample(sentences, sample_size)
+
+        if language is None:
+            self.detected_language = detect_language(sampled_sentences)
+        else:
+            self.detected_language = language
+        self.language_name = detect_language_to_language_name.get(
+            self.detected_language, "english"
+        )
+
+        logger.info(f"Detected language: {self.language_name}")
 
         logger.info(
             "Embedding documents... (can take varying amounts of time depending on their size)"
@@ -272,7 +290,8 @@ class Bunka:
             )
 
             # Reduce the n-dimensional embeddings to 2D
-            reduced_2d = vis_projection.fit_transform(reduced_embeddings)
+            # reduced_2d = vis_projection.fit_transform(reduced_embeddings)
+            reduced_2d = vis_projection.fit_transform(embeddings_array)
 
             # Store both the n-dimensional and 2D embeddings
             for i, doc in enumerate(self.docs):
@@ -299,7 +318,7 @@ class Bunka:
 
         # Extract terms from documents
         logger.info("Extracting meaningful terms from documents...")
-        terms_extractor = TextacyTermsExtractor(language=self.language)
+        terms_extractor = TextacyTermsExtractor(language=self.detected_language)
 
         if len(sentences) >= sampling_size_for_terms:
             # Sample documents for term extraction if there are too many
@@ -388,6 +407,225 @@ class Bunka:
         return self
 
     def get_topics(
+        self,
+        n_clusters: int = 5,
+        ngrams: t.List[int] = [1, 2],
+        name_length: int = 5,
+        top_terms_overall: int = 2000,
+        min_count_terms: int = 2,
+        ranking_terms: int = 20,
+        max_doc_per_topic: int = 20,
+        custom_clustering_model=None,
+        min_docs_per_cluster: int = 10,
+    ) -> pd.DataFrame:
+        """
+        Computes and organizes topics from the documents using specified parameters.
+
+        This method uses a topic modeling process to identify and characterize topics within the data.
+        If the projection model created embeddings with more than 2 dimensions, it will use the
+        n-dimensional version of topic modeling for more accurate clustering, then project down to 2D
+        for visualization.
+
+        Args:
+            n_clusters (int): The number of clusters to form. Default is 5.
+            ngrams (t.List[int]): The n-gram range to consider for topic extraction. Default is [1, 2].
+            name_length (int): The length of the name for topics. Default is 5.
+            top_terms_overall (int): The number of top terms to consider overall. Default is 2000.
+            min_count_terms (int): The minimum count of terms to be considered. Default is 2.
+            ranking_terms (int): Number of top terms to consider for document ranking. Default is 20.
+            max_doc_per_topic (int): Maximum number of documents to associate with each topic. Default is 20.
+            custom_clustering_model: Optional custom clustering model to use. Default is None.
+            min_docs_per_cluster (int): Minimum count of documents per topic. Default is 10.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the topics and their associated data.
+        """
+        import numpy as np
+        import umap
+
+        # Check if min_count_terms needs to be adjusted for small document sets
+        if min_count_terms > 1 and len(self.docs) <= 500:
+            logger.info(
+                f"There is not enough data to select terms with a minimum occurrence of {min_count_terms}. Setting min_count_terms to 1"
+            )
+            min_count_terms = 1
+
+        logger.info("Computing the topics")
+
+        # Determine if we should use n-dimensional topic modeling
+        use_nd_modeling = False
+
+        # Check if we have nd_embedding attributes in our documents
+        if hasattr(self, "actual_dimensions") and self.actual_dimensions > 2:
+            # Check if documents have nd_embedding attribute
+            sample_docs_with_nd = [
+                doc
+                for doc in self.docs[:100]
+                if hasattr(doc, "nd_embedding") and doc.nd_embedding
+            ]
+            if sample_docs_with_nd:
+                use_nd_modeling = True
+                logger.info(
+                    f"Using {self.actual_dimensions}-dimensional topic modeling"
+                )
+
+        # Select the appropriate topic modeling approach
+        if use_nd_modeling:
+            # Use n-dimensional topic modeling
+            topic_model = BunkaTopicModelingND(
+                n_clusters=n_clusters,
+                ngrams=ngrams,
+                name_length=name_length,
+                top_terms_overall=top_terms_overall,
+                min_count_terms=min_count_terms,
+                custom_clustering_model=custom_clustering_model,
+                min_docs_per_cluster=min_docs_per_cluster,
+                n_dimensions=self.actual_dimensions,
+            )
+        else:
+            # Use standard 2D topic modeling
+            topic_model = BunkaTopicModeling(
+                n_clusters=n_clusters,
+                ngrams=ngrams,
+                name_length=name_length,
+                x_column="x",
+                y_column="y",
+                top_terms_overall=top_terms_overall,
+                min_count_terms=min_count_terms,
+                custom_clustering_model=custom_clustering_model,
+                min_docs_per_cluster=min_docs_per_cluster,
+            )
+
+        # Generate the topics
+        self.topics: t.List[Topic] = topic_model.fit_transform(
+            docs=self.docs,
+            terms=self.terms,
+        )
+
+        # Rank documents within topics
+        model_ranker = DocumentRanker(
+            ranking_terms=ranking_terms, max_doc_per_topic=max_doc_per_topic
+        )
+        self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
+
+        # Filter topics if HDBSCAN was used
+        (
+            self.topics,
+            self.docs,
+        ) = _filter_hdbscan(self.topics, self.docs)
+
+        # If using n-dimensional embeddings, reproject to 2D for visualization
+
+        if use_nd_modeling:
+            logger.info("Reprojecting n-dimensional embeddings to 2D for visualization")
+
+            # Collect all n-dimensional embeddings from documents
+            doc_nd_embeddings = []
+            doc_indices = []
+            for i, doc in enumerate(self.docs):
+                if hasattr(doc, "nd_embedding") and doc.nd_embedding:
+                    doc_nd_embeddings.append(doc.nd_embedding)
+                    doc_indices.append(i)
+
+            if doc_nd_embeddings:
+                try:
+                    # Create a new UMAP model specifically for 2D visualization
+                    vis_projection_model = UMAP(
+                        n_components=2,
+                        random_state=42,
+                        # Use the same parameters as the original projection but with 2 dimensions
+                        n_neighbors=getattr(self.projection_model, "n_neighbors", 15),
+                        min_dist=getattr(self.projection_model, "min_dist", 0.1),
+                        metric=getattr(self.projection_model, "metric", "euclidean"),
+                    )
+
+                    # Project only the document embeddings to 2D
+                    doc_2d_embeddings = vis_projection_model.fit_transform(
+                        np.array(doc_nd_embeddings)
+                    )
+
+                    # Update document x, y coordinates
+                    for i, doc_idx in enumerate(doc_indices):
+                        self.docs[doc_idx].x = float(doc_2d_embeddings[i, 0])
+                        self.docs[doc_idx].y = float(doc_2d_embeddings[i, 1])
+
+                    logger.info("Successfully reprojected document embeddings to 2D")
+
+                    # Now calculate topic centroids as the average of document 2D coordinates in each cluster
+                    topic_docs_map = {}
+                    for doc in self.docs:
+                        if doc.topic_id and doc.topic_id != "bt-no-topic":
+                            if doc.topic_id not in topic_docs_map:
+                                topic_docs_map[doc.topic_id] = []
+                            if hasattr(doc, "x") and hasattr(doc, "y"):
+                                topic_docs_map[doc.topic_id].append((doc.x, doc.y))
+
+                    # Update topic x_centroid, y_centroid with average of document coordinates
+                    for topic in self.topics:
+                        if (
+                            topic.topic_id in topic_docs_map
+                            and topic_docs_map[topic.topic_id]
+                        ):
+                            coords = topic_docs_map[topic.topic_id]
+                            if coords:
+                                topic.x_centroid = float(
+                                    sum(c[0] for c in coords) / len(coords)
+                                )
+                                topic.y_centroid = float(
+                                    sum(c[1] for c in coords) / len(coords)
+                                )
+
+                    logger.info(
+                        "Successfully calculated topic 2D centroids from document positions"
+                    )
+                except Exception as e:
+                    logger.error(f"Error reprojecting to 2D: {e}")
+                    # If there's an error, just keep the existing x, y coordinates
+                    logger.info("Keeping original 2D coordinates")
+
+        # Create DataFrames for topics and top documents per topic
+        self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(
+            self.topics, self.docs
+        )
+
+        from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
+        from bunkatopics.datamodel import ConvexHullModel
+
+        # Calculate convex hulls for visualization (still in 2D)
+        try:
+            for topic in self.topics:
+                topic_id = topic.topic_id
+                if topic_id != "bt-no-topic":
+                    # Get x and y coordinates of documents in this topic
+                    x_points = [
+                        doc.x
+                        for doc in self.docs
+                        if doc.topic_id == topic_id and hasattr(doc, "x")
+                    ]
+                    y_points = [
+                        doc.y
+                        for doc in self.docs
+                        if doc.topic_id == topic_id and hasattr(doc, "y")
+                    ]
+
+                    if len(x_points) >= 3 and len(y_points) >= 3:
+                        points = pd.DataFrame({"x": x_points, "y": y_points}).values
+
+                        x_ch, y_ch = get_convex_hull_coord(
+                            points, interpolate_curve=True
+                        )
+                        x_ch = list(x_ch)
+                        y_ch = list(y_ch)
+
+                        topic.convex_hull = ConvexHullModel(
+                            x_coordinates=x_ch, y_coordinates=y_ch
+                        )
+        except Exception as e:
+            logger.error(f"Error creating convex hulls: {e}")
+
+        return self.df_topics_
+
+    def get_topics_2(
         self,
         n_clusters: int = 5,
         ngrams: t.List[int] = [1, 2],

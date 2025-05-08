@@ -273,38 +273,6 @@ class BunkaTopicModelingND:
             x for x in topics if getattr(x, "size", 0) >= self.min_docs_per_cluster
         ]
 
-        # Calculate convex hulls for visualization (still in 2D)
-        try:
-            for topic in topics:
-                topic_id = topic.topic_id
-                if topic_id != "bt-no-topic":
-                    # Get x and y coordinates of documents in this topic
-                    x_points = [
-                        doc.x
-                        for doc in docs
-                        if doc.topic_id == topic_id and hasattr(doc, "x")
-                    ]
-                    y_points = [
-                        doc.y
-                        for doc in docs
-                        if doc.topic_id == topic_id and hasattr(doc, "y")
-                    ]
-
-                    if len(x_points) >= 3 and len(y_points) >= 3:
-                        points = pd.DataFrame({"x": x_points, "y": y_points}).values
-
-                        x_ch, y_ch = get_convex_hull_coord(
-                            points, interpolate_curve=True
-                        )
-                        x_ch = list(x_ch)
-                        y_ch = list(y_ch)
-
-                        topic.convex_hull = ConvexHullModel(
-                            x_coordinates=x_ch, y_coordinates=y_ch
-                        )
-        except Exception as e:
-            logger.error(f"Error creating convex hulls: {e}")
-
         return topics
 
 

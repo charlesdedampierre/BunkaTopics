@@ -259,6 +259,7 @@ class Bunka:
 
         # Store the reduced embeddings in documents
         if self.actual_dimensions == 2:
+            # Store both the n-dimensional and 2D embeddings
             # For 2D, handling is simple - just store the reduced embeddings as x,y
             df_reduced = pd.DataFrame(reduced_embeddings, columns=["x", "y"])
             df_reduced["doc_id"] = ids
@@ -456,7 +457,7 @@ class Bunka:
         use_nd_modeling = False
 
         # Check if we have nd_embedding attributes in our documents
-        if hasattr(self, "actual_dimensions") and self.actual_dimensions > 2:
+        if hasattr(self, "actual_dimensions") and self.actual_dimensions >= 2:
             # Check if documents have nd_embedding attribute
             sample_docs_with_nd = [
                 doc
@@ -530,7 +531,7 @@ class Bunka:
             if doc_nd_embeddings:
                 try:
                     # Create a new UMAP model specifically for 2D visualization
-                    vis_projection_model = UMAP(
+                    self.vis_projection_model = UMAP(
                         n_components=2,
                         random_state=42,
                         # Use the same parameters as the original projection but with 2 dimensions
@@ -540,7 +541,7 @@ class Bunka:
                     )
 
                     # Project only the document embeddings to 2D
-                    doc_2d_embeddings = vis_projection_model.fit_transform(
+                    doc_2d_embeddings = self.vis_projection_model.fit_transform(
                         np.array(doc_nd_embeddings)
                     )
 

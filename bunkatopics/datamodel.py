@@ -43,6 +43,9 @@ class Document(BaseModel):
     embedding: t.Optional[t.List[float]] = Field(None, repr=False)
     bourdieu_dimensions: t.List[BourdieuDimension] = []
     metadata: t.Optional[t.Dict[str, t.Any]] = None
+    nd_embedding: t.List[float] = Field(
+        default_factory=list
+    )  # For reduced embeddings in n-dimensions
 
 
 class TopicParam(BaseModel):
@@ -73,6 +76,9 @@ class Topic(BaseModel):
     term_id: t.List[TERM_ID] = Field(None, repr=False)
     x_centroid: t.Optional[float] = None
     y_centroid: t.Optional[float] = None
+    nd_centroid: t.Optional[t.List[float]] = Field(
+        default_factory=list, repr=False
+    )  # New field for n-dimensional centroid
     size: t.Optional[int] = None
     top_doc_id: t.Optional[t.List[DOC_ID]] = None
     top_doc_content: t.Optional[t.List[str]] = Field(None, repr=False)

@@ -13,6 +13,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import umap
+from umap.umap_ import UMAP  # My personal Umap bugs so I use this one
 from FlagEmbedding import FlagModel
 from IPython.display import display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
@@ -25,20 +26,39 @@ from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MinMaxScaler
 from tqdm import tqdm
 
-from bunkatopics.bourdieu import (BourdieuAPI, BourdieuOneDimensionVisualizer,
-                                  BourdieuVisualizer)
-from bunkatopics.datamodel import (DOC_ID, BourdieuQuery, Document, Topic,
-                                   TopicGenParam, TopicParam)
+from bunkatopics.bourdieu import (
+    BourdieuAPI,
+    BourdieuOneDimensionVisualizer,
+    BourdieuVisualizer,
+)
+from bunkatopics.datamodel import (
+    DOC_ID,
+    BourdieuQuery,
+    Document,
+    Topic,
+    TopicGenParam,
+    TopicParam,
+)
 from bunkatopics.logging import logger
 from bunkatopics.serveur import is_server_running, kill_server
-from bunkatopics.topic_modeling import (BunkaTopicModeling, DocumentRanker,
-                                        LLMCleaningTopic,
-                                        TextacyTermsExtractor)
+from bunkatopics.topic_modeling import (
+    BunkaTopicModeling,
+    BunkaTopicModelingND,
+    DocumentRanker,
+    LLMCleaningTopic,
+    TextacyTermsExtractor,
+)
 from bunkatopics.topic_modeling.topic_utils import get_topic_repartition
-from bunkatopics.topic_modeling.utils import (detect_language,
-                                              detect_language_to_language_name)
-from bunkatopics.utils import (BunkaError, _create_topic_dfs, _filter_hdbscan,
-                               count_tokens)
+from bunkatopics.topic_modeling.utils import (
+    detect_language,
+    detect_language_to_language_name,
+)
+from bunkatopics.utils import (
+    BunkaError,
+    _create_topic_dfs,
+    _filter_hdbscan,
+    count_tokens,
+)
 from bunkatopics.visualization import TopicVisualizer
 from bunkatopics.visualization.query_visualizer import plot_query
 
@@ -76,7 +96,7 @@ class Bunka:
         self,
         embedding_model: Embeddings = None,
         projection_model=None,
-        language: str = "english",  # will be removed in the future
+        language: str = "english",
     ):
         """Initialize a BunkaTopics instance.
 
@@ -84,21 +104,44 @@ class Bunka:
             embedding_model (Embeddings, optional): An optional embedding model for generating document embeddings.
                 If not provided, a default model will be used based on the specified language.
                 Default is None.
-            projection_model (optional): An optional projection model to reduce the dimensionality of the embeddings.
+            projection_model (optional): An optional projection model for dimensionality reduction.
+                Should be a scikit-learn compatible model with fit_transform method.
+                If None, UMAP will be used with n_components=n_dimensions.
                 Default is None.
+            n_dimensions (int): Number of dimensions for the projection model.
+                This will be used if projection_model is None to create a default UMAP model.
+                Default is 2.
+            language (str): The language to be used for text processing and modeling.
+                Options include "english" (default), or specify another language as needed.
+                Default is "english".
         """
         warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
-        if embedding_model is None:
-            embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
 
+        # Set the language
+        self.language = language
+
+        # Initialize the embedding model based on language if not provided
+        if embedding_model is None:
+            if language == "english":
+                embedding_model = SentenceTransformer(
+                    model_name_or_path="all-MiniLM-L6-v2"
+                )
+            else:
+                embedding_model = SentenceTransformer(
+                    model_name_or_path="paraphrase-multilingual-MiniLM-L12-v2"
+                )
+        self.embedding_model = embedding_model
+
+        # Initialize the projection model if not provided
         if projection_model is None:
-            projection_model = umap.UMAP(
+            self.projection_model = umap.UMAP(
                 n_components=2,
                 random_state=42,
             )
+        else:
+            self.projection_model = projection_model
+            self.actual_dimensions = self.projection_model.n_components
 
-        self.projection_model = projection_model
-        self.embedding_model = embedding_model
         self.df_cleaned = None
 
     def fit(
@@ -109,8 +152,7 @@ class Bunka:
             t.List[t.Dict[DOC_ID, t.List[float]]]
         ] = None,
         metadata: t.Optional[t.List[dict]] = None,
-        sampling_size_for_terms: t.Optional[int] = 1000,
-        language: bool = None,
+        sampling_size_for_terms: t.Optional[int] = 2000,
     ) -> None:
         """
         Fits the Bunka model to the provided list of documents.
@@ -121,7 +163,7 @@ class Bunka:
         Args:
             docs (t.List[str]): A list of document strings.
             ids (t.Optional[t.List[DOC_ID]]): Optional. A list of identifiers for the documents. If not provided, UUIDs are generated.
-            metadata (t.Optional[t.List[str]): A of metadata dictionaries for the documents.
+            metadata (t.Optional[t.List[dict]]): A list of metadata dictionaries for the documents.
             sampling_size_for_terms (t.Optional[int]): The number of documents to sample for term extraction. Default is 2000.
         """
 
@@ -132,7 +174,6 @@ class Bunka:
             ids = [str(x) for x in ids]
             df["doc_id"] = ids
             df = df.drop_duplicates(subset="doc_id", keep="first")
-
         else:
             df["doc_id"] = [str(uuid.uuid4())[:20] for _ in range(len(df))]
 
@@ -140,7 +181,6 @@ class Bunka:
             metadata_values = [
                 {key: metadata[key][i] for key in metadata} for i in range(len(df))
             ]
-
             df["metadata"] = metadata_values
 
         df = df[~df["content"].isna()]
@@ -154,54 +194,27 @@ class Bunka:
 
         ids = [doc.doc_id for doc in self.docs]
 
-        # Detect language
-
-        sample_size = len(sentences) // 100  # sample 1% of the dataset
-
-        # Randomly sample 1% of the dataset
-        sampled_sentences = random.sample(sentences, sample_size)
-
-        if language is None:
-            self.detected_language = detect_language(sampled_sentences)
-        else:
-            self.detected_language = language
-        self.language_name = detect_language_to_language_name.get(
-            self.detected_language, "english"
-        )
-
-        logger.info(f"Detected language: {self.language_name}")
-
-        # if self.language_name != "english":
-        #     embedding_model = SentenceTransformer(
-        #         model_name_or_path="paraphrase-multilingual-MiniLM-L12-v2"
-        #     )
-
         logger.info(
             "Embedding documents... (can take varying amounts of time depending on their size)"
         )
 
+        # Generate or use pre-computed embeddings
         if pre_computed_embeddings is None:
-            # Determine if self.embedding_model is an instance of SentenceTransformer
+            # Handle different types of embedding models
             if isinstance(self.embedding_model, SentenceTransformer):
                 bunka_embeddings = self.embedding_model.encode(
                     sentences, show_progress_bar=True
                 )
                 bunka_embeddings = bunka_embeddings.tolist()
-
             elif isinstance(self.embedding_model, HuggingFaceEmbeddings):
                 bunka_embeddings = self.embedding_model.embed_documents(sentences)
-
             elif isinstance(self.embedding_model, FlagModel):
                 bunka_embeddings = self.embedding_model.encode(sentences)
                 bunka_embeddings = bunka_embeddings.tolist()
-
             else:
-                bunka_embeddings = self.embedding_model.encode(
-                    sentences
-                )  # show_progress_bar=True
+                bunka_embeddings = self.embedding_model.encode(sentences)
         else:
             pre_computed_embeddings.sort(key=lambda x: ids.index(x["doc_id"]))
-            # bunka_embeddings = [x["embedding"] for x in pre_computed_embeddings]
             bunka_embeddings = []
             for x in pre_computed_embeddings:
                 embedding = x["embedding"]
@@ -210,50 +223,90 @@ class Bunka:
                 else:
                     bunka_embeddings.append(embedding.tolist())
 
-        # Add to the bunka objects
+        # Store original embeddings in documents
         emb_doc_dict = {x: y for x, y in zip(ids, bunka_embeddings)}
         for doc in self.docs:
             doc.embedding = emb_doc_dict.get(doc.doc_id, [])
 
-        # Add to the bunka objects
-        emb_doc_dict = {x: y for x, y in zip(ids, bunka_embeddings)}
-        for doc in self.docs:
-            doc.embedding = emb_doc_dict.get(doc.doc_id, [])
-
-        # REDUCTION OF DIMENSIONS
-        logger.info("Reducing the dimensions of embeddings...")
-
-        bunka_embeddings_2D = self.projection_model.fit_transform(
-            np.array(bunka_embeddings)
+        # Apply dimensionality reduction using the projection model
+        logger.info(
+            f"Reducing dimensions to {self.actual_dimensions} using {type(self.projection_model).__name__}"
         )
 
-        # Insert to the Pydantic object
-        df_embeddings_2D = pd.DataFrame(bunka_embeddings_2D, columns=["x", "y"])
+        # Convert embeddings to numpy array
+        embeddings_array = np.array(bunka_embeddings)
 
-        df_embeddings_2D["doc_id"] = ids
-        df_embeddings_2D["bunka_docs"] = sentences
+        # Apply the main dimensionality reduction to n dimensions
+        reduced_embeddings = self.projection_model.fit_transform(embeddings_array)
 
-        xy_dict = df_embeddings_2D.set_index("doc_id")[["x", "y"]].to_dict("index")
+        # Store the reduced embeddings in documents
+        if self.actual_dimensions == 2:
+            # For 2D, handling is simple - just store the reduced embeddings as x,y
+            df_reduced = pd.DataFrame(reduced_embeddings, columns=["x", "y"])
+            df_reduced["doc_id"] = ids
+            df_reduced["bunka_docs"] = sentences
 
-        # Update the documents with the x and y values from the DataFrame
-        for doc in self.docs:
-            doc.x = xy_dict[doc.doc_id]["x"]
-            doc.y = xy_dict[doc.doc_id]["y"]
+            xy_dict = df_reduced.set_index("doc_id")[["x", "y"]].to_dict("index")
 
-        # CREATE A PLOT
+            # Update documents with x and y values
+            for doc in self.docs:
+                doc_coords = xy_dict.get(doc.doc_id, {})
+                doc.x = doc_coords.get("x")
+                doc.y = doc_coords.get("y")
 
-        self.fig_embeddings = self._quick_plot(df_embeddings_2D)
+            # Create a quick visualization plot
+            self.fig_embeddings = self._quick_plot(df_reduced)
+        else:
+            # For higher dimensions, we need to:
+            # 1. Store the full n-dimensional embeddings
+            # 2. Create a separate 2D reduction specifically for visualization
 
+            # Create a 2D UMAP projection specifically for visualization
+            logger.info("Creating separate 2D projection for visualization")
+
+            # Initialize a UMAP model specifically for 2D visualization
+            vis_projection = UMAP(
+                n_components=2,
+                random_state=42,
+                # Can add additional parameters here if needed for better visualization
+            )
+
+            # Reduce the n-dimensional embeddings to 2D
+            reduced_2d = vis_projection.fit_transform(reduced_embeddings)
+
+            # Store both the n-dimensional and 2D embeddings
+            for i, doc in enumerate(self.docs):
+                if i < len(reduced_embeddings):
+                    # Store the full reduced n-dimensional embedding
+                    doc.nd_embedding = reduced_embeddings[i].tolist()
+
+                    # Store the 2D visualization coordinates
+                    doc.x = reduced_2d[i, 0]
+                    doc.y = reduced_2d[i, 1]
+
+            # Create a DataFrame for the 2D visualization
+            df_reduced_2d = pd.DataFrame(
+                {
+                    "x": [doc.x for doc in self.docs],
+                    "y": [doc.y for doc in self.docs],
+                    "doc_id": ids,
+                    "bunka_docs": sentences,
+                }
+            )
+
+            # Create a quick visualization plot using the 2D projection
+            self.fig_embeddings = self._quick_plot(df_reduced_2d)
+
+        # Extract terms from documents
         logger.info("Extracting meaningful terms from documents...")
-        terms_extractor = TextacyTermsExtractor(language=self.detected_language)
+        terms_extractor = TextacyTermsExtractor(language=self.language)
 
         if len(sentences) >= sampling_size_for_terms:
-            # Pair sentences with their corresponding ids
+            # Sample documents for term extraction if there are too many
             paired_data = list(zip(sentences, ids))
             random.seed(42)
             sampled_data = random.sample(paired_data, sampling_size_for_terms)
 
-            # Unpack the sampled pairs back into sentences and ids lists
             sampled_sentences, sampled_ids = zip(*sampled_data)
             logger.info(
                 f"Sampling {sampling_size_for_terms} documents for term extraction"
@@ -261,13 +314,12 @@ class Bunka:
             self.terms, indexed_terms_dict = terms_extractor.fit_transform(
                 sampled_ids, sampled_sentences
             )
-
         else:
             self.terms, indexed_terms_dict = terms_extractor.fit_transform(
                 ids, sentences
             )
 
-        # add to the docs object
+        # Update documents with term IDs
         for doc in self.docs:
             doc.term_id = indexed_terms_dict.get(doc.doc_id, [])
 
@@ -343,32 +395,33 @@ class Bunka:
         top_terms_overall: int = 2000,
         min_count_terms: int = 2,
         ranking_terms: int = 20,
-        max_doc_per_topic: int = 100,
-        custom_clustering_model: bool = None,
-        min_docs_per_cluster: int = 1,
+        max_doc_per_topic: int = 20,
+        custom_clustering_model=None,
+        min_docs_per_cluster: int = 10,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
 
         This method uses a topic modeling process to identify and characterize topics within the data.
+        If the projection model created embeddings with more than 2 dimensions, it will use the
+        n-dimensional version of topic modeling for more accurate clustering.
 
         Args:
             n_clusters (int): The number of clusters to form. Default is 5.
             ngrams (t.List[int]): The n-gram range to consider for topic extraction. Default is [1, 2].
-            name_length (int): The length of the name for topics. Default is 10.
+            name_length (int): The length of the name for topics. Default is 5.
             top_terms_overall (int): The number of top terms to consider overall. Default is 2000.
             min_count_terms (int): The minimum count of terms to be considered. Default is 2.
-            min_docs_per_cluster (int, optional): Minimum count of documents per topic
+            ranking_terms (int): Number of top terms to consider for document ranking. Default is 20.
+            max_doc_per_topic (int): Maximum number of documents to associate with each topic. Default is 20.
+            custom_clustering_model: Optional custom clustering model to use. Default is None.
+            min_docs_per_cluster (int): Minimum count of documents per topic. Default is 10.
 
         Returns:
             pd.DataFrame: A DataFrame containing the topics and their associated data.
-
-        Note:
-            The method applies topic modeling using the specified parameters and updates the internal state
-            with the resulting topics. It also associates the identified topics with the documents.
         """
 
-        # Add the conditional check for min_count_terms and len(self.docs)
+        # Check if min_count_terms needs to be adjusted for small document sets
         if min_count_terms > 1 and len(self.docs) <= 500:
             logger.info(
                 f"There is not enough data to select terms with a minimum occurrence of {min_count_terms}. Setting min_count_terms to 1"
@@ -377,33 +430,69 @@ class Bunka:
 
         logger.info("Computing the topics")
 
-        topic_model = BunkaTopicModeling(
-            n_clusters=n_clusters,
-            ngrams=ngrams,
-            name_length=name_length,
-            x_column="x",
-            y_column="y",
-            top_terms_overall=top_terms_overall,
-            min_count_terms=min_count_terms,
-            custom_clustering_model=custom_clustering_model,
-            min_docs_per_cluster=min_docs_per_cluster,
-        )
+        # Determine if we should use n-dimensional topic modeling
+        use_nd_modeling = False
 
+        # Check if we have nd_embedding attributes in our documents
+        if hasattr(self, "actual_dimensions") and self.actual_dimensions > 2:
+            # Check if documents have nd_embedding attribute
+            sample_docs_with_nd = [
+                doc
+                for doc in self.docs[:100]
+                if hasattr(doc, "nd_embedding") and doc.nd_embedding
+            ]
+            if sample_docs_with_nd:
+                use_nd_modeling = True
+                logger.info(
+                    f"Using {self.actual_dimensions}-dimensional topic modeling"
+                )
+
+        # Select the appropriate topic modeling approach
+        if use_nd_modeling:
+            # Use n-dimensional topic modeling
+            topic_model = BunkaTopicModelingND(
+                n_clusters=n_clusters,
+                ngrams=ngrams,
+                name_length=name_length,
+                top_terms_overall=top_terms_overall,
+                min_count_terms=min_count_terms,
+                custom_clustering_model=custom_clustering_model,
+                min_docs_per_cluster=min_docs_per_cluster,
+                n_dimensions=self.actual_dimensions,
+            )
+        else:
+            # Use standard 2D topic modeling
+            topic_model = BunkaTopicModeling(
+                n_clusters=n_clusters,
+                ngrams=ngrams,
+                name_length=name_length,
+                x_column="x",
+                y_column="y",
+                top_terms_overall=top_terms_overall,
+                min_count_terms=min_count_terms,
+                custom_clustering_model=custom_clustering_model,
+                min_docs_per_cluster=min_docs_per_cluster,
+            )
+
+        # Generate the topics
         self.topics: t.List[Topic] = topic_model.fit_transform(
             docs=self.docs,
             terms=self.terms,
         )
 
+        # Rank documents within topics
         model_ranker = DocumentRanker(
             ranking_terms=ranking_terms, max_doc_per_topic=max_doc_per_topic
         )
         self.docs, self.topics = model_ranker.fit_transform(self.docs, self.topics)
 
+        # Filter topics if HDBSCAN was used
         (
             self.topics,
             self.docs,
         ) = _filter_hdbscan(self.topics, self.docs)
 
+        # Create DataFrames for topics and top documents per topic
         self.df_topics_, self.df_top_docs_per_topic_ = _create_topic_dfs(
             self.topics, self.docs
         )

@@ -418,7 +418,7 @@ class Bunka:
         max_doc_per_topic: int = 20,
         custom_clustering_model=None,
         min_docs_per_cluster: int = 10,
-        umap_target_weight: float = 0.5,
+        umap_target_weight: float = 0,
     ) -> pd.DataFrame:
         """
         Computes and organizes topics from the documents using specified parameters.
@@ -622,7 +622,10 @@ class Bunka:
             self.topics, self.docs
         )
 
-        from bunkatopics.visualization.convex_hull_plotter import get_convex_hull_coord
+        from bunkatopics.visualization.convex_hull_plotter import (
+            get_convex_hull_coord,
+            get_density_hull_coords,
+        )
         from bunkatopics.datamodel import ConvexHullModel
 
         # Calculate convex hulls for visualization (still in 2D)
@@ -645,9 +648,13 @@ class Bunka:
                     if len(x_points) >= 3 and len(y_points) >= 3:
                         points = pd.DataFrame({"x": x_points, "y": y_points}).values
 
-                        x_ch, y_ch = get_convex_hull_coord(
+                        x_ch, y_ch = get_density_hull_coords(
                             points, interpolate_curve=True
                         )
+
+                        # x_ch, y_ch = get_convex_hull_coord(
+                        #     points, interpolate_curve=True
+                        # )
                         x_ch = list(x_ch)
                         y_ch = list(y_ch)
 

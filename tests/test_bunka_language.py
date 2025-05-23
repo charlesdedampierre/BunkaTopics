@@ -2,7 +2,6 @@ import os
 import random
 import unittest
 
-from FlagEmbedding import FlagModel
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset

@@ -153,13 +153,6 @@ class TestBunka(unittest.TestCase):
 
         embedding_model = SentenceTransformer(model_name_or_path="all-MiniLM-L6-v2")
 
-        # from FlagEmbedding import FlagModel
-
-        # embedding_model = FlagModel(
-        #     "BAAI/bge-large-en-v1.5",
-        #     use_fp16=True,
-        # )  #
-
         cls.bunka = Bunka(
             projection_model=projection_model, embedding_model=embedding_model
         )

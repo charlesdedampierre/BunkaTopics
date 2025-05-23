@@ -2,7 +2,6 @@ import os
 import random
 import unittest
 
-from FlagEmbedding import FlagModel
 import pandas as pd
 import plotly.graph_objects as go
 from datasets import load_dataset
@@ -108,42 +107,6 @@ class TestBunka(unittest.TestCase):
             pre_computed_embeddings=None,
             sampling_size_for_terms=1000,
         )
-
-    # def test_embed_flag_embeddings(self):
-
-    #     projection_model = TSNE(
-    #         n_components=2,
-    #         learning_rate="auto",
-    #         init="random",
-    #         perplexity=3,
-    #         random_state=42,
-    #     )
-
-    #     embedding_model = FlagModel("BAAI/bge-small-en")
-
-    #     bunka = Bunka(
-    #         projection_model=projection_model, embedding_model=embedding_model
-    #     )
-    #     print("Fitting Bunka with FlagModel")
-    #     bunka.fit(
-    #         ids=ids,
-    #         docs=docs,
-    #         metadata=metadata,
-    #         pre_computed_embeddings=None,
-    #         sampling_size_for_terms=1000,
-    #     )
-
-    #     self.assertIsInstance(bunka, Bunka)
-
-    # def test_embed_hf_embed(self):
-
-    #     projection_model = TSNE(
-    #         n_components=2,
-    #         learning_rate="auto",
-    #         init="random",
-    #         perplexity=3,
-    #         random_state=42,
-    #     )
 
     #     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 

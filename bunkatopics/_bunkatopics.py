@@ -14,7 +14,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 import umap
 from umap.umap_ import UMAP  # My personal Umap bugs so I use this one
-from FlagEmbedding import FlagModel
 from IPython.display import display
 from ipywidgets import Button, Checkbox, Label, Layout, VBox, widgets
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -226,9 +225,6 @@ class Bunka:
                 bunka_embeddings = bunka_embeddings.tolist()
             elif isinstance(self.embedding_model, HuggingFaceEmbeddings):
                 bunka_embeddings = self.embedding_model.embed_documents(sentences)
-            elif isinstance(self.embedding_model, FlagModel):
-                bunka_embeddings = self.embedding_model.encode(sentences)
-                bunka_embeddings = bunka_embeddings.tolist()
             else:
                 bunka_embeddings = self.embedding_model.encode(sentences)
         else:

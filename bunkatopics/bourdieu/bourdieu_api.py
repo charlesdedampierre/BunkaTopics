@@ -3,7 +3,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from FlagEmbedding import FlagModel
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.llms import LLM
@@ -229,10 +228,6 @@ def _get_continuum(
     elif isinstance(embedding_model, HuggingFaceEmbeddings):
         left_embedding = embedding_model.embed_documents(continuum.left_words)
         right_embedding = embedding_model.embed_documents(continuum.right_words)
-
-    elif isinstance(embedding_model, FlagModel):
-        left_embedding = embedding_model.encode(continuum.left_words)
-        right_embedding = embedding_model.encode(continuum.right_words)
 
     left_embedding = pd.DataFrame(left_embedding).mean().values.reshape(1, -1)
     right_embedding = pd.DataFrame(right_embedding).mean().values.reshape(1, -1)
